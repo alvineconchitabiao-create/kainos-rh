@@ -1,0 +1,4 @@
+# Redirections Netlify - KAINOS RH
+/elite-rh-consulting    /kainos-rh.html    301
+/votre-rh-en-ligne      /services-rh-enligne.html    301
+/*                      /:splat.html       200
