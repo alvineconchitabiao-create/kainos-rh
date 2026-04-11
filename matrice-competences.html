@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Matrice de Compétences — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --noir: #0C0C0C;
+  --noir2: #161616;
+  --noir3: #1F1F1F;
+  --or: #C9A84C;
+  --or2: #E2C47A;
+  --or-pale: rgba(201,168,76,0.08);
+  --blanc: #F5F3EE;
+  --gris: #A0A098;
+  --gris2: #6B6B63;
+  --gris3: #2E2E2A;
+  --rouge: #C0392B;
+  --orange: #D35400;
+  --vert: #1E8449;
+  --bleu: #1A5FA8;
+  --fd: 'Syne', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --r: 10px;
+  --rl: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--fb); background: var(--noir); color: var(--blanc); min-height: 100vh; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--or); border-radius: 2px; }
+
+/* ── HEADER ── */
+.header {
+  background: var(--noir2);
+  border-bottom: 1px solid var(--gris3);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.header-logo { font-family: var(--fd); font-size: 16px; font-weight: 700; color: var(--blanc); letter-spacing: .06em; }
+.header-logo span { color: var(--or); }
+.header-sep { width: 1px; height: 28px; background: var(--gris3); }
+.header-tool { font-size: 12px; font-weight: 500; color: var(--gris); letter-spacing: .08em; text-transform: uppercase; }
+.header-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border: 1px solid var(--gris3);
+  border-radius: var(--r); font-size: 12px; font-weight: 500;
+  color: var(--gris); text-decoration: none; transition: all .2s;
+  font-family: var(--fb);
+}
+.header-back:hover { border-color: var(--or); color: var(--or); }
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 64px); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--noir2);
+  border-right: 1px solid var(--gris3);
+  padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  overflow-y: auto; max-height: calc(100vh - 64px);
+  position: sticky; top: 64px;
+}
+.sidebar-section { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--or); opacity: .7; padding: 0 .25rem; }
+.info-block { background: var(--noir3); border: 1px solid var(--gris3); border-radius: var(--r); padding: 1rem; }
+.info-block label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--gris); display: block; margin-bottom: 6px; }
+.info-block input, .info-block select, .info-block textarea {
+  width: 100%; background: var(--noir2); border: 1px solid var(--gris3); border-radius: 8px;
+  color: var(--blanc); font-family: var(--fb); font-size: 13px; padding: 8px 12px; outline: none;
+  transition: border-color .2s;
+}
+.info-block input:focus, .info-block select:focus { border-color: var(--or); }
+.info-block textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+.info-block select option { background: var(--noir2); }
+.field-group { display: flex; flex-direction: column; gap: 10px; }
+
+/* Score global */
+.score-global {
+  background: linear-gradient(135deg, var(--noir3) 0%, rgba(201,168,76,0.05) 100%);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--rl); padding: 1.2rem; text-align: center;
+}
+.score-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 3px solid var(--gris3);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; margin: 0 auto 10px;
+  position: relative; font-family: var(--fd);
+}
+.score-circle-val { font-size: 22px; font-weight: 700; color: var(--or); line-height: 1; }
+.score-circle-max { font-size: 10px; color: var(--gris); }
+.score-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--gris); margin-bottom: 4px; }
+.score-mention { font-family: var(--fd); font-size: 15px; font-weight: 700; }
+.score-bars { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.score-bar-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.score-bar-label { color: var(--gris); min-width: 90px; font-size: 10px; }
+.score-bar-track { flex: 1; height: 4px; background: var(--gris3); border-radius: 2px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 2px; transition: width .5s ease; }
+.score-bar-pct { color: var(--gris); font-size: 10px; min-width: 28px; text-align: right; }
+
+/* Boutons sidebar */
+.btn-action {
+  width: 100%; padding: 10px 16px; border-radius: var(--r);
+  font-family: var(--fb); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary { background: var(--or); color: var(--noir); }
+.btn-primary:hover { background: var(--or2); }
+.btn-secondary { background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3); }
+.btn-secondary:hover { border-color: var(--or); color: var(--or); }
+.btn-blue { background: var(--bleu); color: white; }
+.btn-blue:hover { opacity: .9; }
+
+/* ── MAIN ── */
+.main { padding: 2rem; overflow-y: auto; }
+.main-header { margin-bottom: 2rem; }
+.main-title { font-family: var(--fd); font-size: 26px; font-weight: 800; color: var(--blanc); line-height: 1.1; }
+.main-title span { color: var(--or); }
+.main-subtitle { font-size: 13px; color: var(--gris); margin-top: 6px; line-height: 1.6; }
+
+/* ── ONGLETS ── */
+.tabs { display: flex; gap: 4px; background: var(--noir2); padding: 5px; border-radius: var(--rl); margin-bottom: 1.5rem; border: 1px solid var(--gris3); width: fit-content; }
+.tab {
+  padding: 8px 18px; border-radius: 10px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; font-family: var(--fb);
+  color: var(--gris); background: transparent; transition: all .2s;
+  display: flex; align-items: center; gap: 7px; letter-spacing: .02em;
+}
+.tab.active { background: var(--noir3); color: var(--blanc); box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+.tab-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── CARTE COMPÉTENCE ── */
+.comp-section { margin-bottom: 2rem; }
+.comp-section-title {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--fd); font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--or);
+  margin-bottom: 1rem; padding-bottom: .75rem;
+  border-bottom: 1px solid var(--gris3);
+}
+.comp-section-icon { font-size: 16px; }
+.comp-section-count { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--gris); background: var(--noir3); padding: 2px 8px; border-radius: 20px; }
+
+.comp-grid { display: flex; flex-direction: column; gap: 10px; }
+.comp-card {
+  background: var(--noir2); border: 1px solid var(--gris3);
+  border-radius: var(--rl); padding: 1rem 1.25rem;
+  transition: border-color .2s; position: relative;
+}
+.comp-card:hover { border-color: rgba(201,168,76,0.3); }
+.comp-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: .75rem; }
+.comp-name-wrap { flex: 1; }
+.comp-name {
+  background: transparent; border: none; border-bottom: 1px dashed var(--gris3);
+  color: var(--blanc); font-family: var(--fb); font-size: 14px; font-weight: 500;
+  width: 100%; padding: 2px 4px; outline: none; transition: border-color .2s;
+}
+.comp-name:focus { border-bottom-color: var(--or); }
+.comp-name::placeholder { color: var(--gris2); font-size: 13px; }
+.comp-desc {
+  background: transparent; border: none; border-bottom: 1px dashed var(--gris3);
+  color: var(--gris); font-family: var(--fb); font-size: 11px;
+  width: 100%; padding: 3px 4px; outline: none; margin-top: 4px; resize: none;
+  transition: border-color .2s; line-height: 1.5;
+}
+.comp-desc:focus { border-bottom-color: var(--or); }
+.comp-desc::placeholder { color: var(--gris2); font-size: 11px; }
+.comp-delete {
+  width: 26px; height: 26px; border-radius: 50%; border: none;
+  background: transparent; color: var(--gris2); cursor: pointer;
+  font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  transition: all .2s; flex-shrink: 0;
+}
+.comp-delete:hover { background: rgba(192,57,43,.15); color: var(--rouge); }
+
+/* Niveaux requis / actuel */
+.comp-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .75rem; }
+.level-block label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--gris); display: block; margin-bottom: 8px; }
+.level-stars { display: flex; gap: 6px; }
+.star-btn {
+  width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--gris3);
+  background: var(--noir3); cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--gris); font-family: var(--fd);
+  position: relative;
+}
+.star-btn:hover { border-color: var(--or); }
+.star-btn.active-req { background: var(--bleu); border-color: var(--bleu); color: white; }
+.star-btn.active-cur { background: var(--or); border-color: var(--or); color: var(--noir); }
+.level-label { font-size: 10px; color: var(--gris); margin-top: 6px; font-style: italic; }
+
+/* Écart badge */
+.ecart-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  margin-top: 8px;
+}
+.ecart-ok    { background: rgba(30,132,73,.15);  color: #2ECC71; }
+.ecart-low   { background: rgba(211,84,0,.15);   color: #E67E22; }
+.ecart-crit  { background: rgba(192,57,43,.15);  color: #E74C3C; }
+.ecart-excl  { background: rgba(26,95,168,.15);  color: #5DADE2; }
+
+/* Barre de progression */
+.comp-progress { margin-top: 10px; }
+.progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.progress-row-label { font-size: 10px; color: var(--gris); min-width: 60px; }
+.progress-track { flex: 1; height: 6px; background: var(--gris3); border-radius: 3px; overflow: hidden; }
+.progress-fill-req { height: 100%; border-radius: 3px; background: var(--bleu); transition: width .4s; }
+.progress-fill-cur { height: 100%; border-radius: 3px; transition: width .4s; }
+
+/* Bouton ajouter */
+.btn-add-comp {
+  width: 100%; padding: 12px; border: 1px dashed rgba(201,168,76,0.3);
+  border-radius: var(--rl); background: transparent; color: var(--or);
+  font-family: var(--fb); font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 8px;
+}
+.btn-add-comp:hover { background: var(--or-pale); border-color: var(--or); }
+
+/* ── APERÇU / SYNTHÈSE ── */
+.synthese-wrap { background: white; color: #111; border-radius: var(--rl); overflow: hidden; box-shadow: var(--shadow); }
+.synthese-header {
+  background: var(--noir); color: white; padding: 1.5rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.synthese-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: .06em; }
+.synthese-title span { color: var(--or); }
+.synthese-meta { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 3px; }
+.synthese-score-badge {
+  background: var(--or); color: var(--noir); padding: .75rem 1.5rem;
+  border-radius: var(--r); text-align: center;
+}
+.synthese-score-badge .val { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; line-height: 1; }
+.synthese-score-badge .lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; margin-top: 2px; }
+
+.synthese-body { padding: 1.5rem 2rem; }
+.synthese-section { margin-bottom: 1.5rem; }
+.synthese-section-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em;
+  color: #888; margin-bottom: .75rem; padding-bottom: .5rem;
+  border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px;
+}
+.synthese-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.synthese-table th {
+  text-align: left; padding: 7px 10px; font-size: 10px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: white; background: #0C0C0C;
+}
+.synthese-table th:last-child, .synthese-table td:last-child { text-align: center; }
+.synthese-table tr:nth-child(even) td { background: #f8f8f5; }
+.synthese-table td { padding: 8px 10px; color: #333; border-bottom: 1px solid #eee; vertical-align: middle; }
+.synthese-table td:first-child { font-weight: 500; }
+.level-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600;
+}
+.pill-req { background: rgba(26,95,168,.1); color: #1A5FA8; }
+.pill-cur { background: rgba(201,168,76,.15); color: #8B6914; }
+.pill-ecart-ok   { background: rgba(30,132,73,.1);  color: #1E8449; }
+.pill-ecart-low  { background: rgba(211,84,0,.1);   color: #D35400; }
+.pill-ecart-crit { background: rgba(192,57,43,.1);  color: #C0392B; }
+.pill-ecart-excl { background: rgba(26,95,168,.1);  color: #1A5FA8; }
+
+/* Dot bars in synthese */
+.dot-bar { display: flex; gap: 3px; align-items: center; }
+.dot { width: 12px; height: 12px; border-radius: 3px; }
+.dot-filled-req { background: #1A5FA8; }
+.dot-filled-cur { background: #C9A84C; }
+.dot-empty { background: #E5E3DC; }
+
+/* Radar chart placeholder */
+.radar-wrap { display: flex; align-items: center; justify-content: center; padding: 1rem; }
+canvas#radarChart { max-width: 320px; }
+
+/* Print */
+@media print {
+  .header, .sidebar, .tabs, .btn-add-comp, .comp-delete, .btn-action { display: none !important; }
+  .layout { grid-template-columns: 1fr; }
+  .main { padding: 0; }
+  body { background: white; color: #111; }
+  .synthese-wrap { box-shadow: none; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: none; }
+  .comp-levels { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">Elite <span>RH</span></div>
+    <div class="header-sep"></div>
+    <div class="header-tool">Matrice de Compétences</div>
+  </div>
+  <a href="fiche-poste.html" class="header-back">← Fiche de poste</a>
+</header>
+
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Informations du poste</div>
+    <div class="info-block">
+      <div class="field-group">
+        <div>
+          <label>Intitulé du poste *</label>
+          <input type="text" id="info-poste" placeholder="Ex: Responsable Commercial" oninput="updateAll()"/>
+        </div>
+        <div>
+          <label>Département / Service</label>
+          <input type="text" id="info-dept" placeholder="Ex: Direction Commerciale" oninput="updateAll()"/>
+        </div>
+        <div>
+          <label>Catégorie</label>
+          <select id="info-cat" onchange="updateAll()">
+            <option value="">— Sélectionner —</option>
+            <option>Employé</option>
+            <option>Agent de maîtrise</option>
+            <option>Cadre</option>
+            <option>Cadre supérieur</option>
+            <option>Direction</option>
+          </select>
+        </div>
+        <div>
+          <label>Évalué(e)</label>
+          <input type="text" id="info-salarie" placeholder="Prénom Nom" oninput="updateAll()"/>
+        </div>
+        <div>
+          <label>Date d'évaluation</label>
+          <input type="date" id="info-date" oninput="updateAll()"/>
+        </div>
+        <div>
+          <label>Évaluateur</label>
+          <input type="text" id="info-eval" placeholder="Nom de l'évaluateur" oninput="updateAll()"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Score global</div>
+    <div class="score-global">
+      <div class="score-circle" id="score-circle">
+        <div class="score-circle-val" id="score-val">—</div>
+        <div class="score-circle-max">/ 4</div>
+      </div>
+      <div class="score-label">Score moyen</div>
+      <div class="score-mention" id="score-mention" style="color:var(--gris)">—</div>
+      <div class="score-bars" id="score-bars"></div>
+    </div>
+
+    <div class="sidebar-section">Actions</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn-action btn-primary" onclick="showTab('synthese')">👁️ Voir la synthèse</button>
+      <button class="btn-action btn-secondary" onclick="window.print()">🖨️ Imprimer / PDF</button>
+      <button class="btn-action btn-blue" onclick="exportWord()">📝 Télécharger Word</button>
+    </div>
+
+    <div style="background:var(--or-pale);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--gris);line-height:1.6">
+      <div style="font-weight:700;color:var(--or);margin-bottom:4px">Échelle de notation</div>
+      <div><span style="color:var(--blanc);font-weight:600">1 — Débutant</span> : Notions de base</div>
+      <div><span style="color:var(--blanc);font-weight:600">2 — En développement</span> : Applique avec aide</div>
+      <div><span style="color:var(--blanc);font-weight:600">3 — Autonome</span> : Maîtrise complète</div>
+      <div><span style="color:var(--blanc);font-weight:600">4 — Expert</span> : Référent, forme les autres</div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <div class="main-header">
+      <div class="main-title">Matrice de <span>Compétences</span></div>
+      <div class="main-subtitle">Évaluez chaque compétence selon deux axes : le niveau requis par le poste (🔵) et le niveau actuel du collaborateur (🟡).</div>
+    </div>
+
+    <!-- Onglets -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('technique')" id="tab-technique">
+        <span class="tab-dot" style="background:#1A5FA8"></span>Techniques
+      </button>
+      <button class="tab" onclick="showTab('comportemental')" id="tab-comportemental">
+        <span class="tab-dot" style="background:#C9A84C"></span>Comportementales
+      </button>
+      <button class="tab" onclick="showTab('managerial')" id="tab-managerial">
+        <span class="tab-dot" style="background:#1E8449"></span>Managériales
+      </button>
+      <button class="tab" onclick="showTab('savoir')" id="tab-savoir">
+        <span class="tab-dot" style="background:#8E44AD"></span>Savoirs
+      </button>
+      <button class="tab" onclick="showTab('synthese')" id="tab-synthese">
+        <span class="tab-dot" style="background:#E74C3C"></span>Synthèse
+      </button>
+    </div>
+
+    <!-- ── Onglet Techniques ── -->
+    <div id="panel-technique">
+      <div class="comp-section">
+        <div class="comp-section-title">
+          <span class="comp-section-icon">⚙️</span>
+          Compétences Techniques — Savoir-Faire Métier
+          <span class="comp-section-count" id="count-technique">0 compétence(s)</span>
+        </div>
+        <div class="comp-grid" id="grid-technique"></div>
+        <button class="btn-add-comp" onclick="addComp('technique')">+ Ajouter une compétence technique</button>
+      </div>
+    </div>
+
+    <!-- ── Onglet Comportemental ── -->
+    <div id="panel-comportemental" style="display:none">
+      <div class="comp-section">
+        <div class="comp-section-title">
+          <span class="comp-section-icon">🤝</span>
+          Compétences Comportementales — Savoir-Être
+          <span class="comp-section-count" id="count-comportemental">0 compétence(s)</span>
+        </div>
+        <div class="comp-grid" id="grid-comportemental"></div>
+        <button class="btn-add-comp" onclick="addComp('comportemental')">+ Ajouter une compétence comportementale</button>
+      </div>
+    </div>
+
+    <!-- ── Onglet Managérial ── -->
+    <div id="panel-managerial" style="display:none">
+      <div class="comp-section">
+        <div class="comp-section-title">
+          <span class="comp-section-icon">🎯</span>
+          Compétences Managériales
+          <span class="comp-section-count" id="count-managerial">0 compétence(s)</span>
+        </div>
+        <div class="comp-grid" id="grid-managerial"></div>
+        <button class="btn-add-comp" onclick="addComp('managerial')">+ Ajouter une compétence managériale</button>
+      </div>
+    </div>
+
+    <!-- ── Onglet Savoirs ── -->
+    <div id="panel-savoir" style="display:none">
+      <div class="comp-section">
+        <div class="comp-section-title">
+          <span class="comp-section-icon">📚</span>
+          Connaissances Théoriques — Savoir
+          <span class="comp-section-count" id="count-savoir">0 compétence(s)</span>
+        </div>
+        <div class="comp-grid" id="grid-savoir"></div>
+        <button class="btn-add-comp" onclick="addComp('savoir')">+ Ajouter un savoir</button>
+      </div>
+    </div>
+
+    <!-- ── Onglet Synthèse ── -->
+    <div id="panel-synthese" style="display:none">
+      <div id="synthese-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+<script>
+// ─────────────────────────────────────────────
+// ÉTAT
+// ─────────────────────────────────────────────
+const categories = ['technique', 'comportemental', 'managerial', 'savoir'];
+const catLabels = {
+  technique:      { label: 'Techniques',       icon: '⚙️', color: '#1A5FA8' },
+  comportemental: { label: 'Comportementales', icon: '🤝', color: '#C9A84C' },
+  managerial:     { label: 'Managériales',     icon: '🎯', color: '#1E8449' },
+  savoir:         { label: 'Savoirs',           icon: '📚', color: '#8E44AD' },
+};
+const levelLabels = ['', 'Débutant', 'En développement', 'Autonome', 'Expert'];
+const levelColors = ['', '#E74C3C', '#E67E22', '#3498DB', '#2ECC71'];
+
+let compData = { technique: [], comportemental: [], managerial: [], savoir: [] };
+let compCounter = 0;
+
+// Préremplir avec des compétences types
+const defaults = {
+  technique: [
+    { name: 'Maîtrise des outils métier', desc: 'Logiciels, équipements spécifiques au poste', req: 3, cur: 0 },
+    { name: 'Gestion de projets', desc: 'Planification, suivi, respect des délais', req: 3, cur: 0 },
+    { name: 'Rédaction professionnelle', desc: 'Rapports, emails, comptes-rendus', req: 2, cur: 0 },
+  ],
+  comportemental: [
+    { name: 'Communication', desc: 'Expression orale et écrite claire et adaptée', req: 3, cur: 0 },
+    { name: 'Travail en équipe', desc: 'Collaboration, entraide, esprit collectif', req: 3, cur: 0 },
+    { name: 'Adaptabilité', desc: 'Réactivité face aux changements et imprévus', req: 2, cur: 0 },
+    { name: 'Rigueur & organisation', desc: 'Méthode, précision, respect des procédures', req: 3, cur: 0 },
+  ],
+  managerial: [
+    { name: 'Leadership', desc: 'Capacité à mobiliser et fédérer une équipe', req: 3, cur: 0 },
+    { name: 'Prise de décision', desc: 'Analyser et décider avec discernement', req: 3, cur: 0 },
+    { name: 'Gestion des conflits', desc: 'Résoudre les tensions de manière constructive', req: 2, cur: 0 },
+  ],
+  savoir: [
+    { name: 'Connaissance du secteur', desc: 'Environnement économique et réglementaire', req: 3, cur: 0 },
+    { name: 'Connaissance de l\'entreprise', desc: 'Organisation, culture, procédures internes', req: 3, cur: 0 },
+  ],
+};
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init() {
+  categories.forEach(cat => {
+    defaults[cat].forEach(d => {
+      const id = ++compCounter;
+      compData[cat].push({ id, name: d.name, desc: d.desc, req: d.req, cur: d.cur });
+    });
+    renderGrid(cat);
+  });
+  updateAll();
+  // Date du jour par défaut
+  document.getElementById('info-date').value = new Date().toISOString().split('T')[0];
+}
+
+// ─────────────────────────────────────────────
+// ONGLETS
+// ─────────────────────────────────────────────
+function showTab(tab) {
+  categories.forEach(cat => {
+    document.getElementById('panel-' + cat).style.display = tab === cat ? 'block' : 'none';
+    document.getElementById('tab-' + cat).classList.toggle('active', tab === cat);
+  });
+  document.getElementById('panel-synthese').style.display = tab === 'synthese' ? 'block' : 'none';
+  document.getElementById('tab-synthese').classList.toggle('active', tab === 'synthese');
+  if (tab === 'synthese') renderSynthese();
+}
+
+// ─────────────────────────────────────────────
+// AJOUTER / SUPPRIMER
+// ─────────────────────────────────────────────
+function addComp(cat) {
+  const id = ++compCounter;
+  compData[cat].push({ id, name: '', desc: '', req: 0, cur: 0 });
+  renderGrid(cat);
+  updateAll();
+  // Focus sur le nouveau champ
+  setTimeout(() => {
+    const el = document.getElementById('name-' + id);
+    if (el) el.focus();
+  }, 50);
+}
+
+function removeComp(cat, id) {
+  compData[cat] = compData[cat].filter(c => c.id !== id);
+  renderGrid(cat);
+  updateAll();
+}
+
+// ─────────────────────────────────────────────
+// RENDU DES CARTES
+// ─────────────────────────────────────────────
+function renderGrid(cat) {
+  const grid = document.getElementById('grid-' + cat);
+  const count = document.getElementById('count-' + cat);
+  grid.innerHTML = '';
+  count.textContent = compData[cat].length + ' compétence(s)';
+
+  compData[cat].forEach(comp => {
+    const card = document.createElement('div');
+    card.className = 'comp-card';
+    card.id = 'card-' + comp.id;
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'comp-card-header';
+
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'comp-name-wrap';
+
+    const nameInput = document.createElement('input');
+    nameInput.className = 'comp-name';
+    nameInput.id = 'name-' + comp.id;
+    nameInput.placeholder = 'Nom de la compétence...';
+    nameInput.value = comp.name;
+    nameInput.addEventListener('input', function() {
+      comp.name = this.value;
+      updateAll();
+    });
+
+    const descInput = document.createElement('textarea');
+    descInput.className = 'comp-desc';
+    descInput.rows = 1;
+    descInput.placeholder = 'Description courte (optionnel)...';
+    descInput.value = comp.desc;
+    descInput.addEventListener('input', function() {
+      comp.desc = this.value;
+    });
+
+    nameWrap.appendChild(nameInput);
+    nameWrap.appendChild(descInput);
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'comp-delete';
+    delBtn.title = 'Supprimer';
+    delBtn.textContent = '×';
+    delBtn.addEventListener('click', function() { removeComp(cat, comp.id); });
+
+    header.appendChild(nameWrap);
+    header.appendChild(delBtn);
+    card.appendChild(header);
+
+    // Niveaux
+    const levels = document.createElement('div');
+    levels.className = 'comp-levels';
+
+    // Requis
+    const reqBlock = document.createElement('div');
+    reqBlock.className = 'level-block';
+    const reqLabel = document.createElement('label');
+    reqLabel.textContent = '🔵 Niveau requis';
+    reqBlock.appendChild(reqLabel);
+
+    const reqStars = document.createElement('div');
+    reqStars.className = 'level-stars';
+    for (let i = 1; i <= 4; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'star-btn' + (i <= comp.req ? ' active-req' : '');
+      btn.textContent = i;
+      btn.title = levelLabels[i];
+      btn.addEventListener('click', (function(level) {
+        return function() {
+          comp.req = level;
+          renderGrid(cat);
+          updateAll();
+        };
+      })(i));
+      reqStars.appendChild(btn);
+    }
+    const reqLvlLabel = document.createElement('div');
+    reqLvlLabel.className = 'level-label';
+    reqLvlLabel.id = 'req-label-' + comp.id;
+    reqLvlLabel.textContent = comp.req ? levelLabels[comp.req] : 'Non défini';
+    reqBlock.appendChild(reqStars);
+    reqBlock.appendChild(reqLvlLabel);
+
+    // Actuel
+    const curBlock = document.createElement('div');
+    curBlock.className = 'level-block';
+    const curLabel = document.createElement('label');
+    curLabel.textContent = '🟡 Niveau actuel';
+    curBlock.appendChild(curLabel);
+
+    const curStars = document.createElement('div');
+    curStars.className = 'level-stars';
+    for (let i = 1; i <= 4; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'star-btn' + (i <= comp.cur ? ' active-cur' : '');
+      btn.textContent = i;
+      btn.title = levelLabels[i];
+      btn.addEventListener('click', (function(level) {
+        return function() {
+          comp.cur = level;
+          renderGrid(cat);
+          updateAll();
+        };
+      })(i));
+      curStars.appendChild(btn);
+    }
+    const curLvlLabel = document.createElement('div');
+    curLvlLabel.className = 'level-label';
+    curLvlLabel.id = 'cur-label-' + comp.id;
+    curLvlLabel.textContent = comp.cur ? levelLabels[comp.cur] : 'Non évalué';
+    curBlock.appendChild(curStars);
+    curBlock.appendChild(curLvlLabel);
+
+    levels.appendChild(reqBlock);
+    levels.appendChild(curBlock);
+    card.appendChild(levels);
+
+    // Écart
+    if (comp.req > 0 && comp.cur > 0) {
+      const ecart = comp.cur - comp.req;
+      const badge = document.createElement('span');
+      badge.className = 'ecart-badge ' + getEcartClass(ecart);
+      badge.textContent = getEcartText(ecart);
+      card.appendChild(badge);
+
+      // Barres de progression
+      const prog = document.createElement('div');
+      prog.className = 'comp-progress';
+
+      const rowReq = document.createElement('div');
+      rowReq.className = 'progress-row';
+      rowReq.innerHTML =
+        '<span class="progress-row-label">Requis</span>' +
+        '<div class="progress-track"><div class="progress-fill-req" style="width:' + (comp.req / 4 * 100) + '%"></div></div>' +
+        '<span style="font-size:10px;color:#1A5FA8;min-width:20px;text-align:right;font-weight:700">' + comp.req + '</span>';
+
+      const rowCur = document.createElement('div');
+      rowCur.className = 'progress-row';
+      const curColor = levelColors[comp.cur] || '#C9A84C';
+      rowCur.innerHTML =
+        '<span class="progress-row-label">Actuel</span>' +
+        '<div class="progress-track"><div class="progress-fill-cur" style="width:' + (comp.cur / 4 * 100) + '%;background:' + curColor + '"></div></div>' +
+        '<span style="font-size:10px;color:' + curColor + ';min-width:20px;text-align:right;font-weight:700">' + comp.cur + '</span>';
+
+      prog.appendChild(rowReq);
+      prog.appendChild(rowCur);
+      card.appendChild(prog);
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+function getEcartClass(ecart) {
+  if (ecart >= 0) return ecart > 0 ? 'ecart-excl' : 'ecart-ok';
+  if (ecart === -1) return 'ecart-low';
+  return 'ecart-crit';
+}
+function getEcartText(ecart) {
+  if (ecart > 0)  return '▲ +' + ecart + ' · Dépasse le requis';
+  if (ecart === 0) return '✓ Niveau atteint';
+  if (ecart === -1) return '▼ -1 · À développer';
+  return '▼ ' + ecart + ' · Écart critique';
+}
+
+// ─────────────────────────────────────────────
+// SCORES & SIDEBAR
+// ─────────────────────────────────────────────
+function updateAll() {
+  updateScores();
+}
+
+function updateScores() {
+  let totalReq = 0, totalCur = 0, totalCount = 0;
+  const catScores = {};
+
+  categories.forEach(cat => {
+    let catReq = 0, catCur = 0, catN = 0;
+    compData[cat].forEach(c => {
+      if (c.req > 0 && c.cur > 0) {
+        catReq += c.req; catCur += c.cur; catN++;
+        totalReq += c.req; totalCur += c.cur; totalCount++;
+      }
+    });
+    catScores[cat] = catN > 0 ? (catCur / catN).toFixed(1) : null;
+  });
+
+  const avg = totalCount > 0 ? (totalCur / totalCount).toFixed(2) : null;
+  const scoreEl = document.getElementById('score-val');
+  const mentionEl = document.getElementById('score-mention');
+  const circleEl = document.getElementById('score-circle');
+
+  if (avg !== null) {
+    scoreEl.textContent = avg;
+    const numAvg = parseFloat(avg);
+    let mention, color;
+    if      (numAvg >= 3.5) { mention = 'Expert';        color = '#2ECC71'; }
+    else if (numAvg >= 2.5) { mention = 'Autonome';      color = '#3498DB'; }
+    else if (numAvg >= 1.5) { mention = 'En progression'; color = '#E67E22'; }
+    else                    { mention = 'Débutant';       color = '#E74C3C'; }
+    mentionEl.textContent = mention;
+    mentionEl.style.color = color;
+    circleEl.style.borderColor = color;
+  } else {
+    scoreEl.textContent = '—';
+    mentionEl.textContent = '—';
+    mentionEl.style.color = 'var(--gris)';
+    circleEl.style.borderColor = 'var(--gris3)';
+  }
+
+  // Barres par catégorie
+  const barsEl = document.getElementById('score-bars');
+  barsEl.innerHTML = '';
+  categories.forEach(cat => {
+    const sc = catScores[cat];
+    const row = document.createElement('div');
+    row.className = 'score-bar-row';
+    const pct = sc ? Math.round(parseFloat(sc) / 4 * 100) : 0;
+    const color = catLabels[cat].color;
+    row.innerHTML =
+      '<span class="score-bar-label">' + catLabels[cat].icon + ' ' + catLabels[cat].label + '</span>' +
+      '<div class="score-bar-track"><div class="score-bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+      '<span class="score-bar-pct">' + (sc !== null ? sc : '—') + '</span>';
+    barsEl.appendChild(row);
+  });
+}
+
+// ─────────────────────────────────────────────
+// SYNTHÈSE
+// ─────────────────────────────────────────────
+function renderSynthese() {
+  const poste   = document.getElementById('info-poste').value || '[Poste non défini]';
+  const dept    = document.getElementById('info-dept').value;
+  const salarie = document.getElementById('info-salarie').value || '[Collaborateur]';
+  const evalDate = document.getElementById('info-date').value;
+  const evaluateur = document.getElementById('info-eval').value;
+  const cat = document.getElementById('info-cat').value;
+
+  const fmtDate = d => {
+    if (!d) return '—';
+    const p = d.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+  };
+
+  // Calculer score global
+  let total = 0, n = 0;
+  categories.forEach(c => {
+    compData[c].forEach(comp => {
+      if (comp.cur > 0 && comp.req > 0) { total += comp.cur; n++; }
+    });
+  });
+  const avg = n > 0 ? (total / n).toFixed(2) : '—';
+  let mention = '—', mentionColor = '#888';
+  if (n > 0) {
+    const v = parseFloat(avg);
+    if      (v >= 3.5) { mention = 'Expert';         mentionColor = '#2ECC71'; }
+    else if (v >= 2.5) { mention = 'Autonome';        mentionColor = '#3498DB'; }
+    else if (v >= 1.5) { mention = 'En progression';  mentionColor = '#E67E22'; }
+    else               { mention = 'Débutant';         mentionColor = '#E74C3C'; }
+  }
+
+  let html = '<div class="synthese-wrap">';
+
+  // En-tête
+  html += '<div class="synthese-header">' +
+    '<div>' +
+    '<div class="synthese-title">Matrice de <span>Compétences</span></div>' +
+    '<div class="synthese-meta">' + poste + (dept ? ' · ' + dept : '') + (cat ? ' · ' + cat : '') + '</div>' +
+    '<div class="synthese-meta" style="margin-top:4px">Évalué(e) : ' + salarie + ' — ' + fmtDate(evalDate) + (evaluateur ? ' — Évaluateur : ' + evaluateur : '') + '</div>' +
+    '</div>' +
+    '<div class="synthese-score-badge">' +
+    '<div class="val">' + avg + '<span style="font-size:14px;opacity:.6">/4</span></div>' +
+    '<div class="lbl" style="color:' + mentionColor + '">' + mention + '</div>' +
+    '</div>' +
+    '</div>';
+
+  html += '<div class="synthese-body">';
+
+  // Tableau par catégorie
+  categories.forEach(cat => {
+    const comps = compData[cat];
+    if (comps.length === 0) return;
+
+    html += '<div class="synthese-section">';
+    html += '<div class="synthese-section-title"><span>' + catLabels[cat].icon + '</span>' + catLabels[cat].label.toUpperCase() + '</div>';
+    html += '<table class="synthese-table">';
+    html += '<thead><tr>' +
+      '<th style="width:35%">Compétence</th>' +
+      '<th style="width:15%">Niveau requis</th>' +
+      '<th style="width:15%">Niveau actuel</th>' +
+      '<th style="width:20%">Visualisation</th>' +
+      '<th style="width:15%">Écart</th>' +
+      '</tr></thead><tbody>';
+
+    comps.forEach(comp => {
+      const name = comp.name || '(Sans nom)';
+      const ecart = (comp.req > 0 && comp.cur > 0) ? (comp.cur - comp.req) : null;
+
+      // Dots visuels
+      let dotsReq = '', dotsCur = '';
+      for (let i = 1; i <= 4; i++) {
+        dotsReq += '<div class="dot ' + (i <= comp.req ? 'dot-filled-req' : 'dot-empty') + '"></div>';
+        dotsCur += '<div class="dot ' + (i <= comp.cur ? 'dot-filled-cur' : 'dot-empty') + '"></div>';
+      }
+
+      let ecartHtml = '—';
+      if (ecart !== null) {
+        let cls, txt;
+        if (ecart > 0)       { cls = 'pill-ecart-excl'; txt = '+' + ecart + ' Dépasse'; }
+        else if (ecart === 0){ cls = 'pill-ecart-ok';   txt = '✓ Atteint'; }
+        else if (ecart === -1){ cls = 'pill-ecart-low'; txt = '-1 À développer'; }
+        else                  { cls = 'pill-ecart-crit';txt = ecart + ' Critique'; }
+        ecartHtml = '<span class="level-pill ' + cls + '">' + txt + '</span>';
+      }
+
+      html += '<tr>' +
+        '<td>' + name + (comp.desc ? '<br><span style="font-size:10px;color:#888">' + comp.desc + '</span>' : '') + '</td>' +
+        '<td><span class="level-pill pill-req">' + (comp.req ? comp.req + ' — ' + levelLabels[comp.req] : '—') + '</span></td>' +
+        '<td><span class="level-pill pill-cur">' + (comp.cur ? comp.cur + ' — ' + levelLabels[comp.cur] : 'Non évalué') + '</span></td>' +
+        '<td><div style="display:flex;flex-direction:column;gap:3px"><div class="dot-bar">' + dotsReq + '</div><div class="dot-bar">' + dotsCur + '</div></div></td>' +
+        '<td>' + ecartHtml + '</td>' +
+        '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+  });
+
+  // Plan de développement suggéré
+  const aDeveplopper = [];
+  categories.forEach(c => {
+    compData[c].forEach(comp => {
+      if (comp.req > 0 && comp.cur > 0 && comp.cur < comp.req) {
+        aDeveplopper.push({ name: comp.name || '(Sans nom)', ecart: comp.cur - comp.req, cat: c });
+      }
+    });
+  });
+
+  if (aDeveplopper.length > 0) {
+    aDeveplopper.sort((a, b) => a.ecart - b.ecart);
+    html += '<div class="synthese-section">';
+    html += '<div class="synthese-section-title">⚡ Plan de développement prioritaire</div>';
+    html += '<table class="synthese-table"><thead><tr><th>Compétence</th><th>Catégorie</th><th>Priorité</th><th>Action recommandée</th></tr></thead><tbody>';
+    aDeveplopper.forEach((item, idx) => {
+      const priorite = item.ecart <= -2 ? '🔴 Critique' : '🟠 Important';
+      const action = item.ecart <= -2 ?
+        'Formation obligatoire + accompagnement' : 'Formation recommandée ou coaching';
+      html += '<tr><td><strong>' + item.name + '</strong></td>' +
+        '<td>' + catLabels[item.cat].icon + ' ' + catLabels[item.cat].label + '</td>' +
+        '<td>' + priorite + '</td>' +
+        '<td style="font-size:11px;color:#555">' + action + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+
+  // Signature
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid #eee">';
+  ['L\'évalué(e)', 'L\'évaluateur', 'La Direction'].forEach(sig => {
+    html += '<div style="text-align:center">' +
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:40px">' + sig + '</div>' +
+      '<div style="border-top:1px solid #333;padding-top:6px;font-size:11px;color:#888">Signature</div>' +
+      '</div>';
+  });
+  html += '</div>';
+
+  html += '</div></div>';
+
+  document.getElementById('synthese-content').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// EXPORT WORD
+// ─────────────────────────────────────────────
+async function exportWord() {
+  const btn = event.target;
+  btn.textContent = '⏳ Génération...'; btn.disabled = true;
+  try {
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+            AlignmentType, BorderStyle, WidthType, ShadingType } = docx;
+
+    const poste    = document.getElementById('info-poste').value || '[Poste]';
+    const salarie  = document.getElementById('info-salarie').value || '[Collaborateur]';
+    const evalDate = document.getElementById('info-date').value;
+    const evaluateur = document.getElementById('info-eval').value;
+
+    const fmtDate = d => {
+      if (!d) return '—';
+      const p = d.split('-'); return p[2]+'/'+p[1]+'/'+p[0];
+    };
+
+    const children = [];
+
+    // Titre
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 200 },
+      children: [new TextRun({ text: 'MATRICE DE COMPÉTENCES', bold: true, size: 36, color: '0C0C0C', font: 'Calibri' })],
+    }));
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 100 },
+      children: [new TextRun({ text: poste, size: 28, color: 'C9A84C', bold: true, font: 'Calibri' })],
+    }));
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 400 },
+      children: [
+        new TextRun({ text: 'Évalué(e) : ' + salarie, size: 20, color: '555555' }),
+        new TextRun({ text: '   |   Date : ' + fmtDate(evalDate), size: 20, color: '555555' }),
+        evaluateur ? new TextRun({ text: '   |   Évaluateur : ' + evaluateur, size: 20, color: '555555' }) : new TextRun({ text: '' }),
+      ],
+    }));
+
+    // Légende
+    children.push(new Paragraph({
+      spacing: { before: 200, after: 100 },
+      children: [new TextRun({ text: 'Échelle : 1 = Débutant  |  2 = En développement  |  3 = Autonome  |  4 = Expert', size: 18, italics: true, color: '888888' })],
+    }));
+
+    // Tableau par catégorie
+    for (const cat of categories) {
+      const comps = compData[cat];
+      if (comps.length === 0) continue;
+
+      children.push(new Paragraph({
+        spacing: { before: 300, after: 100 },
+        children: [new TextRun({ text: catLabels[cat].icon + '  ' + catLabels[cat].label.toUpperCase(), bold: true, size: 24, color: '0C0C0C' })],
+      }));
+
+      const headerRow = new TableRow({
+        tableHeader: true,
+        children: ['Compétence', 'Requis', 'Actuel', 'Écart'].map(h =>
+          new TableCell({
+            shading: { type: ShadingType.SOLID, color: '0C0C0C' },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: h, bold: true, color: 'FFFFFF', size: 18 })] })],
+          })
+        ),
+      });
+
+      const dataRows = comps.map(comp => {
+        const ecart = (comp.req > 0 && comp.cur > 0) ? (comp.cur - comp.req) : null;
+        let ecartTxt = '—';
+        if (ecart !== null) {
+          if (ecart > 0)        ecartTxt = '+' + ecart + ' (Dépasse)';
+          else if (ecart === 0) ecartTxt = '✓ Atteint';
+          else if (ecart === -1) ecartTxt = '-1 (À développer)';
+          else                   ecartTxt = ecart + ' (Critique)';
+        }
+        return new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: comp.name || '(Sans nom)', size: 18 })] })] }),
+            new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: comp.req ? String(comp.req) + ' — ' + levelLabels[comp.req] : '—', size: 18 })] })] }),
+            new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: comp.cur ? String(comp.cur) + ' — ' + levelLabels[comp.cur] : 'Non évalué', size: 18 })] })] }),
+            new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: ecartTxt, size: 18 })] })] }),
+          ],
+        });
+      });
+
+      children.push(new Table({ rows: [headerRow, ...dataRows], width: { size: 100, type: WidthType.PERCENTAGE } }));
+    }
+
+    const doc = new Document({ sections: [{ children }] });
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'matrice-competences-' + (poste.replace(/\s+/g, '-').toLowerCase() || 'poste') + '.docx';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    alert('Erreur lors de la génération : ' + e.message);
+  } finally {
+    btn.textContent = '📝 Télécharger Word';
+    btn.disabled = false;
+  }
+}
+
+// DÉMARRAGE
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<title>Export Word — Manuel RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#07070D;--bg2:#0D0D18;--or:#C9A84C;--blanc:#F0EEF8;--gris:#9896A4;--vert:#34C77B;--rouge:#F05A5A;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.card{background:var(--bg2);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:2.5rem;max-width:480px;width:100%;text-align:center;}
+.logo{font-family:var(--fd);font-size:18px;font-weight:800;margin-bottom:.25rem;}
+.logo span{color:var(--or);}
+.sub{font-size:10px;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem;}
+.icon{font-size:3rem;margin-bottom:1rem;}
+.title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}
+.desc{font-size:12px;color:var(--gris);line-height:1.7;margin-bottom:1.5rem;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:20px;font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;width:100%;justify-content:center;margin-bottom:.75rem;}
+.btn-or{background:var(--or);color:#07070D;}.btn-or:hover{background:#E2C47A;}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid rgba(90,88,102,.4);}.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+#status{font-size:12px;color:var(--gris);margin-top:1rem;min-height:1.5rem;}
+.step{display:flex;align-items:center;gap:.75rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;text-align:left;}
+.step-num{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--or);min-width:24px;}
+.step-txt{font-size:11px;color:var(--gris);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Elite <span>RH</span></div>
+  <div class="sub">Export Word — Manuel de Procédures</div>
+  <div class="icon">📄</div>
+  <div class="title">Télécharger le Manuel en Word</div>
+  <div class="desc">Votre manuel de procédures RH sera généré en fichier <strong style="color:var(--or)">.docx</strong> complet avec mise en page professionnelle, table des matières, en-têtes et numérotation automatique.</div>
+
+  <button class="btn btn-or" onclick="genererWord()" id="btn-gen">📄 Générer et télécharger le Word</button>
+  <button class="btn btn-ghost" onclick="window.close()">← Retour au manuel</button>
+
+  <div id="status"></div>
+
+  <div style="margin-top:1.5rem;border-top:1px solid rgba(90,88,102,.2);padding-top:1.25rem;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:.75rem;">Le fichier Word contiendra</div>
+    <div class="step"><div class="step-num">1</div><div class="step-txt"><strong style="color:var(--blanc)">Page de couverture</strong> — Nom de l'entreprise, titre, version, dates</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-txt"><strong style="color:var(--blanc)">Préambule & Historique des versions</strong></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-txt"><strong style="color:var(--blanc)">Table des matières</strong> — Tous chapitres et procédures numérotés</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-txt"><strong style="color:var(--blanc)">Toutes les procédures</strong> — Par chapitre, avec étapes, base légale, KPI</div></div>
+  </div>
+</div>
+
+<script>
+function genererWord(){
+  var btn=document.getElementById('btn-gen');
+  var status=document.getElementById('status');
+
+  // Lire les données depuis localStorage
+  var raw=localStorage.getItem('elitemanuel_v1');
+  if(!raw){ status.textContent='❌ Aucune donnée trouvée. Ouvrez d\'abord le Manuel RH.'; return; }
+
+  var ST; try{ ST=JSON.parse(raw); }catch(e){ status.textContent='❌ Erreur de lecture des données.'; return; }
+
+  btn.disabled=true; btn.textContent='⏳ Génération en cours...';
+  status.textContent='Construction du document Word...';
+
+  // Générer le contenu Word en pur JavaScript côté navigateur
+  try{
+    var content=genDocx(ST);
+    var blob=new Blob([content],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='Manuel-Procedures-RH-'+(ST.config&&ST.config.version||'v1')+'.docx';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    status.innerHTML='<span style="color:var(--vert)">✅ Fichier Word téléchargé avec succès !</span>';
+    btn.disabled=false; btn.textContent='📄 Télécharger à nouveau';
+  }catch(err){
+    status.textContent='❌ Erreur : '+err.message;
+    btn.disabled=false; btn.textContent='📄 Réessayer';
+  }
+}
+
+// ── GÉNÉRATEUR DOCX MINIMAL (XML natif) ──
+function genDocx(ST){
+  var C=ST.config||{};
+  var PROCS=ST.procedures||[];
+  var VERS=ST.versions||[];
+  var OR='C9A84C';
+
+  var CHAPITRES=[
+    {id:'recrutement',label:'Recrutement & Intégration'},
+    {id:'admin',label:'Gestion Administrative du Personnel'},
+    {id:'paie',label:'Paie & Déclarations Sociales'},
+    {id:'conges',label:'Congés & Absences'},
+    {id:'evaluation',label:'Évaluation des Performances'},
+    {id:'formation',label:'Formation & Développement'},
+    {id:'sanctions',label:'Sanctions Disciplinaires'},
+    {id:'depart',label:'Départ & Offboarding'},
+    {id:'sante',label:'Santé & Sécurité au Travail'},
+    {id:'relations',label:'Relations Sociales & Syndicales'},
+    {id:'oeuvres',label:'Œuvres Sociales'},
+  ];
+
+  // Construire le contenu XML du document
+  var body='';
+  function p(text, opts){
+    opts=opts||{};
+    var rpr=opts.bold?'<w:rPr><w:b/>'+(opts.color?'<w:color w:val="'+opts.color+'"/>')+'<w:sz w:val="'+(opts.size||24)+'"/></w:rPr>':
+      '<w:rPr>'+(opts.color?'<w:color w:val="'+opts.color+'"/>'+'<w:sz w:val="'+(opts.size||24)+'"/>')+'</w:rPr>';
+    var ppr=opts.center?'<w:pPr><w:jc w:val="center"/>'+(opts.style?'<w:pStyle w:val="'+opts.style+'"/>')+'</w:pPr>':
+      (opts.style?'<w:pPr><w:pStyle w:val="'+opts.style+'"/></w:pPr>':'<w:pPr/>');
+    var escaped=String(text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return '<w:p>'+ppr+'<w:r>'+rpr+'<w:t xml:space="preserve">'+escaped+'</w:t></w:r></w:p>';
+  }
+  function pbr(){ return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'; }
+  function hr(){ return '<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="CCCCCC"/></w:pBdr></w:pPr></w:p>'; }
+
+  // Couverture
+  body+=p('','');
+  body+=p(C.entreprise||'Elite RH Consulting',{bold:true,size:52,color:OR,center:true});
+  body+=p(C.titre_manuel||'Manuel de Procédures RH',{bold:true,size:36,center:true});
+  body+=p('');
+  body+=p('Version : '+(C.version||'v1.0'),{size:20,color:'9896A4',center:true});
+  if(C.date) body+=p("Date d'entrée en vigueur : "+new Date(C.date).toLocaleDateString('fr-FR'),{size:20,color:'9896A4',center:true});
+  body+=p('Rédigé par : '+(C.redige_par||'Direction RH'),{size:20,color:'9896A4',center:true});
+  body+=p('Approuvé par : '+(C.approuve_par||'Direction Générale'),{size:20,color:'9896A4',center:true});
+  body+=pbr();
+
+  // Préambule
+  if(C.preambule){
+    body+=p('PRÉAMBULE',{bold:true,size:28,color:OR,style:'Heading1'});
+    body+=p(C.preambule,{size:22});
+    body+=pbr();
+  }
+
+  // Versions
+  if(VERS.length){
+    body+=p('HISTORIQUE DES VERSIONS',{bold:true,size:28,color:OR,style:'Heading1'});
+    VERS.forEach(function(v){
+      body+=p(v.num+' ('+v.date+') — '+v.desc+' ['+v.auteur+']',{size:20,color:'555555'});
+    });
+    body+=pbr();
+  }
+
+  // Table des matières
+  body+=p('TABLE DES MATIÈRES',{bold:true,size:28,color:OR,style:'Heading1'});
+  var numCh=0;
+  CHAPITRES.forEach(function(ch){
+    var procs=PROCS.filter(function(pp){return pp.chapitre===ch.id;});
+    if(!procs.length) return;
+    numCh++;
+    body+=p(numCh+'. '+ch.label,{bold:true,size:22,color:'1A1A2E'});
+    procs.forEach(function(pp){ body+=p('    '+pp.code+' — '+pp.titre,{size:20,color:'555555'}); });
+  });
+  body+=pbr();
+
+  // Chapitres
+  numCh=0;
+  CHAPITRES.forEach(function(ch){
+    var procs=PROCS.filter(function(pp){return pp.chapitre===ch.id;});
+    if(!procs.length) return;
+    numCh++;
+    body+=p(numCh+'. '+ch.label.toUpperCase(),{bold:true,size:30,color:OR,style:'Heading1'});
+    procs.forEach(function(pp){
+      body+=p(pp.code+' — '+pp.titre,{bold:true,size:24,color:'1A1A2E',style:'Heading2'});
+      var meta=[];
+      if(pp.responsable) meta.push('Responsable : '+pp.responsable);
+      if(pp.delai) meta.push('Délai : '+pp.delai);
+      if(pp.caractere) meta.push('Caractère : '+(pp.caractere==='obligatoire'?'Obligatoire':pp.caractere==='recommande'?'Recommandé':'Optionnel'));
+      if(meta.length) body+=p(meta.join('   |   '),{size:18,color:'9896A4'});
+      if(pp.objet){ body+=p('OBJET',{bold:true,size:18,color:OR}); body+=p(pp.objet,{size:20}); }
+      if(pp.champ){ body+=p("CHAMP D'APPLICATION",{bold:true,size:18,color:OR}); body+=p(pp.champ,{size:20}); }
+      if(pp.documents){ body+=p('DOCUMENTS REQUIS',{bold:true,size:18,color:OR}); body+=p(pp.documents,{size:20}); }
+      if(pp.etapes&&pp.etapes.length){
+        body+=p('ÉTAPES DE LA PROCÉDURE',{bold:true,size:18,color:OR});
+        pp.etapes.forEach(function(e,i){ body+=p((i+1)+'. '+e,{size:20}); });
+      }
+      if(pp.base_legale){ body+=p('BASE LÉGALE',{bold:true,size:18,color:OR}); body+=p(pp.base_legale,{size:20,color:'5c35a8'}); }
+      if(pp.kpi){ body+=p('INDICATEURS KPI',{bold:true,size:18,color:OR}); body+=p(pp.kpi,{size:20,color:'0277bd'}); }
+      if(pp.obs){ body+=p('OBSERVATIONS',{bold:true,size:18,color:OR}); body+=p(pp.obs,{size:20,color:'555555'}); }
+      body+=hr();
+    });
+    body+=pbr();
+  });
+
+  // Construire le ZIP DOCX minimal
+  var docxml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '+
+    'xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" '+
+    'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '+
+    'xmlns:o="urn:schemas-microsoft-com:office:office" '+
+    'xmlns:oel="http://schemas.microsoft.com/office/2019/extlst" '+
+    'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '+
+    'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" '+
+    'xmlns:v="urn:schemas-microsoft-com:vml" '+
+    'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" '+
+    'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '+
+    'xmlns:w10="urn:schemas-microsoft-com:office:word" '+
+    'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '+
+    'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '+
+    'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '+
+    'xmlns:w16cex="http://schemas.microsoft.com/office/word/2018/wordml/cex" '+
+    'xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" '+
+    'xmlns:w16="http://schemas.microsoft.com/office/word/2018/wordml" '+
+    'xmlns:w16sdtdh="http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash" '+
+    'xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" '+
+    'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" '+
+    'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" '+
+    'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" '+
+    'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 w16se w16cid w16 w16cex w16sdtdh wp14">'+
+    '<w:body>'+body+
+    '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr>'+
+    '</w:body></w:document>';
+
+  // Utiliser JSZip si disponible, sinon fallback simple
+  return buildDocx(docxml);
+}
+
+function buildDocx(docxml){
+  // Construire un DOCX minimal avec les fichiers requis
+  // Structure ZIP simulée (utilise une lib si dispo, sinon blob simple)
+  if(typeof JSZip !== 'undefined'){
+    var zip=new JSZip();
+    zip.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+    zip.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    zip.file('word/document.xml', docxml);
+    zip.file('word/_rels/document.xml.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>');
+    return zip.generate({type:'arraybuffer'});
+  }
+  // Fallback : retourner le XML brut (pour debug)
+  throw new Error('JSZip requis pour générer le DOCX. Veuillez utiliser la méthode d\'impression PDF.');
+}
+</script>
+<!-- Charger JSZip pour la génération DOCX côté navigateur -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</body>
+</html>

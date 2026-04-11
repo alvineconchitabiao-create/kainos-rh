@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RHFit — Outils RH Digitaux · KAINOS RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --m:#071428;--m2:#0A1F3D;--m3:#0F2A50;
+  --or:#C9A84C;--or2:#E2C47A;--ord:rgba(201,168,76,.1);
+  --bl:#F5F2EA;--gr:#8A9AB8;--gr2:#4A5A78;--gr3:#1E2E48;
+  --vt:#22D48A;--bleu:#4A9EFF;--vl:#A78BFA;--cy:#22D3EE;--og:#FB923C;--rd:#F05A5A;--jn:#FBC724;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--m);color:var(--bl);overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+a{text-decoration:none;color:inherit;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(7,20,40,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,.1);}
+.nlogo{font-family:var(--fd);font-size:15px;font-weight:800;}
+.nlogo span{color:var(--or);}
+.nnav{display:flex;align-items:center;gap:1.5rem;}
+.nnav a{font-size:12px;color:var(--gr);transition:color .2s;font-weight:500;}
+.nnav a:hover{color:var(--or);}
+.nback{font-size:11px;color:var(--gr);border:1px solid var(--gr3);padding:6px 14px;border-radius:20px;transition:all .2s;}
+.nback:hover{color:var(--or);border-color:rgba(201,168,76,.3);}
+
+/* HERO */
+.hero{padding:110px 5vw 80px;position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:center;}
+.hbg{position:absolute;inset:0;background:linear-gradient(160deg,var(--m) 0%,var(--m2) 100%);}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:50px 50px;}
+.hglow{position:absolute;top:-200px;right:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 65%);pointer-events:none;}
+.hline{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--or),transparent);}
+.hi{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:55% 45%;gap:4rem;align-items:center;}
+.htag{display:inline-flex;align-items:center;gap:8px;background:var(--ord);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--or);margin-bottom:1.5rem;}
+.htag-dot{width:6px;height:6px;border-radius:50%;background:var(--vt);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+h1{font-family:var(--fd);font-size:clamp(2.4rem,4.5vw,3.6rem);font-weight:800;line-height:1.06;letter-spacing:-.025em;margin-bottom:1.25rem;}
+h1 em{font-style:normal;color:var(--or);}
+.hdesc{font-size:14px;color:var(--gr);line-height:1.9;font-weight:300;margin-bottom:2.5rem;max-width:500px;}
+.hbtns{display:flex;gap:.875rem;flex-wrap:wrap;}
+.btn-or{background:var(--or);color:var(--m);padding:12px 26px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;transition:all .2s;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(201,168,76,.25);}
+.btn-or:hover{background:var(--or2);transform:translateY(-2px);}
+.btn-gh{background:transparent;color:var(--bl);padding:12px 26px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);letter-spacing:.06em;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-gh:hover{border-color:var(--or);color:var(--or);}
+/* KPI hero */
+.hkpi{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.hkpi-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem;text-align:center;transition:all .3s;}
+.hkpi-card:hover{background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.15);}
+.hkpi-val{font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--or);line-height:1;}
+.hkpi-label{font-size:10px;color:var(--gr);margin-top:.3rem;line-height:1.4;}
+
+/* SECTION */
+section.sec{padding:80px 5vw;}
+.s-in{max-width:1200px;margin:0 auto;}
+.sey{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--or);margin-bottom:.75rem;}
+.stit{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;line-height:1.1;letter-spacing:-.015em;margin-bottom:1rem;}
+.stit em{font-style:normal;color:var(--or);}
+.sdesc{font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;max-width:620px;}
+
+/* TABS FILTRES */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.tab{padding:7px 16px;border-radius:20px;font-family:var(--fd);font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--gr3);background:transparent;color:var(--gr);letter-spacing:.04em;transition:all .2s;}
+.tab:hover{border-color:rgba(201,168,76,.3);color:var(--or);}
+.tab.active{background:var(--ord);border-color:rgba(201,168,76,.3);color:var(--or);}
+
+/* GRILLE OUTILS */
+.outils-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem;}
+.oc{background:var(--m2);border:1px solid var(--gr3);border-radius:14px;padding:1.25rem;transition:all .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.oc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:opacity .3s;}
+.oc:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.35);}
+.oc:hover::before{opacity:1;}
+.oc-cat{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
+.oc-icon{font-size:1.8rem;margin-bottom:.6rem;}
+.oc-name{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--bl);margin-bottom:.35rem;line-height:1.3;}
+.oc-desc{font-size:11px;color:var(--gr);line-height:1.65;flex:1;}
+.oc-btn{display:inline-flex;align-items:center;gap:5px;font-family:var(--fd);font-size:10px;font-weight:700;margin-top:1rem;padding:6px 14px;border-radius:20px;background:rgba(201,168,76,.08);color:var(--or);border:1px solid rgba(201,168,76,.15);transition:all .2s;align-self:flex-start;}
+.oc:hover .oc-btn{background:rgba(201,168,76,.15);gap:8px;}
+.oc-hidden{display:none;}
+.oc-lock{display:flex;align-items:center;gap:6px;margin-top:.9rem;font-size:10px;font-weight:600;color:var(--gr);letter-spacing:.03em;opacity:.7;}
+.oc-btn-lock{display:inline-flex;align-items:center;gap:6px;font-family:var(--fd);font-size:10px;font-weight:700;margin-top:.5rem;padding:7px 16px;border-radius:20px;background:transparent;border:1px solid;transition:all .25s;align-self:flex-start;cursor:pointer;}
+.oc-btn-lock:hover{opacity:.8;transform:translateY(-1px);}
+
+/* AVANTAGES */
+.av-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+.av{background:var(--m2);border:1px solid var(--gr3);border-radius:14px;padding:1.5rem;transition:all .25s;}
+.av:hover{border-color:rgba(201,168,76,.25);transform:translateY(-2px);}
+.av-ico{font-size:1.75rem;margin-bottom:.75rem;}
+.av-tit{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--or);margin-bottom:.4rem;}
+.av-desc{font-size:12px;color:var(--gr);line-height:1.7;}
+
+/* PROCESS */
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:2.5rem;position:relative;}
+.process-steps::before{content:'';position:absolute;top:28px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);}
+.ps{text-align:center;position:relative;z-index:1;}
+.ps-num{width:56px;height:56px;border-radius:50%;background:var(--m2);border:2px solid var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:18px;font-weight:800;color:var(--or);margin:0 auto .875rem;}
+.ps-tit{font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:.3rem;}
+.ps-desc{font-size:11px;color:var(--gr);line-height:1.6;}
+
+/* CONTACT */
+section.contact{background:var(--m2);border-top:1px solid var(--gr3);}
+.cg{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
+.cf{background:var(--m3);border:1px solid var(--gr3);border-radius:18px;padding:2rem;}
+.cf-tit{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--or);margin-bottom:1.5rem;display:flex;align-items:center;gap:8px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ffl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);}
+.ffi{background:var(--m2);border:1px solid var(--gr3);border-radius:7px;color:var(--bl);font-family:var(--fb);font-size:12px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
+.ffi:focus{border-color:var(--or);}
+.ff-full{grid-column:1/-1;}
+.cf-btn{width:100%;padding:12px;background:var(--or);color:var(--m);border:none;border-radius:7px;font-family:var(--fd);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.08em;transition:all .2s;margin-top:.5rem;}
+.cf-btn:hover{background:var(--or2);transform:translateY(-1px);}
+.ci{display:flex;align-items:flex-start;gap:.875rem;margin-bottom:1.25rem;}
+.ci-ico{width:38px;height:38px;border-radius:9px;background:var(--ord);border:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ci-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:2px;}
+.ci-val{font-size:13px;color:var(--bl);font-weight:500;}
+
+/* FOOTER */
+footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:2.5rem 5vw 2rem;}
+.fi{max-width:1200px;margin:0 auto;}
+.fl{font-family:var(--fd);font-size:16px;font-weight:800;margin-bottom:.4rem;}
+.fl span{color:var(--or);}
+.flinks{display:flex;gap:2rem;justify-content:center;margin:1rem 0 .75rem;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:var(--gr);transition:color .2s;}
+.flinks a:hover{color:var(--or);}
+.fcopy{font-size:11px;color:#2A3A58;text-align:center;}
+.fservices{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.fs-tit{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr2);margin-bottom:.75rem;}
+.fs-links{display:flex;flex-direction:column;gap:.4rem;}
+.fs-links a{font-size:11px;color:var(--gr2);transition:color .2s;}
+.fs-links a:hover{color:var(--or);}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m3);border:1px solid var(--or);color:var(--bl);padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.fade-up{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+@media(max-width:1024px){.hi{grid-template-columns:1fr;}.hkpi{display:none;}.cg{grid-template-columns:1fr;}.fservices{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.av-grid{grid-template-columns:1fr;}.process-steps{grid-template-columns:1fr 1fr;}.process-steps::before{display:none;}.fservices{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nlogo">RH<span>Fit</span> <span style="font-size:9px;font-weight:500;color:var(--gr);margin-left:4px;">by KAINOS RH</span></div>
+  <div class="nnav">
+    <a href="#outils">Les outils</a>
+    <a href="#pourquoi">Avantages</a>
+    <a href="#contact">Contact</a>
+    <a href="kainos-rh.html" class="nback">← KAINOS RH</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hbg"></div><div class="hgrid"></div><div class="hglow"></div><div class="hline"></div>
+  <div class="hi">
+    <div>
+      <div class="htag"><span class="htag-dot"></span>Service 03 · KAINOS RH · Actif</div>
+      <h1>22 outils RH<br><em>digitaux</em>, prêts<br>à l'emploi.</h1>
+      <p class="hdesc">RHFit met à votre disposition une suite complète d'outils RH digitaux — conçus pour les entreprises béninoises, conformes au Code du Travail local. Gestion de la paie, registre, congés, évaluations, reporting et bien plus.</p>
+      <div class="hbtns">
+        <a href="#outils" class="btn-or">Voir tous les outils →</a>
+        <a href="#contact" class="btn-gh">Demander une démo</a>
+      </div>
+    </div>
+    <div class="hkpi">
+      <div class="hkpi-card"><div class="hkpi-val">22</div><div class="hkpi-label">Outils RH digitaux prêts à l'emploi</div></div>
+      <div class="hkpi-card"><div class="hkpi-val">100%</div><div class="hkpi-label">Conformes Code du Travail béninois</div></div>
+      <div class="hkpi-card"><div class="hkpi-val">0</div><div class="hkpi-label">Installation requise — fonctionne dans le navigateur</div></div>
+      <div class="hkpi-card"><div class="hkpi-val">∞</div><div class="hkpi-label">Données sauvegardées localement</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTILS -->
+<section class="sec" id="outils" style="background:var(--m2);border-top:1px solid var(--gr3);">
+  <div class="s-in">
+    <div class="s-header fade-up" style="display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:2rem;">
+      <div>
+        <div class="sey">La suite RHFit</div>
+        <h2 class="stit">22 outils, <em>une seule suite.</em></h2>
+        <p class="sdesc">Chaque outil est opérationnel immédiatement, sans installation. Filtrez par catégorie pour trouver ce dont vous avez besoin.</p>
+      </div>
+      <div style="font-size:12px;color:var(--gr);text-align:right;"><span style="color:var(--or);font-family:var(--fd);font-weight:700;font-size:1.5rem;">22</span><br>outils disponibles</div>
+    </div>
+
+    <!-- FILTRES -->
+    <div class="tabs fade-up">
+      <button class="tab active" onclick="filtrer('all',this)">Tous (22)</button>
+      <button class="tab" onclick="filtrer('personnel',this)">👥 Personnel</button>
+      <button class="tab" onclick="filtrer('paie',this)">💰 Paie</button>
+      <button class="tab" onclick="filtrer('temps',this)">📅 Temps & Présences</button>
+      <button class="tab" onclick="filtrer('performance',this)">⭐ Performance</button>
+      <button class="tab" onclick="filtrer('juridique',this)">⚖️ Juridique & Social</button>
+      <button class="tab" onclick="filtrer('reporting',this)">📊 Reporting</button>
+    </div>
+
+    <!-- GRILLE 22 OUTILS -->
+    <div class="outils-grid" id="outils-grid"></div>
+  </div>
+</section>
+
+<!-- AVANTAGES -->
+<section class="sec" id="pourquoi">
+  <div class="s-in">
+    <div class="sey fade-up">Pourquoi RHFit</div>
+    <h2 class="stit fade-up">Des outils pensés<br>pour <em>l'Afrique.</em></h2>
+    <div class="av-grid">
+      <div class="av fade-up"><div class="av-ico">🌍</div><div class="av-tit">Droit local intégré</div><div class="av-desc">Calculs CNSS, ITS, indemnités de licenciement et congés — tout est conforme au Code du Travail béninois. Pas besoin d'adapter.</div></div>
+      <div class="av fade-up" style="transition-delay:.06s;"><div class="av-ico">⚡</div><div class="av-tit">Opérationnel immédiatement</div><div class="av-desc">Ouvrez le fichier dans votre navigateur et démarrez. Aucune installation, aucun serveur, aucune configuration technique requise.</div></div>
+      <div class="av fade-up" style="transition-delay:.12s;"><div class="av-ico">🔗</div><div class="av-tit">Outils interconnectés</div><div class="av-desc">Les données se transmettent entre les outils — le registre alimente la paie, les heures supp se synchronisent, le reporting lit tout.</div></div>
+      <div class="av fade-up" style="transition-delay:.18s;"><div class="av-ico">🔒</div><div class="av-tit">Données privées</div><div class="av-desc">Vos données restent sur votre ordinateur. Rien n'est envoyé sur un serveur externe. Confidentialité totale garantie.</div></div>
+      <div class="av fade-up" style="transition-delay:.24s;"><div class="av-ico">📄</div><div class="av-tit">Documents générés</div><div class="av-desc">Contrats, bulletins de paie, attestations, conventions de stage, lettres disciplinaires — tous les documents s'impriment en un clic.</div></div>
+      <div class="av fade-up" style="transition-delay:.3s;"><div class="av-ico">🛠️</div><div class="av-tit">Sur mesure possible</div><div class="av-desc">Vous avez besoin d'un outil adapté à votre structure ? Notre équipe développe des outils personnalisés sur demande.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="sec" style="background:var(--m2);border-top:1px solid var(--gr3);padding-top:60px;padding-bottom:60px;">
+  <div class="s-in">
+    <div class="sey fade-up">Comment démarrer</div>
+    <h2 class="stit fade-up">En service en <em>moins d'une heure.</em></h2>
+    <div class="process-steps">
+      <div class="ps fade-up"><div class="ps-num">1</div><div class="ps-tit">Téléchargez les outils</div><div class="ps-desc">Recevez la suite RHFit complète en un fichier ZIP après votre demande.</div></div>
+      <div class="ps fade-up" style="transition-delay:.08s;"><div class="ps-num">2</div><div class="ps-tit">Ouvrez dans Chrome</div><div class="ps-desc">Double-cliquez sur le fichier HTML — l'outil s'ouvre directement dans votre navigateur.</div></div>
+      <div class="ps fade-up" style="transition-delay:.16s;"><div class="ps-num">3</div><div class="ps-tit">Paramétrez votre entreprise</div><div class="ps-desc">Renseignez vos informations (employés, salaires, paramètres) en quelques minutes.</div></div>
+      <div class="ps fade-up" style="transition-delay:.24s;"><div class="ps-num">4</div><div class="ps-tit">Gérez vos RH</div><div class="ps-desc">Paie, congés, évaluations, reporting — tout est accessible depuis une seule interface.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec contact" id="contact">
+  <div class="s-in">
+    <div class="cg">
+      <div class="fade-up">
+        <div class="sey">Contact</div>
+        <h2 class="stit">Accédez à<br>la suite <em>RHFit.</em></h2>
+        <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Remplissez ce formulaire pour recevoir un accès à la suite complète ou pour demander un outil développé sur mesure pour votre organisation.</p>
+        <div class="ci"><div class="ci-ico">📞</div><div><div class="ci-lbl">Téléphone</div><div class="ci-val">+229 01 99 34 47 39</div></div></div>
+        <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
+        <div class="ci"><div class="ci-ico">🌐</div><div><div class="ci-lbl">Autres services</div>
+          <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:8px;">
+            <a href="kainos-rh.html" style="font-size:11px;color:var(--or);font-weight:700;">KAINOS RH</a>
+            <a href="index.html" style="font-size:11px;color:var(--bleu);font-weight:700;">Elite RH Consulting</a>
+            <a href="services-rh-enligne.html" style="font-size:11px;color:var(--vt);font-weight:700;">Votre RH en ligne</a>
+          </div>
+        </div></div>
+      </div>
+      <div class="cf fade-up" style="transition-delay:.12s;">
+        <div class="cf-tit">✉️ Demande d'accès / Outil sur mesure</div>
+        <div class="fg">
+          <div class="ff"><label class="ffl">Nom & Prénom *</label><input class="ffi" type="text" id="c-nom" placeholder="Ex: DOSSOU Jean"/></div>
+          <div class="ff"><label class="ffl">Entreprise</label><input class="ffi" type="text" id="c-ent" placeholder="Ex: ACME Sarl"/></div>
+          <div class="ff"><label class="ffl">Téléphone *</label><input class="ffi" type="tel" id="c-tel" placeholder="+229 01 XX XX XX XX"/></div>
+          <div class="ff"><label class="ffl">Email</label><input class="ffi" type="email" id="c-email" placeholder="jean@acme.bj"/></div>
+          <div class="ff ff-full"><label class="ffl">Besoin</label>
+            <select class="ffi" id="c-besoin">
+              <option value="">— Sélectionner —</option>
+              <option>Accès à la suite RHFit complète (22 outils)</option>
+              <option>Démo / présentation des outils</option>
+              <option>Outil RH sur mesure pour mon entreprise</option>
+              <option>Automatisation d'un processus RH</option>
+              <option>Formation à l'utilisation des outils</option>
+              <option>Autre demande</option>
+            </select>
+          </div>
+          <div class="ff ff-full"><label class="ffl">Message</label><textarea class="ffi" id="c-msg" rows="3" placeholder="Décrivez votre besoin, votre secteur d'activité, le nombre d'employés..."></textarea></div>
+        </div>
+        <button class="cf-btn" onclick="envoyer()">Envoyer la demande →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div class="fl">RH<span>Fit</span></div>
+      <div style="font-size:12px;color:var(--gr);margin-top:.35rem;">Suite d'outils RH digitaux · by KAINOS RH</div>
+    </div>
+    <div class="fservices">
+      <div>
+        <div class="fs-tit">KAINOS RH</div>
+        <div class="fs-links">
+          <a href="kainos-rh.html">Accueil KAINOS RH</a>
+          <a href="kainos-rh.html#services">Tous les services</a>
+          <a href="kainos-rh.html#contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="fs-tit">Accès aux outils</div>
+        <div class="fs-links">
+          <a href="#contact">🔒 Demander un accès</a>
+          <a href="#outils">Voir les 22 outils</a>
+          <a href="#contact">Demander une démo</a>
+        </div>
+      </div>
+      <div>
+        <div class="fs-tit">Services KAINOS RH</div>
+        <div class="fs-links">
+          <a href="index.html">🏛️ Elite RH Consulting</a>
+          <a href="services-rh-enligne.html">💻 Votre RH en ligne</a>
+          <a href="stratos.html">🚀 STRATOS</a>
+          <a href="jobfit.html">🎯 Jobfit</a>
+        </div>
+      </div>
+      <div>
+        <div class="fs-tit">Contact</div>
+        <div class="fs-links">
+          <a href="tel:+22901993447390">+229 01 99 34 47 39</a>
+          <a href="mailto:contact@kainosrh.com">contact@kainosrh.com</a>
+          <a href="#contact">Formulaire de contact</a>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <div class="fcopy">© 2026 KAINOS RH — Tous droits réservés · Cotonou, Bénin</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DONNÉES 22 OUTILS ──
+var OUTILS = [
+  // PERSONNEL
+  {cat:'personnel',icon:'👥',name:'Registre du Personnel',desc:'Registre numérique complet avec dossiers employés, historique des mouvements, onglets visites médicales et sanctions.',file:'registre-personnel.html',color:'#C9A84C'},
+  {cat:'personnel',icon:'🎓',name:'Gestion des Stagiaires',desc:'Convention de stage, suivi des présences, évaluation fin de stage, attestation et calcul des indemnités.',file:'stagiaires.html',color:'#C9A84C'},
+  {cat:'personnel',icon:'📋',name:'Fiche de Poste',desc:'Générateur de fiches de poste structurées avec missions, compétences, KPI et profil recherché.',file:'fiche-poste.html',color:'#C9A84C'},
+  {cat:'personnel',icon:'🎯',name:'KPI du Poste',desc:'Définissez et suivez les indicateurs de performance clés pour chaque poste de votre organisation.',file:'kpi-poste.html',color:'#C9A84C'},
+  {cat:'personnel',icon:'🏆',name:'Matrice des Compétences',desc:'Cartographiez les compétences de vos équipes avec une notation sur 4 niveaux par collaborateur.',file:'matrice-competences.html',color:'#C9A84C'},
+  // PAIE
+  {cat:'paie',icon:'💰',name:'Paie Multi-Compagnies',desc:'Traitement complet de la paie : brut, cotisations CNSS, ITS, net à payer. Multi-entreprises, bulletins imprimables.',file:'payroll.html',color:'#34C77B'},
+  {cat:'paie',icon:'💳',name:'Prêts & Avances',desc:'Gestion des prêts sur salaire et avances. Tableau de remboursement, déduction automatique sur la paie.',file:'prets.html',color:'#34C77B'},
+  {cat:'paie',icon:'⏱️',name:'Heures Supplémentaires',desc:'Déclaration et validation des HS (3 niveaux), calcul aux taux béninois. Transmission automatique vers la paie.',file:'heures-sup.html',color:'#34C77B'},
+  {cat:'paie',icon:'🚪',name:'Indemnités de Licenciement',desc:'Calcul des indemnités selon le Code du Travail béninois (30/35/40%), registre des départs, impression.',file:'indemnites-licenciement.html',color:'#34C77B'},
+  // TEMPS & PRÉSENCES
+  {cat:'temps',icon:'🏖️',name:'Congés & Absences',desc:'Planning des congés, suivi des soldes (24j/an), workflow de validation multi-niveaux, historique.',file:'conges.html',color:'#4A9EFF'},
+  {cat:'temps',icon:'📊',name:'Absentéisme',desc:'Tableau de bord absentéisme avec 4 niveaux de validation, types d\'absence, analyse par département.',file:'absenteisme.html',color:'#4A9EFF'},
+  {cat:'temps',icon:'🏥',name:'Visites Médicales',desc:'Suivi des visites d\'embauche, périodiques et de reprise. Alertes automatiques, registre médical.',file:'visites-medicales.html',color:'#4A9EFF'},
+  // PERFORMANCE
+  {cat:'performance',icon:'⭐',name:'Évaluation & Formation',desc:'Entretiens annuels, notation par compétences, plan de formation individuel. Archivage et suivi.',file:'eval-performance.html',color:'#FBC724'},
+  {cat:'performance',icon:'📈',name:'Plan Opérationnel Annuel',desc:'Construction du plan opérationnel annuel RH, budgets, objectifs et indicateurs de suivi.',file:'aop.html',color:'#FBC724'},
+  {cat:'performance',icon:'🎓',name:'Catalogue Formations',desc:'Catalogue des formations disponibles avec gestion des inscriptions et suivi des réalisations.',file:'formations.html',color:'#FBC724'},
+  {cat:'performance',icon:'📊',name:'Dashboard RH',desc:'Tableau de bord multi-onglets avec KPI RH en temps réel : effectif, paie, absences, formations.',file:'dashboard-rh.html',color:'#FBC724'},
+  // JURIDIQUE & SOCIAL
+  {cat:'juridique',icon:'📄',name:'Contrats & Lettres RH',desc:'Générateur de contrats de travail (CDI, CDD, stage) et lettres RH officielles conformes au droit béninois.',file:'contrats.html',color:'#A78BFA'},
+  {cat:'juridique',icon:'⚖️',name:'Sanctions Disciplinaires',desc:'Procédure disciplinaire complète (4 étapes), génération des courriers, registre et suivi des dossiers.',file:'sanctions-disciplinaires.html',color:'#A78BFA'},
+  {cat:'juridique',icon:'🏥',name:'Assurance Santé',desc:'Gestion des affiliations santé, suivi des remboursements et cotisations par salarié.',file:'sante.html',color:'#A78BFA'},
+  {cat:'juridique',icon:'💡',name:'Manuel de Procédures RH',desc:'Rédaction collaborative du manuel RH (11 chapitres), modèles pré-remplis, export Word et PDF.',file:'manuel-procedures-rh.html',color:'#A78BFA'},
+  // REPORTING
+  {cat:'reporting',icon:'📊',name:'Reporting RH Automatique',desc:'Rapport mensuel et annuel généré automatiquement — effectif, paie, absentéisme, HS, congés, prêts.',file:'reporting-rh.html',color:'#22D3EE'},
+  {cat:'reporting',icon:'💰',name:'Tarifs & Simulateur',desc:'Grille tarifaire des services RHFit avec simulateur de coût personnalisé selon vos besoins.',file:'tarifs.html',color:'#22D3EE'},
+];
+
+var CAT_COLORS = {personnel:'#C9A84C',paie:'#34C77B',temps:'#4A9EFF',performance:'#FBC724',juridique:'#A78BFA',reporting:'#22D3EE'};
+var CAT_LABELS = {personnel:'Personnel',paie:'Paie',temps:'Temps & Présences',performance:'Performance',juridique:'Juridique & Social',reporting:'Reporting'};
+
+function renderOutils(filtre){
+  var grid = document.getElementById('outils-grid');
+  grid.innerHTML = '';
+  OUTILS.forEach(function(o){
+    var show = filtre === 'all' || o.cat === filtre;
+    var col = CAT_COLORS[o.cat] || '#C9A84C';
+    var div = document.createElement('div');
+    div.className = 'oc' + (show ? '' : ' oc-hidden');
+    div.style.cssText = show ? '' : 'display:none';
+    div.innerHTML =
+      '<div class="oc-cat" style="color:'+col+'">'+CAT_LABELS[o.cat]+'</div>'+
+      '<div class="oc-icon">'+o.icon+'</div>'+
+      '<div class="oc-name">'+o.name+'</div>'+
+      '<div class="oc-desc">'+o.desc+'</div>'+
+      '<div class="oc-lock">'+
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'+
+        'Accès sur demande'+
+      '</div>'+
+      '<a href="#contact" class="oc-btn-lock" style="border-color:'+hexToRgba(col,.3)+';color:'+col+'">'+
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'+
+        'Demander l\'accès'+
+      '</a>';
+    div.style.borderTop = '2px solid ' + col;
+    grid.appendChild(div);
+  });
+}
+
+function hexToRgba(hex, a){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+function filtrer(cat, btn){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  var cards = document.querySelectorAll('.oc');
+  cards.forEach(function(c){
+    var o = OUTILS[Array.from(document.getElementById('outils-grid').children).indexOf(c)];
+    if(!o) return;
+    var show = cat === 'all' || o.cat === cat;
+    c.style.display = show ? '' : 'none';
+    c.style.animation = show ? 'fadeIn .35s ease' : '';
+  });
+}
+
+// Scroll reveal
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(function(el){ obs.observe(el); });
+
+// Contact
+function envoyer(){
+  var nom = document.getElementById('c-nom').value.trim();
+  var tel = document.getElementById('c-tel').value.trim();
+  if(!nom||!tel){ toast('Nom et téléphone obligatoires'); return; }
+  toast('✅ Demande envoyée ! Nous vous répondons sous 48h.');
+  ['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){ document.getElementById(id).value=''; });
+}
+var tt;
+function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){ el.classList.remove('show'); },4000); }
+
+// Nav scroll
+window.addEventListener('scroll', function(){
+  document.querySelector('nav').style.boxShadow = window.scrollY>20 ? '0 4px 30px rgba(0,0,0,.3)' : '';
+});
+
+// Init
+renderOutils('all');
+</script>
+</body>
+</html>

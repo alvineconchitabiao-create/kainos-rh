@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visites Médicales — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;border-top:2px solid transparent;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;text-align:left;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;}
+.b-apte{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-reserve{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-inapte-tmp{background:rgba(251,146,60,.1);color:var(--orange);}
+.b-inapte-def{background:rgba(240,90,90,.12);color:var(--rouge);}
+.b-planif{background:rgba(74,158,255,.12);color:var(--bleu);}
+.alerte-critique{background:rgba(240,90,90,.07);border:1px solid rgba(240,90,90,.2);border-left:3px solid var(--rouge);}
+.alerte-urgent{background:rgba(251,199,36,.05);border:1px solid rgba(251,199,36,.15);border-left:3px solid var(--jaune);}
+.alerte-ok{background:rgba(52,199,123,.04);border:1px solid rgba(52,199,123,.12);border-left:3px solid var(--vert);}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:700px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:72vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:768px){.fg,.fg3{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Suivi Visites Médicales</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-or" onclick="openModal('modal-visite');modeEdit=false;viderForm()">+ Enregistrer une visite</button>
+    <button class="btn btn-ghost" onclick="exporterAPlani()">📋 Export à planifier</button>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="importerDepuisRegistre()">🔗 Sync. Personnel</button>
+  </div>
+</header>
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--or)"></span>📊 Dashboard</button>
+  <button class="tab" onclick="showTab('suivi',this)"><span class="tdot" style="background:var(--bleu)"></span>📋 Suivi complet</button>
+  <button class="tab" onclick="showTab('alertes',this)"><span class="tdot" style="background:var(--rouge)"></span>🔔 Alertes <span id="badge-alerte" style="display:none;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px;"></span></button>
+  <button class="tab" onclick="showTab('personnel',this)"><span class="tdot" style="background:var(--vert)"></span>👥 Personnel</button>
+</nav>
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="panel-dashboard">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">⚠️ Visites en Retard / Urgentes</div></div>
+      <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Employé</th><th>Type</th><th class="c">Dernière visite</th><th class="c">Prochaine prévue</th><th class="c">Retard</th><th class="c">Statut</th></tr></thead>
+        <tbody id="dash-retard-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📅 Visites à Planifier (30 jours)</div></div>
+      <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Employé</th><th>Département</th><th>Type</th><th class="c">Échéance</th><th class="c">Dans</th></tr></thead>
+        <tbody id="dash-planif-tbody"></tbody>
+      </div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📊 Répartition par Résultat</div></div>
+    <div class="sc-body" id="result-bars"></div>
+  </div>
+</div>
+
+<!-- SUIVI COMPLET -->
+<div class="panel" id="panel-suivi">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="s-search" placeholder="🔍 Rechercher nom, matricule..." oninput="renderSuivi()" style="flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 12px;outline:none;"/>
+    <select id="s-type" onchange="renderSuivi()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous types</option>
+      <option value="embauche">Visite d'embauche</option>
+      <option value="periodique">Visite périodique</option>
+      <option value="reprise">Visite de reprise</option>
+    </select>
+    <select id="s-resultat" onchange="renderSuivi()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous résultats</option>
+      <option value="apte">Apte</option>
+      <option value="apte_reserve">Apte avec réserves</option>
+      <option value="inapte_tmp">Inapte temporaire</option>
+      <option value="inapte_def">Inapte définitif</option>
+    </select>
+    <select id="s-annee" onchange="renderSuivi()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Toutes années</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📋 Toutes les Visites <span id="suivi-count" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div></div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Matricule</th><th>Nom & Prénom</th><th>Département</th>
+          <th class="c">Type de visite</th><th class="c">Date visite</th>
+          <th>Médecin / Structure</th><th class="c">Résultat</th>
+          <th>Réserves / Observations</th><th class="c">Prochaine échéance</th>
+          <th class="c">Statut échéance</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="suivi-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ALERTES -->
+<div class="panel" id="panel-alertes">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc alerte-critique" style="border-radius:var(--rl);">
+      <div class="sc-head" style="background:transparent;border-bottom-color:rgba(240,90,90,.15);">
+        <div class="sc-title" style="color:var(--rouge);">🔴 En retard <span id="nb-retard" style="font-family:var(--fd);font-size:20px;font-weight:800;margin-left:8px;"></span></div>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Employé</th><th>Département</th><th>Type</th><th class="c">Échéance dépassée</th><th class="c">Retard</th></tr></thead>
+        <tbody id="al-retard-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="sc alerte-urgent" style="border-radius:var(--rl);">
+      <div class="sc-head" style="background:transparent;border-bottom-color:rgba(251,199,36,.15);">
+        <div class="sc-title" style="color:var(--jaune);">🟡 Dans les 30 jours <span id="nb-30j" style="font-family:var(--fd);font-size:20px;font-weight:800;margin-left:8px;"></span></div>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Employé</th><th>Département</th><th>Type</th><th class="c">Échéance</th><th class="c">Dans</th></tr></thead>
+        <tbody id="al-30j-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="sc alerte-ok" style="border-radius:var(--rl);">
+      <div class="sc-head" style="background:transparent;border-bottom-color:rgba(52,199,123,.12);">
+        <div class="sc-title" style="color:var(--vert);">🟢 À jour <span id="nb-ok" style="font-family:var(--fd);font-size:20px;font-weight:800;margin-left:8px;"></span></div>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Employé</th><th>Département</th><th>Type</th><th class="c">Prochaine échéance</th></tr></thead>
+        <tbody id="al-ok-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <!-- Sans visite -->
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title" style="color:var(--violet);">⚪ Employés sans visite enregistrée <span id="nb-sans" style="font-family:var(--fd);font-size:18px;font-weight:800;margin-left:8px;color:var(--violet);"></span></div></div>
+    <div style="overflow-x:auto;max-height:250px;overflow-y:auto;">
+      <table class="dtbl"><thead><tr><th>Matricule</th><th>Nom</th><th>Département</th><th>Date d'entrée</th><th class="c">Actions</th></tr></thead>
+      <tbody id="al-sans-tbody"></tbody>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONNEL -->
+<div class="panel" id="panel-personnel">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👥 Base Personnel</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="openModal('modal-emp')">+ Ajouter</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('fi-emp').click()">⬆ Importer Excel</button>
+        <input type="file" id="fi-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerPersonnelExcel(this)"/>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Matricule</th><th>Nom</th><th>Prénoms</th><th>Département</th><th>Poste</th><th>Date entrée</th><th class="c">Visites</th><th class="c">Dernière visite</th><th class="c">Prochaine</th><th class="c">Statut</th><th class="c">Actions</th></tr></thead>
+        <tbody id="pers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- MODAL VISITE -->
+<div class="modal-ov" id="modal-visite">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="mv-title">🏥 <span>Enregistrer une Visite</span></div><button class="mc" onclick="closeModal('modal-visite')">✕</button></div>
+    <div class="mb">
+      <div class="fg" style="margin-bottom:.75rem;">
+        <div class="ff">
+          <label>Employé (matricule) *</label>
+          <input type="text" id="v-mat" placeholder="Ex: MAT001" oninput="rechercherEmpVisite(this.value)"/>
+          <div class="hint" id="v-emp-info" style="color:var(--vert);"></div>
+        </div>
+        <div class="ff">
+          <label>Type de visite *</label>
+          <select id="v-type" onchange="onTypeVisiteChange()">
+            <option value="embauche">Visite d'embauche</option>
+            <option value="periodique">Visite périodique annuelle</option>
+            <option value="reprise">Visite de reprise</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label>Date de la visite *</label>
+          <input type="date" id="v-date" onchange="calcProchaine()"/>
+        </div>
+        <div class="ff">
+          <label>Médecin / Structure médicale</label>
+          <input type="text" id="v-medecin" placeholder="Ex: Dr. HOUENOU — CMC Cotonou"/>
+        </div>
+        <div class="ff">
+          <label>Résultat *</label>
+          <select id="v-resultat" onchange="onResultatChange()">
+            <option value="apte">✅ Apte</option>
+            <option value="apte_reserve">⚠️ Apte avec réserves</option>
+            <option value="inapte_tmp">🟠 Inapte temporaire</option>
+            <option value="inapte_def">🔴 Inapte définitif</option>
+          </select>
+        </div>
+        <div class="ff" id="ff-prochaine">
+          <label>Prochaine visite prévue</label>
+          <input type="date" id="v-prochaine"/>
+          <div class="hint">Calculée auto — modifiable</div>
+        </div>
+        <div class="ff" id="ff-periodicite">
+          <label>Périodicité (mois)</label>
+          <input type="number" id="v-periodicite" min="1" max="36" value="12" onchange="calcProchaine()"/>
+          <div class="hint">Défaut : 12 mois (annuel)</div>
+        </div>
+        <div class="ff ff-full" id="ff-reserves" style="display:none;">
+          <label>Réserves / Restrictions médicales</label>
+          <textarea id="v-reserves" rows="2" placeholder="Ex: Port de charges limité à 10kg, pas de travail en hauteur..."></textarea>
+        </div>
+        <div class="ff ff-full">
+          <label>Observations générales</label>
+          <textarea id="v-obs" rows="2" placeholder="Observations du médecin du travail..."></textarea>
+        </div>
+        <div class="ff" id="ff-duree-inapte" style="display:none;">
+          <label>Durée d'inaptitude (jours)</label>
+          <input type="number" id="v-duree-inapte" min="1" placeholder="Ex: 30"/>
+        </div>
+        <div class="ff" id="ff-motif-reprise" style="display:none;">
+          <label>Motif de la reprise</label>
+          <input type="text" id="v-motif-reprise" placeholder="Ex: Arrêt maladie du 01/01 au 15/01/2026"/>
+        </div>
+      </div>
+      <input type="hidden" id="v-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-visite')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverVisite()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EMPLOYÉ -->
+<div class="modal-ov" id="modal-emp">
+  <div class="modal" style="max-width:560px;">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un Employé</span></div><button class="mc" onclick="closeModal('modal-emp')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Matricule *</label><input type="text" id="e-mat"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="e-nom"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="e-prenom"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="e-dept"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="e-poste"/></div>
+        <div class="ff"><label>Date d'entrée</label><input type="date" id="e-entree"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-emp')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEmp()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitemedical_v1';
+var ST = { personnel:[], visites:[], cfg:{periodicite_defaut:12}, nextId:100 };
+var nextId = 100;
+var modeEdit = false;
+function uid(){ return ++nextId; }
+
+var TYPES_VISITE = {
+  embauche:   { label:"Visite d'embauche",     color:'var(--bleu)',  icon:'🩺', periodicite:0 },
+  periodique: { label:'Visite périodique',      color:'var(--vert)',  icon:'📅', periodicite:12 },
+  reprise:    { label:'Visite de reprise',       color:'var(--violet)',icon:'🔄', periodicite:0 }
+};
+var RESULTATS = {
+  apte:        { label:'Apte',              cls:'b-apte',      color:'var(--vert)' },
+  apte_reserve:{ label:'Apte avec réserves',cls:'b-reserve',   color:'var(--jaune)' },
+  inapte_tmp:  { label:'Inapte temporaire', cls:'b-inapte-tmp',color:'var(--orange)' },
+  inapte_def:  { label:'Inapte définitif',  cls:'b-inapte-def',color:'var(--rouge)' }
+};
+
+function charger(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; }
+    else{ ST={personnel:[],visites:[],cfg:{periodicite_defaut:12},nextId:100}; }
+    if(!ST.cfg) ST.cfg={periodicite_defaut:12};
+  }catch(e){ ST={personnel:[],visites:[],cfg:{periodicite_defaut:12},nextId:100}; }
+}
+function sauver(){ try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }catch(e){ toast('Erreur'); } }
+
+// ── DATES ──
+function today(){ return new Date().toISOString().split('T')[0]; }
+function diffJours(d1,d2){
+  return Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24));
+}
+function addMois(dateStr, mois){
+  if(!dateStr) return '';
+  var d=new Date(dateStr);
+  d.setMonth(d.getMonth()+mois);
+  return d.toISOString().split('T')[0];
+}
+function formatDate(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function statutEcheance(prochaine){
+  if(!prochaine) return {label:'Non définie',cls:'b-planif',jours:null};
+  var j=diffJours(today(),prochaine);
+  if(j<0) return {label:'En retard ('+Math.abs(j)+' j.)',cls:'b-inapte-def',jours:j};
+  if(j<=30) return {label:'Dans '+j+' j.',cls:'b-reserve',jours:j};
+  return {label:'Dans '+j+' j.',cls:'b-apte',jours:j};
+}
+
+// ── DERNIÈRE VISITE PAR EMPLOYÉ ──
+function getDerniereVisite(mat){
+  var vs=ST.visites.filter(function(v){return v.mat===mat;}).sort(function(a,b){return b.date>a.date?1:-1;});
+  return vs.length?vs[0]:null;
+}
+function getVisitesEmp(mat){
+  return ST.visites.filter(function(v){return v.mat===mat;}).sort(function(a,b){return b.date>a.date?1:-1;});
+}
+function getProchaine(mat){
+  var derniere=getDerniereVisite(mat);
+  return derniere?derniere.prochaine_visite||'':'';
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var t=today();
+  var totalEmp=ST.personnel.length;
+  var avecVisite=ST.personnel.filter(function(p){return ST.visites.some(function(v){return v.mat===p.mat;});}).length;
+  var sansVisite=totalEmp-avecVisite;
+  var enRetard=0,dans30j=0,aJour=0;
+  ST.personnel.forEach(function(p){
+    var proch=getProchaine(p.mat);
+    if(!proch) return;
+    var j=diffJours(t,proch);
+    if(j<0) enRetard++;
+    else if(j<=30) dans30j++;
+    else aJour++;
+  });
+  var nbInapte=ST.visites.filter(function(v){return v.resultat==='inapte_def'||v.resultat==='inapte_tmp';}).length;
+
+  // Badge alertes
+  var totalAlertes=enRetard+dans30j+sansVisite;
+  var b=document.getElementById('badge-alerte');
+  b.textContent=totalAlertes; b.style.display=totalAlertes>0?'inline':'none';
+
+  function kc(label,val,sub,color,borderColor){
+    return '<div class="kpi-card" style="border-top-color:'+borderColor+';">'+
+      '<div class="kpi-label">'+label+'</div>'+
+      '<div class="kpi-val" style="color:'+color+'">'+val+'</div>'+
+      '<div class="kpi-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('kpi-grid').innerHTML=
+    kc('Effectif suivi',totalEmp,'employés dans la base','var(--blanc)','var(--or)')+
+    kc('Avec visite',avecVisite,'visites enregistrées','var(--vert)','var(--vert)')+
+    kc('Sans visite',sansVisite,'à planifier en priorité',sansVisite>0?'var(--rouge)':'var(--gris)','var(--rouge)')+
+    kc('En retard',enRetard,'échéance dépassée',enRetard>0?'var(--rouge)':'var(--gris)','var(--rouge)')+
+    kc('Dans 30 jours',dans30j,'à planifier rapidement',dans30j>0?'var(--jaune)':'var(--gris)','var(--jaune)')+
+    kc('Inaptitudes',nbInapte,'temporaires + définitives',nbInapte>0?'var(--orange)':'var(--gris)','var(--orange)');
+
+  // Retards
+  var retards=[];
+  ST.personnel.forEach(function(p){
+    var derniere=getDerniereVisite(p.mat);
+    if(!derniere||!derniere.prochaine_visite) return;
+    var j=diffJours(t,derniere.prochaine_visite);
+    if(j<0) retards.push({p:p,derniere:derniere,j:j});
+  });
+  retards.sort(function(a,b){return a.j-b.j;});
+  var tbody=document.getElementById('dash-retard-tbody');
+  tbody.innerHTML='';
+  if(!retards.length) tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--vert);padding:1rem">✓ Aucune visite en retard</td></tr>';
+  retards.slice(0,10).forEach(function(x){
+    var tv=TYPES_VISITE[x.derniere.type]||{label:x.derniere.type,icon:'?'};
+    tbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(x.p.nom)+' '+esc(x.p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(x.p.dept||'—')+'</td>'+
+      '<td class="c">'+tv.icon+' '+tv.label+'</td>'+
+      '<td class="c">'+formatDate(x.derniere.date)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--rouge)">'+formatDate(x.derniere.prochaine_visite)+'</td>'+
+      '<td class="c"><span class="badge b-inapte-def">'+Math.abs(x.j)+' j. retard</span></td>'+
+    '</tr>';
+  });
+
+  // 30 jours
+  var bientot=[];
+  ST.personnel.forEach(function(p){
+    var derniere=getDerniereVisite(p.mat);
+    if(!derniere||!derniere.prochaine_visite) return;
+    var j=diffJours(t,derniere.prochaine_visite);
+    if(j>=0&&j<=30) bientot.push({p:p,derniere:derniere,j:j});
+  });
+  bientot.sort(function(a,b){return a.j-b.j;});
+  var tbody2=document.getElementById('dash-planif-tbody');
+  tbody2.innerHTML='';
+  if(!bientot.length) tbody2.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1rem">Aucune visite dans les 30 prochains jours</td></tr>';
+  bientot.forEach(function(x){
+    var tv=TYPES_VISITE[x.derniere.type]||{label:x.derniere.type,icon:'?'};
+    tbody2.innerHTML+='<tr>'+
+      '<td><strong>'+esc(x.p.nom)+' '+esc(x.p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(x.p.dept||'—')+'</td>'+
+      '<td class="c">'+tv.icon+' '+tv.label+'</td>'+
+      '<td class="c" style="color:var(--jaune)">'+formatDate(x.derniere.prochaine_visite)+'</td>'+
+      '<td class="c"><span class="badge b-reserve">'+x.j+' j.</span></td>'+
+    '</tr>';
+  });
+
+  // Barres résultats
+  var rMap={};
+  ST.visites.forEach(function(v){ rMap[v.resultat]=(rMap[v.resultat]||0)+1; });
+  var totalV=ST.visites.length||1;
+  var bars='<div style="display:flex;flex-direction:column;gap:.6rem;">';
+  Object.keys(RESULTATS).forEach(function(k){
+    var nb=rMap[k]||0; var pct=Math.round(nb/totalV*100);
+    var r=RESULTATS[k];
+    bars+='<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:170px;color:var(--gris);">'+r.label+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+r.color+';border-radius:5px;transition:width .5s;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:60px;text-align:right;color:'+r.color+';">'+nb+' ('+pct+'%)</div>'+
+    '</div>';
+  });
+  document.getElementById('result-bars').innerHTML=bars+'</div>';
+}
+
+// ── SUIVI COMPLET ──
+function renderSuivi(){
+  var search=(document.getElementById('s-search').value||'').toLowerCase();
+  var fType=document.getElementById('s-type').value;
+  var fResultat=document.getElementById('s-resultat').value;
+  var fAnnee=document.getElementById('s-annee').value;
+
+  // Remplir filtre années
+  var anneesSet={};
+  ST.visites.forEach(function(v){ if(v.date) anneesSet[v.date.substring(0,4)]=true; });
+  var selAn=document.getElementById('s-annee');
+  var curAn=selAn.value;
+  selAn.innerHTML='<option value="">Toutes années</option>';
+  Object.keys(anneesSet).sort().reverse().forEach(function(a){ selAn.innerHTML+='<option value="'+a+'"'+(a===curAn?' selected':'')+'>'+a+'</option>'; });
+
+  var visites=ST.visites.filter(function(v){
+    if(fType&&v.type!==fType) return false;
+    if(fResultat&&v.resultat!==fResultat) return false;
+    if(fAnnee&&(!v.date||v.date.substring(0,4)!==fAnnee)) return false;
+    if(search){
+      var hay=(v.mat+v.nom+(v.dept||'')+(v.medecin||'')).toLowerCase();
+      if(hay.indexOf(search)===-1) return false;
+    }
+    return true;
+  }).slice().sort(function(a,b){ return b.date>a.date?1:-1; });
+
+  document.getElementById('suivi-count').textContent='— '+visites.length+' visite(s)';
+  var tbody=document.getElementById('suivi-tbody');
+  tbody.innerHTML='';
+  if(!visites.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--gris);padding:2rem">Aucune visite trouvée.</td></tr>'; return; }
+  visites.forEach(function(v){
+    var tv=TYPES_VISITE[v.type]||{label:v.type,icon:'?',color:'var(--gris)'};
+    var rv=RESULTATS[v.resultat]||{label:v.resultat,cls:'b-planif'};
+    var ech=statutEcheance(v.prochaine_visite);
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:10px;color:var(--or)">'+esc(v.mat||'—')+'</td>'+
+      '<td><strong>'+esc(v.nom||'—')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(v.dept||'—')+'</td>'+
+      '<td class="c" style="color:'+tv.color+';font-size:11px;">'+tv.icon+' '+tv.label+'</td>'+
+      '<td class="c">'+formatDate(v.date)+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(v.medecin||'—')+'</td>'+
+      '<td class="c"><span class="badge '+rv.cls+'">'+rv.label+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:160px;white-space:normal;">'+esc(v.reserves||v.obs||'—')+'</td>'+
+      '<td class="c" style="font-size:11px;">'+formatDate(v.prochaine_visite)+'</td>'+
+      '<td class="c"><span class="badge '+ech.cls+'">'+ech.label+'</span></td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="editerVisite('+v.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">✏️</button> '+
+        '<button onclick="supprimerVisite('+v.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── ALERTES ──
+function renderAlertes(){
+  var t=today();
+  var retards=[],dans30=[],aJour=[],sans=[];
+  ST.personnel.forEach(function(p){
+    var vs=getVisitesEmp(p.mat);
+    if(!vs.length){ sans.push(p); return; }
+    var derniere=vs[0];
+    var proch=derniere.prochaine_visite||'';
+    if(!proch){ sans.push(p); return; }
+    var j=diffJours(t,proch);
+    var tv=TYPES_VISITE[derniere.type]||{label:derniere.type,icon:'?'};
+    var row={p:p,derniere:derniere,j:j,tv:tv};
+    if(j<0) retards.push(row);
+    else if(j<=30) dans30.push(row);
+    else aJour.push(row);
+  });
+  retards.sort(function(a,b){return a.j-b.j;});
+  dans30.sort(function(a,b){return a.j-b.j;});
+
+  document.getElementById('nb-retard').textContent=retards.length;
+  document.getElementById('nb-30j').textContent=dans30.length;
+  document.getElementById('nb-ok').textContent=aJour.length;
+  document.getElementById('nb-sans').textContent=sans.length;
+
+  function row3(x){
+    return '<tr>'+
+      '<td><strong>'+esc(x.p.nom)+' '+esc(x.p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(x.p.dept||'—')+'</td>'+
+      '<td class="c" style="font-size:10px;">'+x.tv.icon+' '+x.tv.label+'</td>'+
+      '<td class="c" style="color:var(--rouge);">'+formatDate(x.derniere.prochaine_visite)+'</td>'+
+      '<td class="c"><span class="badge b-inapte-def">'+Math.abs(x.j)+' j.</span></td>'+
+    '</tr>';
+  }
+  var r1=document.getElementById('al-retard-tbody');
+  r1.innerHTML=retards.length?retards.map(row3).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--vert);padding:1rem">✓ Aucun retard</td></tr>';
+
+  var r2=document.getElementById('al-30j-tbody');
+  r2.innerHTML=dans30.length?dans30.map(function(x){
+    return '<tr>'+
+      '<td><strong>'+esc(x.p.nom)+' '+esc(x.p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(x.p.dept||'—')+'</td>'+
+      '<td class="c" style="font-size:10px;">'+x.tv.icon+' '+x.tv.label+'</td>'+
+      '<td class="c" style="color:var(--jaune);">'+formatDate(x.derniere.prochaine_visite)+'</td>'+
+      '<td class="c"><span class="badge b-reserve">'+x.j+' j.</span></td>'+
+    '</tr>';
+  }).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1rem">Aucune visite dans les 30 jours</td></tr>';
+
+  var r3=document.getElementById('al-ok-tbody');
+  r3.innerHTML=aJour.length?aJour.slice(0,15).map(function(x){
+    return '<tr>'+
+      '<td><strong>'+esc(x.p.nom)+' '+esc(x.p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(x.p.dept||'—')+'</td>'+
+      '<td class="c" style="font-size:10px;">'+x.tv.icon+' '+x.tv.label+'</td>'+
+      '<td class="c" style="color:var(--vert);">'+formatDate(x.derniere.prochaine_visite)+'</td>'+
+    '</tr>';
+  }).join(''):'<tr><td colspan="4" style="text-align:center;color:var(--gris);padding:1rem">—</td></tr>';
+
+  var r4=document.getElementById('al-sans-tbody');
+  r4.innerHTML=sans.length?sans.map(function(p){
+    return '<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or)">'+esc(p.mat||'—')+'</td>'+
+      '<td><strong>'+esc(p.nom)+' '+esc(p.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(p.dept||'—')+'</td>'+
+      '<td style="font-size:11px;">'+esc(p.date_entree||'—')+'</td>'+
+      '<td class="c"><button onclick="nouvVisitePour(\''+esc(p.mat)+'\')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">+ Visite</button></td>'+
+    '</tr>';
+  }).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--vert);padding:1rem">✓ Tout le personnel a au moins une visite</td></tr>';
+}
+
+// ── PERSONNEL ──
+function renderPersonnel(){
+  var tbody=document.getElementById('pers-tbody');
+  tbody.innerHTML='';
+  var list=ST.personnel.slice().sort(function(a,b){return (a.nom||'').localeCompare(b.nom||'');});
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--gris);padding:2rem">Aucun employé. Ajoutez du personnel ou importez depuis le Registre.</td></tr>'; return; }
+  list.forEach(function(p){
+    var vs=getVisitesEmp(p.mat);
+    var derniere=vs.length?vs[0]:null;
+    var proch=derniere?derniere.prochaine_visite||'':'';
+    var ech=proch?statutEcheance(proch):{label:'—',cls:'b-planif'};
+    var rv=derniere?RESULTATS[derniere.resultat]||{label:'—',cls:'b-planif'}:{label:'—',cls:'b-planif'};
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or)">'+esc(p.mat||'—')+'</td>'+
+      '<td><strong>'+esc(p.nom)+'</strong></td>'+
+      '<td>'+esc(p.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(p.dept||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(p.poste||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(p.date_entree||'—')+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700">'+vs.length+'</td>'+
+      '<td class="c" style="font-size:11px">'+formatDate(derniere?derniere.date:'')+'</td>'+
+      '<td class="c" style="font-size:11px">'+formatDate(proch)+'</td>'+
+      '<td class="c"><span class="badge '+ech.cls+'">'+ech.label+'</span></td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="nouvVisitePour(\''+esc(p.mat)+'\')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">+ Visite</button> '+
+        '<button onclick="supprimerEmp(\''+p.mat+'\')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── SAISIE VISITE ──
+function rechercherEmpVisite(mat){
+  var emp=ST.personnel.find(function(p){return p.mat&&p.mat.toLowerCase()===mat.toLowerCase();});
+  var info=document.getElementById('v-emp-info');
+  if(emp){ info.textContent='✓ '+emp.nom+' '+(emp.prenom||'')+' — '+esc(emp.dept||'—'); info.style.color='var(--vert)'; }
+  else if(mat.length>=3){ info.textContent='Matricule non trouvé dans la base'; info.style.color='var(--rouge)'; }
+  else info.textContent='';
+}
+function onTypeVisiteChange(){
+  var type=document.getElementById('v-type').value;
+  var tv=TYPES_VISITE[type]||{};
+  document.getElementById('ff-periodicite').style.display=type==='periodique'?'flex':'none';
+  document.getElementById('ff-motif-reprise').style.display=type==='reprise'?'flex':'none';
+  calcProchaine();
+}
+function onResultatChange(){
+  var res=document.getElementById('v-resultat').value;
+  document.getElementById('ff-reserves').style.display=(res==='apte_reserve'||res==='inapte_tmp')?'flex':'none';
+  document.getElementById('ff-duree-inapte').style.display=(res==='inapte_tmp')?'flex':'none';
+  document.getElementById('ff-prochaine').style.display=(res==='inapte_def')?'none':'flex';
+}
+function calcProchaine(){
+  var date=document.getElementById('v-date').value;
+  var type=document.getElementById('v-type').value;
+  if(!date){ document.getElementById('v-prochaine').value=''; return; }
+  var mois=0;
+  if(type==='periodique') mois=parseInt(document.getElementById('v-periodicite').value)||12;
+  if(mois>0) document.getElementById('v-prochaine').value=addMois(date,mois);
+  else document.getElementById('v-prochaine').value='';
+}
+function viderForm(){
+  ['v-mat','v-date','v-medecin','v-reserves','v-obs','v-motif-reprise','v-prochaine','v-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('v-type').value='periodique';
+  document.getElementById('v-resultat').value='apte';
+  document.getElementById('v-periodicite').value='12';
+  document.getElementById('v-emp-info').textContent='';
+  document.getElementById('ff-reserves').style.display='none';
+  document.getElementById('ff-duree-inapte').style.display='none';
+  document.getElementById('ff-motif-reprise').style.display='none';
+  document.getElementById('ff-prochaine').style.display='flex';
+  document.getElementById('ff-periodicite').style.display='none';
+  document.getElementById('mv-title').innerHTML='🏥 <span>Enregistrer une Visite</span>';
+}
+function nouvVisitePour(mat){
+  viderForm(); modeEdit=false;
+  document.getElementById('v-mat').value=mat;
+  rechercherEmpVisite(mat);
+  openModal('modal-visite');
+}
+function sauverVisite(){
+  var mat=document.getElementById('v-mat').value.trim();
+  var date=document.getElementById('v-date').value;
+  var type=document.getElementById('v-type').value;
+  var resultat=document.getElementById('v-resultat').value;
+  if(!date||!type||!resultat){ toast('Date, type et résultat obligatoires'); return; }
+
+  var emp=ST.personnel.find(function(p){return p.mat&&p.mat.toLowerCase()===mat.toLowerCase();});
+  var nom=emp?emp.nom+' '+(emp.prenom||''):'—';
+  var dept=emp?emp.dept||'':'';
+
+  var data={
+    mat:mat, nom:nom, dept:dept,
+    type:type, date:date, resultat:resultat,
+    medecin:document.getElementById('v-medecin').value.trim(),
+    reserves:document.getElementById('v-reserves').value.trim(),
+    obs:document.getElementById('v-obs').value.trim(),
+    motif_reprise:document.getElementById('v-motif-reprise').value.trim(),
+    duree_inapte:parseInt(document.getElementById('v-duree-inapte').value)||0,
+    prochaine_visite:resultat!=='inapte_def'?document.getElementById('v-prochaine').value:'',
+    date_saisie:today()
+  };
+  var idVal=document.getElementById('v-id').value;
+  if(modeEdit&&idVal){
+    var v=ST.visites.find(function(x){return x.id===parseInt(idVal);});
+    if(v) Object.assign(v,data);
+    toast('Visite mise à jour');
+  } else {
+    data.id=uid();
+    ST.visites.push(data);
+    toast('Visite enregistrée');
+  }
+  sauver(); closeModal('modal-visite'); renderAll();
+}
+function editerVisite(id){
+  var v=ST.visites.find(function(x){return x.id===id;}); if(!v) return;
+  modeEdit=true;
+  document.getElementById('mv-title').innerHTML='✏️ <span>Modifier la Visite</span>';
+  document.getElementById('v-mat').value=v.mat||'';
+  rechercherEmpVisite(v.mat||'');
+  document.getElementById('v-type').value=v.type||'periodique';
+  document.getElementById('v-date').value=v.date||'';
+  document.getElementById('v-medecin').value=v.medecin||'';
+  document.getElementById('v-resultat').value=v.resultat||'apte';
+  document.getElementById('v-reserves').value=v.reserves||'';
+  document.getElementById('v-obs').value=v.obs||'';
+  document.getElementById('v-motif-reprise').value=v.motif_reprise||'';
+  document.getElementById('v-duree-inapte').value=v.duree_inapte||'';
+  document.getElementById('v-prochaine').value=v.prochaine_visite||'';
+  document.getElementById('v-periodicite').value='12';
+  document.getElementById('v-id').value=id;
+  onTypeVisiteChange(); onResultatChange();
+  openModal('modal-visite');
+}
+function supprimerVisite(id){
+  if(!confirm('Supprimer cette visite ?')) return;
+  ST.visites=ST.visites.filter(function(v){return v.id!==id;});
+  sauver(); renderAll(); toast('Visite supprimée');
+}
+
+// ── PERSONNEL ──
+function sauverEmp(){
+  var mat=document.getElementById('e-mat').value.trim();
+  var nom=document.getElementById('e-nom').value.trim();
+  if(!nom){ toast('Nom obligatoire'); return; }
+  if(mat&&ST.personnel.find(function(p){return p.mat===mat;})){toast('Matricule déjà existant');return;}
+  ST.personnel.push({mat:mat||'EMP'+uid(),nom:nom.toUpperCase(),prenom:document.getElementById('e-prenom').value.trim(),dept:document.getElementById('e-dept').value.trim(),poste:document.getElementById('e-poste').value.trim(),date_entree:document.getElementById('e-entree').value});
+  sauver(); closeModal('modal-emp');
+  ['e-mat','e-nom','e-prenom','e-dept','e-poste','e-entree'].forEach(function(id){document.getElementById(id).value='';});
+  renderAll(); toast('Employé ajouté');
+}
+function supprimerEmp(mat){
+  if(!confirm('Supprimer cet employé et ses visites ?')) return;
+  ST.personnel=ST.personnel.filter(function(p){return p.mat!==mat;});
+  ST.visites=ST.visites.filter(function(v){return v.mat!==mat;});
+  sauver(); renderAll(); toast('Supprimé');
+}
+function importerPersonnelExcel(input){
+  if(!input.files[0]||!window.XLSX){toast('XLSX non disponible');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      var g=function(r){var keys=Array.prototype.slice.call(arguments,1);for(var i=0;i<keys.length;i++){var k=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(keys[i].toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(k&&r[k]!==undefined&&r[k]!=='')return String(r[k]).trim();}return '';};
+      var added=0;
+      rows.forEach(function(r){
+        var nom=g(r,'nom','name','lastname'); if(!nom) return;
+        var mat=g(r,'matricule','mat')||'EMP'+uid();
+        if(ST.personnel.find(function(p){return p.mat===mat;})) return;
+        ST.personnel.push({mat:mat,nom:nom.toUpperCase(),prenom:g(r,'prenom','firstname'),dept:g(r,'departement','dept'),poste:g(r,'poste','fonction'),date_entree:g(r,'entree','dateentree')});
+        added++;
+      });
+      sauver(); renderAll(); toast(added+' employés importés');
+    }catch(e){toast('Erreur: '+e.message);}
+  };
+  reader.readAsBinaryString(input.files[0]); input.value='';
+}
+function importerDepuisRegistre(){
+  var stReg={};
+  try{ stReg=JSON.parse(localStorage.getItem('elitereg_v1')||'{}'); }catch(e){}
+  var emps=stReg.employes||[];
+  var added=0;
+  emps.forEach(function(e){
+    var mat=(e.mat||'').trim();
+    if(!mat||ST.personnel.find(function(p){return p.mat===mat;})) return;
+    ST.personnel.push({mat:mat,nom:e.nom||'',prenom:e.prenom||'',dept:e.dept||'',poste:e.poste||'',date_entree:e.date_entree||''});
+    added++;
+  });
+  sauver(); renderAll(); toast(added+' employé(s) synchronisé(s) depuis le Registre');
+}
+
+// ── EXPORTS ──
+function exporterAPlani(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var t=today();
+  var aplanifier=[];
+  ST.personnel.forEach(function(p){
+    var derniere=getDerniereVisite(p.mat);
+    var proch=derniere?derniere.prochaine_visite||'':'';
+    var j=proch?diffJours(t,proch):null;
+    var priorite=!derniere?'🔴 Aucune visite':j===null?'⚪ Échéance non définie':j<0?'🔴 En retard ('+Math.abs(j)+' j.)':j<=30?'🟡 Dans '+j+' j.':'🟢 À jour';
+    if(!derniere||j===null||(j!==null&&j<=60)){
+      aplanifier.push([p.mat||'',p.nom+' '+(p.prenom||''),p.dept||'',p.poste||'',
+        derniere?TYPES_VISITE[derniere.type]?.label||derniere.type:'—',
+        derniere?formatDate(derniere.date):'—',
+        formatDate(proch),priorite]);
+    }
+  });
+  aplanifier.sort(function(a,b){return a[7].localeCompare(b[7]);});
+  var wb=XLSX.utils.book_new();
+  var data=[['Matricule','Nom','Département','Poste','Dernier type','Dernière visite','Prochaine échéance','Priorité']].concat(aplanifier);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Visites à planifier');
+  XLSX.writeFile(wb,'Visites-A-Planifier-'+today()+'.xlsx');
+  toast('Export "à planifier" généré');
+}
+function exporterExcel(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var wb=XLSX.utils.book_new();
+  var data=[['Matricule','Nom','Département','Type','Date','Médecin','Résultat','Réserves','Observations','Prochaine visite','Date saisie']];
+  ST.visites.forEach(function(v){
+    var tv=TYPES_VISITE[v.type]||{label:v.type};
+    var rv=RESULTATS[v.resultat]||{label:v.resultat};
+    data.push([v.mat||'',v.nom||'',v.dept||'',tv.label,v.date||'',v.medecin||'',rv.label,v.reserves||'',v.obs||'',v.prochaine_visite||'',v.date_saisie||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Visites médicales');
+  XLSX.writeFile(wb,'Visites-Medicales-'+today()+'.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function renderAll(){
+  renderDashboard();
+  renderSuivi();
+  renderAlertes();
+  renderPersonnel();
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+charger();
+renderAll();
+</script>
+</body>
+</html>

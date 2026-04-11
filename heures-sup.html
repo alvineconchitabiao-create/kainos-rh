@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Heures Supplémentaires — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;--or-g:rgba(201,168,76,.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem;}
+.login-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;text-align:center;}
+.login-logo{font-family:var(--fd);font-size:22px;font-weight:800;margin-bottom:.35rem;}
+.login-logo span{color:var(--or);}
+.login-subtitle{font-size:12px;color:var(--gris);margin-bottom:.75rem;letter-spacing:.06em;}
+.login-mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem;}
+.lms-btn{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--gris3);background:transparent;color:var(--gris);font-family:var(--fd);transition:all .2s;}
+.lms-btn.active{background:var(--or);color:var(--bg);border-color:var(--or);}
+.login-field{text-align:left;margin-bottom:1rem;}
+.login-field label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);display:block;margin-bottom:5px;}
+.login-field input,.login-field select{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;}
+.login-field input:focus,.login-field select:focus{border-color:var(--or);}
+.login-btn{width:100%;padding:12px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;margin-top:.5rem;}
+.login-btn:hover{background:var(--or2);}
+.login-err{color:var(--rouge);font-size:12px;margin-top:.75rem;display:none;}
+
+/* APP */
+.app{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:.75rem;flex-wrap:wrap;}
+.hdr-logo{font-family:var(--fd);font-size:14px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.user-badge{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;font-size:11px;display:flex;align-items:center;gap:7px;}
+.user-dot{width:7px;height:7px;border-radius:50%;}
+.user-dot.rh{background:var(--or);}
+.user-dot.mgr{background:var(--bleu);}
+.user-dot.emp{background:var(--vert);}
+.btn{display:flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);margin-bottom:.4rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+
+/* SECTION CARD */
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+
+/* TABLE */
+.dtbl{width:100%;border-collapse:collapse;font-size:12px;}
+.dtbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.fg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;}
+.b-att{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-val-mgr{background:rgba(74,158,255,.12);color:var(--bleu);}
+.b-val-rh{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-ref{background:rgba(240,90,90,.12);color:var(--rouge);}
+.b-emp{background:rgba(52,199,123,.1);color:var(--vert);}
+.b-mgr{background:rgba(74,158,255,.1);color:var(--bleu);}
+.b-rh{background:rgba(201,168,76,.1);color:var(--or);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;margin:auto;animation:popIn .22s ease;}
+.modal-sm{max-width:480px;}.modal-md{max-width:680px;}.modal-lg{max-width:860px;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;background:var(--bg3);}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--blanc);}
+.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+
+/* TAUX PANEL */
+.taux-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;}
+.taux-card{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;border-left:3px solid;}
+.taux-card.or{border-color:var(--or);}
+.taux-card.jaune{border-color:var(--jaune);}
+.taux-card.orange{border-color:var(--orange);}
+.taux-card.rouge{border-color:var(--rouge);}
+.taux-card.violet{border-color:var(--violet);}
+.taux-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--blanc);margin-bottom:.25rem;}
+.taux-desc{font-size:10px;color:var(--gris);line-height:1.6;}
+.taux-val{font-family:var(--fd);font-size:20px;font-weight:800;margin-top:.35rem;}
+.taux-inp{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fd);font-size:16px;font-weight:700;padding:4px 8px;outline:none;width:70px;text-align:center;transition:border-color .2s;}
+.taux-inp:focus{border-color:var(--or);}
+
+/* RÉSUMÉ SALAIRE */
+.recap-box{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem;}
+.recap-label{font-size:11px;color:var(--gris);}
+.recap-val{font-family:var(--fd);font-size:15px;font-weight:700;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  .fg,.fg3,.fg4{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Elite <span>RH</span></div>
+    <div class="login-subtitle">GESTION DES HEURES SUPPLÉMENTAIRES</div>
+    <div class="login-mode-switch">
+      <button class="lms-btn active" id="lms-emp" onclick="setLoginMode('employe',this)">Employé</button>
+      <button class="lms-btn" id="lms-mgr" onclick="setLoginMode('manager',this)">Manager</button>
+      <button class="lms-btn" id="lms-rh" onclick="setLoginMode('rh',this)">RH / Admin</button>
+    </div>
+    <div class="login-field" id="lf-mat" style="display:none;">
+      <label>Matricule</label>
+      <input type="text" id="l-mat" placeholder="Ex: MAT001"/>
+    </div>
+    <div class="login-field">
+      <label>Identifiant</label>
+      <input type="text" id="l-user" placeholder="Votre identifiant" onkeydown="if(event.key==='Enter')connecter()"/>
+    </div>
+    <div class="login-field">
+      <label>Mot de passe</label>
+      <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')connecter()"/>
+    </div>
+    <button class="login-btn" onclick="connecter()">Se connecter →</button>
+    <div class="login-err" id="login-err">Identifiant ou mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Heures Supplémentaires</div>
+  </div>
+  <div class="hdr-right">
+    <div class="user-badge"><div class="user-dot" id="user-dot"></div><span id="user-label">—</span></div>
+    <button class="btn btn-or" id="btn-declarer" onclick="openModal('modal-declaration')" style="display:none">+ Déclarer des HS</button>
+    <button class="btn btn-ghost" onclick="deconnecter()">Déconnexion</button>
+  </div>
+</header>
+
+<nav class="tabs" id="nav-tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--or)"></span>📊 Tableau de bord</button>
+  <button class="tab" id="tab-mes-hs" onclick="showTab('mes-hs',this)" style="display:none"><span class="tdot" style="background:var(--vert)"></span>🕐 Mes déclarations</button>
+  <button class="tab" id="tab-validation" onclick="showTab('validation',this)" style="display:none"><span class="tdot" style="background:var(--bleu)"></span>✅ Validation <span id="badge-val" style="display:none;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" id="tab-calcul" onclick="showTab('calcul',this)" style="display:none"><span class="tdot" style="background:var(--violet)"></span>💰 Calcul & Export</button>
+  <button class="tab" id="tab-config" onclick="showTab('config',this)" style="display:none"><span class="tdot" style="background:var(--gris)"></span>⚙️ Configuration</button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="panel active" id="panel-dashboard">
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📋 Dernières déclarations</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="f-dash-mois" class="taux-inp" style="width:110px;font-size:11px;" onchange="renderDashboard()">
+          <option value="">Tous les mois</option>
+        </select>
+        <select id="f-dash-statut" class="taux-inp" style="width:120px;font-size:11px;" onchange="renderDashboard()">
+          <option value="">Tous statuts</option>
+          <option value="en_attente">En attente</option>
+          <option value="val_manager">Validé manager</option>
+          <option value="validee">Validé RH</option>
+          <option value="refusee">Refusé</option>
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Matricule</th><th>Nom / Prénom</th><th>Département</th>
+          <th class="c">Date</th><th class="c">Heure début</th><th class="c">Heure fin</th>
+          <th class="c">H. normales</th><th class="c">H. supp.</th><th class="c">Type</th>
+          <th class="c">Montant estimé</th><th class="c">Saisi par</th><th class="c">Statut</th>
+          <th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="dash-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MES DÉCLARATIONS ═══ -->
+<div class="panel" id="panel-mes-hs">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">🕐 Mes Déclarations d'Heures Supplémentaires</div>
+      <button class="btn btn-or" onclick="openModal('modal-declaration')">+ Nouvelle déclaration</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th class="c">Date</th><th class="c">Heure début</th><th class="c">Heure fin</th>
+          <th class="c">H. normales</th><th class="c">H. supp.</th><th class="c">Type nuit/férié</th>
+          <th class="c">Taux</th><th class="c">Montant est.</th><th>Motif</th>
+          <th class="c">Statut</th><th class="c">Obs. Manager</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="mes-hs-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VALIDATION ═══ -->
+<div class="panel" id="panel-validation">
+  <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;" id="val-filters">
+    <select id="f-val-mois" class="taux-inp" style="width:120px;font-size:11px;" onchange="renderValidation()">
+      <option value="">Tous les mois</option>
+    </select>
+    <select id="f-val-dept" class="taux-inp" style="width:140px;font-size:11px;" onchange="renderValidation()">
+      <option value="">Tous départements</option>
+    </select>
+    <select id="f-val-statut" class="taux-inp" style="width:130px;font-size:11px;" onchange="renderValidation()">
+      <option value="">Tous statuts</option>
+      <option value="en_attente">En attente</option>
+      <option value="val_manager">Validé manager</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">✅ Déclarations à Valider</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-vert" onclick="validerTout()" id="btn-val-tout">✓ Tout valider (filtré)</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Employé</th><th>Matricule</th><th>Département</th>
+          <th class="c">Date</th><th class="c">Début</th><th class="c">Fin</th>
+          <th class="c">H. supp.</th><th class="c">Type</th><th class="c">Taux</th>
+          <th class="c">Montant</th><th>Motif</th><th class="c">Saisi par</th>
+          <th class="c">Statut</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="val-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CALCUL & EXPORT ═══ -->
+<div class="panel" id="panel-calcul">
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head">
+      <div class="sc-title">💰 Récapitulatif Mensuel par Employé</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="f-calc-mois" class="taux-inp" style="width:140px;font-size:11px;" onchange="renderCalcul()">
+          <option value="">Tous les mois</option>
+        </select>
+        <select id="f-calc-dept" class="taux-inp" style="width:150px;font-size:11px;" onchange="renderCalcul()">
+          <option value="">Tous départements</option>
+        </select>
+        <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl" id="calc-table">
+        <thead><tr>
+          <th>Matricule</th><th>Nom</th><th>Département</th>
+          <th class="c">H. supp. sem.</th><th class="c">H. supp. nuit</th>
+          <th class="c">H. dim./férié</th><th class="c">H. dim./férié nuit</th>
+          <th class="c">Total H. supp.</th>
+          <th class="c">Montant HS sem.</th><th class="c">Montant HS nuit</th>
+          <th class="c">Montant dim.</th><th class="c">Montant dim. nuit</th>
+          <th class="c">Total montant</th>
+        </tr></thead>
+        <tbody id="calc-tbody"></tbody>
+        <tfoot><tr id="calc-tfoot" style="background:var(--bg3);font-family:var(--fd);font-weight:700;"></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONFIGURATION ═══ -->
+<div class="panel" id="panel-config">
+
+  <!-- Taux légaux -->
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head">
+      <div class="sc-title">📐 Taux de Majoration — Droit béninois</div>
+      <button class="btn btn-ghost" onclick="resetTaux()" style="font-size:10px">↺ Remettre taux légaux</button>
+    </div>
+    <div class="sc-body">
+      <div class="taux-grid" id="taux-grid"></div>
+      <div style="margin-top:1rem;padding:.75rem 1rem;background:var(--bg3);border-radius:var(--r);font-size:11px;color:var(--gris);line-height:1.8;">
+        <strong style="color:var(--or);">Référence légale :</strong>
+        La semaine normale de travail est fixée à <strong style="color:var(--blanc);">40 heures</strong> au Bénin.
+        Les heures de la <strong style="color:var(--blanc);">41e à la 48e heure</strong> sont majorées à <strong style="color:var(--blanc);">35%</strong>.
+        Au-delà de la 48e heure : <strong style="color:var(--blanc);">35%</strong> également.
+        La nuit est définie de <strong style="color:var(--blanc);">21h à 5h</strong>.
+        Dimanches et jours fériés de jour : <strong style="color:var(--blanc);">50%</strong>.
+        Dimanches et jours fériés de nuit : <strong style="color:var(--blanc);">100%</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Gestion utilisateurs -->
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head">
+      <div class="sc-title">👥 Utilisateurs</div>
+      <button class="btn btn-or" onclick="openModal('modal-add-user')">+ Ajouter</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Identifiant</th><th>Nom</th><th>Matricule</th><th>Département</th><th>Rôle</th><th>Actions</th></tr></thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Personnel -->
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👤 Base Personnel</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="openModal('modal-add-emp')">+ Ajouter</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('fi-emp').click()">⬆ Importer Excel/CSV</button>
+        <input type="file" id="fi-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerPersonnel(this)"/>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:350px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Matricule</th><th>Nom</th><th>Prénoms</th><th>Poste</th><th>Département</th><th>Salaire base</th><th>Taux horaire</th><th>Actions</th></tr></thead>
+        <tbody id="pers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ MODAL DÉCLARATION ═══ -->
+<div class="modal-ov" id="modal-declaration">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">⏱️ <span>Déclarer des Heures Supplémentaires</span></div><button class="mc" onclick="closeModal('modal-declaration')">✕</button></div>
+    <div class="mb">
+      <div class="fg" style="margin-bottom:.75rem;">
+        <div class="ff" id="ff-mat-wrap">
+          <label>Employé (matricule) *</label>
+          <input type="text" id="d-mat" placeholder="Ex: MAT001" oninput="rechercherEmpDecl(this.value)"/>
+          <div class="hint" id="d-emp-info" style="color:var(--vert);margin-top:3px;"></div>
+        </div>
+        <div class="ff">
+          <label>Date *</label>
+          <input type="date" id="d-date" onchange="calcHeures()"/>
+        </div>
+        <div class="ff">
+          <label>Heure de début *</label>
+          <input type="time" id="d-debut" onchange="calcHeures()"/>
+        </div>
+        <div class="ff">
+          <label>Heure de fin *</label>
+          <input type="time" id="d-fin" onchange="calcHeures()"/>
+        </div>
+        <div class="ff">
+          <label>Pause (minutes)</label>
+          <input type="number" id="d-pause" min="0" max="120" step="5" value="0" placeholder="Ex: 30" oninput="calcHeures()"/>
+          <div class="hint">Durée de pause déduite du créneau (ex: 30 min)</div>
+        </div>
+        <div class="ff">
+          <label>Type de jour détecté</label>
+          <input type="text" id="d-type-jour" readonly style="background:var(--bg4);color:var(--or);font-weight:700;"/>
+        </div>
+      </div>
+      <!-- RÉSUMÉ CALCUL -->
+      <div style="background:var(--bg3);border-radius:var(--r);padding:1rem;margin-bottom:.75rem;" id="d-resume">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:.75rem;">Calcul automatique</div>
+        <div class="fg4">
+          <div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">H. totales</div><div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc)" id="d-htot">—</div></div>
+          <div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">H. supp.</div><div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--or)" id="d-hsupp">—</div></div>
+          <div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Taux</div><div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--violet)" id="d-taux">—</div></div>
+          <div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Montant est.</div><div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--vert)" id="d-montant">—</div></div>
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:.75rem;">
+        <div class="ff ff-full">
+          <label>Motif / Description</label>
+          <textarea id="d-motif" rows="2" placeholder="Ex: Clôture de bilan mensuel, maintenance urgente..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-declaration')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverDeclaration()">✓ Soumettre</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL VALIDATION ═══ -->
+<div class="modal-ov" id="modal-valider">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mt">✅ <span>Valider / Refuser</span></div><button class="mc" onclick="closeModal('modal-valider')">✕</button></div>
+    <div class="mb">
+      <div id="val-detail" style="background:var(--bg3);border-radius:var(--r);padding:.875rem;margin-bottom:.75rem;font-size:12px;line-height:1.8;"></div>
+      <div class="ff" style="margin-bottom:.75rem;">
+        <label>Observation (optionnel)</label>
+        <textarea id="val-obs" rows="2" placeholder="Commentaire pour l'employé..."></textarea>
+      </div>
+      <input type="hidden" id="val-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-valider')">Annuler</button>
+      <button class="btn btn-rouge" onclick="refuserDecl()">✗ Refuser</button>
+      <button class="btn btn-vert" id="btn-valider-decl" onclick="validerDecl()">✓ Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ADD USER ═══ -->
+<div class="modal-ov" id="modal-add-user">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un utilisateur</span></div><button class="mc" onclick="closeModal('modal-add-user')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Identifiant *</label><input type="text" id="u-login" placeholder="Ex: emp.dossou"/></div>
+        <div class="ff"><label>Mot de passe *</label><input type="password" id="u-pass" placeholder="Min. 6 caractères"/></div>
+        <div class="ff"><label>Nom complet *</label><input type="text" id="u-nom" placeholder="Ex: DOSSOU Aline"/></div>
+        <div class="ff"><label>Matricule</label><input type="text" id="u-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="u-dept" placeholder="Ex: RH"/></div>
+        <div class="ff"><label>Rôle *</label>
+          <select id="u-role">
+            <option value="employe">Employé</option>
+            <option value="manager">Manager</option>
+            <option value="rh">RH / Admin</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-user')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverUser()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ADD EMP ═══ -->
+<div class="modal-ov" id="modal-add-emp">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un Employé</span></div><button class="mc" onclick="closeModal('modal-add-emp')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Matricule *</label><input type="text" id="e-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="e-nom" placeholder="Ex: DOSSOU"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="e-prenom" placeholder="Ex: Aline"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="e-poste" placeholder="Ex: Comptable"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="e-dept" placeholder="Ex: Finance"/></div>
+        <div class="ff"><label>Salaire de base (FCFA/mois)</label><input type="number" id="e-salaire" placeholder="Ex: 250000" min="0"/></div>
+      </div>
+      <div style="margin-top:.75rem;padding:.75rem;background:var(--bg3);border-radius:var(--r);font-size:11px;color:var(--gris);">
+        Le taux horaire est calculé automatiquement : salaire de base ÷ 173,33 (heures mensuelles légales au Bénin)
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-emp')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEmp()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitehs_v1';
+var ST = { users:[], personnel:[], declarations:[], taux:{}, nextId:100 };
+var SESSION = { logged:false, user:null, role:null, loginMode:'employe' };
+var nextId = 100;
+function uid(){ return ++nextId; }
+
+var TAUX_DEFAUT = {
+  semaine_35: 35,
+  audelà_48: 35,
+  dimanche_jour: 50,
+  dimanche_nuit: 100
+};
+
+var JOURS_FERIES = ['01-01','01-10','04-18','04-21','05-01','05-08','05-29','06-09','08-01','08-15','11-01','11-02','12-25'];
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d = localStorage.getItem(SK);
+    if(d){ ST = JSON.parse(d); nextId = ST.nextId||100; if(!ST.taux||!ST.taux.semaine_35) ST.taux = Object.assign({},TAUX_DEFAUT); }
+    else { ST = { users:[], personnel:[], declarations:[], taux:Object.assign({},TAUX_DEFAUT), nextId:100 }; initDefaut(); }
+  }catch(e){ ST = { users:[], personnel:[], declarations:[], taux:Object.assign({},TAUX_DEFAUT), nextId:100 }; initDefaut(); }
+}
+function sauver(){
+  try{ ST.nextId = nextId; localStorage.setItem(SK, JSON.stringify(ST)); }
+  catch(e){ toast('Erreur sauvegarde'); }
+}
+function initDefaut(){
+  ST.users = [
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'Administrateur RH',mat:'',dept:'RH',role:'rh'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'DOSSOU Aline',mat:'',dept:'RH',role:'manager'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'ZANNOU Jean',mat:'MAT001',dept:'Commercial',role:'employe'}
+  ];
+  ST.personnel = [
+    {id:uid(),mat:'MAT001',nom:'ZANNOU',prenom:'Jean',poste:'Commercial',dept:'Commercial',salaire:200000},
+    {id:uid(),mat:'MAT002',nom:'KPOSSOU',prenom:'Sylvie',poste:'Comptable',dept:'Finance',salaire:280000},
+    {id:uid(),mat:'MAT003',nom:'HOUENOU',prenom:'Patrick',poste:'Technicien',dept:'Production',salaire:180000}
+  ];
+  sauver();
+}
+
+// ── TAUX ──
+function tauxHoraire(emp){
+  var sal = parseFloat(emp.salaire)||0;
+  return sal / 173.33;
+}
+function getTaux(type){
+  return ST.taux[type] || TAUX_DEFAUT[type] || 0;
+}
+function getTypeHS(date, heureDebut, heureFin){
+  var d = new Date(date);
+  var jourSemaine = d.getDay(); // 0=dim
+  var mmdd = (d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+  var estFerie = JOURS_FERIES.indexOf(mmdd) !== -1;
+  var estDimFerie = jourSemaine === 0 || estFerie;
+
+  var hD = heureDebut ? parseInt(heureDebut.split(':')[0]) + parseInt(heureDebut.split(':')[1])/60 : 0;
+  var hF = heureFin ? parseInt(heureFin.split(':')[0]) + parseInt(heureFin.split(':')[1])/60 : 0;
+  if(hF < hD) hF += 24; // minuit
+  // Nuit = 21h-5h
+  var estNuit = hD >= 21 || hF <= 5 || (hD < 5);
+
+  if(estDimFerie && estNuit) return 'dimanche_nuit';
+  if(estDimFerie) return 'dimanche_jour';
+  if(estNuit) return 'semaine_35'; // nuit semaine = même taux que HS semaine (à configurer si besoin)
+  return 'semaine_35';
+}
+function libType(type){
+  var m = {'semaine_35':'HS Semaine (35%)','dimanche_jour':'Dim./Férié Jour (50%)','dimanche_nuit':'Dim./Férié Nuit (100%)'};
+  return m[type]||type;
+}
+function calcMontantHS(hSupp, txHoraire, type){
+  var taux = getTaux(type)/100;
+  return hSupp * txHoraire * (1 + taux);
+}
+
+// ── LOGIN ──
+var currentLoginMode = 'employe';
+function setLoginMode(mode, btn){
+  currentLoginMode = mode;
+  document.querySelectorAll('.lms-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('lf-mat').style.display = mode==='employe' ? 'block' : 'none';
+}
+function connecter(){
+  var login = document.getElementById('l-user').value.trim();
+  var pass = document.getElementById('l-pass').value.trim();
+  var user = ST.users.find(function(u){return u.login===login && u.pass===pass;});
+  if(!user){ document.getElementById('login-err').style.display='block'; return; }
+  SESSION = { logged:true, user:user, role:user.role };
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('login-err').style.display='none';
+  var dotCls = user.role==='rh'?'rh':user.role==='manager'?'mgr':'emp';
+  document.getElementById('user-dot').className='user-dot '+dotCls;
+  document.getElementById('user-label').textContent = user.nom + ' ('+(user.role==='rh'?'RH Admin':user.role==='manager'?'Manager':'Employé')+')';
+  setupUI();
+  renderAll();
+}
+function deconnecter(){
+  SESSION = {logged:false,user:null,role:null};
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+}
+function setupUI(){
+  var r = SESSION.role;
+  // Bouton déclarer : tous les rôles
+  document.getElementById('btn-declarer').style.display='flex';
+  // Onglet mes-hs : employé et manager
+  document.getElementById('tab-mes-hs').style.display = (r==='employe'||r==='manager') ? 'flex':'none';
+  // Onglet validation : manager (valide pour RH) et RH
+  document.getElementById('tab-validation').style.display = (r==='manager'||r==='rh') ? 'flex':'none';
+  // Onglet calcul & export : rh seulement
+  document.getElementById('tab-calcul').style.display = r==='rh' ? 'flex':'none';
+  // Onglet config : rh seulement
+  document.getElementById('tab-config').style.display = r==='rh' ? 'flex':'none';
+  // Champ matricule dans modal : si employé, pré-remplir et verrouiller
+  if(r==='employe'){
+    document.getElementById('d-mat').value = SESSION.user.mat||'';
+    document.getElementById('d-mat').readOnly = true;
+    if(SESSION.user.mat) rechercherEmpDecl(SESSION.user.mat);
+    document.getElementById('ff-mat-wrap').style.display = 'block';
+  } else {
+    document.getElementById('d-mat').readOnly = false;
+  }
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  renderDashboard();
+  renderMesHS();
+  renderValidation();
+  renderCalcul();
+  if(SESSION.role==='rh'){
+    renderConfig();
+  }
+  updateBadgeVal();
+  remplirFiltresMois();
+}
+
+// ── FILTRES MOIS ──
+function remplirFiltresMois(){
+  var moisSet = {};
+  ST.declarations.forEach(function(d){
+    if(d.date){
+      var m = d.date.substring(0,7);
+      moisSet[m] = true;
+    }
+  });
+  var moisList = Object.keys(moisSet).sort().reverse();
+  ['f-dash-mois','f-val-mois','f-calc-mois'].forEach(function(id){
+    var sel = document.getElementById(id); if(!sel) return;
+    var cur = sel.value;
+    sel.innerHTML = '<option value="">Tous les mois</option>';
+    moisList.forEach(function(m){
+      var lbl = m.split('-');
+      var nom = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][parseInt(lbl[1])-1]+' '+lbl[0];
+      sel.innerHTML += '<option value="'+m+'"'+(m===cur?' selected':'')+'>'+nom+'</option>';
+    });
+  });
+  // Filtre département
+  var deptSet = {};
+  ST.declarations.forEach(function(d){if(d.dept) deptSet[d.dept]=true;});
+  ['f-val-dept','f-calc-dept'].forEach(function(id){
+    var sel = document.getElementById(id); if(!sel) return;
+    var cur = sel.value;
+    sel.innerHTML = '<option value="">Tous départements</option>';
+    Object.keys(deptSet).sort().forEach(function(dep){
+      sel.innerHTML += '<option value="'+dep+'"'+(dep===cur?' selected':'')+'>'+esc(dep)+'</option>';
+    });
+  });
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var fMois = document.getElementById('f-dash-mois').value;
+  var fStat = document.getElementById('f-dash-statut').value;
+  var decls = filtrerDecls(fMois, fStat, null);
+
+  // KPI
+  var totalHS = 0, totalMontant = 0, nbEn = 0, nbVal = 0, nbRef = 0;
+  decls.forEach(function(d){
+    totalHS += parseFloat(d.h_supp)||0;
+    totalMontant += parseFloat(d.montant)||0;
+    if(d.statut==='en_attente'||d.statut==='val_manager') nbEn++;
+    if(d.statut==='validee') nbVal++;
+    if(d.statut==='refusee') nbRef++;
+  });
+
+  var kg = document.getElementById('kpi-grid');
+  function kc(icon,val,label,color){
+    return '<div class="kpi-card"><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+color+'">'+val+'</div></div>';
+  }
+  kg.innerHTML =
+    kc('⏱️', decls.length, 'Total déclarations', 'var(--blanc)') +
+    kc('📊', totalHS.toFixed(1)+'h', 'Heures supp. totales', 'var(--or)') +
+    kc('💰', fmtF(totalMontant)+' FCFA', 'Montant estimé', 'var(--vert)') +
+    kc('⏳', nbEn, 'En attente validation', 'var(--jaune)') +
+    kc('✅', nbVal, 'Validées', 'var(--vert)') +
+    kc('✗', nbRef, 'Refusées', 'var(--rouge)');
+
+  // Tableau
+  var tbody = document.getElementById('dash-tbody');
+  tbody.innerHTML = '';
+  if(!decls.length){ tbody.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--gris);padding:2rem">Aucune déclaration.</td></tr>'; return; }
+  decls.slice(0,50).forEach(function(d){
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-family:var(--fd);font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</td>'+
+      '<td><strong>'+esc(d.nom||'—')+'</strong></td>'+
+      '<td style="font-size:11px">'+esc(d.dept||'—')+'</td>'+
+      '<td class="c">'+esc(d.date||'—')+'</td>'+
+      '<td class="c">'+esc(d.heure_debut||'—')+'</td>'+
+      '<td class="c">'+esc(d.heure_fin||'—')+'</td>'+
+      '<td class="c" style="color:var(--gris)">'+esc(d.h_normales||'—')+'h</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(parseFloat(d.h_supp)||0).toFixed(1)+'h</td>'+
+      '<td class="c"><span style="font-size:10px;color:var(--violet)">'+esc(libTypeShort(d.type_hs))+'</span></td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--vert)">'+fmtF(d.montant)+' F</td>'+
+      '<td class="c">'+statutBadgeSaisi(d.saisi_par_role)+'</td>'+
+      '<td class="c">'+statutBadge(d.statut)+'</td>'+
+      '<td class="c">'+
+        (peutValider(d)?'<button onclick="ouvrirValidation('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px">✅</button>':'')+
+        (SESSION.role==='rh'?'<button onclick="supprimerDecl('+d.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;margin-left:2px">×</button>':'')+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── MES HS ──
+function renderMesHS(){
+  var tbody = document.getElementById('mes-hs-tbody');
+  tbody.innerHTML = '';
+  var decls = ST.declarations.filter(function(d){
+    if(SESSION.role==='employe') return d.mat === SESSION.user.mat;
+    if(SESSION.role==='manager') return d.saisi_par_id === SESSION.user.id || d.manager_id === SESSION.user.id;
+    return true;
+  }).sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  if(!decls.length){ tbody.innerHTML='<tr><td colspan="12" style="text-align:center;color:var(--gris);padding:2rem">Aucune déclaration.</td></tr>'; return; }
+  decls.forEach(function(d){
+    tbody.innerHTML += '<tr>'+
+      '<td class="c">'+esc(d.date)+'</td>'+
+      '<td class="c">'+esc(d.heure_debut)+'</td>'+
+      '<td class="c">'+esc(d.heure_fin)+'</td>'+
+      '<td class="c" style="color:var(--gris)">'+(parseFloat(d.h_normales)||0)+'h</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(parseFloat(d.h_supp)||0).toFixed(1)+'h</td>'+
+      '<td class="c"><span style="font-size:10px;color:var(--violet)">'+esc(libTypeShort(d.type_hs))+'</span></td>'+
+      '<td class="c" style="color:var(--violet)">+'+(getTaux(d.type_hs)||0)+'%</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--vert)">'+fmtF(d.montant)+' F</td>'+
+      '<td style="font-size:11px;color:var(--gris);max-width:150px;white-space:normal">'+esc(d.motif||'—')+'</td>'+
+      '<td class="c">'+statutBadge(d.statut)+'</td>'+
+      '<td class="c" style="font-size:10px;color:var(--gris)">'+esc(d.obs_manager||'—')+'</td>'+
+      '<td class="c">'+
+        (d.statut==='en_attente'?'<button onclick="supprimerDecl('+d.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button>':'')+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── VALIDATION ──
+function renderValidation(){
+  var fMois = document.getElementById('f-val-mois').value;
+  var fDept = document.getElementById('f-val-dept').value;
+  var fStat = document.getElementById('f-val-statut').value || (SESSION.role==='manager'?'en_attente':'');
+
+  var decls = ST.declarations.filter(function(d){
+    if(fMois && d.date.substring(0,7) !== fMois) return false;
+    if(fDept && d.dept !== fDept) return false;
+    if(fStat && d.statut !== fStat) return false;
+    if(SESSION.role==='manager') return d.statut==='en_attente';
+    if(SESSION.role==='rh') return d.statut==='en_attente'||d.statut==='val_manager';
+    return false;
+  });
+
+  var tbody = document.getElementById('val-tbody');
+  tbody.innerHTML = '';
+  if(!decls.length){ tbody.innerHTML='<tr><td colspan="14" style="text-align:center;color:var(--gris);padding:2rem">Aucune déclaration à valider.</td></tr>'; return; }
+  decls.forEach(function(d){
+    tbody.innerHTML += '<tr>'+
+      '<td><strong>'+esc(d.nom||'—')+'</strong></td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(d.dept||'—')+'</td>'+
+      '<td class="c">'+esc(d.date)+'</td>'+
+      '<td class="c">'+esc(d.heure_debut)+'</td>'+
+      '<td class="c">'+esc(d.heure_fin)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(parseFloat(d.h_supp)||0).toFixed(1)+'h</td>'+
+      '<td class="c"><span style="font-size:10px;color:var(--violet)">'+esc(libTypeShort(d.type_hs))+'</span></td>'+
+      '<td class="c" style="color:var(--violet)">+'+(getTaux(d.type_hs)||0)+'%</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--vert)">'+fmtF(d.montant)+' F</td>'+
+      '<td style="font-size:11px;color:var(--gris);max-width:140px;white-space:normal">'+esc(d.motif||'—')+'</td>'+
+      '<td class="c">'+statutBadgeSaisi(d.saisi_par_role)+'</td>'+
+      '<td class="c">'+statutBadge(d.statut)+'</td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="ouvrirValidation('+d.id+')" class="btn btn-vert" style="padding:3px 8px;font-size:9px">✅ Traiter</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── CALCUL ──
+function renderCalcul(){
+  var fMois = document.getElementById('f-calc-mois').value;
+  var fDept = document.getElementById('f-calc-dept').value;
+  var decls = ST.declarations.filter(function(d){
+    if(d.statut !== 'validee') return false;
+    if(fMois && d.date.substring(0,7) !== fMois) return false;
+    if(fDept && d.dept !== fDept) return false;
+    return true;
+  });
+
+  // Grouper par employé
+  var empMap = {};
+  decls.forEach(function(d){
+    var key = d.mat||d.nom;
+    if(!empMap[key]) empMap[key] = {mat:d.mat,nom:d.nom,dept:d.dept,h_sem:0,h_nuit:0,h_dim:0,h_dim_nuit:0,m_sem:0,m_nuit:0,m_dim:0,m_dim_nuit:0};
+    var e = empMap[key];
+    var h = parseFloat(d.h_supp)||0;
+    var m = parseFloat(d.montant)||0;
+    if(d.type_hs==='semaine_35'){ e.h_sem+=h; e.m_sem+=m; }
+    else if(d.type_hs==='dimanche_jour'){ e.h_dim+=h; e.m_dim+=m; }
+    else if(d.type_hs==='dimanche_nuit'){ e.h_dim_nuit+=h; e.m_dim_nuit+=m; }
+  });
+
+  var tbody = document.getElementById('calc-tbody');
+  var tfoot = document.getElementById('calc-tfoot');
+  tbody.innerHTML = '';
+  var totH = 0, totMSem=0, totMDim=0, totMDimN=0, totTot=0;
+  var rows = Object.values(empMap);
+  if(!rows.length){ tbody.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--gris);padding:2rem">Aucune HS validée pour cette période.</td></tr>'; tfoot.innerHTML=''; return; }
+  rows.forEach(function(e){
+    var tot = e.h_sem+e.h_nuit+e.h_dim+e.h_dim_nuit;
+    var totM = e.m_sem+e.m_nuit+e.m_dim+e.m_dim_nuit;
+    totH+=tot; totMSem+=e.m_sem; totMDim+=e.m_dim; totMDimN+=e.m_dim_nuit; totTot+=totM;
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-family:var(--fd);font-size:10px;color:var(--gris)">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom||'—')+'</strong></td>'+
+      '<td style="font-size:11px">'+esc(e.dept||'—')+'</td>'+
+      '<td class="c" style="color:var(--or)">'+e.h_sem.toFixed(1)+'h</td>'+
+      '<td class="c" style="color:var(--violet)">'+e.h_nuit.toFixed(1)+'h</td>'+
+      '<td class="c" style="color:var(--jaune)">'+e.h_dim.toFixed(1)+'h</td>'+
+      '<td class="c" style="color:var(--rouge)">'+e.h_dim_nuit.toFixed(1)+'h</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--blanc)">'+tot.toFixed(1)+'h</td>'+
+      '<td class="c" style="color:var(--or)">'+fmtF(e.m_sem)+' F</td>'+
+      '<td class="c" style="color:var(--violet)">'+fmtF(e.m_nuit)+' F</td>'+
+      '<td class="c" style="color:var(--jaune)">'+fmtF(e.m_dim)+' F</td>'+
+      '<td class="c" style="color:var(--rouge)">'+fmtF(e.m_dim_nuit)+' F</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--vert)">'+fmtF(totM)+' F</td>'+
+    '</tr>';
+  });
+  tfoot.innerHTML = '<td colspan="3" style="padding:7px 10px;font-size:11px">TOTAL</td>'+
+    '<td class="c" style="padding:7px 10px;color:var(--or)">'+totH.toFixed(1)+'h</td>'+
+    '<td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td>'+
+    '<td class="c" style="color:var(--or)">'+fmtF(totMSem)+' F</td>'+
+    '<td class="c"></td>'+
+    '<td class="c" style="color:var(--jaune)">'+fmtF(totMDim)+' F</td>'+
+    '<td class="c" style="color:var(--rouge)">'+fmtF(totMDimN)+' F</td>'+
+    '<td class="c" style="color:var(--vert);font-size:13px">'+fmtF(totTot)+' F</td>';
+}
+
+// ── CONFIG ──
+function renderConfig(){
+  renderTaux();
+  renderUsers();
+  renderPersonnel();
+}
+function renderTaux(){
+  var taux = ST.taux;
+  var g = document.getElementById('taux-grid');
+  g.innerHTML =
+    tauxCard('semaine_35','or','HS Semaine (41e–48e h et au-delà)','Lun–Sam, heures au-delà de 40h/semaine',taux.semaine_35) +
+    tauxCard('dimanche_jour','jaune','Dimanche & Jours Fériés — Jour','Travail les dimanches et jours fériés en journée',taux.dimanche_jour) +
+    tauxCard('dimanche_nuit','rouge','Dimanche & Jours Fériés — Nuit','Travail les dimanches et jours fériés de 21h à 5h',taux.dimanche_nuit);
+}
+function tauxCard(key, cls, title, desc, val){
+  return '<div class="taux-card '+cls+'">'+
+    '<div class="taux-title">'+title+'</div>'+
+    '<div class="taux-desc">'+desc+'</div>'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-top:.5rem;">'+
+      '<input class="taux-inp" type="number" min="0" max="200" value="'+val+'" oninput="saveTaux(\''+key+'\',this.value)"/> '+
+      '<span style="font-size:13px;color:var(--gris)">% de majoration</span>'+
+    '</div>'+
+  '</div>';
+}
+function saveTaux(key, val){
+  ST.taux[key] = parseFloat(val)||0;
+  sauver();
+}
+function resetTaux(){
+  if(!confirm('Remettre les taux légaux béninois ?')) return;
+  ST.taux = Object.assign({},TAUX_DEFAUT);
+  sauver(); renderTaux(); toast('Taux légaux restaurés');
+}
+function renderUsers(){
+  var tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '';
+  ST.users.forEach(function(u){
+    var roleBadge = u.role==='rh'?'<span class="badge b-rh">RH Admin</span>':u.role==='manager'?'<span class="badge b-mgr">Manager</span>':'<span class="badge b-emp">Employé</span>';
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px">'+esc(u.login)+'</td>'+
+      '<td><strong>'+esc(u.nom)+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(u.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(u.dept||'—')+'</td>'+
+      '<td>'+roleBadge+'</td>'+
+      '<td><button onclick="supprimerUser('+u.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+function renderPersonnel(){
+  var tbody = document.getElementById('pers-tbody');
+  tbody.innerHTML = '';
+  ST.personnel.forEach(function(e){
+    var th = tauxHoraire(e);
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px">'+esc(e.mat)+'</td>'+
+      '<td><strong>'+esc(e.nom)+'</strong></td>'+
+      '<td>'+esc(e.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-family:var(--fd);color:var(--or)">'+fmtF(e.salaire||0)+' F</td>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--violet)">'+fmtF(Math.round(th))+' F/h</td>'+
+      '<td><button onclick="supprimerEmpList('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+
+// ── DÉCLARATION ──
+function rechercherEmpDecl(mat){
+  var emp = ST.personnel.find(function(e){return e.mat.toLowerCase()===mat.toLowerCase();});
+  var info = document.getElementById('d-emp-info');
+  if(emp){
+    info.textContent = '✓ '+emp.nom+' '+emp.prenom+' — '+emp.dept+' — Taux: '+fmtF(Math.round(tauxHoraire(emp)))+' F/h';
+    info.style.color = 'var(--vert)';
+  } else if(mat.length>=3){
+    info.textContent = 'Matricule non trouvé dans la base';
+    info.style.color = 'var(--rouge)';
+  } else {
+    info.textContent = '';
+  }
+  calcHeures();
+}
+
+function calcHeures(){
+  var debut = document.getElementById('d-debut').value;
+  var fin = document.getElementById('d-fin').value;
+  var date = document.getElementById('d-date').value;
+  var mat = document.getElementById('d-mat').value.trim();
+  var pause = parseFloat(document.getElementById('d-pause').value)||0;
+
+  // Mise à jour type de jour (sans rappel récursif)
+  if(date){
+    var type0 = getTypeHS(date, debut, fin);
+    var labels = {'semaine_35':'Jour de semaine (HS 35%)','dimanche_jour':'Dimanche / Jour férié (50%)','dimanche_nuit':'Dimanche / Férié Nuit (100%)'};
+    document.getElementById('d-type-jour').value = labels[type0]||type0;
+  }
+
+  if(!debut||!fin||!date){ resetCalc(); return; }
+
+  var hD = parseInt(debut.split(':')[0])+parseInt(debut.split(':')[1])/60;
+  var hF = parseInt(fin.split(':')[0])+parseInt(fin.split(':')[1])/60;
+  if(hF <= hD) hF += 24;
+  var hTot = hF - hD;
+  var hTravail = Math.max(0, hTot - pause/60); // déduction de la pause en minutes
+  var hSupp = Math.max(0, hTravail);
+
+  var type = getTypeHS(date, debut, fin);
+  var taux = getTaux(type);
+
+  var emp = ST.personnel.find(function(e){return e.mat.toLowerCase()===mat.toLowerCase();});
+  var th = emp ? tauxHoraire(emp) : 0;
+  var montant = th > 0 ? calcMontantHS(hSupp, th, type) : null;
+
+  document.getElementById('d-htot').textContent = hTravail.toFixed(2)+'h (pause: '+pause+'min déduite)';
+  document.getElementById('d-hsupp').textContent = hSupp.toFixed(2)+'h';
+  document.getElementById('d-taux').textContent = '+'+taux+'%';
+  document.getElementById('d-montant').textContent = montant!==null ? fmtF(Math.round(montant))+' FCFA' : 'Taux horaire non défini';
+}
+function resetCalc(){
+  ['d-htot','d-hsupp','d-taux','d-montant'].forEach(function(id){document.getElementById(id).textContent='—';});
+}
+
+function sauverDeclaration(){
+  var mat = document.getElementById('d-mat').value.trim();
+  var date = document.getElementById('d-date').value;
+  var debut = document.getElementById('d-debut').value;
+  var fin = document.getElementById('d-fin').value;
+  if(!date||!debut||!fin){ toast('Veuillez remplir date, heure début et fin'); return; }
+
+  var pause = parseFloat(document.getElementById('d-pause').value)||0;
+  var hD = parseInt(debut.split(':')[0])+parseInt(debut.split(':')[1])/60;
+  var hF = parseInt(fin.split(':')[0])+parseInt(fin.split(':')[1])/60;
+  if(hF<=hD) hF+=24;
+  var hTot = hF-hD;
+  var hSupp = Math.max(0, hTot - pause/60);
+  var type = getTypeHS(date, debut, fin);
+  var taux = getTaux(type);
+  var emp = ST.personnel.find(function(e){return e.mat.toLowerCase()===(mat||'').toLowerCase();});
+  var th = emp ? tauxHoraire(emp) : 0;
+  var montant = th > 0 ? Math.round(calcMontantHS(hSupp,th,type)) : 0;
+
+  var nom = emp ? emp.nom+' '+(emp.prenom||'') : (SESSION.user.nom);
+  var dept = emp ? emp.dept : SESSION.user.dept||'';
+
+  ST.declarations.push({
+    id:uid(), mat:mat||SESSION.user.mat||'',
+    nom:nom, dept:dept,
+    date:date, heure_debut:debut, heure_fin:fin,
+    h_normales:8,
+    pause_minutes:pause,
+    h_supp:hSupp.toFixed(2), h_tot:(hTot - pause/60).toFixed(2),
+    type_hs:type, taux:taux, montant:montant,
+    motif:document.getElementById('d-motif').value.trim(),
+    statut:'en_attente',
+    saisi_par_id:SESSION.user.id,
+    saisi_par_role:SESSION.role,
+    saisi_par_nom:SESSION.user.nom,
+    date_saisie:new Date().toISOString().split('T')[0],
+    obs_manager:'', obs_rh:''
+  });
+  sauver();
+  closeModal('modal-declaration');
+  viderDeclaration();
+  renderAll();
+  remplirFiltresMois();
+  toast('Déclaration soumise — en attente de validation');
+}
+function viderDeclaration(){
+  ['d-date','d-debut','d-fin','d-motif'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('d-pause').value='0';
+  document.getElementById('d-type-jour').value='';
+  document.getElementById('d-emp-info').textContent='';
+  resetCalc();
+  if(SESSION.role!=='employe') document.getElementById('d-mat').value='';
+}
+
+// ── VALIDATION DÉCL ──
+function peutValider(d){
+  if(SESSION.role==='manager' && d.statut==='en_attente') return true;
+  if(SESSION.role==='rh' && (d.statut==='en_attente'||d.statut==='val_manager')) return true;
+  return false;
+}
+function ouvrirValidation(id){
+  var d = ST.declarations.find(function(x){return x.id===id;}); if(!d) return;
+  document.getElementById('val-id').value = id;
+  document.getElementById('val-obs').value = d.obs_manager||d.obs_rh||'';
+  var label = SESSION.role==='manager'?'Valider (1ère validation — Manager)':'Valider (Validation finale — RH)';
+  document.getElementById('btn-valider-decl').textContent = '✓ '+label;
+  document.getElementById('val-detail').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">'+
+    '<div><span style="color:var(--gris);font-size:10px">Employé</span><div style="font-weight:700">'+esc(d.nom)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Matricule</span><div>'+esc(d.mat||'—')+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Date</span><div>'+esc(d.date)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Créneau</span><div>'+esc(d.heure_debut)+' → '+esc(d.heure_fin)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">H. supplémentaires</span><div style="color:var(--or);font-family:var(--fd);font-weight:700">'+(parseFloat(d.h_supp)||0).toFixed(2)+'h</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Montant estimé</span><div style="color:var(--vert);font-family:var(--fd);font-weight:700">'+fmtF(d.montant)+' FCFA</div></div>'+
+    '<div style="grid-column:1/-1"><span style="color:var(--gris);font-size:10px">Motif</span><div>'+esc(d.motif||'—')+'</div></div>'+
+    '</div>';
+  openModal('modal-valider');
+}
+function validerDecl(){
+  var id = parseInt(document.getElementById('val-id').value);
+  var d = ST.declarations.find(function(x){return x.id===id;}); if(!d) return;
+  var obs = document.getElementById('val-obs').value.trim();
+  if(SESSION.role==='manager'){
+    d.statut = 'val_manager';
+    d.obs_manager = obs;
+    d.validee_par_manager = SESSION.user.nom;
+    d.date_val_manager = new Date().toISOString().split('T')[0];
+    toast('Validée par le manager — en attente validation RH');
+  } else {
+    d.statut = 'validee';
+    d.obs_rh = obs;
+    d.validee_par_rh = SESSION.user.nom;
+    d.date_val_rh = new Date().toISOString().split('T')[0];
+    toast('Validation RH effectuée');
+  }
+  sauver(); closeModal('modal-valider'); renderAll(); updateBadgeVal();
+}
+function refuserDecl(){
+  var id = parseInt(document.getElementById('val-id').value);
+  var d = ST.declarations.find(function(x){return x.id===id;}); if(!d) return;
+  var obs = document.getElementById('val-obs').value.trim();
+  d.statut = 'refusee';
+  d.obs_manager = obs || d.obs_manager;
+  sauver(); closeModal('modal-valider'); renderAll(); updateBadgeVal();
+  toast('Déclaration refusée');
+}
+function validerTout(){
+  var count = 0;
+  ST.declarations.forEach(function(d){
+    if(!peutValider(d)) return;
+    if(SESSION.role==='manager'){ d.statut='val_manager'; d.validee_par_manager=SESSION.user.nom; count++; }
+    else { d.statut='validee'; d.validee_par_rh=SESSION.user.nom; count++; }
+  });
+  sauver(); renderAll(); updateBadgeVal();
+  toast(count+' déclaration(s) validée(s)');
+}
+function supprimerDecl(id){
+  if(!confirm('Supprimer cette déclaration ?')) return;
+  ST.declarations = ST.declarations.filter(function(d){return d.id!==id;});
+  sauver(); renderAll(); remplirFiltresMois();
+  toast('Déclaration supprimée');
+}
+function updateBadgeVal(){
+  var nb = ST.declarations.filter(function(d){
+    if(SESSION.role==='manager') return d.statut==='en_attente';
+    if(SESSION.role==='rh') return d.statut==='en_attente'||d.statut==='val_manager';
+    return false;
+  }).length;
+  var b = document.getElementById('badge-val');
+  if(b){ b.textContent=nb; b.style.display=nb>0?'inline':'none'; }
+}
+
+// ── USERS ──
+function sauverUser(){
+  var login = document.getElementById('u-login').value.trim();
+  var pass = document.getElementById('u-pass').value.trim();
+  var nom = document.getElementById('u-nom').value.trim();
+  if(!login||!pass||!nom){ toast('Identifiant, mot de passe et nom obligatoires'); return; }
+  if(ST.users.find(function(u){return u.login===login;})){ toast('Identifiant déjà utilisé'); return; }
+  ST.users.push({id:uid(),login:login,pass:pass,nom:nom,mat:document.getElementById('u-mat').value.trim(),dept:document.getElementById('u-dept').value.trim(),role:document.getElementById('u-role').value});
+  sauver(); closeModal('modal-add-user'); renderUsers(); toast('Utilisateur ajouté');
+  ['u-login','u-pass','u-nom','u-mat','u-dept'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerUser(id){
+  if(!confirm('Supprimer cet utilisateur ?')) return;
+  ST.users = ST.users.filter(function(u){return u.id!==id;});
+  sauver(); renderUsers(); toast('Utilisateur supprimé');
+}
+
+// ── PERSONNEL ──
+function sauverEmp(){
+  var mat = document.getElementById('e-mat').value.trim();
+  var nom = document.getElementById('e-nom').value.trim();
+  if(!mat||!nom){ toast('Matricule et nom obligatoires'); return; }
+  if(ST.personnel.find(function(e){return e.mat===mat;})){ toast('Matricule déjà existant'); return; }
+  ST.personnel.push({id:uid(),mat:mat,nom:nom.toUpperCase(),prenom:document.getElementById('e-prenom').value.trim(),poste:document.getElementById('e-poste').value.trim(),dept:document.getElementById('e-dept').value.trim(),salaire:parseFloat(document.getElementById('e-salaire').value)||0});
+  sauver(); closeModal('modal-add-emp'); renderPersonnel(); toast('Employé ajouté');
+  ['e-mat','e-nom','e-prenom','e-poste','e-dept','e-salaire'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerEmpList(id){
+  if(!confirm('Supprimer cet employé ?')) return;
+  ST.personnel = ST.personnel.filter(function(e){return e.id!==id;});
+  sauver(); renderPersonnel(); toast('Employé supprimé');
+}
+function importerPersonnel(input){
+  if(!input.files[0]||!window.XLSX){ toast('XLSX non disponible'); return; }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      var wb = XLSX.read(ev.target.result,{type:'binary'});
+      var rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      var added=0;
+      rows.forEach(function(r){
+        var g=function(){for(var i=0;i<arguments.length;i++){var k=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(arguments[i].toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(k&&r[k]!==undefined)return String(r[k]).trim();}return '';};
+        var mat=g('matricule','mat'); var nom=g('nom','lastname'); if(!nom) return;
+        if(ST.personnel.find(function(e){return e.mat===mat&&mat!=='';})) return;
+        ST.personnel.push({id:uid(),mat:mat||'MAT'+uid(),nom:nom.toUpperCase(),prenom:g('prenom','firstname'),poste:g('poste','fonction'),dept:g('departement','dept'),salaire:parseFloat(g('salaire','base'))||0});
+        added++;
+      });
+      sauver(); renderPersonnel(); toast(added+' employés importés');
+    }catch(e){ toast('Erreur: '+e.message); }
+  };
+  reader.readAsBinaryString(input.files[0]);
+  input.value='';
+}
+
+// ── EXPORT EXCEL ──
+function exporterExcel(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var fMois = document.getElementById('f-calc-mois').value;
+  var wb = XLSX.utils.book_new();
+  // Feuille 1 : Détail
+  var data1 = [['Matricule','Nom','Département','Date','Heure début','Heure fin','H. normales','H. supp.','Type HS','Taux %','Montant FCFA','Motif','Statut','Validé par Manager','Validé par RH']];
+  ST.declarations.filter(function(d){
+    if(fMois && d.date.substring(0,7)!==fMois) return false;
+    return d.statut==='validee';
+  }).forEach(function(d){
+    data1.push([d.mat||'',d.nom||'',d.dept||'',d.date,d.heure_debut,d.heure_fin,d.h_normales||'',d.h_supp||0,libType(d.type_hs),d.taux||0,d.montant||0,d.motif||'',d.statut,d.validee_par_manager||'',d.validee_par_rh||'']);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data1), 'Détail HS');
+  // Feuille 2 : Récap par employé
+  var empMap = {};
+  ST.declarations.filter(function(d){ return d.statut==='validee' && (!fMois||d.date.substring(0,7)===fMois); }).forEach(function(d){
+    var k = d.mat||d.nom;
+    if(!empMap[k]) empMap[k]={mat:d.mat,nom:d.nom,dept:d.dept,h_sem:0,h_dim:0,h_dim_nuit:0,m_sem:0,m_dim:0,m_dim_nuit:0};
+    var e=empMap[k]; var h=parseFloat(d.h_supp)||0; var m=parseFloat(d.montant)||0;
+    if(d.type_hs==='semaine_35'){e.h_sem+=h;e.m_sem+=m;}
+    else if(d.type_hs==='dimanche_jour'){e.h_dim+=h;e.m_dim+=m;}
+    else if(d.type_hs==='dimanche_nuit'){e.h_dim_nuit+=h;e.m_dim_nuit+=m;}
+  });
+  var data2=[['Matricule','Nom','Département','H. supp. semaine','H. dim./férié','H. dim./férié nuit','Total H.','Montant HS sem. FCFA','Montant dim. FCFA','Montant dim. nuit FCFA','Total montant FCFA']];
+  Object.values(empMap).forEach(function(e){
+    data2.push([e.mat,e.nom,e.dept,e.h_sem.toFixed(2),e.h_dim.toFixed(2),e.h_dim_nuit.toFixed(2),(e.h_sem+e.h_dim+e.h_dim_nuit).toFixed(2),Math.round(e.m_sem),Math.round(e.m_dim),Math.round(e.m_dim_nuit),Math.round(e.m_sem+e.m_dim+e.m_dim_nuit)]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data2), 'Récap par employé');
+  XLSX.writeFile(wb,'HS-'+(fMois||'Toutes-periodes')+'.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function filtrerDecls(fMois, fStat, fDept){
+  return ST.declarations.filter(function(d){
+    if(fMois && d.date.substring(0,7)!==fMois) return false;
+    if(fStat && d.statut!==fStat) return false;
+    if(fDept && d.dept!==fDept) return false;
+    if(SESSION.role==='employe') return d.mat===SESSION.user.mat;
+    return true;
+  }).sort(function(a,b){ return b.date>a.date?1:-1; });
+}
+function statutBadge(s){
+  var m={'en_attente':'<span class="badge b-att">En attente</span>','val_manager':'<span class="badge b-val-mgr">✓ Manager</span>','validee':'<span class="badge b-val-rh">✓✓ RH</span>','refusee':'<span class="badge b-ref">Refusée</span>'};
+  return m[s]||s;
+}
+function statutBadgeSaisi(role){
+  if(role==='employe') return '<span class="badge b-emp">Employé</span>';
+  if(role==='manager') return '<span class="badge b-mgr">Manager</span>';
+  if(role==='rh') return '<span class="badge b-rh">RH</span>';
+  return '—';
+}
+function libTypeShort(type){
+  var m={'semaine_35':'HS Sem.','dimanche_jour':'Dim./Férié','dimanche_nuit':'Dim./Nuit'};
+  return m[type]||type;
+}
+function fmtF(v){ if(isNaN(v)||v===null||v===undefined) return '0'; return Math.round(v).toLocaleString('fr-FR'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+var toastTmr;
+function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastTmr); toastTmr=setTimeout(function(){el.classList.remove('show');},3500); }
+
+charger();
+</script>
+</body>
+</html>

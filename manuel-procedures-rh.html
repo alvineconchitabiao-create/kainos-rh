@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manuel de Procédures RH — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+.btn-bleu{background:rgba(74,158,255,.12);color:var(--bleu);border:1px solid rgba(74,158,255,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+
+/* LAYOUT 3 COLONNES */
+.app-layout{display:flex;flex:1;height:calc(100vh - 63px);overflow:hidden;}
+/* Sidebar gauche - chapitres */
+.sidebar-left{width:260px;min-width:260px;background:var(--bg2);border-right:1px solid var(--gris3);display:flex;flex-direction:column;overflow:hidden;}
+.sl-head{padding:.875rem 1rem;border-bottom:1px solid var(--gris3);background:var(--bg3);}
+.sl-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.08em;}
+.sl-body{flex:1;overflow-y:auto;padding:.5rem 0;}
+.chapitre-item{padding:.5rem 1rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;border-left:3px solid transparent;transition:all .2s;user-select:none;}
+.chapitre-item:hover{background:var(--bg3);border-left-color:rgba(201,168,76,.3);}
+.chapitre-item.active{background:rgba(201,168,76,.08);border-left-color:var(--or);}
+.chapitre-item .ci-icon{font-size:14px;flex-shrink:0;}
+.chapitre-item .ci-label{font-size:11px;font-weight:600;color:var(--gris);flex:1;line-height:1.3;}
+.chapitre-item.active .ci-label{color:var(--blanc);}
+.chapitre-item .ci-nb{font-size:9px;background:var(--bg3);color:var(--gris2);border-radius:20px;padding:1px 6px;font-family:var(--fd);font-weight:700;}
+.chapitre-item.active .ci-nb{background:rgba(201,168,76,.15);color:var(--or);}
+
+/* Contenu central */
+.content-center{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;background:var(--bg);}
+
+/* Sidebar droite - aperçu */
+.sidebar-right{width:300px;min-width:300px;background:var(--bg2);border-left:1px solid var(--gris3);display:flex;flex-direction:column;overflow:hidden;}
+.sr-head{padding:.875rem 1rem;border-bottom:1px solid var(--gris3);background:var(--bg3);}
+.sr-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.08em;}
+.sr-body{flex:1;overflow-y:auto;padding:.875rem;}
+
+/* CARDS */
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1rem;}
+.sc-head{padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:7px;}
+.sc-body{padding:1.25rem;}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+
+/* PROCÉDURE CARD */
+.proc-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);margin-bottom:.875rem;overflow:hidden;transition:border-color .2s;}
+.proc-card:hover{border-color:rgba(201,168,76,.2);}
+.proc-head{padding:.75rem 1rem;background:var(--bg3);display:flex;align-items:center;gap:.75rem;cursor:pointer;}
+.proc-num{font-family:var(--fd);font-size:11px;font-weight:800;color:var(--or);min-width:50px;}
+.proc-titre{font-family:var(--fd);font-size:12px;font-weight:700;flex:1;}
+.proc-badges{display:flex;gap:.4rem;flex-wrap:wrap;}
+.proc-body{padding:1rem;border-top:1px solid var(--gris3);display:none;}
+.proc-body.open{display:block;}
+.proc-field{margin-bottom:.75rem;}
+.proc-field-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:.25rem;}
+.proc-field-val{font-size:12px;color:var(--gris);line-height:1.7;}
+.proc-etapes{counter-reset:etape;}
+.proc-etape{display:flex;gap:.75rem;margin-bottom:.5rem;align-items:flex-start;}
+.proc-etape-num{width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:9px;font-weight:700;color:var(--or);flex-shrink:0;}
+.proc-etape-txt{font-size:12px;color:var(--gris);line-height:1.6;padding-top:2px;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.b-obligatoire{background:rgba(240,90,90,.1);color:var(--rouge);}
+.b-recommande{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-optionnel{background:rgba(90,88,102,.12);color:var(--gris);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:860px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:75vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;position:sticky;bottom:0;background:var(--bg2);z-index:1;}
+
+/* ÉTAPES SAISIE */
+.etapes-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem;}
+.etape-row{display:flex;gap:.5rem;align-items:center;}
+.etape-row input{flex:1;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:6px 10px;outline:none;}
+.etape-row input:focus{border-color:var(--or);}
+.btn-rm{background:none;border:none;color:var(--gris2);cursor:pointer;font-size:18px;padding:0 4px;}
+.btn-rm:hover{color:var(--rouge);}
+
+/* APERÇU MANUEL */
+.apercu-section{margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--gris3);}
+.apercu-ch{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--or);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.08em;}
+.apercu-proc{font-size:11px;color:var(--gris);padding:.2rem 0 .2rem .75rem;border-left:2px solid var(--gris3);}
+.apercu-proc:hover{color:var(--blanc);cursor:pointer;}
+
+/* PROGRESS */
+.progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:.35rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--or2));border-radius:2px;transition:width .5s;}
+
+/* VERSIONS */
+.version-item{background:var(--bg3);border-radius:var(--r);padding:.6rem .875rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;font-size:11px;}
+.version-num{font-family:var(--fd);font-weight:800;color:var(--or);min-width:40px;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* PRINT */
+@media print{
+  .hdr,.app-layout{display:none!important;}
+  .print-zone{display:block!important;}
+}
+.print-zone{display:none;}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Manuel de Procédures RH</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+    <div style="font-size:11px;color:var(--gris);padding:5px 12px;background:var(--bg3);border-radius:20px;border:1px solid var(--gris3);">
+      Version <span id="version-label" style="color:var(--or);font-weight:700;">v1.0</span>
+    </div>
+    <button class="btn btn-ghost" onclick="openModal('modal-config')">⚙️ Paramètres</button>
+    <button class="btn btn-ghost" onclick="openModal('modal-versions')">📚 Versions</button>
+    <button class="btn btn-violet" onclick="imprimerManuel()">🖨️ Imprimer / PDF</button>
+    <button class="btn btn-vert" onclick="exporterWord()">📄 Export Word</button>
+    <button class="btn btn-or" onclick="openModal('modal-procedure');modeEditProc=false;viderFormProc()">+ Nouvelle procédure</button>
+  </div>
+</header>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR GAUCHE : CHAPITRES -->
+  <div class="sidebar-left">
+    <div class="sl-head">
+      <div class="sl-title">Chapitres</div>
+      <div style="font-size:10px;color:var(--gris);margin-top:3px;" id="total-procs">— procédures</div>
+    </div>
+    <div class="sl-body" id="chapitres-list"></div>
+    <div style="padding:.75rem;border-top:1px solid var(--gris3);">
+      <div style="font-size:10px;color:var(--gris2);margin-bottom:.35rem;">Complétion du manuel</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div style="font-size:10px;color:var(--gris);margin-top:.25rem;" id="progress-label">0 / 0 procédures</div>
+    </div>
+  </div>
+
+  <!-- CONTENU CENTRAL -->
+  <div class="content-center" id="content-center">
+    <div style="text-align:center;padding:3rem 2rem;color:var(--gris);">
+      <div style="font-size:3rem;margin-bottom:1rem;">📋</div>
+      <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Sélectionnez un chapitre</div>
+      <div style="font-size:13px;">Cliquez sur un chapitre dans la liste de gauche pour voir et gérer ses procédures.</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR DROITE : APERÇU + TDML -->
+  <div class="sidebar-right">
+    <div class="sr-head">
+      <div class="sr-title">Table des matières</div>
+    </div>
+    <div class="sr-body" id="tdm-body">
+      <div style="font-size:11px;color:var(--gris);text-align:center;padding:1rem;">Aucune procédure créée.</div>
+    </div>
+  </div>
+
+</div><!-- /app-layout -->
+
+<!-- MODAL PROCÉDURE -->
+<div class="modal-ov" id="modal-procedure">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="mp-title">📋 <span>Nouvelle Procédure</span></div><button class="mc" onclick="closeModal('modal-procedure')">✕</button></div>
+    <div class="mb">
+
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.75rem;">Identification</div>
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Chapitre *</label>
+          <select id="p-chapitre">
+            <option value="">— Sélectionner —</option>
+          </select>
+        </div>
+        <div class="ff"><label>Titre de la procédure *</label><input type="text" id="p-titre" placeholder="Ex: Procédure de recrutement externe"/></div>
+        <div class="ff"><label>Code / Référence</label><input type="text" id="p-code" placeholder="Auto-généré" readonly style="background:var(--bg4);color:var(--or);font-weight:700;"/></div>
+        <div class="ff"><label>Caractère</label>
+          <select id="p-caractere">
+            <option value="obligatoire">🔴 Obligatoire</option>
+            <option value="recommande">🟡 Recommandé</option>
+            <option value="optionnel">⚪ Optionnel</option>
+          </select>
+        </div>
+        <div class="ff"><label>Responsable / Acteur principal</label><input type="text" id="p-responsable" placeholder="Ex: Responsable RH, DRH, Manager"/></div>
+        <div class="ff"><label>Délai de réalisation</label><input type="text" id="p-delai" placeholder="Ex: 5 jours ouvrés, Immédiat, J+30"/></div>
+      </div>
+
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.875rem 0 .75rem;">Description</div>
+      <div style="margin-bottom:.875rem;">
+        <div class="ff"><label>Objet / But de la procédure</label>
+          <textarea id="p-objet" rows="2" placeholder="Décrivez l'objectif de cette procédure, pourquoi elle existe et ce qu'elle vise à accomplir..."></textarea>
+        </div>
+      </div>
+      <div style="margin-bottom:.875rem;">
+        <div class="ff"><label>Champ d'application (à qui s'applique-t-elle ?)</label>
+          <input type="text" id="p-champ" placeholder="Ex: Tous les employés CDI, Cadres et agents de maîtrise, Nouveaux recrutés..."/>
+        </div>
+      </div>
+      <div style="margin-bottom:.875rem;">
+        <div class="ff"><label>Documents / Pièces requis</label>
+          <input type="text" id="p-documents" placeholder="Ex: CV, lettre de motivation, fiche de poste, formulaire de demande..."/>
+        </div>
+      </div>
+
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.875rem 0 .75rem;">Étapes de la Procédure</div>
+      <div class="etapes-list" id="etapes-list"></div>
+      <button class="btn btn-ghost" onclick="ajouterEtape()" style="width:100%;justify-content:center;font-size:11px;">+ Ajouter une étape</button>
+
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.875rem 0 .75rem;">Informations complémentaires</div>
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Base légale / Référence juridique</label>
+          <input type="text" id="p-base-legale" placeholder="Ex: Code du Travail béninois Art. 47, CCT, Règlement intérieur..."/>
+        </div>
+        <div class="ff"><label>Indicateurs de performance (KPI)</label>
+          <input type="text" id="p-kpi" placeholder="Ex: Délai moyen de recrutement, Taux de conformité..."/>
+        </div>
+        <div class="ff ff-full"><label>Observations / Notes</label>
+          <textarea id="p-obs" rows="2" placeholder="Précisions, exceptions, cas particuliers à mentionner..."></textarea>
+        </div>
+      </div>
+
+      <input type="hidden" id="p-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-procedure')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverProcedure()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIG -->
+<div class="modal-ov" id="modal-config">
+  <div class="modal" style="max-width:620px;">
+    <div class="mh"><div class="mt">⚙️ <span>Paramètres du Manuel</span></div><button class="mc" onclick="closeModal('modal-config')">✕</button></div>
+    <div class="mb">
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff ff-full"><label>Nom de l'entreprise *</label><input type="text" id="cfg-entreprise" placeholder="Ex: Elite RH Consulting"/></div>
+        <div class="ff ff-full"><label>Titre du manuel</label><input type="text" id="cfg-titre-manuel" placeholder="Ex: Manuel de Procédures Ressources Humaines"/></div>
+        <div class="ff"><label>Version actuelle</label><input type="text" id="cfg-version" placeholder="Ex: v1.0"/></div>
+        <div class="ff"><label>Date d'entrée en vigueur</label><input type="date" id="cfg-date"/></div>
+        <div class="ff"><label>Rédigé par</label><input type="text" id="cfg-redige-par" placeholder="Ex: Direction des Ressources Humaines"/></div>
+        <div class="ff"><label>Approuvé par</label><input type="text" id="cfg-approuve-par" placeholder="Ex: Direction Générale"/></div>
+        <div class="ff ff-full"><label>Préambule / Introduction du manuel</label>
+          <textarea id="cfg-preambule" rows="4" placeholder="Ce manuel de procédures RH a pour objet de définir et standardiser les pratiques de gestion des ressources humaines au sein de l'entreprise..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-config')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverConfig()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VERSIONS -->
+<div class="modal-ov" id="modal-versions">
+  <div class="modal" style="max-width:560px;">
+    <div class="mh"><div class="mt">📚 <span>Historique des Versions</span></div><button class="mc" onclick="closeModal('modal-versions')">✕</button></div>
+    <div class="mb">
+      <div style="margin-bottom:1rem;">
+        <div class="fg">
+          <div class="ff"><label>N° de version</label><input type="text" id="v-num" placeholder="Ex: v1.1, v2.0"/></div>
+          <div class="ff"><label>Date</label><input type="date" id="v-date"/></div>
+          <div class="ff ff-full"><label>Description des modifications</label><input type="text" id="v-desc" placeholder="Ex: Ajout procédure de télétravail, Mise à jour chap. Paie..."/></div>
+          <div class="ff"><label>Modifié par</label><input type="text" id="v-auteur" placeholder="Ex: DRH"/></div>
+        </div>
+        <button class="btn btn-or" onclick="ajouterVersion()" style="margin-top:.75rem;">+ Enregistrer cette version</button>
+      </div>
+      <div id="versions-list"></div>
+    </div>
+    <div class="mf"><button class="btn btn-ghost" onclick="closeModal('modal-versions')">Fermer</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitemanuel_v1';
+var ST = { config:{}, procedures:[], versions:[], nextId:100 };
+var nextId = 100;
+var modeEditProc = false;
+var chapitreActif = null;
+function uid(){ return ++nextId; }
+
+var CHAPITRES = [
+  {id:'recrutement',    icon:'🔍', label:'Recrutement & Intégration',       color:'var(--bleu)'},
+  {id:'admin',          icon:'📁', label:'Gestion Administrative',           color:'var(--or)'},
+  {id:'paie',           icon:'💰', label:'Paie & Déclarations Sociales',     color:'var(--vert)'},
+  {id:'conges',         icon:'🏖️', label:'Congés & Absences',               color:'var(--violet)'},
+  {id:'evaluation',     icon:'⭐', label:'Évaluation des Performances',      color:'var(--jaune)'},
+  {id:'formation',      icon:'🎓', label:'Formation & Développement',        color:'var(--cyan)'},
+  {id:'sanctions',      icon:'⚖️', label:'Sanctions Disciplinaires',         color:'var(--rouge)'},
+  {id:'depart',         icon:'🚪', label:'Départ & Offboarding',             color:'var(--orange)'},
+  {id:'sante',          icon:'🏥', label:'Santé & Sécurité au Travail',      color:'var(--vert)'},
+  {id:'relations',      icon:'🤝', label:'Relations Sociales & Syndicales',  color:'var(--violet)'},
+  {id:'oeuvres',        icon:'🎁', label:'Œuvres Sociales',                  color:'var(--or)'},
+];
+
+var MODELES = {
+  recrutement:[
+    {titre:'Recrutement externe',responsable:'Responsable RH',delai:'30 jours ouvrés',caractere:'obligatoire',
+     objet:'Définir le processus de recrutement de candidats externes pour pourvoir les postes vacants.',
+     champ:'Tout recrutement de personnel externe à l\'entreprise.',
+     documents:'Fiche de poste, grille d\'évaluation, offre d\'emploi, contrat de travail.',
+     etapes:['Expression du besoin par le manager et validation par la Direction','Rédaction et publication de l\'offre d\'emploi','Collecte et tri des candidatures reçues','Entretiens de présélection téléphonique','Entretiens physiques avec le manager et le RH','Vérification des références et diplômes','Décision d\'embauche et proposition d\'offre','Signature du contrat de travail','Intégration et accueil du nouvel employé'],
+     base_legale:'Code du Travail béninois — Décret sur les conditions d\'embauche',kpi:'Délai moyen de recrutement, Taux de transformation candidature/embauche'},
+    {titre:'Intégration d\'un nouvel employé (Onboarding)',responsable:'RH + Manager direct',delai:'90 jours',caractere:'obligatoire',
+     objet:'Assurer une intégration réussie du nouvel employé dans ses fonctions et dans la culture de l\'entreprise.',
+     champ:'Tout nouvel employé, quelle que soit la nature du contrat.',
+     documents:'Livret d\'accueil, planning d\'intégration, fiche de poste, trombinoscope.',
+     etapes:['Préparation du poste de travail avant l\'arrivée (matériel, accès, badge)','Accueil le premier jour : visite des locaux, présentation des équipes','Remise du livret d\'accueil et des documents RH','Formation aux outils et systèmes informatiques','Présentation des procédures internes et du règlement','Suivi hebdomadaire durant la période d\'essai','Bilan d\'intégration à 30, 60 et 90 jours','Confirmation ou rupture de la période d\'essai'],
+     base_legale:'Code du Travail béninois',kpi:'Score de satisfaction onboarding, Taux de confirmation période d\'essai'},
+  ],
+  admin:[
+    {titre:'Mise à jour du dossier administratif',responsable:'Responsable RH',delai:'48 heures',caractere:'obligatoire',
+     objet:'Maintenir à jour les dossiers administratifs de chaque employé tout au long de sa carrière.',
+     champ:'Tous les employés de l\'entreprise.',
+     documents:'Pièce d\'identité, attestations, diplômes, formulaires de mise à jour.',
+     etapes:['Réception du document ou de l\'information à mettre à jour','Vérification de l\'authenticité du document','Mise à jour dans le système RH (registre du personnel)','Classement du document original dans le dossier physique','Information de l\'employé de la mise à jour effectuée'],
+     base_legale:'Code du Travail — Obligation de tenue du registre du personnel',kpi:'Taux de dossiers complets et à jour'},
+    {titre:'Gestion des contrats de travail',responsable:'Responsable RH',delai:'J-5 avant prise de poste',caractere:'obligatoire',
+     objet:'Encadrer la rédaction, la signature et l\'archivage des contrats de travail conformément à la législation béninoise.',
+     champ:'Tout recrutement ou modification de la relation de travail.',
+     documents:'Modèle de contrat, fiche de poste, grille salariale.',
+     etapes:['Identification du type de contrat adapté à la situation','Rédaction du contrat selon le modèle en vigueur','Validation juridique par la Direction','Double signature : employeur et employé','Remise d\'un exemplaire à l\'employé','Classement et archivage du contrat signé','Enregistrement dans le registre du personnel'],
+     base_legale:'Code du Travail béninois Art. 14 à 35',kpi:'Délai de mise à disposition du contrat, Taux de conformité'},
+  ],
+  paie:[
+    {titre:'Traitement mensuel de la paie',responsable:'Gestionnaire de Paie / RH',delai:'J-5 avant fin de mois',caractere:'obligatoire',
+     objet:'Définir le processus de calcul, validation et versement de la paie mensuelle.',
+     champ:'Tous les salariés actifs de l\'entreprise.',
+     documents:'Tableau des présences, heures supplémentaires, primes, avis de débit bancaire.',
+     etapes:['Collecte des éléments variables de paie (HS, absences, primes, prêts)','Contrôle et validation des éléments collectés par les managers','Saisie des éléments variables dans le logiciel de paie','Calcul des bulletins de salaire (brut, cotisations, net)','Contrôle et validation des bulletins par le DRH','Virement bancaire ou paiement des salaires','Remise des bulletins de paie aux employés','Archivage des bulletins et des justificatifs de paiement'],
+     base_legale:'Code du Travail béninois — CNSS — ITS — Loi sur la paie',kpi:'Délai de versement, Taux d\'erreur de paie, Taux de conformité CNSS'},
+    {titre:'Déclarations sociales et fiscales',responsable:'RH / Comptabilité',delai:'Mensuel / Trimestriel',caractere:'obligatoire',
+     objet:'Assurer le respect des obligations déclaratives envers la CNSS, les impôts et autres organismes sociaux.',
+     champ:'L\'entreprise en tant qu\'employeur.',
+     documents:'Bordereau CNSS, déclaration ITS, états de paie.',
+     etapes:['Calcul des cotisations CNSS salariales et patronales','Calcul de l\'ITS (Impôt sur les Traitements et Salaires)','Établissement des bordereaux de déclaration','Validation par la Direction Administrative et Financière','Paiement dans les délais légaux','Conservation des preuves de paiement et accusés de réception'],
+     base_legale:'Code de Sécurité Sociale du Bénin — Code Général des Impôts',kpi:'Taux de déclarations dans les délais, Montant des pénalités de retard'},
+  ],
+  conges:[
+    {titre:'Demande et validation des congés annuels',responsable:'Manager + RH',delai:'15 jours avant départ souhaité',caractere:'obligatoire',
+     objet:'Encadrer le processus de demande, validation et suivi des congés annuels des employés.',
+     champ:'Tous les employés ayant acquis des droits à congé.',
+     documents:'Formulaire de demande de congé, planning de l\'équipe, solde de congés.',
+     etapes:['Vérification du solde de congés disponible par l\'employé','Soumission de la demande de congé via le formulaire ou le système','Examen de la demande par le manager (compatibilité avec l\'activité)','Validation ou refus motivé par le manager (sous 5 jours)','Enregistrement et mise à jour du planning par le RH','Notification de la décision à l\'employé','Suivi du retour et déduction des jours du solde'],
+     base_legale:'Code du Travail béninois Art. 140 — 24 jours ouvrables par an',kpi:'Délai de traitement des demandes, Taux de congés pris dans l\'année'},
+  ],
+  evaluation:[
+    {titre:'Entretien annuel d\'évaluation',responsable:'Manager + RH',delai:'1 fois par an (T4)',caractere:'obligatoire',
+     objet:'Évaluer les performances de chaque employé, fixer les objectifs de la prochaine période et identifier les besoins en développement.',
+     champ:'Tous les employés ayant au moins 6 mois d\'ancienneté.',
+     documents:'Grille d\'évaluation, fiche de poste, objectifs N-1, plan de développement.',
+     etapes:['Planification du calendrier des entretiens par le RH (octobre-novembre)','Communication aux managers et employés (convocation J-15)','Auto-évaluation de l\'employé sur sa grille','Préparation de l\'évaluation par le manager','Conduite de l\'entretien (bilan, objectifs, développement)','Signature de la fiche d\'évaluation par les deux parties','Transmission au RH pour archivage','Suivi des actions de développement identifiées'],
+     base_legale:'Règlement intérieur de l\'entreprise',kpi:'Taux d\'entretiens réalisés, Score moyen de performance, Taux de plans de développement établis'},
+  ],
+  formation:[
+    {titre:'Identification des besoins en formation',responsable:'RH + Managers',delai:'Annuel (T1)',caractere:'recommande',
+     objet:'Recenser les besoins en formation de l\'ensemble du personnel pour construire le Plan de Formation Annuel.',
+     champ:'Tous les employés et managers de l\'entreprise.',
+     documents:'Grille de recueil des besoins, compte-rendu des entretiens annuels, fiche de poste.',
+     etapes:['Analyse des entretiens annuels d\'évaluation pour extraire les besoins','Consultation des managers sur les besoins collectifs de leurs équipes','Consolidation des besoins par le RH','Priorisation selon les objectifs stratégiques de l\'entreprise','Établissement du Plan de Formation Annuel et du budget','Présentation et validation par la Direction','Communication du plan aux employés'],
+     base_legale:'Code du Travail — Obligation de formation',kpi:'Nombre d\'heures de formation par employé, Taux de réalisation du plan'},
+  ],
+  sanctions:[
+    {titre:'Procédure disciplinaire',responsable:'RH + Direction',delai:'Selon gravité',caractere:'obligatoire',
+     objet:'Définir le processus disciplinaire à respecter en cas de faute ou de manquement d\'un employé, en conformité avec la législation.',
+     champ:'Tous les employés de l\'entreprise.',
+     documents:'Rapport d\'incident, lettre de convocation, fiche disciplinaire, lettre de notification.',
+     etapes:['Constatation et documentation de la faute ou du manquement','Évaluation de la gravité (simple, grave, lourde)','Demande d\'explication écrite à l\'employé (délai 5 jours)','Entretien préalable si sanction envisagée (convocation J-5 min.)','Délibération et décision de la sanction appropriée','Notification écrite de la sanction à l\'employé','Archivage au dossier disciplinaire','Suivi et clôture du dossier'],
+     base_legale:'Code du Travail béninois Art. 51 à 66 — Règlement intérieur',kpi:'Délai de traitement, Taux de récidive'},
+  ],
+  depart:[
+    {titre:'Procédure de départ (Offboarding)',responsable:'RH + Manager',delai:'Dès annonce du départ',caractere:'obligatoire',
+     objet:'Organiser le départ d\'un employé de manière structurée pour assurer la continuité du service et clôturer la relation de travail dans les règles.',
+     champ:'Tout employé quittant l\'entreprise (démission, licenciement, retraite, fin de contrat).',
+     documents:'Lettre de démission ou de licenciement, solde de tout compte, certificat de travail, attestation CNSS.',
+     etapes:['Réception et enregistrement de la notification de départ','Information des services concernés (IT, comptabilité, sécurité)','Planification du transfert de connaissances et passation de poste','Restitution du matériel de l\'entreprise (badge, ordinateur, véhicule)','Calcul et paiement du solde de tout compte','Établissement du certificat de travail et de l\'attestation de travail','Entretien de départ (exit interview) pour recueillir le feedback','Clôture des accès informatiques et administratifs','Archivage du dossier de l\'employé'],
+     base_legale:'Code du Travail béninois — Calcul des indemnités de départ',kpi:'Délai de remise des documents, Taux de satisfaction exit interview'},
+  ],
+  sante:[
+    {titre:'Visite médicale d\'embauche et périodique',responsable:'RH + Médecin du travail',delai:'Avant prise de poste / Annuel',caractere:'obligatoire',
+     objet:'Assurer le suivi médical des employés conformément aux obligations légales en matière de santé au travail.',
+     champ:'Tous les employés, nouveaux recrutés et personnel en poste.',
+     documents:'Convocation visite médicale, fiche d\'aptitude, registre des visites.',
+     etapes:['Planification du calendrier des visites médicales par le RH','Convocation des employés concernés (visite d\'embauche, périodique, reprise)','Réalisation de la visite par le médecin du travail agréé','Remise de la fiche d\'aptitude au RH et à l\'employé','Enregistrement dans le registre des visites médicales','Suivi des avis d\'aptitude avec réserves ou d\'inaptitude','Mise en place des aménagements de poste si nécessaire'],
+     base_legale:'Code du Travail béninois — Décret sur la médecine du travail',kpi:'Taux de couverture des visites médicales, Délai entre deux visites'},
+  ],
+  relations:[
+    {titre:'Organisation des élections des délégués du personnel',responsable:'Direction + RH',delai:'Tous les 2 ans',caractere:'obligatoire',
+     objet:'Organiser les élections des délégués du personnel dans le respect de la législation sociale.',
+     champ:'Tous les employés remplissant les conditions d\'éligibilité et d\'électorat.',
+     documents:'Protocole électoral, listes électorales, bulletins de vote, PV d\'élection.',
+     etapes:['Vérification du seuil d\'effectif déclenchant l\'obligation','Négociation et signature du protocole électoral','Établissement et affichage des listes électorales','Dépôt des candidatures dans les délais','Organisation matérielle du vote','Dépouillement en présence des témoins','Proclamation des résultats et PV d\'élection','Transmission du PV à l\'Inspection du Travail'],
+     base_legale:'Code du Travail béninois Art. 155 à 180',kpi:'Taux de participation, Conformité du processus'},
+  ],
+  oeuvres:[
+    {titre:'Gestion des œuvres sociales',responsable:'Comité des Œuvres Sociales / RH',delai:'Selon calendrier',caractere:'recommande',
+     objet:'Définir les règles d\'accès et de gestion des avantages sociaux accordés aux employés.',
+     champ:'Tous les employés selon les critères d\'éligibilité définis.',
+     documents:'Règlement des œuvres sociales, demandes de prestations, justificatifs.',
+     etapes:['Définition du budget annuel des œuvres sociales','Identification des prestations offertes (cadeaux, prêts, activités)','Communication aux employés des avantages disponibles','Réception et traitement des demandes individuelles','Vérification de l\'éligibilité selon les critères en vigueur','Attribution des prestations et tenue du registre','Bilan annuel des œuvres sociales'],
+     base_legale:'Accord d\'entreprise — Règlement intérieur',kpi:'Taux d\'utilisation des prestations, Budget consommé vs alloué'},
+  ],
+};
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; }
+    else{ initDefaut(); }
+    if(!ST.config) ST.config={};
+    if(!ST.versions) ST.versions=[];
+  }catch(e){ initDefaut(); }
+}
+function sauver(){ try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }catch(e){ toast('Erreur'); } }
+function initDefaut(){
+  ST={ config:{entreprise:'Elite RH Consulting',titre_manuel:'Manuel de Procédures Ressources Humaines',version:'v1.0',date:new Date().toISOString().split('T')[0],redige_par:'Direction des Ressources Humaines',approuve_par:'Direction Générale',preambule:'Ce manuel de procédures RH définit et standardise les pratiques de gestion des ressources humaines au sein de l\'entreprise. Il constitue le référentiel de base pour tous les acteurs impliqués dans la gestion du personnel et doit être respecté par l\'ensemble du personnel d\'encadrement et les équipes RH.'},
+    procedures:[], versions:[{num:'v1.0',date:new Date().toISOString().split('T')[0],desc:'Création initiale du manuel',auteur:'Direction RH'}], nextId:100 };
+  sauver();
+}
+
+// ── GÉNÉRER CODE PROCÉDURE ──
+function genCode(chapId){
+  var ch=CHAPITRES.find(function(c){return c.id===chapId;});
+  var prefixes={recrutement:'REC',admin:'ADM',paie:'PAI',conges:'CON',evaluation:'EVA',formation:'FOR',sanctions:'DIS',depart:'DEP',sante:'SST',relations:'REL',oeuvres:'OEU'};
+  var prefix=prefixes[chapId]||'PRO';
+  var nb=ST.procedures.filter(function(p){return p.chapitre===chapId;}).length+1;
+  return prefix+'-'+String(nb).padStart(3,'0');
+}
+
+// ── CHAPITRES SIDEBAR ──
+function renderSidebar(){
+  var total=ST.procedures.length;
+  document.getElementById('total-procs').textContent=total+' procédure'+(total>1?'s':'');
+  document.getElementById('progress-label').textContent=total+' procédure'+(total>1?'s':'')+' rédigée'+(total>1?'s':'');
+  var maxExpected=CHAPITRES.length*3;
+  document.getElementById('progress-fill').style.width=Math.min(100,Math.round(total/maxExpected*100))+'%';
+
+  var html='';
+  CHAPITRES.forEach(function(ch){
+    var nb=ST.procedures.filter(function(p){return p.chapitre===ch.id;}).length;
+    html+='<div class="chapitre-item'+(chapitreActif===ch.id?' active':'')+'" onclick="selectChapitre(\''+ch.id+'\')">'+
+      '<span class="ci-icon">'+ch.icon+'</span>'+
+      '<span class="ci-label">'+ch.label+'</span>'+
+      '<span class="ci-nb">'+nb+'</span>'+
+    '</div>';
+  });
+  document.getElementById('chapitres-list').innerHTML=html;
+}
+
+// ── TABLE DES MATIÈRES ──
+function renderTDM(){
+  var html='';
+  CHAPITRES.forEach(function(ch,idx){
+    var procs=ST.procedures.filter(function(p){return p.chapitre===ch.id;});
+    if(!procs.length) return;
+    html+='<div class="apercu-section">'+
+      '<div class="apercu-ch">'+ch.icon+' '+(idx+1)+'. '+ch.label+'</div>';
+    procs.forEach(function(p){
+      html+='<div class="apercu-proc" onclick="selectChapitre(\''+ch.id+'\')" title="'+esc(p.titre)+'">'+
+        '<span style="color:var(--or);font-size:10px;font-family:var(--fd);">'+esc(p.code)+'</span> — '+esc(p.titre)+
+      '</div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('tdm-body').innerHTML=html||'<div style="font-size:11px;color:var(--gris);text-align:center;padding:1rem;">Aucune procédure créée.</div>';
+}
+
+// ── CONTENU CHAPITRE ──
+function selectChapitre(id){
+  chapitreActif=id;
+  renderSidebar();
+  var ch=CHAPITRES.find(function(c){return c.id===id;});
+  var procs=ST.procedures.filter(function(p){return p.chapitre===id;});
+  var modeles=MODELES[id]||[];
+
+  var html='';
+  // Header chapitre
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">'+
+    '<div>'+
+      '<div style="display:flex;align-items:center;gap:.75rem;">'+
+        '<span style="font-size:2rem;">'+ch.icon+'</span>'+
+        '<div>'+
+          '<div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;">'+ch.label+'</div>'+
+          '<div style="font-size:11px;color:var(--gris);">'+procs.length+' procédure'+(procs.length>1?'s':'')+' rédigée'+(procs.length>1?'s':'')+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
+      (modeles.length?'<button class="btn btn-ghost" onclick="chargerModeles(\''+id+'\')" style="font-size:11px;">📋 Charger les modèles ('+modeles.length+')</button>':'')+
+      '<button class="btn btn-or" onclick="openModal(\'modal-procedure\');modeEditProc=false;viderFormProc();document.getElementById(\'p-chapitre\').value=\''+id+'\';" style="font-size:11px;">+ Nouvelle procédure</button>'+
+    '</div>'+
+  '</div>';
+
+  if(!procs.length){
+    html+='<div style="text-align:center;padding:2.5rem;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);color:var(--gris);">'+
+      '<div style="font-size:2rem;margin-bottom:.75rem;">📝</div>'+
+      '<div style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Aucune procédure pour ce chapitre</div>'+
+      '<div style="font-size:12px;margin-bottom:1rem;">'+(modeles.length?'Cliquez sur "Charger les modèles" pour ajouter '+modeles.length+' procédure(s) pré-remplie(s), ou créez une procédure personnalisée.':'Créez votre première procédure en cliquant sur le bouton ci-dessus.')+'</div>'+
+      (modeles.length?'<button class="btn btn-ghost" onclick="chargerModeles(\''+id+'\')" style="margin-right:.5rem;">📋 Charger les modèles</button>':'')+
+      '<button class="btn btn-or" onclick="openModal(\'modal-procedure\');modeEditProc=false;viderFormProc();document.getElementById(\'p-chapitre\').value=\''+id+'\';">+ Créer une procédure</button>'+
+    '</div>';
+  } else {
+    procs.forEach(function(p){
+      var caractCls=p.caractere==='obligatoire'?'b-obligatoire':p.caractere==='recommande'?'b-recommande':'b-optionnel';
+      var caractLabel=p.caractere==='obligatoire'?'Obligatoire':p.caractere==='recommande'?'Recommandé':'Optionnel';
+      html+='<div class="proc-card">'+
+        '<div class="proc-head" onclick="toggleProc(this)">'+
+          '<div class="proc-num">'+esc(p.code)+'</div>'+
+          '<div class="proc-titre">'+esc(p.titre)+'</div>'+
+          '<div class="proc-badges">'+
+            '<span class="badge '+caractCls+'">'+caractLabel+'</span>'+
+            (p.responsable?'<span class="badge" style="background:rgba(74,158,255,.1);color:var(--bleu);">👤 '+esc(p.responsable)+'</span>':'')+
+            (p.delai?'<span class="badge" style="background:rgba(52,199,123,.1);color:var(--vert);">⏱ '+esc(p.delai)+'</span>':'')+
+          '</div>'+
+          '<div style="display:flex;gap:.4rem;margin-left:.5rem;">'+
+            '<button onclick="event.stopPropagation();editerProcedure('+p.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">✏️</button>'+
+            '<button onclick="event.stopPropagation();supprimerProcedure('+p.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:16px;">×</button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="proc-body">'+
+          (p.objet?'<div class="proc-field"><div class="proc-field-label">Objet</div><div class="proc-field-val">'+esc(p.objet)+'</div></div>':'')+
+          (p.champ?'<div class="proc-field"><div class="proc-field-label">Champ d\'application</div><div class="proc-field-val">'+esc(p.champ)+'</div></div>':'')+
+          (p.documents?'<div class="proc-field"><div class="proc-field-label">Documents requis</div><div class="proc-field-val">'+esc(p.documents)+'</div></div>':'')+
+          (p.etapes&&p.etapes.length?'<div class="proc-field"><div class="proc-field-label">Étapes</div>'+
+            '<div class="proc-etapes">'+p.etapes.map(function(e,i){return '<div class="proc-etape"><div class="proc-etape-num">'+(i+1)+'</div><div class="proc-etape-txt">'+esc(e)+'</div></div>';}).join('')+'</div></div>':'')+
+          (p.base_legale?'<div class="proc-field"><div class="proc-field-label">Base légale</div><div class="proc-field-val" style="color:var(--violet);">⚖️ '+esc(p.base_legale)+'</div></div>':'')+
+          (p.kpi?'<div class="proc-field"><div class="proc-field-label">Indicateurs KPI</div><div class="proc-field-val" style="color:var(--cyan);">📊 '+esc(p.kpi)+'</div></div>':'')+
+          (p.obs?'<div class="proc-field"><div class="proc-field-label">Observations</div><div class="proc-field-val">'+esc(p.obs)+'</div></div>':'')+
+        '</div>'+
+      '</div>';
+    });
+  }
+  document.getElementById('content-center').innerHTML=html;
+}
+function toggleProc(el){ el.nextElementSibling.classList.toggle('open'); }
+
+// ── MODÈLES ──
+function chargerModeles(chapId){
+  var modeles=MODELES[chapId]||[];
+  if(!modeles.length){ toast('Aucun modèle disponible pour ce chapitre'); return; }
+  var existants=ST.procedures.filter(function(p){return p.chapitre===chapId;}).map(function(p){return p.titre;});
+  var added=0;
+  modeles.forEach(function(m){
+    if(existants.indexOf(m.titre)>=0) return; // éviter les doublons
+    ST.procedures.push({
+      id:uid(), chapitre:chapId, code:genCode(chapId),
+      titre:m.titre, responsable:m.responsable||'', delai:m.delai||'',
+      caractere:m.caractere||'obligatoire', objet:m.objet||'', champ:m.champ||'',
+      documents:m.documents||'', etapes:m.etapes||[],
+      base_legale:m.base_legale||'', kpi:m.kpi||'', obs:''
+    });
+    added++;
+  });
+  sauver(); renderSidebar(); renderTDM(); selectChapitre(chapId);
+  toast(added+' procédure(s) modèle(s) chargée(s) ✓');
+}
+
+// ── FORMULAIRE PROCÉDURE ──
+function viderFormProc(){
+  ['p-titre','p-responsable','p-delai','p-objet','p-champ','p-documents','p-base-legale','p-kpi','p-obs','p-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('p-chapitre').value='';
+  document.getElementById('p-caractere').value='obligatoire';
+  document.getElementById('p-code').value='Auto-généré';
+  document.getElementById('etapes-list').innerHTML='';
+  document.getElementById('mp-title').innerHTML='📋 <span>Nouvelle Procédure</span>';
+  ajouterEtape(); ajouterEtape(); ajouterEtape(); // 3 étapes par défaut
+}
+function ajouterEtape(val){
+  var list=document.getElementById('etapes-list');
+  var nb=list.children.length+1;
+  var div=document.createElement('div');
+  div.className='etape-row';
+  div.innerHTML='<div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:9px;font-weight:700;color:var(--or);flex-shrink:0;">'+nb+'</div>'+
+    '<input type="text" placeholder="Étape '+nb+' : Décrivez cette action..." value="'+(val?esc(val):'')+'"/>'+
+    '<button class="btn-rm" onclick="this.parentElement.remove();renumEtapes()">×</button>';
+  list.appendChild(div);
+}
+function renumEtapes(){
+  var rows=document.getElementById('etapes-list').querySelectorAll('.etape-row');
+  rows.forEach(function(r,i){ r.querySelector('div').textContent=i+1; });
+}
+function getEtapes(){
+  return Array.from(document.getElementById('etapes-list').querySelectorAll('.etape-row input'))
+    .map(function(inp){return inp.value.trim();}).filter(Boolean);
+}
+function sauverProcedure(){
+  var chapitre=document.getElementById('p-chapitre').value;
+  var titre=document.getElementById('p-titre').value.trim();
+  if(!chapitre||!titre){ toast('Chapitre et titre obligatoires'); return; }
+  var data={
+    chapitre:chapitre, titre:titre,
+    responsable:document.getElementById('p-responsable').value.trim(),
+    delai:document.getElementById('p-delai').value.trim(),
+    caractere:document.getElementById('p-caractere').value,
+    objet:document.getElementById('p-objet').value.trim(),
+    champ:document.getElementById('p-champ').value.trim(),
+    documents:document.getElementById('p-documents').value.trim(),
+    etapes:getEtapes(),
+    base_legale:document.getElementById('p-base-legale').value.trim(),
+    kpi:document.getElementById('p-kpi').value.trim(),
+    obs:document.getElementById('p-obs').value.trim()
+  };
+  var idVal=document.getElementById('p-id').value;
+  if(modeEditProc&&idVal){
+    var p=ST.procedures.find(function(x){return x.id===parseInt(idVal);});
+    if(p){ Object.assign(p,data); toast('Procédure mise à jour ✓'); }
+  } else {
+    data.id=uid();
+    data.code=genCode(chapitre);
+    ST.procedures.push(data);
+    toast('Procédure enregistrée ✓');
+  }
+  sauver(); closeModal('modal-procedure');
+  renderSidebar(); renderTDM();
+  if(chapitreActif===chapitre) selectChapitre(chapitre);
+  else selectChapitre(chapitre);
+}
+function editerProcedure(id){
+  var p=ST.procedures.find(function(x){return x.id===id;}); if(!p) return;
+  modeEditProc=true;
+  document.getElementById('mp-title').innerHTML='✏️ <span>Modifier la procédure</span>';
+  document.getElementById('p-chapitre').value=p.chapitre||'';
+  document.getElementById('p-titre').value=p.titre||'';
+  document.getElementById('p-code').value=p.code||'';
+  document.getElementById('p-caractere').value=p.caractere||'obligatoire';
+  document.getElementById('p-responsable').value=p.responsable||'';
+  document.getElementById('p-delai').value=p.delai||'';
+  document.getElementById('p-objet').value=p.objet||'';
+  document.getElementById('p-champ').value=p.champ||'';
+  document.getElementById('p-documents').value=p.documents||'';
+  document.getElementById('p-base-legale').value=p.base_legale||'';
+  document.getElementById('p-kpi').value=p.kpi||'';
+  document.getElementById('p-obs').value=p.obs||'';
+  document.getElementById('p-id').value=id;
+  var list=document.getElementById('etapes-list'); list.innerHTML='';
+  (p.etapes||[]).forEach(function(e){ajouterEtape(e);});
+  if(!p.etapes||!p.etapes.length) ajouterEtape();
+  openModal('modal-procedure');
+}
+function supprimerProcedure(id){
+  if(!confirm('Supprimer cette procédure ?')) return;
+  ST.procedures=ST.procedures.filter(function(x){return x.id!==id;});
+  sauver(); renderSidebar(); renderTDM();
+  if(chapitreActif) selectChapitre(chapitreActif);
+  toast('Procédure supprimée');
+}
+
+// ── CONFIG ──
+function chargerConfig(){
+  var c=ST.config||{};
+  document.getElementById('cfg-entreprise').value=c.entreprise||'Elite RH Consulting';
+  document.getElementById('cfg-titre-manuel').value=c.titre_manuel||'Manuel de Procédures Ressources Humaines';
+  document.getElementById('cfg-version').value=c.version||'v1.0';
+  document.getElementById('cfg-date').value=c.date||'';
+  document.getElementById('cfg-redige-par').value=c.redige_par||'Direction des Ressources Humaines';
+  document.getElementById('cfg-approuve-par').value=c.approuve_par||'Direction Générale';
+  document.getElementById('cfg-preambule').value=c.preambule||'';
+  document.getElementById('version-label').textContent=c.version||'v1.0';
+}
+function sauverConfig(){
+  ST.config={
+    entreprise:document.getElementById('cfg-entreprise').value.trim(),
+    titre_manuel:document.getElementById('cfg-titre-manuel').value.trim(),
+    version:document.getElementById('cfg-version').value.trim(),
+    date:document.getElementById('cfg-date').value,
+    redige_par:document.getElementById('cfg-redige-par').value.trim(),
+    approuve_par:document.getElementById('cfg-approuve-par').value.trim(),
+    preambule:document.getElementById('cfg-preambule').value.trim()
+  };
+  sauver(); chargerConfig(); closeModal('modal-config');
+  toast('Paramètres sauvegardés ✓');
+}
+
+// ── VERSIONS ──
+function renderVersions(){
+  var html='';
+  (ST.versions||[]).slice().reverse().forEach(function(v){
+    html+='<div class="version-item">'+
+      '<div class="version-num">'+esc(v.num)+'</div>'+
+      '<div style="flex:1;"><div style="color:var(--blanc);font-weight:600;">'+esc(v.desc||'—')+'</div>'+
+      '<div style="font-size:10px;color:var(--gris2);margin-top:2px;">'+esc(v.date||'—')+' — '+esc(v.auteur||'—')+'</div></div>'+
+    '</div>';
+  });
+  document.getElementById('versions-list').innerHTML=html||'<div style="color:var(--gris);font-size:11px;text-align:center;padding:1rem;">Aucune version enregistrée.</div>';
+}
+function ajouterVersion(){
+  var num=document.getElementById('v-num').value.trim();
+  var desc=document.getElementById('v-desc').value.trim();
+  if(!num||!desc){ toast('N° de version et description obligatoires'); return; }
+  var v={num:num,date:document.getElementById('v-date').value||new Date().toISOString().split('T')[0],desc:desc,auteur:document.getElementById('v-auteur').value.trim()||'RH'};
+  if(!ST.versions) ST.versions=[];
+  ST.versions.push(v);
+  // Mettre à jour la version courante dans la config
+  ST.config.version=num;
+  sauver(); renderVersions(); chargerConfig();
+  ['v-num','v-date','v-desc','v-auteur'].forEach(function(id){document.getElementById(id).value='';});
+  toast('Version enregistrée ✓');
+}
+
+// ── IMPRESSION ──
+function imprimerManuel(){
+  var c=ST.config||{};
+  var win=window.open('','_blank','width=1100,height=800');
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Manuel RH — '+esc(c.entreprise||'')+'</title>'+
+  '<style>'+
+  'body{font-family:Arial,sans-serif;color:#111;padding:0;margin:0;font-size:12px;line-height:1.7;}'+
+  '.cover{background:#1a1a2e;color:#fff;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:3rem;page-break-after:always;}'+
+  '.cover-logo{font-size:2.5rem;font-weight:900;color:#C9A84C;letter-spacing:.1em;margin-bottom:.5rem;}'+
+  '.cover-title{font-size:1.6rem;font-weight:700;color:#fff;margin:1rem 0 .5rem;}'+
+  '.cover-meta{font-size:.875rem;color:#9896A4;line-height:2;}'+
+  '.cover-line{height:3px;background:#C9A84C;width:80px;margin:1.5rem auto;}'+
+  '.tdm-page{padding:3rem;page-break-after:always;}'+
+  'h1{font-size:1.5rem;color:#C9A84C;border-bottom:2px solid #C9A84C;padding-bottom:.5rem;margin-bottom:1.5rem;}'+
+  '.tdm-ch{font-weight:700;margin:.75rem 0 .25rem;font-size:.95rem;}'+
+  '.tdm-proc{padding:.15rem 0 .15rem 1.25rem;color:#555;border-left:2px solid #e0e0e0;margin-left:.5rem;font-size:.875rem;}'+
+  '.chapter-page{padding:2.5rem 3rem;page-break-before:always;}'+
+  'h2{font-size:1.25rem;color:#1a1a2e;background:#f5f5f0;border-left:5px solid #C9A84C;padding:.6rem 1rem;margin-bottom:1.5rem;page-break-after:avoid;}'+
+  '.proc-block{border:1px solid #ddd;border-radius:8px;margin-bottom:1.5rem;page-break-inside:avoid;overflow:hidden;}'+
+  '.proc-header{background:#f9f8f3;padding:.75rem 1rem;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:.75rem;}'+
+  '.proc-code{font-weight:800;color:#C9A84C;font-size:.875rem;min-width:70px;}'+
+  '.proc-title{font-weight:700;font-size:1rem;flex:1;}'+
+  '.proc-char{font-size:.75rem;padding:2px 8px;border-radius:20px;font-weight:700;}'+
+  '.ch-obl{background:#fff0f0;color:#d32f2f;}.ch-rec{background:#fffde7;color:#f57f17;}.ch-opt{background:#f5f5f5;color:#757575;}'+
+  '.proc-content{padding:1rem;}'+
+  '.field-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#C9A84C;margin-bottom:.2rem;margin-top:.75rem;}'+
+  '.field-val{color:#333;margin-bottom:.25rem;}'+
+  '.etape-row{display:flex;gap:.6rem;margin-bottom:.3rem;align-items:flex-start;}'+
+  '.etape-num{width:20px;height:20px;border-radius:50%;background:#fff3e0;border:1px solid #C9A84C;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#C9A84C;flex-shrink:0;margin-top:1px;}'+
+  '.meta-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;}'+
+  '.meta-item{background:#f5f5f5;border-radius:20px;padding:2px 10px;font-size:.75rem;color:#555;}'+
+  '.footer{margin-top:2rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;justify-content:space-between;font-size:.7rem;color:#aaa;}'+
+  '@media print{.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.proc-block{page-break-inside:avoid;}h2{page-break-after:avoid;}}</style>'+
+  '</head><body>';
+
+  // Page de couverture
+  html+='<div class="cover">'+
+    '<div class="cover-logo">'+esc(c.entreprise||'Elite RH Consulting')+'</div>'+
+    '<div class="cover-line"></div>'+
+    '<div class="cover-title">'+esc(c.titre_manuel||'Manuel de Procédures Ressources Humaines')+'</div>'+
+    '<div class="cover-meta">'+
+      'Version : <strong>'+esc(c.version||'v1.0')+'</strong><br>'+
+      'Date d\'entrée en vigueur : '+(c.date?new Date(c.date).toLocaleDateString('fr-FR'):'—')+'<br>'+
+      'Rédigé par : '+esc(c.redige_par||'Direction RH')+'<br>'+
+      'Approuvé par : '+esc(c.approuve_par||'Direction Générale')+
+    '</div>'+
+  '</div>';
+
+  // Page de garde / préambule
+  if(c.preambule){
+    html+='<div class="tdm-page"><h1>Préambule</h1><p style="line-height:1.9;color:#333;">'+esc(c.preambule).replace(/\n/g,'<br>')+'</p></div>';
+  }
+
+  // Table des matières
+  html+='<div class="tdm-page"><h1>Table des Matières</h1>';
+  var numCh=0;
+  CHAPITRES.forEach(function(ch,idx){
+    var procs=ST.procedures.filter(function(p){return p.chapitre===ch.id;});
+    if(!procs.length) return;
+    numCh++;
+    html+='<div class="tdm-ch">'+numCh+'. '+ch.icon+' '+ch.label+' <span style="color:#9896A4;font-size:.875rem;">('+procs.length+' procédure'+(procs.length>1?'s':'')+')</span></div>';
+    procs.forEach(function(p){ html+='<div class="tdm-proc">'+esc(p.code)+' — '+esc(p.titre)+'</div>'; });
+  });
+  html+='</div>';
+
+  // Chapitres
+  numCh=0;
+  CHAPITRES.forEach(function(ch){
+    var procs=ST.procedures.filter(function(p){return p.chapitre===ch.id;});
+    if(!procs.length) return;
+    numCh++;
+    html+='<div class="chapter-page">'+
+      '<h2>'+numCh+'. '+ch.icon+' '+ch.label+'</h2>';
+    procs.forEach(function(p){
+      var charCls=p.caractere==='obligatoire'?'ch-obl':p.caractere==='recommande'?'ch-rec':'ch-opt';
+      var charLabel=p.caractere==='obligatoire'?'Obligatoire':p.caractere==='recommande'?'Recommandé':'Optionnel';
+      html+='<div class="proc-block">'+
+        '<div class="proc-header">'+
+          '<div class="proc-code">'+esc(p.code)+'</div>'+
+          '<div class="proc-title">'+esc(p.titre)+'</div>'+
+          '<div class="proc-char '+charCls+'">'+charLabel+'</div>'+
+        '</div>'+
+        '<div class="proc-content">'+
+          '<div class="meta-row">'+
+            (p.responsable?'<div class="meta-item">👤 Responsable : '+esc(p.responsable)+'</div>':'')+
+            (p.delai?'<div class="meta-item">⏱ Délai : '+esc(p.delai)+'</div>':'')+
+          '</div>'+
+          (p.objet?'<div class="field-label">Objet</div><div class="field-val">'+esc(p.objet)+'</div>':'')+
+          (p.champ?'<div class="field-label">Champ d\'application</div><div class="field-val">'+esc(p.champ)+'</div>':'')+
+          (p.documents?'<div class="field-label">Documents requis</div><div class="field-val">'+esc(p.documents)+'</div>':'')+
+          (p.etapes&&p.etapes.length?'<div class="field-label">Étapes de la procédure</div>'+
+            p.etapes.map(function(e,i){return '<div class="etape-row"><div class="etape-num">'+(i+1)+'</div><div>'+esc(e)+'</div></div>';}).join(''):'')+
+          (p.base_legale?'<div class="field-label">Base légale</div><div class="field-val" style="color:#5c35a8;">⚖️ '+esc(p.base_legale)+'</div>':'')+
+          (p.kpi?'<div class="field-label">Indicateurs KPI</div><div class="field-val" style="color:#0277bd;">📊 '+esc(p.kpi)+'</div>':'')+
+          (p.obs?'<div class="field-label">Observations</div><div class="field-val" style="color:#555;font-style:italic;">'+esc(p.obs)+'</div>':'')+
+        '</div>'+
+      '</div>';
+    });
+    html+='<div class="footer"><div>'+esc(c.entreprise||'')+'</div><div>'+esc(c.titre_manuel||'Manuel RH')+'</div><div>'+esc(c.version||'v1.0')+'</div></div></div>';
+  });
+
+  html+='</body></html>';
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+// ── EXPORT WORD (via serveur) ──
+function exporterWord(){
+  toast('⏳ Génération du fichier Word en cours...');
+  // Préparer les données pour l'export
+  var exportData = {
+    config: ST.config,
+    chapitres: CHAPITRES,
+    procedures: ST.procedures,
+    versions: ST.versions
+  };
+  // Stocker dans localStorage pour récupération par le script
+  localStorage.setItem('elitemanuel_export', JSON.stringify(exportData));
+  // Ouvrir la page d'export
+  window.open('manuel-export-word.html', '_blank');
+}
+
+// ── UTILS ──
+function remplirSelectChapitres(){
+  var sel=document.getElementById('p-chapitre');
+  if(!sel) return;
+  sel.innerHTML='<option value="">— Sélectionner un chapitre —</option>';
+  CHAPITRES.forEach(function(ch){
+    sel.innerHTML+='<option value="'+ch.id+'">'+ch.icon+' '+ch.label+'</option>';
+  });
+}
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  if(id==='modal-config') chargerConfig();
+  if(id==='modal-versions') renderVersions();
+  if(id==='modal-procedure') remplirSelectChapitres();
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},4000);}
+
+// ── INIT ──
+charger();
+renderSidebar();
+renderTDM();
+document.getElementById('version-label').textContent=(ST.config&&ST.config.version)||'v1.0';
+// Sélectionner automatiquement le premier chapitre
+selectChapitre('recrutement');
+</script>
+</body>
+</html>

@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Planning des Congés — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#09090E;--bg2:#101018;--bg3:#16161F;--bg4:#1E1E28;
+  --or:#C9A84C;--or2:#E2C47A;--or-glow:rgba(201,168,76,0.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#252432;
+  --bleu:#4A9EFF;--vert:#34C77B;--rouge:#F05A5A;--violet:#A78BFA;
+  --orange:#FB923C;--rose:#F472B6;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:10px;--rl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--gris3);border-radius:2px;}
+
+/* ── HEADER ── */
+.header{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:1rem;flex-wrap:wrap;}
+.hd-brand{display:flex;align-items:center;gap:10px;}
+.hd-logo{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.08em;}
+.hd-logo span{color:var(--or);}
+.hd-sep{width:1px;height:20px;background:var(--gris3);}
+.hd-title{font-size:11px;font-weight:600;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;}
+.hd-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.hd-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.hd-btn-or{background:var(--or);color:var(--bg);}
+.hd-btn-or:hover{background:var(--or2);}
+.hd-btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.hd-btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.hd-back{font-size:11px;color:var(--gris);text-decoration:none;transition:color .2s;padding:6px 10px;}
+.hd-back:hover{color:var(--or);}
+
+/* ── TABS ── */
+.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 2rem;display:flex;gap:0;overflow-x:auto;}
+.tab-btn{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;transition:all .2s;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;letter-spacing:.04em;}
+.tab-btn:hover{color:var(--blanc);}
+.tab-btn.active{color:var(--or);border-bottom-color:var(--or);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+
+/* ── MAIN ── */
+.main{padding:1.25rem 2rem;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.kpi-card:hover{border-color:rgba(201,168,76,.2);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--or)),transparent);opacity:.7;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.6rem;}
+.kpi-val{font-family:var(--fd);font-size:26px;font-weight:700;color:var(--blanc);line-height:1;}
+.kpi-unit{font-size:11px;color:var(--gris);margin-left:3px;}
+.kpi-sub{font-size:10px;margin-top:.4rem;font-weight:500;}
+.vert{color:var(--vert);} .rouge{color:var(--rouge);} .neut{color:var(--gris);}
+
+/* ── CALENDRIER ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;}
+.cal-nav{display:flex;align-items:center;gap:10px;}
+.cal-nav-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--gris3);background:transparent;color:var(--gris);font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.cal-nav-btn:hover{border-color:var(--or);color:var(--or);}
+.cal-month-label{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);min-width:180px;text-align:center;}
+.cal-filters{display:flex;gap:6px;flex-wrap:wrap;}
+.cal-filter{padding:5px 12px;border:1px solid var(--gris3);border-radius:20px;background:transparent;color:var(--gris);font-family:var(--fd);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
+.cal-filter.active{background:var(--or);color:var(--bg);border-color:var(--or);}
+.cal-filter:hover:not(.active){border-color:var(--or);color:var(--or);}
+
+/* Grille calendrier */
+.cal-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.cal-dept-row{display:flex;border-bottom:1px solid var(--gris3);}
+.cal-dept-label{width:180px;flex-shrink:0;padding:.5rem .75rem;background:var(--bg3);border-right:1px solid var(--gris3);display:flex;align-items:center;gap:8px;}
+.cal-dept-name{font-size:11px;font-weight:700;color:var(--blanc);letter-spacing:.04em;}
+.cal-dept-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cal-emp-rows{flex:1;}
+.cal-emp-row{display:flex;border-bottom:1px solid rgba(37,36,50,.5);min-height:34px;align-items:center;}
+.cal-emp-row:last-child{border-bottom:none;}
+.cal-emp-name{width:160px;flex-shrink:0;padding:0 .75rem;font-size:11px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--gris3);}
+.cal-days{flex:1;display:flex;position:relative;min-height:34px;}
+.cal-day-cell{flex:1;border-right:1px solid rgba(37,36,50,.3);position:relative;min-height:34px;}
+.cal-day-cell:last-child{border-right:none;}
+.cal-day-cell.weekend{background:rgba(37,36,50,.4);}
+.cal-day-cell.today-col{background:rgba(201,168,76,.04);}
+
+/* En-tête jours */
+.cal-header-row{display:flex;background:var(--bg3);border-bottom:1px solid var(--gris3);}
+.cal-header-emp-space{width:340px;flex-shrink:0;border-right:1px solid var(--gris3);padding:.5rem .75rem;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);}
+.cal-day-headers{flex:1;display:flex;}
+.cal-day-hdr{flex:1;text-align:center;padding:.4rem 0;font-size:10px;font-weight:600;color:var(--gris);}
+.cal-day-hdr.weekend{color:var(--gris2);}
+.cal-day-hdr.today-col{color:var(--or);font-weight:800;}
+
+/* Blocs congés */
+.conge-block{position:absolute;top:4px;height:26px;border-radius:4px;z-index:2;cursor:pointer;display:flex;align-items:center;padding:0 6px;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s;}
+.conge-block:hover{opacity:.85;filter:brightness(1.1);}
+.status-approuve{background:rgba(52,199,123,.25);color:#34C77B;border:1px solid rgba(52,199,123,.35);}
+.status-attente {background:rgba(251,199,36,.2); color:#FBC724;border:1px solid rgba(251,199,36,.3);}
+.status-refuse  {background:rgba(240,90,90,.18); color:#F05A5A;border:1px solid rgba(240,90,90,.25);}
+
+/* Alerte sous-effectif */
+.cal-alert-row{display:flex;background:rgba(240,90,90,.04);border-top:1px solid rgba(240,90,90,.2);}
+.cal-alert-label{width:340px;flex-shrink:0;border-right:1px solid var(--gris3);padding:.4rem .75rem;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--rouge);}
+.cal-alert-days{flex:1;display:flex;}
+.cal-alert-cell{flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border-right:1px solid rgba(37,36,50,.3);}
+
+/* ── SOLDES ── */
+.solde-table-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.solde-toolbar{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.solde-search{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:6px 12px;outline:none;width:220px;transition:border-color .2s;}
+.solde-search:focus{border-color:var(--or);}
+.data-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.data-tbl th{text-align:left;padding:8px 12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);border-bottom:1px solid var(--gris3);background:var(--bg3);position:sticky;top:0;}
+.data-tbl td{padding:8px 12px;border-bottom:1px solid rgba(37,36,50,.4);color:var(--blanc);vertical-align:middle;}
+.data-tbl tr:hover td{background:var(--bg3);}
+.solde-bar{width:100%;height:5px;background:var(--gris3);border-radius:3px;overflow:hidden;margin-top:3px;}
+.solde-bar-fill{height:100%;border-radius:3px;transition:width .5s;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.bv{background:rgba(52,199,123,.12);color:var(--vert);}
+.br{background:rgba(240,90,90,.12);color:var(--rouge);}
+.bo{background:rgba(201,168,76,.12);color:var(--or);}
+.by{background:rgba(251,199,36,.1);color:#FBC724;}
+
+/* ── DEMANDES ── */
+.demandes-grid{display:grid;grid-template-columns:1fr 360px;gap:1rem;}
+.demandes-list{display:flex;flex-direction:column;gap:.75rem;}
+.demande-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:1rem;transition:border-color .2s;}
+.demande-card:hover{border-color:rgba(201,168,76,.25);}
+.demande-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:700;flex-shrink:0;}
+.demande-info{flex:1;}
+.demande-name{font-size:13px;font-weight:600;color:var(--blanc);}
+.demande-meta{font-size:11px;color:var(--gris);margin-top:2px;}
+.demande-dates{font-size:12px;color:var(--blanc);margin-top:5px;display:flex;align-items:center;gap:6px;}
+.demande-nb{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--or);}
+.demande-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-approuver{padding:6px 14px;background:rgba(52,199,123,.15);color:var(--vert);border:1px solid rgba(52,199,123,.3);border-radius:var(--r);font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-approuver:hover{background:rgba(52,199,123,.25);}
+.btn-refuser{padding:6px 14px;background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.2);border-radius:var(--r);font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-refuser:hover{background:rgba(240,90,90,.2);}
+
+/* Formulaire demande */
+.form-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.form-card-head{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);background:var(--bg3);font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);}
+.form-card-body{padding:1rem;}
+.ff{margin-bottom:.875rem;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);display:block;margin-bottom:4px;}
+.ff input,.ff select,.ff textarea{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:13px;padding:8px 10px;outline:none;transition:border-color .2s;}
+.ff input:focus,.ff select:focus{border-color:var(--or);}
+.ff select option{background:var(--bg2);}
+
+/* ── RAPPORT ── */
+.rapport-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;}
+.rapport-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;}
+.rapport-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.rapport-big{font-family:var(--fd);font-size:42px;font-weight:700;color:var(--or);line-height:1;}
+.rapport-sub{font-size:11px;color:var(--gris);margin-top:4px;}
+.periode-toggle{display:flex;gap:4px;background:var(--bg3);padding:4px;border-radius:var(--r);border:1px solid var(--gris3);width:fit-content;margin-bottom:1rem;}
+.periode-btn{padding:6px 16px;border:none;background:transparent;color:var(--gris);font-family:var(--fd);font-size:11px;font-weight:600;cursor:pointer;border-radius:6px;transition:all .2s;letter-spacing:.04em;}
+.periode-btn.active{background:var(--or);color:var(--bg);}
+
+/* ── IMPORT ── */
+.import-zone{border:2px dashed var(--gris3);border-radius:var(--rl);padding:2.5rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);margin-bottom:1rem;}
+.import-zone:hover{border-color:var(--or);background:var(--or-glow);}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;animation:popIn .25s ease;}
+@keyframes popIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-head{padding:1rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);}
+.modal-close{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.modal-body{padding:1.25rem;}
+.modal-footer{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+.btn-primary{padding:9px 22px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--or2);}
+.btn-secondary{padding:9px 16px;background:var(--bg3);color:var(--gris);border:1px solid var(--gris3);border-radius:var(--r);font-family:var(--fd);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* Responsive */
+@media(max-width:900px){
+  .demandes-grid{grid-template-columns:1fr;}
+  .rapport-grid{grid-template-columns:1fr;}
+  .cal-emp-name{width:100px;}
+  .cal-header-emp-space{width:260px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="hd-brand">
+    <div class="hd-logo">Elite <span>RH</span></div>
+    <div class="hd-sep"></div>
+    <div class="hd-title">Planning des Congés</div>
+  </div>
+  <div class="hd-right">
+    <span id="hd-annee-label" style="font-size:11px;color:var(--gris);background:var(--bg3);border:1px solid var(--gris3);padding:5px 12px;border-radius:20px;">
+      Année <select id="sel-annee" style="background:transparent;border:none;color:var(--blanc);font-family:var(--fb);font-size:11px;outline:none;cursor:pointer;" onchange="changeAnnee(this.value)">
+        <option>2025</option><option>2026</option><option>2024</option>
+      </select>
+    </span>
+    <button class="hd-btn hd-btn-ghost" onclick="window.print()">⬇ Exporter PDF</button>
+    <button class="hd-btn hd-btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="hd-btn hd-btn-or" onclick="document.getElementById('file-emp').click()">⬆ Importer employés</button>
+    <input type="file" id="file-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerEmployes(this)"/>
+    <button class="hd-btn hd-btn-ghost" onclick="chargerDemo()">🎲 Démo</button>
+    <a href="dashboard-rh.html" class="hd-back">← Dashboard</a>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('calendrier',this)"><span class="tab-dot" style="background:#C9A84C"></span>📅 Calendrier</button>
+  <button class="tab-btn" onclick="showTab('soldes',this)"><span class="tab-dot" style="background:#34C77B"></span>💳 Soldes</button>
+  <button class="tab-btn" onclick="showTab('demandes',this)"><span class="tab-dot" style="background:#4A9EFF"></span>📋 Demandes <span id="badge-attente" style="background:var(--rouge);color:white;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:4px;display:none"></span></button>
+  <button class="tab-btn" onclick="showTab('rapport',this)"><span class="tab-dot" style="background:#A78BFA"></span>📊 Rapports</button>
+  <button class="tab-btn" onclick="showTab('historique',this)"><span class="tab-dot" style="background:#FB923C"></span>📜 Historique</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- KPI ROW (toujours visible) -->
+<div class="kpi-row" id="kpi-row">
+  <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Employés actifs</div><div><span class="kpi-val" id="kpi-employes">—</span></div><div class="kpi-sub neut" id="kpi-emp-sub">—</div></div>
+  <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Jours acquis / an</div><div><span class="kpi-val" id="kpi-acquis">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub neut">2 j/mois par employé</div></div>
+  <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Jours pris (YTD)</div><div><span class="kpi-val" id="kpi-pris">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub neut" id="kpi-pris-sub">—</div></div>
+  <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Solde restant total</div><div><span class="kpi-val" id="kpi-restant">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub neut" id="kpi-rest-sub">—</div></div>
+  <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">En congé aujourd\'hui</div><div><span class="kpi-val" id="kpi-aujourdhui">—</span></div><div class="kpi-sub neut" id="kpi-auj-sub">—</div></div>
+  <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Demandes en attente</div><div><span class="kpi-val" id="kpi-attente">—</span></div><div class="kpi-sub rouge" id="kpi-att-sub">À valider</div></div>
+  <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Indemnités dues (total)</div><div><span class="kpi-val" id="kpi-indemnites">—</span><span class="kpi-unit">K FCFA</span></div><div class="kpi-sub neut" id="kpi-ind-sub">—</div></div>
+</div>
+
+<!-- ══ CALENDRIER ══ -->
+<div class="panel active" id="panel-calendrier">
+  <div class="cal-header">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="navMois(-1)">‹</button>
+      <div class="cal-month-label" id="cal-month-label">—</div>
+      <button class="cal-nav-btn" onclick="navMois(1)">›</button>
+    </div>
+    <div class="cal-filters">
+      <button class="cal-filter active" onclick="calFiltrer('tous',this)">Tous</button>
+      <div id="cal-dept-filters"></div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gris)"><div style="width:12px;height:8px;border-radius:2px;background:rgba(52,199,123,.3)"></div>Approuvé</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gris)"><div style="width:12px;height:8px;border-radius:2px;background:rgba(251,199,36,.25)"></div>En attente</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gris)"><div style="width:12px;height:8px;border-radius:2px;background:rgba(240,90,90,.2)"></div>Refusé</div>
+    </div>
+  </div>
+  <div id="cal-container"></div>
+</div>
+
+<!-- ══ SOLDES ══ -->
+<div class="panel" id="panel-soldes">
+  <div class="solde-table-wrap">
+    <div class="solde-toolbar">
+      <div style="font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc)">💳 Soldes de congés</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="solde-search" type="text" placeholder="Rechercher un employé..." oninput="filtrerSoldes(this.value)" id="solde-search"/>
+        <button class="hd-btn hd-btn-ghost" onclick="ouvrirDemandeManuel()">+ Ajouter congé</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="data-tbl" id="solde-table">
+        <thead>
+          <tr>
+            <th>Employé</th>
+            <th>Département</th>
+            <th>Ancienneté</th>
+            <th>Jours acquis</th>
+            <th>Jours pris</th>
+            <th>Solde restant</th>
+            <th>Indemnité due</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="solde-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DEMANDES ══ -->
+<div class="panel" id="panel-demandes">
+  <div class="demandes-grid">
+    <div>
+      <div style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="cal-filter active" onclick="filtrerDemandes('tous',this)">Toutes</button>
+        <button class="cal-filter" onclick="filtrerDemandes('attente',this)">⏳ En attente</button>
+        <button class="cal-filter" onclick="filtrerDemandes('approuve',this)">✅ Approuvées</button>
+        <button class="cal-filter" onclick="filtrerDemandes('refuse',this)">❌ Refusées</button>
+      </div>
+      <div class="demandes-list" id="demandes-list"></div>
+    </div>
+    <!-- Formulaire nouvelle demande -->
+    <div>
+      <div class="form-card" id="form-demande-card">
+        <div class="form-card-head">📝 Nouvelle demande de congé</div>
+        <div class="form-card-body">
+          <div class="ff"><label>Employé *</label>
+            <select id="fd-employe"><option value="">— Sélectionner —</option></select>
+          </div>
+          <div class="ff"><label>Type de congé</label>
+            <select id="fd-type">
+              <option value="Congé payé">Congé payé</option>
+              <option value="Congé maladie">Congé maladie</option>
+              <option value="Congé familial">Congé familial / exceptionnel</option>
+              <option value="Congé sans solde">Congé sans solde</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="ff"><label>Date début *</label><input type="date" id="fd-debut"/></div>
+            <div class="ff"><label>Date fin *</label><input type="date" id="fd-fin"/></div>
+          </div>
+          <div class="ff" id="fd-nb-jours-wrap" style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem;text-align:center;">
+            <div style="font-size:10px;color:var(--gris);margin-bottom:3px">Nombre de jours ouvrés</div>
+            <div style="font-family:var(--fd);font-size:28px;font-weight:700;color:var(--or)" id="fd-nb-calc">—</div>
+          </div>
+          <div class="ff"><label>Motif / commentaire</label>
+            <textarea id="fd-motif" rows="2" placeholder="Optionnel..." style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px;outline:none;width:100%;resize:vertical;transition:border-color .2s;"></textarea>
+          </div>
+          <!-- Alerte solde -->
+          <div id="fd-alerte" style="display:none;background:rgba(240,90,90,.08);border:1px solid rgba(240,90,90,.2);border-radius:var(--r);padding:.6rem .75rem;font-size:11px;color:var(--rouge);margin-bottom:.75rem;"></div>
+          <button class="btn-primary" style="width:100%" onclick="soumettreDemandeConge()">📩 Soumettre la demande</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RAPPORT ══ -->
+<div class="panel" id="panel-rapport">
+  <div class="periode-toggle">
+    <button class="periode-btn active" onclick="switchPeriode('mois',this)">Ce mois</button>
+    <button class="periode-btn" onclick="switchPeriode('trimestre',this)">Trimestre</button>
+    <button class="periode-btn" onclick="switchPeriode('annee',this)">Année</button>
+  </div>
+  <div class="rapport-grid" id="rapport-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="rapport-card"><div class="rapport-title">📊 Congés par département</div><div id="rapport-dept-list"></div></div>
+    <div class="rapport-card"><div class="rapport-title">💰 Indemnités par employé</div><div id="rapport-indemnites-list" style="max-height:320px;overflow-y:auto;"></div></div>
+  </div>
+</div>
+
+<!-- ══ HISTORIQUE ══ -->
+<div class="panel" id="panel-historique">
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+    <div style="padding:.75rem 1rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+      <div style="font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc)">📜 Historique complet des congés</div>
+      <input class="solde-search" type="text" placeholder="Filtrer par nom..." oninput="filtrerHistorique(this.value)" style="width:200px"/>
+    </div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="data-tbl">
+        <thead><tr><th>Employé</th><th>Département</th><th>Type</th><th>Début</th><th>Fin</th><th>Nb jours</th><th>Statut</th><th>Indemnité</th><th>Actions</th></tr></thead>
+        <tbody id="historique-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- MODAL DETAIL CONGE -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-detail-title">Détail du congé</div>
+      <button class="modal-close" onclick="fermerModal('modal-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fermerModal('modal-detail')">Fermer</button>
+      <button class="btn-primary" id="modal-btn-approuver" onclick="appouverDepuisModal()" style="background:rgba(52,199,123,.8)">✓ Approuver</button>
+      <button class="btn-primary" id="modal-btn-refuser" onclick="refuserDepuisModal()" style="background:rgba(240,90,90,.8)">✗ Refuser</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONSTANTES & ÉTAT
+// ══════════════════════════════════════════
+var JOURS_PAR_MOIS = 2;     // 2 jours ouvrables par mois
+var JOURS_PAR_AN   = 24;    // 2 x 12 = 24 jours/an
+var TAUX_JOURNALIER_DEFAULT = 15000; // FCFA — modifiable
+
+var SK = 'eliterhconges_v1';
+var anneeActive = 2025;
+var moisActif   = new Date().getMonth(); // 0-11
+var calFiltre   = 'tous';
+var demandesFiltre = 'tous';
+var perioderapport = 'mois';
+var modalCongeId = null;
+
+var EMPLOYES = []; // {id, nom, prenom, dept, dateEntree, dateSortie, salaireJournalier, actif}
+var CONGES   = []; // {id, employeId, type, debut, fin, nbJours, statut, motif, createdAt}
+
+var DEPT_COLORS = ['#C9A84C','#4A9EFF','#34C77B','#A78BFA','#FB923C','#F05A5A','#E2C47A','#38BDF8'];
+var deptColorMap = {};
+
+function getDeptColor(dept) {
+  if (!deptColorMap[dept]) {
+    var keys = Object.keys(deptColorMap);
+    deptColorMap[dept] = DEPT_COLORS[keys.length % DEPT_COLORS.length];
+  }
+  return deptColorMap[dept];
+}
+
+// ── PERSISTANCE ──
+function chargerDB() {
+  try {
+    var d = localStorage.getItem(SK);
+    if (d) { var db = JSON.parse(d); EMPLOYES = db.employes||[]; CONGES = db.conges||[]; }
+  } catch(e) {}
+}
+function sauverDB() {
+  try { localStorage.setItem(SK, JSON.stringify({employes:EMPLOYES, conges:CONGES})); } catch(e) {}
+}
+
+// ── DATES ──
+function parseDate(s) { return s ? new Date(s + 'T00:00:00') : null; }
+function fmtDate(d) {
+  if (!d) return '—';
+  var dt = typeof d==='string' ? parseDate(d) : d;
+  if (!dt || isNaN(dt)) return '—';
+  return dt.toLocaleDateString('fr-FR');
+}
+function dateToStr(d) {
+  if (!d) return '';
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function nbJoursOuvres(debut, fin) {
+  var d1 = typeof debut==='string' ? parseDate(debut) : new Date(debut);
+  var d2 = typeof fin==='string'   ? parseDate(fin)   : new Date(fin);
+  if (!d1||!d2||isNaN(d1)||isNaN(d2)) return 0;
+  var count = 0;
+  var cur = new Date(d1);
+  while (cur <= d2) {
+    var dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+    cur.setDate(cur.getDate()+1);
+  }
+  return count;
+}
+function today() { return dateToStr(new Date()); }
+
+// ── CALCULS CONGÉS ──
+function getJoursAcquis(emp) {
+  // 2 jours par mois depuis la date d'entrée jusqu'à aujourd'hui (ou date de sortie)
+  var entree = parseDate(emp.dateEntree);
+  if (!entree || isNaN(entree)) return 0;
+  var fin = emp.dateSortie ? parseDate(emp.dateSortie) : new Date();
+  if (isNaN(fin)) fin = new Date();
+  // Limiter à l'année active
+  var debutAnnee = new Date(anneeActive, 0, 1);
+  var finAnnee   = new Date(anneeActive, 11, 31);
+  var debut = entree > debutAnnee ? entree : debutAnnee;
+  var finCalc = fin < finAnnee ? fin : finAnnee;
+  if (debut > finCalc) return 0;
+  var mois = (finCalc.getFullYear() - debut.getFullYear()) * 12 + (finCalc.getMonth() - debut.getMonth()) + 1;
+  return Math.max(0, Math.min(mois, 12)) * JOURS_PAR_MOIS;
+}
+
+function getJoursPris(empId) {
+  return CONGES.filter(function(c){
+    return c.employeId===empId && c.statut==='approuve' && c.type==='Congé payé' &&
+      c.debut && c.debut.startsWith(anneeActive+'');
+  }).reduce(function(acc,c){ return acc + (c.nbJours||0); }, 0);
+}
+
+function getSoldeRestant(emp) {
+  return Math.max(0, getJoursAcquis(emp) - getJoursPris(emp.id));
+}
+
+function getIndemniteDue(emp) {
+  var solde = getSoldeRestant(emp);
+  var taux = emp.salaireJournalier || TAUX_JOURNALIER_DEFAULT;
+  return solde * taux;
+}
+
+// ══════════════════════════════════════════
+// IMPORT EMPLOYÉS
+// ══════════════════════════════════════════
+function importerEmployes(input) {
+  if (!input.files[0]) return;
+  var file = input.files[0];
+  var ext = file.name.split('.').pop().toLowerCase();
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var rows = [];
+      if (ext === 'csv') {
+        var lines = ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var headers = lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows = lines.slice(1).map(function(line){
+          var vals = line.split(/[,;]/);
+          var obj = {};
+          headers.forEach(function(h,i){ obj[h.trim()]=(vals[i]||'').trim().replace(/"/g,''); });
+          return obj;
+        });
+      } else {
+        var wb = XLSX.read(ev.target.result, {type:'binary'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(ws);
+      }
+      parseEmployes(rows);
+      toast(EMPLOYES.length + ' employes importes');
+    } catch(e) { toast('Erreur import : ' + e.message); }
+  };
+  ext === 'csv' ? reader.readAsText(file) : reader.readAsBinaryString(file);
+  input.value = '';
+}
+
+function getC(r, keys) {
+  for (var i=0;i<keys.length;i++) {
+    var k = keys[i];
+    var found = Object.keys(r).find(function(rk){ return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(k.toLowerCase().replace(/[^a-z]/g,''))!==-1; });
+    if (found && r[found]!==undefined && r[found]!=='') return String(r[found]).trim();
+  }
+  return '';
+}
+
+function parseEmployes(rows) {
+  EMPLOYES = rows.map(function(r, i) {
+    var nom    = getC(r,['nom','lastname','name']);
+    var prenom = getC(r,['prenom','firstname']);
+    var dept   = getC(r,['departement','dept','service','direction']);
+    var entree = getC(r,['dateentree','entree','dembauche','startdate','debut']);
+    var sortie = getC(r,['datesortie','sortie','fin','enddate','depart','exit']);
+    var sal    = parseFloat(getC(r,['salairejourna','salairejourna','tauxjour','journalier','daily'])) || TAUX_JOURNALIER_DEFAULT;
+    var actif  = !sortie || sortie === '';
+    return {
+      id: i+1,
+      nom: nom||'Employe', prenom: prenom||'', dept: dept||'Non défini',
+      dateEntree: entree||'2024-01-01', dateSortie: sortie||'',
+      salaireJournalier: sal, actif: actif
+    };
+  }).filter(function(e){ return e.nom; });
+  sauverDB();
+  renderAll();
+}
+
+// ══════════════════════════════════════════
+// DÉMO
+// ══════════════════════════════════════════
+function chargerDemo() {
+  EMPLOYES = [
+    {id:1,  nom:'Adjobi',  prenom:'Kossi',    dept:'Direction',  dateEntree:'2018-03-01', dateSortie:'', salaireJournalier:75000, actif:true},
+    {id:2,  nom:'Dossou',  prenom:'Aline',    dept:'RH',         dateEntree:'2020-06-15', dateSortie:'', salaireJournalier:45000, actif:true},
+    {id:3,  nom:'Houenou', prenom:'Patrick',  dept:'RH',         dateEntree:'2022-09-01', dateSortie:'', salaireJournalier:32000, actif:true},
+    {id:4,  nom:'Kpossou', prenom:'Jean',     dept:'Commercial', dateEntree:'2019-01-10', dateSortie:'', salaireJournalier:50000, actif:true},
+    {id:5,  nom:'Zannou',  prenom:'Sylvie',   dept:'Commercial', dateEntree:'2021-04-20', dateSortie:'', salaireJournalier:38000, actif:true},
+    {id:6,  nom:'Gbenou',  prenom:'Abel',     dept:'Commercial', dateEntree:'2023-02-01', dateSortie:'', salaireJournalier:28000, actif:true},
+    {id:7,  nom:'Soglo',   prenom:'Nadège',   dept:'Finance',    dateEntree:'2017-07-01', dateSortie:'', salaireJournalier:55000, actif:true},
+    {id:8,  nom:'Loko',    prenom:'Théodore', dept:'Finance',    dateEntree:'2021-11-15', dateSortie:'', salaireJournalier:36000, actif:true},
+    {id:9,  nom:'Hounsou', prenom:'Rémi',     dept:'Production', dateEntree:'2016-05-01', dateSortie:'', salaireJournalier:48000, actif:true},
+    {id:10, nom:'Tossou',  prenom:'Barnabé',  dept:'Production', dateEntree:'2020-08-01', dateSortie:'', salaireJournalier:30000, actif:true},
+    {id:11, nom:'Akpo',    prenom:'Fatima',   dept:'Production', dateEntree:'2022-03-15', dateSortie:'', salaireJournalier:28000, actif:true},
+    {id:12, nom:'Gbessi',  prenom:'Romuald',  dept:'IT',         dateEntree:'2021-01-04', dateSortie:'', salaireJournalier:42000, actif:true},
+  ];
+
+  CONGES = [
+    {id:1,  employeId:1,  type:'Congé payé',    debut:'2025-01-06', fin:'2025-01-10', nbJours:5,  statut:'approuve', motif:'Vacances familles'},
+    {id:2,  employeId:2,  type:'Congé payé',    debut:'2025-02-03', fin:'2025-02-07', nbJours:5,  statut:'approuve', motif:'Repos'},
+    {id:3,  employeId:4,  type:'Congé maladie', debut:'2025-02-17', fin:'2025-02-19', nbJours:3,  statut:'approuve', motif:'Maladie'},
+    {id:4,  employeId:3,  type:'Congé payé',    debut:'2025-03-10', fin:'2025-03-14', nbJours:5,  statut:'approuve', motif:'Voyages'},
+    {id:5,  employeId:5,  type:'Congé payé',    debut:'2025-03-24', fin:'2025-03-28', nbJours:5,  statut:'approuve', motif:'Vacances'},
+    {id:6,  employeId:7,  type:'Congé payé',    debut:'2025-04-14', fin:'2025-04-18', nbJours:5,  statut:'approuve', motif:'Famille'},
+    {id:7,  employeId:9,  type:'Congé payé',    debut:'2025-05-05', fin:'2025-05-09', nbJours:5,  statut:'approuve', motif:'Repos'},
+    {id:8,  employeId:6,  type:'Congé familial',debut:'2025-05-19', fin:'2025-05-21', nbJours:3,  statut:'approuve', motif:'Mariage'},
+    {id:9,  employeId:10, type:'Congé payé',    debut:'2025-06-02', fin:'2025-06-06', nbJours:5,  statut:'approuve', motif:'Vacances'},
+    {id:10, employeId:2,  type:'Congé payé',    debut:'2025-07-07', fin:'2025-07-18', nbJours:10, statut:'approuve', motif:'Grandes vacances'},
+    {id:11, employeId:4,  type:'Congé payé',    debut:'2025-07-21', fin:'2025-08-01', nbJours:10, statut:'approuve', motif:'Vacances annuelles'},
+    {id:12, employeId:1,  type:'Congé payé',    debut:'2025-08-04', fin:'2025-08-15', nbJours:10, statut:'approuve', motif:'Vacances'},
+    {id:13, employeId:8,  type:'Congé payé',    debut:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-03', fin:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-07', nbJours:5, statut:'attente', motif:'Vacances demandées'},
+    {id:14, employeId:11, type:'Congé payé',    debut:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-10', fin:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-14', nbJours:5, statut:'attente', motif:'Congé annuel'},
+    {id:15, employeId:12, type:'Congé maladie', debut:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-17', fin:anneeActive+'-'+String(moisActif+1).padStart(2,'0')+'-18', nbJours:2, statut:'attente', motif:'Ordonnance médecin'},
+  ];
+  sauverDB();
+  renderAll();
+  toast('Donnees demo chargees - 12 employes, 15 conges');
+}
+
+// ══════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════
+function renderAll() {
+  updateKPIs();
+  updateSelectEmployes();
+  updateBadgeAttente();
+  renderCalendrier();
+  renderSoldes();
+  renderDemandes();
+  renderRapport();
+  renderHistorique();
+  buildCalFiltreDepts();
+}
+
+function updateKPIs() {
+  var actifs = EMPLOYES.filter(function(e){return e.actif;}).length;
+  var totalAcquis  = EMPLOYES.reduce(function(acc,e){return acc+getJoursAcquis(e);},0);
+  var totalPris    = EMPLOYES.reduce(function(acc,e){return acc+getJoursPris(e.id);},0);
+  var totalRestant = EMPLOYES.reduce(function(acc,e){return acc+getSoldeRestant(e);},0);
+  var todayStr = today();
+  var aujourdhui   = CONGES.filter(function(c){return c.statut==='approuve'&&c.debut<=todayStr&&c.fin>=todayStr;}).length;
+  var enAttente    = CONGES.filter(function(c){return c.statut==='attente';}).length;
+  var totalIndem   = Math.round(EMPLOYES.reduce(function(acc,e){return acc+getIndemniteDue(e);},0)/1000);
+
+  document.getElementById('kpi-employes').textContent  = actifs;
+  document.getElementById('kpi-acquis').textContent    = totalAcquis;
+  document.getElementById('kpi-pris').textContent      = totalPris;
+  document.getElementById('kpi-restant').textContent   = totalRestant;
+  document.getElementById('kpi-aujourdhui').textContent= aujourdhui;
+  document.getElementById('kpi-attente').textContent   = enAttente;
+  document.getElementById('kpi-indemnites').textContent= totalIndem;
+  document.getElementById('kpi-emp-sub').textContent   = EMPLOYES.length + ' total dont ' + actifs + ' actifs';
+  document.getElementById('kpi-pris-sub').textContent  = 'Journees de conge YTD ' + anneeActive;
+  document.getElementById('kpi-rest-sub').textContent  = 'Solde cumule tous employes';
+  document.getElementById('kpi-auj-sub').textContent   = 'Personnes absentes ce jour';
+  document.getElementById('kpi-ind-sub').textContent   = 'Base ' + anneeActive + ' - conges payes restants';
+}
+
+function updateBadgeAttente() {
+  var n = CONGES.filter(function(c){return c.statut==='attente';}).length;
+  var badge = document.getElementById('badge-attente');
+  badge.textContent = n;
+  badge.style.display = n > 0 ? 'inline' : 'none';
+  document.getElementById('kpi-attente').textContent = n;
+}
+
+function updateSelectEmployes() {
+  var sel = document.getElementById('fd-employe');
+  sel.innerHTML = '<option value="">— Sélectionner —</option>';
+  EMPLOYES.filter(function(e){return e.actif;}).forEach(function(e){
+    sel.innerHTML += '<option value="'+e.id+'">'+e.prenom+' '+e.nom+' ('+e.dept+')</option>';
+  });
+}
+
+// ══════════════════════════════════════════
+// CALENDRIER
+// ══════════════════════════════════════════
+function buildCalFiltreDepts() {
+  var depts = EMPLOYES.map(function(e){return e.dept;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+  var el = document.getElementById('cal-dept-filters');
+  el.innerHTML = '';
+  depts.forEach(function(d) {
+    var btn = document.createElement('button');
+    btn.className = 'cal-filter';
+    btn.style.borderColor = getDeptColor(d);
+    btn.textContent = d;
+    btn.onclick = function() { calFiltrer(d, btn); };
+    el.appendChild(btn);
+  });
+}
+
+function calFiltrer(f, btn) {
+  calFiltre = f;
+  document.querySelectorAll('.cal-filter').forEach(function(b){b.classList.remove('active');});
+  if (btn) btn.classList.add('active');
+  renderCalendrier();
+}
+
+function navMois(dir) {
+  moisActif = (moisActif + dir + 12) % 12;
+  renderCalendrier();
+}
+
+function renderCalendrier() {
+  var MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('cal-month-label').textContent = MOIS[moisActif] + ' ' + anneeActive;
+
+  var nbJours = new Date(anneeActive, moisActif+1, 0).getDate();
+  var todayStr = today();
+
+  // Filtrer employés
+  var emps = EMPLOYES.filter(function(e){
+    return calFiltre==='tous' || e.dept===calFiltre;
+  });
+
+  // Grouper par département
+  var depts = emps.map(function(e){return e.dept;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+
+  var container = document.getElementById('cal-container');
+  container.innerHTML = '';
+
+  if (!emps.length) {
+    container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gris)">Importez des employés pour afficher le calendrier.</div>';
+    return;
+  }
+
+  var wrap = document.createElement('div');
+  wrap.className = 'cal-wrap';
+
+  // En-tête jours
+  var hdrRow = document.createElement('div');
+  hdrRow.className = 'cal-header-row';
+  var hdrEmpSpace = document.createElement('div');
+  hdrEmpSpace.className = 'cal-header-emp-space';
+  hdrEmpSpace.textContent = 'Employé';
+  hdrRow.appendChild(hdrEmpSpace);
+  var hdrDays = document.createElement('div');
+  hdrDays.className = 'cal-day-headers';
+  for (var d=1; d<=nbJours; d++) {
+    var dt = new Date(anneeActive, moisActif, d);
+    var dow = dt.getDay();
+    var isWE = dow===0||dow===6;
+    var isToday = dateToStr(dt)===todayStr;
+    var hdr = document.createElement('div');
+    hdr.className = 'cal-day-hdr' + (isWE?' weekend':'') + (isToday?' today-col':'');
+    hdr.innerHTML = '<div>'+['D','L','M','M','J','V','S'][dow]+'</div><div style="font-weight:700">'+d+'</div>';
+    hdrDays.appendChild(hdr);
+  }
+  hdrRow.appendChild(hdrDays);
+  wrap.appendChild(hdrRow);
+
+  // Comptage absences par jour (pour alertes)
+  var absParJour = {};
+  for (var j=1;j<=nbJours;j++) absParJour[j]=0;
+
+  // Lignes par département
+  depts.forEach(function(dept) {
+    var deptEmps = emps.filter(function(e){return e.dept===dept;});
+    var deptColor = getDeptColor(dept);
+
+    var deptRow = document.createElement('div');
+    deptRow.className = 'cal-dept-row';
+
+    var deptLabel = document.createElement('div');
+    deptLabel.className = 'cal-dept-label';
+    deptLabel.innerHTML = '<div class="cal-dept-dot" style="background:'+deptColor+'"></div><div class="cal-dept-name">'+dept+'<div style="font-size:9px;color:var(--gris);font-weight:400">'+deptEmps.length+' pers.</div></div>';
+
+    var empRows = document.createElement('div');
+    empRows.className = 'cal-emp-rows';
+
+    deptEmps.forEach(function(emp) {
+      var row = document.createElement('div');
+      row.className = 'cal-emp-row';
+
+      var nameCell = document.createElement('div');
+      nameCell.className = 'cal-emp-name';
+      nameCell.title = emp.prenom + ' ' + emp.nom;
+      nameCell.textContent = emp.prenom + ' ' + emp.nom;
+
+      var daysWrap = document.createElement('div');
+      daysWrap.className = 'cal-days';
+      daysWrap.style.position = 'relative';
+
+      for (var d=1;d<=nbJours;d++) {
+        var dt = new Date(anneeActive, moisActif, d);
+        var dow = dt.getDay();
+        var isWE = dow===0||dow===6;
+        var isToday = dateToStr(dt)===todayStr;
+        var cell = document.createElement('div');
+        cell.className = 'cal-day-cell' + (isWE?' weekend':'') + (isToday?' today-col':'');
+        daysWrap.appendChild(cell);
+      }
+
+      // Blocs congés
+      var empConges = CONGES.filter(function(c){
+        return c.employeId===emp.id &&
+          ((c.debut.startsWith(anneeActive+'-'+String(moisActif+1).padStart(2,'0'))) ||
+           (c.fin.startsWith(anneeActive+'-'+String(moisActif+1).padStart(2,'0'))));
+      });
+
+      empConges.forEach(function(c) {
+        var dStart = parseDate(c.debut);
+        var dEnd   = parseDate(c.fin);
+        var moisDebut = new Date(anneeActive, moisActif, 1);
+        var moisFin   = new Date(anneeActive, moisActif, nbJours);
+        var blockStart = dStart < moisDebut ? moisDebut : dStart;
+        var blockEnd   = dEnd   > moisFin   ? moisFin   : dEnd;
+        var dayStart = blockStart.getDate();
+        var dayEnd   = blockEnd.getDate();
+        var cellW = 100/nbJours;
+        var block = document.createElement('div');
+        block.className = 'conge-block status-'+c.statut;
+        block.style.left  = ((dayStart-1)*cellW)+'%';
+        block.style.width = ((dayEnd-dayStart+1)*cellW - 0.2)+'%';
+        block.title = c.type + ' — ' + c.nbJours + 'j';
+        block.textContent = c.type.replace('Congé ','');
+        block.onclick = (function(cid){ return function(){ ouvrirDetailConge(cid); }; })(c.id);
+        daysWrap.appendChild(block);
+
+        // Comptage absences
+        if (c.statut==='approuve') {
+          for (var j=dayStart;j<=dayEnd;j++) {
+            var dt2 = new Date(anneeActive, moisActif, j);
+            if (dt2.getDay()!==0&&dt2.getDay()!==6) absParJour[j]=(absParJour[j]||0)+1;
+          }
+        }
+      });
+
+      row.appendChild(nameCell);
+      row.appendChild(daysWrap);
+      empRows.appendChild(row);
+    });
+
+    deptRow.appendChild(deptLabel);
+    deptRow.appendChild(empRows);
+    wrap.appendChild(deptRow);
+  });
+
+  // Ligne alertes sous-effectif (>30% absents)
+  var seuil = Math.max(1, Math.floor(emps.length * 0.3));
+  var hasAlert = Object.keys(absParJour).some(function(j){return absParJour[j]>=seuil;});
+  if (hasAlert) {
+    var alertRow = document.createElement('div');
+    alertRow.className = 'cal-alert-row';
+    var alertLabel = document.createElement('div');
+    alertLabel.className = 'cal-alert-label';
+    alertLabel.textContent = '⚠ Sous-effectif';
+    alertRow.appendChild(alertLabel);
+    var alertDays = document.createElement('div');
+    alertDays.className = 'cal-alert-days';
+    for (var d=1;d<=nbJours;d++) {
+      var cell2 = document.createElement('div');
+      cell2.className = 'cal-alert-cell';
+      if (absParJour[d]>=seuil) {
+        cell2.textContent = absParJour[d];
+        cell2.style.color = '#F05A5A';
+        cell2.style.background = 'rgba(240,90,90,.08)';
+        cell2.title = absParJour[d] + ' absents ce jour';
+      }
+      alertDays.appendChild(cell2);
+    }
+    alertRow.appendChild(alertDays);
+    wrap.appendChild(alertRow);
+  }
+
+  container.appendChild(wrap);
+}
+
+// ══════════════════════════════════════════
+// SOLDES
+// ══════════════════════════════════════════
+function renderSoldes(filtre) {
+  var emps = EMPLOYES;
+  if (filtre) emps = EMPLOYES.filter(function(e){ return (e.prenom+' '+e.nom+' '+e.dept).toLowerCase().includes(filtre.toLowerCase()); });
+  var tbody = document.getElementById('solde-tbody');
+  tbody.innerHTML = '';
+  emps.forEach(function(emp) {
+    var acquis   = getJoursAcquis(emp);
+    var pris     = getJoursPris(emp.id);
+    var restant  = getSoldeRestant(emp);
+    var indem    = getIndemniteDue(emp);
+    var pct      = acquis ? Math.round(pris/acquis*100) : 0;
+    var color    = getDeptColor(emp.dept);
+    var initials = (emp.prenom.charAt(0)+(emp.nom.charAt(0)||'')).toUpperCase();
+    var statusCls = !emp.actif?'br':restant<=0?'by':restant<=5?'bo':'bv';
+    var statusLbl = !emp.actif?'Sorti':restant<=0?'Soldé':restant<=5?'Faible':'OK';
+    var anciennete = '';
+    if (emp.dateEntree) {
+      var entree = parseDate(emp.dateEntree);
+      var now2 = new Date();
+      var moisAncien = (now2.getFullYear()-entree.getFullYear())*12 + (now2.getMonth()-entree.getMonth());
+      anciennete = moisAncien >= 12 ? Math.floor(moisAncien/12)+'an(s)' : moisAncien+'mois';
+    }
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:'+color+'22;color:'+color+';border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+initials+'</div><div><div style="font-weight:600">'+emp.prenom+' '+emp.nom+'</div><div style="font-size:10px;color:var(--gris)">'+(!emp.actif?'Sorti(e) — '+fmtDate(emp.dateSortie):'Actif(e)')+'</div></div></div></td>' +
+        '<td><span style="color:'+color+';font-size:11px;font-weight:600">'+emp.dept+'</span></td>' +
+        '<td style="color:var(--gris);font-size:11px">'+anciennete+'</td>' +
+        '<td><span class="badge bo">'+acquis+' j</span></td>' +
+        '<td><div>'+pris+' j</div><div class="solde-bar"><div class="solde-bar-fill" style="width:'+pct+'%;background:var(--bleu)"></div></div></td>' +
+        '<td><span class="badge '+statusCls+'" style="font-size:12px">'+restant+' j</span></td>' +
+        '<td style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(indem>0?Math.round(indem).toLocaleString('fr-FR')+' FCFA':'—')+'</td>' +
+        '<td><span class="badge '+statusCls+'">'+statusLbl+'</span></td>' +
+        '<td><button onclick="ouvrirDemandeManuel('+emp.id+')" style="background:var(--or-glow);border:1px solid rgba(201,168,76,.2);color:var(--or);padding:3px 10px;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--fd)">+ Congé</button></td>' +
+      '</tr>';
+  });
+}
+
+function filtrerSoldes(val) { renderSoldes(val); }
+
+// ══════════════════════════════════════════
+// DEMANDES
+// ══════════════════════════════════════════
+function filtrerDemandes(f, btn) {
+  demandesFiltre = f;
+  document.querySelectorAll('.cal-filter').forEach(function(b){b.classList.remove('active');});
+  if (btn) btn.classList.add('active');
+  renderDemandes();
+}
+
+function renderDemandes() {
+  var conges = CONGES;
+  if (demandesFiltre !== 'tous') conges = CONGES.filter(function(c){return c.statut===demandesFiltre;});
+  conges = conges.slice().reverse();
+  var list = document.getElementById('demandes-list');
+  list.innerHTML = '';
+  if (!conges.length) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gris);font-size:13px">Aucune demande.</div>';
+    return;
+  }
+  conges.forEach(function(c) {
+    var emp = EMPLOYES.find(function(e){return e.id===c.employeId;});
+    if (!emp) return;
+    var color = getDeptColor(emp.dept);
+    var initials = (emp.prenom.charAt(0)+(emp.nom.charAt(0)||'')).toUpperCase();
+    var stCls = c.statut==='approuve'?'bv':c.statut==='refuse'?'br':'by';
+    var stLbl = c.statut==='approuve'?'✓ Approuvé':c.statut==='refuse'?'✗ Refusé':'⏳ En attente';
+    var card = document.createElement('div');
+    card.className = 'demande-card';
+    card.innerHTML =
+      '<div class="demande-avatar" style="background:'+color+'22;color:'+color+';border:1px solid '+color+'44">'+initials+'</div>' +
+      '<div class="demande-info">' +
+        '<div class="demande-name">'+emp.prenom+' '+emp.nom+'</div>' +
+        '<div class="demande-meta">'+emp.dept+' · <span class="badge '+stCls+'">'+stLbl+'</span></div>' +
+        '<div class="demande-dates">📅 '+fmtDate(c.debut)+' → '+fmtDate(c.fin)+' · <span class="demande-nb">'+c.nbJours+' j</span> · '+c.type+'</div>' +
+        (c.motif?'<div style="font-size:11px;color:var(--gris);margin-top:3px;font-style:italic">'+c.motif+'</div>':'') +
+      '</div>' +
+      (c.statut==='attente' ?
+        '<div class="demande-actions"><button class="btn-approuver" onclick="changerStatut('+c.id+'\'approuve\')">✓</button><button class="btn-refuser" onclick="changerStatut('+c.id+',\'refuse\')">✗</button></div>' : '');
+    card.querySelector('.demande-info').onclick = function(){ ouvrirDetailConge(c.id); };
+    list.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════
+// FORMULAIRE DEMANDE
+// ══════════════════════════════════════════
+function ouvrirDemandeManuel(empId) {
+  showTab('demandes', document.querySelector('.tab-btn:nth-child(3)'));
+  if (empId) document.getElementById('fd-employe').value = empId;
+}
+
+document.getElementById('fd-debut').addEventListener('change', calculerJours);
+document.getElementById('fd-fin').addEventListener('change', calculerJours);
+
+function calculerJours() {
+  var debut = document.getElementById('fd-debut').value;
+  var fin   = document.getElementById('fd-fin').value;
+  if (!debut||!fin) return;
+  var nb = nbJoursOuvres(debut, fin);
+  document.getElementById('fd-nb-calc').textContent = nb;
+
+  var empId = parseInt(document.getElementById('fd-employe').value);
+  if (empId) {
+    var emp = EMPLOYES.find(function(e){return e.id===empId;});
+    if (emp) {
+      var restant = getSoldeRestant(emp);
+      var alertEl = document.getElementById('fd-alerte');
+      if (nb > restant) {
+        alertEl.style.display = 'block';
+        alertEl.textContent = '⚠ Solde insuffisant : ' + restant + ' jour(s) disponible(s) pour ' + emp.prenom + ' ' + emp.nom;
+      } else {
+        alertEl.style.display = 'none';
+      }
+    }
+  }
+}
+
+function soumettreDemandeConge() {
+  var empId  = parseInt(document.getElementById('fd-employe').value);
+  var type   = document.getElementById('fd-type').value;
+  var debut  = document.getElementById('fd-debut').value;
+  var fin    = document.getElementById('fd-fin').value;
+  var motif  = document.getElementById('fd-motif').value;
+  if (!empId||!debut||!fin) { toast('Remplissez tous les champs obligatoires'); return; }
+  if (fin < debut) { toast('La date de fin doit être après la date de début'); return; }
+  var nb = nbJoursOuvres(debut, fin);
+  if (nb <= 0) { toast('Aucun jour ouvre dans la période sélectionnée'); return; }
+
+  // Vérifier chevauchement
+  var chevauchement = CONGES.some(function(c){
+    return c.employeId===empId && c.statut!=='refuse' &&
+      !((fin < c.debut)||(debut > c.fin));
+  });
+  if (chevauchement) { toast('Chevauchement avec un conge existant pour cet employe'); return; }
+
+  var newId = CONGES.length ? Math.max.apply(null, CONGES.map(function(c){return c.id;})) + 1 : 1;
+  CONGES.push({
+    id:newId, employeId:empId, type:type,
+    debut:debut, fin:fin, nbJours:nb,
+    statut:'attente', motif:motif, createdAt:today()
+  });
+  sauverDB();
+  renderAll();
+  document.getElementById('fd-employe').value='';
+  document.getElementById('fd-debut').value='';
+  document.getElementById('fd-fin').value='';
+  document.getElementById('fd-motif').value='';
+  document.getElementById('fd-nb-calc').textContent='—';
+  document.getElementById('fd-alerte').style.display='none';
+  toast('Demande soumise en attente de validation');
+}
+
+// ══════════════════════════════════════════
+// STATUTS
+// ══════════════════════════════════════════
+function changerStatut(id, statut) {
+  var c = CONGES.find(function(c){return c.id===id;});
+  if (!c) return;
+  c.statut = statut;
+  sauverDB();
+  renderAll();
+  toast(statut==='approuve'?'Conge approuve':'Conge refuse');
+}
+
+function ouvrirDetailConge(id) {
+  var c = CONGES.find(function(c){return c.id===id;});
+  if (!c) return;
+  var emp = EMPLOYES.find(function(e){return e.id===c.employeId;});
+  if (!emp) return;
+  modalCongeId = id;
+  var color = getDeptColor(emp.dept);
+  var indem = c.type==='Congé payé' ? c.nbJours * (emp.salaireJournalier||TAUX_JOURNALIER_DEFAULT) : 0;
+  var stCls = c.statut==='approuve'?'bv':c.statut==='refuse'?'br':'by';
+  var stLbl = c.statut==='approuve'?'✓ Approuvé':c.statut==='refuse'?'✗ Refusé':'⏳ En attente';
+  document.getElementById('modal-detail-title').textContent = 'Congé de ' + emp.prenom + ' ' + emp.nom;
+  document.getElementById('modal-detail-body').innerHTML =
+    '<div style="display:grid;gap:.75rem;">' +
+      '<div style="display:flex;gap:.75rem;align-items:center">' +
+        '<div style="width:48px;height:48px;border-radius:50%;background:'+color+'22;color:'+color+';border:1px solid '+color+'44;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:18px;font-weight:700">'+(emp.prenom.charAt(0)+(emp.nom.charAt(0)||'')).toUpperCase()+'</div>' +
+        '<div><div style="font-size:15px;font-weight:700;color:var(--blanc)">'+emp.prenom+' '+emp.nom+'</div><div style="font-size:11px;color:var(--gris)">'+emp.dept+'</div></div>' +
+        '<span class="badge '+stCls+'" style="margin-left:auto">'+stLbl+'</span>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">' +
+        '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Type</div><div style="font-weight:600">'+c.type+'</div></div>' +
+        '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Durée</div><div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--or)">'+c.nbJours+' j</div></div>' +
+        '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Début</div><div style="font-weight:600">'+fmtDate(c.debut)+'</div></div>' +
+        '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Fin</div><div style="font-weight:600">'+fmtDate(c.fin)+'</div></div>' +
+      '</div>' +
+      (c.motif?'<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Motif</div><div style="font-style:italic">'+c.motif+'</div></div>':'') +
+      (indem>0?'<div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:var(--r);padding:.75rem;display:flex;justify-content:space-between;align-items:center"><div style="font-size:11px;color:var(--gris)">Indemnité de congé</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--or)">'+Math.round(indem).toLocaleString('fr-FR')+' FCFA</div></div>':'') +
+      '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Solde employé (année '+anneeActive+')</div><div style="display:flex;gap:1rem"><span><b style="color:var(--or)">'+getJoursAcquis(emp)+'</b> acquis</span><span><b style="color:var(--bleu)">'+getJoursPris(emp.id)+'</b> pris</span><span><b style="color:var(--vert)">'+getSoldeRestant(emp)+'</b> restants</span></div></div>' +
+    '</div>';
+  document.getElementById('modal-btn-approuver').style.display = c.statut==='attente'?'block':'none';
+  document.getElementById('modal-btn-refuser').style.display   = c.statut==='attente'?'block':'none';
+  document.getElementById('modal-detail').classList.add('open');
+}
+
+function appouverDepuisModal() { if (modalCongeId) { changerStatut(modalCongeId,'approuve'); fermerModal('modal-detail'); } }
+function refuserDepuisModal()  { if (modalCongeId) { changerStatut(modalCongeId,'refuse');   fermerModal('modal-detail'); } }
+function fermerModal(id)       { document.getElementById(id).classList.remove('open'); }
+
+document.getElementById('modal-detail').addEventListener('click', function(e){ if(e.target===this) fermerModal('modal-detail'); });
+
+// ══════════════════════════════════════════
+// RAPPORT
+// ══════════════════════════════════════════
+function switchPeriode(p, btn) {
+  perioderapport = p;
+  document.querySelectorAll('.periode-btn').forEach(function(b){b.classList.remove('active');});
+  if (btn) btn.classList.add('active');
+  renderRapport();
+}
+
+function renderRapport() {
+  var now = new Date();
+  var congesFiltre = CONGES.filter(function(c){
+    if (c.statut==='refuse') return false;
+    var deb = parseDate(c.debut);
+    if (!deb) return false;
+    if (perioderapport==='mois')     return deb.getFullYear()===anneeActive && deb.getMonth()===now.getMonth();
+    if (perioderapport==='trimestre'){
+      var trim = Math.floor(now.getMonth()/3);
+      return deb.getFullYear()===anneeActive && Math.floor(deb.getMonth()/3)===trim;
+    }
+    return deb.getFullYear()===anneeActive;
+  });
+
+  var totalJours  = congesFiltre.reduce(function(acc,c){return acc+c.nbJours;},0);
+  var totalPaie   = congesFiltre.filter(function(c){return c.type==='Congé payé';}).reduce(function(acc,c){return acc+c.nbJours;},0);
+  var totalMal    = congesFiltre.filter(function(c){return c.type==='Congé maladie';}).reduce(function(acc,c){return acc+c.nbJours;},0);
+  var nbPersonnes = new Set(congesFiltre.map(function(c){return c.employeId;})).size;
+  var indTotale   = EMPLOYES.reduce(function(acc,e){return acc+getIndemniteDue(e);},0);
+
+  var grid = document.getElementById('rapport-grid');
+  var LABELS_PERIODE = {mois:'Ce mois', trimestre:'Ce trimestre', annee:'Année '+anneeActive};
+  grid.innerHTML =
+    mkRapportCard('📅 Jours de congé', totalJours+' j', LABELS_PERIODE[perioderapport], 'var(--or)') +
+    mkRapportCard('💳 Congés payés', totalPaie+' j', 'Dont congés payés', 'var(--vert)') +
+    mkRapportCard('🤒 Congés maladie', totalMal+' j', 'Arrêts maladie', 'var(--rouge)') +
+    mkRapportCard('👥 Personnes concernées', nbPersonnes, 'Ont pris des congés', 'var(--bleu)') +
+    mkRapportCard('💰 Indemnités dues (total annuel)', Math.round(indTotale/1000)+' K FCFA', 'Soldes non pris x taux journalier', 'var(--violet)') +
+    mkRapportCard('📊 Taux prise de congés', (EMPLOYES.length?Math.round(nbPersonnes/EMPLOYES.length*100):0)+'%', 'Employés ayant pris des congés', 'var(--orange)');
+
+  // Par département
+  var depts2 = EMPLOYES.map(function(e){return e.dept;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+  var deptList = document.getElementById('rapport-dept-list');
+  deptList.innerHTML = '';
+  depts2.forEach(function(dept) {
+    var deptEmps = EMPLOYES.filter(function(e){return e.dept===dept;});
+    var jours = congesFiltre.filter(function(c){
+      return deptEmps.some(function(e){return e.id===c.employeId;});
+    }).reduce(function(acc,c){return acc+c.nbJours;},0);
+    var color = getDeptColor(dept);
+    var maxJ = Math.max.apply(null, depts2.map(function(d){
+      var de = EMPLOYES.filter(function(e){return e.dept===d;});
+      return congesFiltre.filter(function(c){return de.some(function(e){return e.id===c.employeId;});}).reduce(function(acc,c){return acc+c.nbJours;},0);
+    })) || 1;
+    deptList.innerHTML +=
+      '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:var(--blanc)">'+dept+'</span><span style="font-size:11px;font-weight:700;color:'+color+'">'+jours+' j</span></div>' +
+      '<div style="height:5px;background:var(--gris3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+Math.round(jours/maxJ*100)+'%;background:'+color+';border-radius:3px"></div></div></div>';
+  });
+
+  // Indemnités par employé
+  var indList = document.getElementById('rapport-indemnites-list');
+  indList.innerHTML = '';
+  var empsWithInd = EMPLOYES.map(function(e){return {emp:e, ind:getIndemniteDue(e), solde:getSoldeRestant(e)};})
+    .filter(function(x){return x.ind>0;})
+    .sort(function(a,b){return b.ind-a.ind;});
+  empsWithInd.forEach(function(x) {
+    var color = getDeptColor(x.emp.dept);
+    indList.innerHTML +=
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem;border-radius:var(--r);margin-bottom:4px;hover:background:var(--bg3)">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<div style="width:24px;height:24px;border-radius:50%;background:'+color+'22;color:'+color+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">'+x.emp.prenom.charAt(0)+x.emp.nom.charAt(0)+'</div>' +
+          '<div><div style="font-size:11px;font-weight:600;color:var(--blanc)">'+x.emp.prenom+' '+x.emp.nom+'</div><div style="font-size:10px;color:var(--gris)">'+x.solde+' j restants</div></div>' +
+        '</div>' +
+        '<div style="font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or)">'+Math.round(x.ind).toLocaleString('fr-FR')+' F</div>' +
+      '</div>';
+  });
+}
+
+function mkRapportCard(title, val, sub, color) {
+  return '<div class="rapport-card"><div class="rapport-title" style="color:'+color+'">'+title+'</div>' +
+    '<div class="rapport-big" style="color:'+color+'">'+val+'</div>' +
+    '<div class="rapport-sub">'+sub+'</div></div>';
+}
+
+// ══════════════════════════════════════════
+// HISTORIQUE
+// ══════════════════════════════════════════
+function renderHistorique(filtre) {
+  var conges = CONGES.slice().reverse();
+  if (filtre) {
+    conges = conges.filter(function(c){
+      var emp = EMPLOYES.find(function(e){return e.id===c.employeId;});
+      return emp && (emp.prenom+' '+emp.nom+' '+emp.dept).toLowerCase().includes(filtre.toLowerCase());
+    });
+  }
+  var tbody = document.getElementById('historique-tbody');
+  tbody.innerHTML = '';
+  conges.forEach(function(c) {
+    var emp = EMPLOYES.find(function(e){return e.id===c.employeId;});
+    if (!emp) return;
+    var color  = getDeptColor(emp.dept);
+    var stCls  = c.statut==='approuve'?'bv':c.statut==='refuse'?'br':'by';
+    var stLbl  = c.statut==='approuve'?'Approuvé':c.statut==='refuse'?'Refusé':'En attente';
+    var indem  = c.type==='Congé payé'?Math.round(c.nbJours*(emp.salaireJournalier||TAUX_JOURNALIER_DEFAULT)).toLocaleString('fr-FR')+' F':'—';
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td><span style="font-weight:600">'+emp.prenom+' '+emp.nom+'</span></td>' +
+        '<td><span style="color:'+color+';font-size:11px">'+emp.dept+'</span></td>' +
+        '<td style="font-size:11px">'+c.type+'</td>' +
+        '<td style="font-size:11px">'+fmtDate(c.debut)+'</td>' +
+        '<td style="font-size:11px">'+fmtDate(c.fin)+'</td>' +
+        '<td><span class="badge bo">'+c.nbJours+' j</span></td>' +
+        '<td><span class="badge '+stCls+'">'+stLbl+'</span></td>' +
+        '<td style="color:var(--or);font-size:11px;font-weight:600">'+indem+'</td>' +
+        '<td>' +
+          (c.statut==='attente'?
+            '<button onclick="changerStatut('+c.id+',\'approuve\')" style="background:rgba(52,199,123,.1);border:1px solid rgba(52,199,123,.2);color:var(--vert);padding:3px 8px;border-radius:var(--r);font-size:10px;cursor:pointer;margin-right:3px">✓</button>' +
+            '<button onclick="changerStatut('+c.id+',\'refuse\')" style="background:rgba(240,90,90,.1);border:1px solid rgba(240,90,90,.2);color:var(--rouge);padding:3px 8px;border-radius:var(--r);font-size:10px;cursor:pointer">✗</button>' : '') +
+          '<button onclick="supprimerConge('+c.id+')" style="background:var(--bg3);border:1px solid var(--gris3);color:var(--gris2);padding:3px 8px;border-radius:var(--r);font-size:10px;cursor:pointer;margin-left:3px">🗑</button>' +
+        '</td>' +
+      '</tr>';
+  });
+}
+
+function filtrerHistorique(val) { renderHistorique(val); }
+
+function supprimerConge(id) {
+  if (!confirm('Supprimer ce congé ?')) return;
+  CONGES = CONGES.filter(function(c){return c.id!==id;});
+  sauverDB();
+  renderAll();
+  toast('Conge supprime');
+}
+
+// ══════════════════════════════════════════
+// EXPORT EXCEL
+// ══════════════════════════════════════════
+function exporterExcel() {
+  var wb = XLSX.utils.book_new();
+
+  // Feuille soldes
+  var soldesData = [['Employé','Département','Acquis','Pris','Restant','Indemnité FCFA']];
+  EMPLOYES.forEach(function(e){
+    soldesData.push([e.prenom+' '+e.nom, e.dept, getJoursAcquis(e), getJoursPris(e.id), getSoldeRestant(e), getIndemniteDue(e)]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(soldesData), 'Soldes');
+
+  // Feuille historique
+  var histData = [['Employé','Département','Type','Début','Fin','Jours','Statut','Indemnité']];
+  CONGES.forEach(function(c){
+    var e = EMPLOYES.find(function(emp){return emp.id===c.employeId;});
+    if (!e) return;
+    var indem = c.type==='Congé payé' ? c.nbJours*(e.salaireJournalier||TAUX_JOURNALIER_DEFAULT) : 0;
+    histData.push([e.prenom+' '+e.nom, e.dept, c.type, c.debut, c.fin, c.nbJours, c.statut, indem]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(histData), 'Historique');
+
+  XLSX.writeFile(wb, 'planning-conges-'+anneeActive+'.xlsx');
+  toast('Export Excel génère');
+}
+
+// ══════════════════════════════════════════
+// TABS & UTILS
+// ══════════════════════════════════════════
+function showTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function changeAnnee(val) {
+  anneeActive = parseInt(val);
+  renderAll();
+}
+
+var toastTimer;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3500);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+chargerDB();
+if (EMPLOYES.length) {
+  renderAll();
+} else {
+  updateKPIs();
+  document.getElementById('cal-container').innerHTML = '<div style="text-align:center;padding:4rem;color:var(--gris)"><div style="font-size:48px;margin-bottom:1rem">📅</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.5rem">Démarrez votre planning de congés</div><div style="font-size:13px;margin-bottom:1.5rem">Importez votre liste d\'employés ou chargez les données de démonstration.</div><button onclick="chargerDemo()" style="background:var(--or);color:var(--bg);border:none;padding:10px 24px;border-radius:20px;font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer">🎲 Charger la démo</button></div>';
+}
+</script>
+</body>
+</html>

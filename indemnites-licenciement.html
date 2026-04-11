@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Indemnités de Licenciement — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+.main{padding:1.5rem 1.75rem;max-width:1200px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* FORM */
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:13px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+.sep{height:1px;background:var(--gris3);margin:.875rem 0;}
+
+/* RÉSULTAT */
+.result-hero{background:linear-gradient(135deg,var(--bg2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.25);border-radius:var(--rl);padding:1.75rem;margin-bottom:1.25rem;}
+.result-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1.25rem;}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.rbox{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;text-align:center;}
+.rbox-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);margin-bottom:.35rem;}
+.rbox-val{font-family:var(--fd);font-size:20px;font-weight:800;line-height:1;}
+.rbox-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+.total-box{background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.04));border:2px solid var(--or);border-radius:var(--rl);padding:1.5rem;text-align:center;margin-bottom:1.25rem;}
+.total-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--or);margin-bottom:.5rem;}
+.total-val{font-family:var(--fd);font-size:42px;font-weight:800;color:var(--or);line-height:1;}
+.total-sub{font-size:12px;color:var(--gris);margin-top:.5rem;}
+
+/* DÉTAIL CALCUL */
+.calc-detail{background:var(--bg3);border-radius:var(--r);overflow:hidden;}
+.calc-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:1px solid rgba(30,30,46,.6);font-size:12px;}
+.calc-row:last-child{border-bottom:none;}
+.calc-row.total{background:var(--bg4);font-weight:700;font-family:var(--fd);}
+.calc-row.total .cv{color:var(--or);font-size:14px;}
+.calc-row.negatif .cv{color:var(--rouge);}
+.calc-row.zero{opacity:.45;}
+.cl{color:var(--gris);}
+.cv{color:var(--blanc);font-family:var(--fd);font-weight:700;}
+.badge-type{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-left:8px;}
+
+/* TABLE REGISTRE */
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);text-align:left;white-space:nowrap;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+
+/* CONFIG TAUX */
+.taux-card{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;border-left:3px solid;}
+.taux-inp{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fd);font-size:14px;font-weight:700;padding:4px 8px;outline:none;width:90px;text-align:center;transition:border-color .2s;}
+.taux-inp:focus{border-color:var(--or);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:720px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:70vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+
+/* IMPRESSION */
+@media print{
+  .hdr,.tabs,.no-print{display:none!important;}
+  .panel{display:block!important;}
+  body{background:#fff;color:#000;}
+  .fiche-print{display:block!important;}
+  .sc,.result-hero,.total-box,.calc-detail{border:1px solid #ccc;background:#fff;}
+  .rbox{background:#f5f5f5;border:1px solid #ddd;}
+  .calc-row{border-bottom:1px solid #eee;}
+  .hdr-logo span,.rbox-val,.total-val,.cv,.result-title,.total-label{color:#C9A84C!important;}
+  .btn{display:none!important;}
+  .rbox-label,.calc-row .cl,.total-sub{color:#666!important;}
+}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){.fg,.fg3{grid-template-columns:1fr;}.result-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Indemnités de Licenciement</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-or no-print" onclick="imprimerFiche()">🖨️ Imprimer / PDF</button>
+    <button class="btn btn-ghost no-print" onclick="exporterExcel()">📊 Export Excel</button>
+  </div>
+</header>
+
+<nav class="tabs no-print">
+  <button class="tab active" onclick="showTab('simulateur',this)"><span class="tdot" style="background:var(--or)"></span>💰 Simulateur</button>
+  <button class="tab" onclick="showTab('registre',this)"><span class="tdot" style="background:var(--bleu)"></span>📋 Registre des départs <span id="badge-reg" style="display:none;background:var(--bleu);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" onclick="showTab('config',this)"><span class="tdot" style="background:var(--gris)"></span>⚙️ Configuration</button>
+</nav>
+
+<div class="main">
+
+<!-- ══ SIMULATEUR ══ -->
+<div class="panel active" id="panel-simulateur">
+
+  <!-- INFORMATIONS EMPLOYÉ -->
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👤 Informations de l'Employé</div>
+    </div>
+    <div class="sc-body">
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Nom *</label><input type="text" id="s-nom" placeholder="Ex: DOSSOU" oninput="calculer()"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="s-prenom" placeholder="Ex: Aline" oninput="calculer()"/></div>
+        <div class="ff"><label>Matricule</label><input type="text" id="s-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="s-poste" placeholder="Ex: Comptable"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="s-dept" placeholder="Ex: Finance"/></div>
+        <div class="ff"><label>Type de contrat</label>
+          <select id="s-contrat">
+            <option value="CDI">CDI</option>
+            <option value="CDD">CDD</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="ff"><label>Date d'entrée *</label><input type="date" id="s-entree" onchange="calculer()"/></div>
+        <div class="ff"><label>Date de départ / fin *</label><input type="date" id="s-depart" onchange="calculer()"/></div>
+        <div class="ff"><label>Ancienneté calculée</label><input type="text" id="s-anciennete" readonly style="background:var(--bg4);color:var(--or);font-weight:700;"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE DE RUPTURE -->
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">⚖️ Type de Rupture du Contrat</div></div>
+    <div class="sc-body">
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff ff-full"><label>Motif de rupture *</label>
+          <select id="s-motif" onchange="onMotifChange()">
+            <option value="licenciement_eco">Licenciement économique</option>
+            <option value="licenciement_simple">Licenciement pour faute simple</option>
+            <option value="licenciement_grave">Licenciement pour faute grave</option>
+            <option value="licenciement_lourde">Licenciement pour faute lourde</option>
+            <option value="rupture_conv">Rupture conventionnelle</option>
+            <option value="demission">Démission</option>
+            <option value="retraite">Départ à la retraite</option>
+            <option value="deces">Décès</option>
+          </select>
+        </div>
+      </div>
+      <div id="motif-info" style="padding:.75rem 1rem;background:var(--bg3);border-radius:var(--r);font-size:12px;color:var(--gris);line-height:1.8;border-left:3px solid var(--or);"></div>
+    </div>
+  </div>
+
+  <!-- ÉLÉMENTS DE SALAIRE -->
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">💵 Salaire Mensuel Moyen & Autres Éléments</div></div>
+    <div class="sc-body">
+      <!-- SAISIE SALAIRE MOYEN -->
+      <div style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:var(--r);padding:1rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.75rem;">Méthode de calcul — Code du Travail béninois</div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.8;margin-bottom:.875rem;">
+          Le salaire de référence est la <strong style="color:var(--blanc);">moyenne mensuelle de toutes les sommes perçues au cours des 12 derniers mois</strong> (salaire de base + primes + avantages + toutes autres rémunérations habituelles).
+        </div>
+        <div class="fg" style="margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Salaire mensuel moyen 12 derniers mois (FCFA) *</label>
+            <input type="number" id="s-salaire" min="0" placeholder="Ex: 285000" oninput="calculer()" style="font-size:16px;font-weight:700;color:var(--or);border-color:rgba(201,168,76,.3);"/>
+            <div class="hint">= Somme totale perçue sur 12 mois ÷ 12 (inclut base + primes + avantages + gratifications)</div>
+          </div>
+          <div class="ff">
+            <label>Ou calculer depuis le détail</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:2px;">
+              <input type="number" id="s-base-detail" min="0" placeholder="Salaire base" oninput="recalcMoyen()"/>
+              <input type="number" id="s-primes-detail" min="0" placeholder="Primes moy." oninput="recalcMoyen()"/>
+              <input type="number" id="s-avantages-detail" min="0" placeholder="Avantages" oninput="recalcMoyen()"/>
+              <input type="number" id="s-autres-detail" min="0" placeholder="Autres rém." oninput="recalcMoyen()"/>
+            </div>
+            <div class="hint">Saisir les composantes → la moyenne est calculée automatiquement</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <div style="background:var(--bg3);border-radius:var(--r);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;">
+            <span style="font-size:11px;color:var(--gris);">Salaire mensuel moyen retenu</span>
+            <span style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--or)" id="s-ref-display">—</span>
+            <span style="font-size:11px;color:var(--gris);">FCFA</span>
+          </div>
+          <div style="font-size:11px;color:var(--gris2);font-style:italic;">Utilisé pour le calcul des 3 tranches d'ancienneté</div>
+        </div>
+      </div>
+      <!-- AUTRES ÉLÉMENTS -->
+      <div class="fg3">
+        <div class="ff"><label>Préavis dû (jours)</label><input type="number" id="s-preavis" min="0" placeholder="0" oninput="calculer()"/>
+          <div class="hint">Jours de préavis non effectués</div></div>
+        <div class="ff"><label>Congés payés restants (jours)</label><input type="number" id="s-conges" min="0" placeholder="0" oninput="calculer()"/>
+          <div class="hint">Quota légal : 24 jours/an — Indemnité = (jours / 24) × salaire moyen</div></div>
+        <div class="ff"><label>Autres éléments à inclure</label><input type="number" id="s-autres" min="0" placeholder="0" oninput="calculer()"/>
+          <div class="hint">13e mois proratisé, rappels, etc.</div></div>
+      </div>
+      <!-- MESURES D'ACCOMPAGNEMENT (licenciement éco uniquement) -->
+      <div id="accompagnement-block" style="display:none;background:rgba(251,199,36,.05);border:1px solid rgba(251,199,36,.2);border-radius:var(--r);padding:1rem;margin-top:.875rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--jaune);margin-bottom:.5rem;">⚠️ Mesures d'Accompagnement — Licenciement Économique</div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.8;margin-bottom:.75rem;">
+          En cas de licenciement économique, l'employé a droit à des <strong style="color:var(--blanc);">mesures d'accompagnement</strong> qui ne peuvent pas être inférieures à <strong style="color:var(--jaune);">3 mois de salaire</strong>. Ce montant s'ajoute aux autres indemnités.
+        </div>
+        <div class="fg">
+          <div class="ff">
+            <label>Durée d'accompagnement (mois) — minimum légal : 3 mois</label>
+            <input type="number" id="s-accompagnement-mois" min="3" step="1" value="3" placeholder="Min. 3" oninput="calculer()"/>
+            <div class="hint">Plancher légal = 3 mois. Peut être supérieur selon convention collective ou accord</div>
+          </div>
+          <div class="ff">
+            <label>Montant calculé automatiquement</label>
+            <input type="text" id="s-accompagnement-display" readonly style="background:var(--bg4);color:var(--jaune);font-weight:700;font-size:14px;"/>
+            <div class="hint">= Nombre de mois × Salaire mensuel moyen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉSULTAT -->
+  <div id="result-section" style="display:none;">
+    <div class="result-hero">
+      <div class="result-title" id="r-motif-titre">— Calcul des Indemnités —</div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="total-box">
+        <div class="total-label">Total Net à Payer</div>
+        <div class="total-val" id="r-total">—</div>
+        <div class="total-sub" id="r-total-sub">—</div>
+      </div>
+      <div class="calc-detail" id="calc-detail"></div>
+    </div>
+
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:flex-end;" class="no-print">
+      <button class="btn btn-ghost" onclick="resetForm()">🔄 Nouveau calcul</button>
+      <button class="btn btn-violet" onclick="imprimerFiche()">🖨️ Imprimer / PDF</button>
+      <button class="btn btn-or" onclick="enregistrerDepart()">💾 Enregistrer dans le registre</button>
+    </div>
+  </div>
+
+</div><!-- /simulateur -->
+
+<!-- ══ REGISTRE ══ -->
+<div class="panel" id="panel-registre">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📋 Registre des Départs</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="f-reg-motif" class="taux-inp" style="width:180px;font-size:11px;" onchange="renderRegistre()">
+          <option value="">Tous les motifs</option>
+          <option value="licenciement_eco">Licenciement économique</option>
+          <option value="licenciement_simple">Faute simple</option>
+          <option value="licenciement_grave">Faute grave</option>
+          <option value="licenciement_lourde">Faute lourde</option>
+          <option value="rupture_conv">Rupture conventionnelle</option>
+          <option value="demission">Démission</option>
+          <option value="retraite">Retraite</option>
+          <option value="deces">Décès</option>
+        </select>
+        <select id="f-reg-annee" class="taux-inp" style="width:100px;font-size:11px;" onchange="renderRegistre()">
+          <option value="">Toutes années</option>
+        </select>
+        <button class="btn btn-ghost" onclick="exporterRegistreExcel()">📊 Export Excel</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Matricule</th><th>Nom</th><th>Poste</th><th>Département</th>
+          <th class="c">Entrée</th><th class="c">Départ</th><th class="c">Ancienneté</th>
+          <th>Motif</th><th class="c">Salaire réf.</th>
+          <th class="c">Ind. licenc.</th><th class="c">Préavis</th>
+          <th class="c">Congés</th><th class="c">Autres</th>
+          <th class="c">Total net</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="registre-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- KPI registre -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.875rem;margin-top:1.25rem;" id="reg-kpi"></div>
+</div>
+
+<!-- ══ CONFIGURATION ══ -->
+<div class="panel" id="panel-config">
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head">
+      <div class="sc-title">📐 Taux d'Indemnité — Code du Travail Béninois</div>
+      <button class="btn btn-ghost" onclick="resetTaux()" style="font-size:10px;">↺ Taux légaux</button>
+    </div>
+    <div class="sc-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.875rem;" id="taux-grid"></div>
+      <div style="margin-top:1rem;padding:.875rem 1rem;background:var(--bg3);border-radius:var(--r);font-size:11px;color:var(--gris);line-height:1.9;border-left:3px solid var(--or);">
+        <strong style="color:var(--or);">Référence légale — Code du Travail du Bénin :</strong><br>
+        • <strong style="color:var(--blanc);">Licenciement économique :</strong> En plus des indemnités, l'employé a droit à des <strong style="color:var(--jaune);">mesures d'accompagnement</strong> d'un montant minimum de <strong style="color:var(--jaune);">3 mois de salaire</strong> (configurable).<br>• <strong style="color:var(--blanc);">Licenciement économique / faute simple / rupture conv. :</strong> 30% du salaire mensuel moyen (12 derniers mois) par année pour les 5 premières années, 35% pour les années 6–10, 40% au-delà de 10 ans.<br>
+        • <strong style="color:var(--blanc);">Faute grave / lourde :</strong> Aucune indemnité de licenciement.<br>
+        • <strong style="color:var(--blanc);">Rupture conventionnelle :</strong> Indemnité au moins égale à celle du licenciement économique.<br>
+        • <strong style="color:var(--blanc);">Démission :</strong> Aucune indemnité de licenciement — préavis et congés payés uniquement.<br>
+        • <strong style="color:var(--blanc);">Retraite :</strong> Indemnité de départ à la retraite (taux configurables).<br>
+        • <strong style="color:var(--blanc);">Congés payés :</strong> Indemnité = (jours restants ÷ 24 jours annuels légaux) × (1/12 des sommes perçues sur 12 mois).<br>• <strong style="color:var(--blanc);">Préavis :</strong> Cadres : 3 mois, Agents de maîtrise : 2 mois, Employés : 1 mois (configurables).
+      </div>
+    </div>
+  </div>
+
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📅 Durées de Préavis par Catégorie</div></div>
+    <div class="sc-body">
+      <div class="fg3" id="preavis-grid"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- MODAL DÉTAIL REGISTRE -->
+<div class="modal-ov" id="modal-detail">
+  <div class="modal">
+    <div class="mh"><div class="mt">📄 Fiche de <span id="md-nom">—</span></div><button class="mc" onclick="closeModal('modal-detail')">✕</button></div>
+    <div class="mb" id="md-body"></div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-detail')">Fermer</button>
+      <button class="btn btn-violet" onclick="imprimerDetail()">🖨️ Imprimer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'eliteindemnites_v1';
+var ST = { departes:[], taux:{}, preavis:{}, nextId:100 };
+var nextId = 100;
+function uid(){ return ++nextId; }
+
+var TAUX_DEFAUT = {
+  // Licenciement — % du salaire mensuel moyen par année (Code du Travail béninois)
+  eco_1_5:  30,   // 30% du salaire moyen/an — tranches 1 à 5 ans
+  eco_6_10: 35,   // 35% du salaire moyen/an — tranches 6 à 10 ans
+  eco_sup10:40,   // 40% du salaire moyen/an — au-delà de 10 ans
+  // Retraite (même barème par défaut, configurable)
+  ret_1_5:  30,
+  ret_6_10: 35,
+  ret_sup10:40,
+  // Congés payés : 24 jours annuels légaux, indemnité = (jours/24) × salaire mensuel moyen
+  conges_annuels: 24,
+  // Mesures d'accompagnement licenciement économique (plancher légal)
+  accompagnement_min_mois: 3
+};
+
+var PREAVIS_DEFAUT = {
+  cadre:    90,   // jours
+  maitrise: 60,
+  employe:  30
+};
+
+var MOTIFS_INFO = {
+  licenciement_eco:    { label:'Licenciement Économique',   color:'var(--jaune)', droit_indemnite:true,  droit_preavis:true,  droit_conges:true  },
+  licenciement_simple: { label:'Licenciement Faute Simple', color:'var(--orange)',droit_indemnite:true,  droit_preavis:true,  droit_conges:true  },
+  licenciement_grave:  { label:'Licenciement Faute Grave',  color:'var(--rouge)', droit_indemnite:false, droit_preavis:false, droit_conges:true  },
+  licenciement_lourde: { label:'Licenciement Faute Lourde', color:'var(--rouge)', droit_indemnite:false, droit_preavis:false, droit_conges:false },
+  rupture_conv:        { label:'Rupture Conventionnelle',   color:'var(--violet)',droit_indemnite:true,  droit_preavis:true,  droit_conges:true  },
+  demission:           { label:'Démission',                 color:'var(--bleu)',  droit_indemnite:false, droit_preavis:true,  droit_conges:true  },
+  retraite:            { label:'Départ à la Retraite',      color:'var(--vert)',  droit_indemnite:true,  droit_preavis:true,  droit_conges:true  },
+  deces:               { label:'Décès',                     color:'var(--gris)',  droit_indemnite:true,  droit_preavis:false, droit_conges:true  }
+};
+
+var MOTIFS_DESCRIPTIONS = {
+  licenciement_eco:    'L\'employé a droit à : indemnité de licenciement + indemnité de préavis (si non effectué) + congés payés non pris. Aucune faute de sa part.',
+  licenciement_simple: 'Faute non grave : l\'employé a droit à l\'intégralité des indemnités — licenciement, préavis et congés payés.',
+  licenciement_grave:  'Faute grave : pas d\'indemnité de licenciement ni de préavis. Les congés payés acquis restent dus.',
+  licenciement_lourde: 'Faute lourde (intention de nuire) : aucune indemnité de licenciement, aucun préavis, ni congés payés.',
+  rupture_conv:        'Accord mutuel : indemnité au moins égale à celle d\'un licenciement économique + préavis négocié + congés payés.',
+  demission:           'Initiative de l\'employé : pas d\'indemnité de licenciement. Le préavis est dû par l\'employé. Congés payés restants remboursés.',
+  retraite:            'Départ à la retraite : indemnité de départ calculée selon l\'ancienneté + préavis + congés payés.',
+  deces:               'En cas de décès : indemnité versée aux ayants droit selon l\'ancienneté + congés payés. Pas de préavis.'
+};
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d = localStorage.getItem(SK);
+    if(d){ ST = JSON.parse(d); nextId = ST.nextId||100; }
+    else { ST = {departes:[], taux:Object.assign({},TAUX_DEFAUT), preavis:Object.assign({},PREAVIS_DEFAUT), nextId:100}; }
+    if(!ST.taux||!ST.taux.eco_1_5) ST.taux = Object.assign({},TAUX_DEFAUT);
+    if(!ST.preavis||!ST.preavis.cadre) ST.preavis = Object.assign({},PREAVIS_DEFAUT);
+  }catch(e){ ST = {departes:[], taux:Object.assign({},TAUX_DEFAUT), preavis:Object.assign({},PREAVIS_DEFAUT), nextId:100}; }
+}
+function sauver(){
+  try{ ST.nextId = nextId; localStorage.setItem(SK, JSON.stringify(ST)); }
+  catch(e){ toast('Erreur sauvegarde'); }
+}
+
+// ── CALCUL ANCIENNETÉ ──
+function calcAnciennete(entree, depart){
+  if(!entree||!depart) return null;
+  var d1 = new Date(entree), d2 = new Date(depart);
+  if(isNaN(d1)||isNaN(d2)||d2<d1) return null;
+  var ans = d2.getFullYear() - d1.getFullYear();
+  var moisReste = d2.getMonth() - d1.getMonth();
+  var joursReste = d2.getDate() - d1.getDate();
+  if(joursReste < 0){ moisReste--; }
+  if(moisReste < 0){ ans--; moisReste += 12; }
+  return { ans:ans, mois:Math.abs(moisReste), total_mois: ans*12 + Math.abs(moisReste) };
+}
+
+function afficherAnciennete(anc){
+  if(!anc) return '—';
+  var s = anc.ans + ' an'+(anc.ans>1?'s':'');
+  if(anc.mois>0) s += ' et '+anc.mois+' mois';
+  return s;
+}
+
+// ── CALCUL INDEMNITÉ ──
+function calculerIndemnite(anc, salMoyen, motif){
+  // salMoyen = moyenne des salaires et sommes perçus les 12 derniers mois
+  if(!anc || anc.total_mois < 1) return 0;
+  var t = ST.taux;
+  var ans = anc.ans + (anc.mois >= 6 ? 1 : 0); // si >= 6 mois, on arrondit à l'année supérieure
+
+  if(motif==='licenciement_grave'||motif==='licenciement_lourde'||motif==='demission') return 0;
+
+  var tauxA, tauxB, tauxC;
+  if(motif==='retraite'){
+    tauxA = parseFloat(t.ret_1_5)||30;
+    tauxB = parseFloat(t.ret_6_10)||35;
+    tauxC = parseFloat(t.ret_sup10)||40;
+  } else {
+    tauxA = parseFloat(t.eco_1_5)||30;
+    tauxB = parseFloat(t.eco_6_10)||35;
+    tauxC = parseFloat(t.eco_sup10)||40;
+  }
+
+  var indemnite = 0;
+  // Tranche 1–5 ans : tauxA% du salaire moyen × nombre d'années
+  var a1 = Math.min(ans, 5);
+  indemnite += a1 * (tauxA / 100) * salMoyen;
+  // Tranche 6–10 ans : tauxB% du salaire moyen × nombre d'années
+  if(ans > 5){
+    var a2 = Math.min(ans - 5, 5);
+    indemnite += a2 * (tauxB / 100) * salMoyen;
+  }
+  // Tranche > 10 ans : tauxC% du salaire moyen × nombre d'années
+  if(ans > 10){
+    var a3 = ans - 10;
+    indemnite += a3 * (tauxC / 100) * salMoyen;
+  }
+  return Math.round(indemnite);
+}
+
+function calculerPreavis(salRef, joursPreavis){
+  if(!joursPreavis||joursPreavis<=0) return 0;
+  var tauxJournalier = salRef / 26; // 26 jours ouvrables/mois
+  return Math.round(tauxJournalier * joursPreavis);
+}
+
+function calculerConges(salRef, joursConges, motif){
+  // Congés : 1/12 des sommes perçues les 12 derniers mois = salMoyen
+  // Quota annuel : 24 jours. Indemnité = (jours restants / 24) × salMoyen
+  if(motif==='licenciement_lourde') return 0;
+  if(!joursConges||joursConges<=0) return 0;
+  var indemniteAnnuelle = salRef; // = 1/12 × total 12 mois = salaire mensuel moyen
+  return Math.round((joursConges / 24) * indemniteAnnuelle);
+}
+
+// ── CALCUL PRINCIPAL ──
+var _dernierCalc = null;
+
+function recalcMoyen(){
+  var base = parseFloat(document.getElementById('s-base-detail').value)||0;
+  var primes = parseFloat(document.getElementById('s-primes-detail').value)||0;
+  var avantages = parseFloat(document.getElementById('s-avantages-detail').value)||0;
+  var autres = parseFloat(document.getElementById('s-autres-detail').value)||0;
+  var total = base + primes + avantages + autres;
+  if(total > 0){
+    document.getElementById('s-salaire').value = total;
+  }
+  calculer();
+}
+
+function calculer(){
+  var entree = document.getElementById('s-entree').value;
+  var depart = document.getElementById('s-depart').value;
+  var anc = calcAnciennete(entree, depart);
+  document.getElementById('s-anciennete').value = afficherAnciennete(anc);
+
+  var salMoyen = parseFloat(document.getElementById('s-salaire').value)||0;
+  document.getElementById('s-ref-display').textContent = salMoyen > 0 ? fmt(salMoyen) : '—';
+
+  if(!salMoyen || !anc || !entree || !depart){ document.getElementById('result-section').style.display='none'; return; }
+  var salRef = salMoyen; // alias pour la compatibilité préavis/congés
+
+  var motif = document.getElementById('s-motif').value;
+  var preavis = parseFloat(document.getElementById('s-preavis').value)||0;
+  var conges = parseFloat(document.getElementById('s-conges').value)||0;
+  var autres = parseFloat(document.getElementById('s-autres').value)||0;
+  var info = MOTIFS_INFO[motif];
+
+  var indemnite = calculerIndemnite(anc, salMoyen, motif);
+  var montPreavis = info.droit_preavis ? calculerPreavis(salRef, preavis) : 0;
+  var montConges = calculerConges(salRef, conges, motif);
+  var montAutres = parseFloat(autres)||0;
+
+  // Mesures d'accompagnement (licenciement économique uniquement)
+  var montAccomp = 0;
+  if(motif === 'licenciement_eco'){
+    var nbMoisAccomp = Math.max(3, parseFloat(document.getElementById('s-accompagnement-mois').value)||3);
+    document.getElementById('s-accompagnement-mois').value = nbMoisAccomp;
+    montAccomp = Math.round(nbMoisAccomp * salMoyen);
+    var dispEl = document.getElementById('s-accompagnement-display');
+    if(dispEl) dispEl.value = fmt(montAccomp) + ' FCFA (' + nbMoisAccomp + ' mois)';
+  }
+
+  var total = indemnite + montPreavis + montConges + montAutres + montAccomp;
+
+  // Ancienneté arrondie pour affichage
+  var ansAff = anc.ans + (anc.mois >= 6 ? 1 : 0);
+
+  // Grille résumé
+  var grid = document.getElementById('result-grid');
+  grid.innerHTML =
+    rbox('Ancienneté', afficherAnciennete(anc), ansAff+' an(s) retenus', 'var(--cyan)') +
+    rbox('Salaire mensuel moyen', fmt(salMoyen)+' F', 'Moyenne 12 derniers mois', 'var(--blanc)') +
+    rbox('Indemnité licenciement', fmt(indemnite)+' F', indemnite===0?'Non due':'Calculée', indemnite>0?'var(--or)':'var(--gris)') +
+    rbox('Préavis', fmt(montPreavis)+' F', preavis+' jour(s)', 'var(--violet)') +
+    rbox('Congés payés', fmt(montConges)+' F', conges+' jour(s)', 'var(--bleu)') +
+    rbox('Autres', fmt(montAutres)+' F', 'Compléments', 'var(--vert)') +
+    (motif==='licenciement_eco' ? rbox('Accompagnement éco.', fmt(montAccomp)+' F', nbMoisAccomp+' mois (min. 3)', 'var(--jaune)') : '');
+
+  // Titre
+  document.getElementById('r-motif-titre').innerHTML = 'Calcul — <span style="color:'+info.color+'">'+info.label+'</span>';
+
+  // Total
+  document.getElementById('r-total').textContent = fmt(total)+' FCFA';
+  document.getElementById('r-total-sub').textContent = 'Pour '+esc(document.getElementById('s-nom').value||'l\'employé')+' — '+afficherAnciennete(anc)+' d\'ancienneté';
+
+  // Détail calcul
+  var detail = document.getElementById('calc-detail');
+  var rows = '';
+  rows += calcRow('Salaire mensuel moyen (12 derniers mois)', fmt(salMoyen)+' FCFA', false, salMoyen===0);
+  rows += calcRow('= Salaire de référence retenu', fmt(salMoyen)+' FCFA', false);
+  rows += '<div style="height:1px;background:var(--gris3);margin:2px 0;"></div>';
+  if(indemnite>0){
+    var detIndemnite = '';
+    var ans5 = Math.min(ansAff,5);
+    var t = ST.taux;
+    var tauxA = motif==='retraite'?t.ret_1_5:t.eco_1_5;
+    var tauxB = motif==='retraite'?t.ret_6_10:t.eco_6_10;
+    var tauxC = motif==='retraite'?t.ret_sup10:t.eco_sup10;
+    if(ans5>0) rows += calcRow('Tranche 1–5 ans : '+tauxA+'% × '+fmt(salMoyen)+' F × '+ans5+' an(s)', fmt(Math.round(ans5*(tauxA/100)*salMoyen))+' FCFA', false);
+    if(ansAff>5){ var a2=Math.min(ansAff-5,5); rows += calcRow('Tranche 6–10 ans : '+tauxB+'% × '+fmt(salMoyen)+' F × '+a2+' an(s)', fmt(Math.round(a2*(tauxB/100)*salMoyen))+' FCFA', false); }
+    if(ansAff>10){ var a3=ansAff-10; rows += calcRow('Tranche >10 ans : '+tauxC+'% × '+fmt(salMoyen)+' F × '+a3+' an(s)', fmt(Math.round(a3*(tauxC/100)*salMoyen))+' FCFA', false); }
+    rows += calcRow('= Indemnité de licenciement', fmt(indemnite)+' FCFA', false);
+    rows += '<div style="height:1px;background:var(--gris3);margin:2px 0;"></div>';
+  } else {
+    rows += calcRow('Indemnité de licenciement', 'Non due ('+info.label+')', false, true);
+  }
+  if(montPreavis>0) rows += calcRow('Indemnité de préavis ('+preavis+' jours × '+fmt(Math.round(salRef/26))+' F/j)', fmt(montPreavis)+' FCFA', false);
+  else if(preavis>0) rows += calcRow('Préavis (non applicable)', '—', false, true);
+  if(montConges>0) rows += calcRow('Indemnité congés payés ('+conges+' j. / 24 j. × '+fmt(Math.round(salRef))+' F)', fmt(montConges)+' FCFA', false);
+  if(montAutres>0) rows += calcRow('Autres éléments', fmt(montAutres)+' FCFA', false);
+  if(montAccomp>0){
+    rows += '<div style="height:1px;background:rgba(251,199,36,.2);margin:2px 0;"></div>';
+    rows += calcRow('Mesures d\'accompagnement éco. ('+nbMoisAccomp+' mois × '+fmt(salMoyen)+' F)', fmt(montAccomp)+' FCFA ⚠️', false);
+    rows += '<div style="padding:4px 1rem;font-size:10px;color:var(--jaune);background:rgba(251,199,36,.05);">Plancher légal : 3 mois de salaire mensuel moyen (non imposable)</div>';
+  }
+  rows += '<div style="height:1px;background:var(--gris3);margin:2px 0;"></div>';
+  rows += calcRow('TOTAL NET À PAYER', fmt(total)+' FCFA', true);
+  detail.innerHTML = rows;
+
+  document.getElementById('result-section').style.display = 'block';
+
+  _dernierCalc = {
+    id:uid(),
+    mat:document.getElementById('s-mat').value.trim(),
+    nom:document.getElementById('s-nom').value.trim(),
+    prenom:document.getElementById('s-prenom').value.trim(),
+    poste:document.getElementById('s-poste').value.trim(),
+    dept:document.getElementById('s-dept').value.trim(),
+    contrat:document.getElementById('s-contrat').value,
+    entree:entree, depart:depart,
+    anciennete:afficherAnciennete(anc), anciennete_ans:ansAff,
+    motif:motif, motif_label:info.label,
+    salaire:salMoyen, primes:0, avantages:0, sal_ref:salMoyen, sal_moyen:salMoyen,
+    preavis_jours:preavis, conges_jours:conges, autres:montAutres,
+    indemnite_licenc:indemnite,
+    indemnite_preavis:montPreavis,
+    indemnite_conges:montConges,
+    total:total,
+    mont_accompagnement:motif==='licenciement_eco'?montAccomp:0,
+    accompagnement_mois:motif==='licenciement_eco'?(Math.max(3,parseFloat(document.getElementById('s-accompagnement-mois').value)||3)):0,
+    date_calcul:new Date().toISOString().split('T')[0]
+  };
+}
+
+function rbox(label,val,sub,color){
+  return '<div class="rbox"><div class="rbox-label">'+label+'</div><div class="rbox-val" style="color:'+color+'">'+val+'</div><div class="rbox-sub">'+sub+'</div></div>';
+}
+function calcRow(label,val,isTotal,isZero){
+  var cls = 'calc-row'+(isTotal?' total':'')+(isZero?' zero':'');
+  return '<div class="'+cls+'"><span class="cl">'+label+'</span><span class="cv">'+val+'</span></div>';
+}
+
+// ── MOTIF CHANGE ──
+function onMotifChange(){
+  var motif = document.getElementById('s-motif').value;
+  var info = MOTIFS_INFO[motif];
+  var desc = MOTIFS_DESCRIPTIONS[motif];
+  // Afficher/masquer bloc accompagnement
+  var bloc = document.getElementById('accompagnement-block');
+  if(bloc) bloc.style.display = motif==='licenciement_eco' ? 'block' : 'none';
+  document.getElementById('motif-info').innerHTML =
+    '<span style="font-weight:700;color:'+info.color+'">'+info.label+'</span> — '+desc+'<br>'+
+    '<span style="color:var(--vert);">'+( info.droit_indemnite?'✓ Indemnité de licenciement':'✗ Pas d\'indemnité de licenciement')+'</span> &nbsp;'+
+    '<span style="color:'+(info.droit_preavis?'var(--bleu)':'var(--rouge)')+'">'+( info.droit_preavis?'✓ Préavis dû':'✗ Préavis non dû')+'</span> &nbsp;'+
+    '<span style="color:'+(info.droit_conges?'var(--violet)':'var(--rouge)')+'">'+( info.droit_conges?'✓ Congés payés remboursés':'✗ Congés payés non remboursés')+'</span>';
+  calculer();
+}
+
+// ── ENREGISTRER ──
+function enregistrerDepart(){
+  if(!_dernierCalc){ toast('Effectuez d\'abord un calcul'); return; }
+  var exist = ST.departes.find(function(d){ return d.mat && d.mat===_dernierCalc.mat && d.depart===_dernierCalc.depart; });
+  if(exist && !confirm('Un départ avec ce matricule et cette date existe déjà. Enregistrer quand même ?')) return;
+  ST.departes.push(Object.assign({},_dernierCalc));
+  sauver();
+  updateBadgeReg();
+  renderRegistre();
+  toast('Départ enregistré dans le registre');
+}
+
+function updateBadgeReg(){
+  var b = document.getElementById('badge-reg');
+  var n = ST.departes.length;
+  b.textContent = n; b.style.display = n>0?'inline':'none';
+}
+
+// ── REGISTRE ──
+function renderRegistre(){
+  var fMotif = document.getElementById('f-reg-motif').value;
+  var fAnnee = document.getElementById('f-reg-annee').value;
+
+  // Remplir filtre années
+  var anneesSet = {};
+  ST.departes.forEach(function(d){ if(d.depart) anneesSet[d.depart.substring(0,4)]=true; });
+  var sel = document.getElementById('f-reg-annee');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">Toutes années</option>';
+  Object.keys(anneesSet).sort().reverse().forEach(function(a){
+    sel.innerHTML += '<option value="'+a+'"'+(a===cur?' selected':'')+'>'+a+'</option>';
+  });
+
+  var filtered = ST.departes.filter(function(d){
+    if(fMotif && d.motif!==fMotif) return false;
+    if(fAnnee && d.depart && d.depart.substring(0,4)!==fAnnee) return false;
+    return true;
+  });
+
+  var tbody = document.getElementById('registre-tbody');
+  tbody.innerHTML = '';
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="15" style="text-align:center;color:var(--gris);padding:2rem">Aucun départ enregistré.</td></tr>'; renderKPIReg(filtered); return; }
+  filtered.slice().reverse().forEach(function(d){
+    var info = MOTIFS_INFO[d.motif]||{label:d.motif,color:'var(--gris)'};
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</td>'+
+      '<td><strong>'+esc(d.nom)+'</strong> '+esc(d.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(d.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(d.dept||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px">'+esc(d.entree||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px">'+esc(d.depart||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;color:var(--cyan)">'+esc(d.anciennete||'—')+'</td>'+
+      '<td><span style="font-size:10px;font-weight:700;color:'+info.color+'">'+esc(info.label)+'</span></td>'+
+      '<td style="text-align:right;font-size:11px">'+fmt(d.sal_ref)+'</td>'+
+      '<td style="text-align:right;font-family:var(--fd);font-weight:700;color:var(--or)">'+fmt(d.indemnite_licenc)+'</td>'+
+      '<td style="text-align:right;font-size:11px;color:var(--violet)">'+fmt(d.indemnite_preavis)+'</td>'+
+      '<td style="text-align:right;font-size:11px;color:var(--bleu)">'+fmt(d.indemnite_conges)+'</td>'+
+      '<td style="text-align:right;font-size:11px">'+fmt(d.autres||0)+'</td>'+
+      '<td style="text-align:right;font-family:var(--fd);font-weight:800;color:var(--vert)">'+fmt(d.total)+' F</td>'+
+      '<td style="text-align:center;white-space:nowrap;">'+
+        '<button onclick="voirDetail('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px" title="Voir détail">👁</button> '+
+        '<button onclick="imprimerFicheId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px" title="Imprimer">🖨️</button> '+
+        '<button onclick="supprimerDepart('+d.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+  renderKPIReg(filtered);
+}
+
+function renderKPIReg(list){
+  var total = 0, nbLicenc = 0, nbDem = 0, nbRet = 0;
+  list.forEach(function(d){
+    total += d.total||0;
+    if(d.motif&&d.motif.startsWith('licenciement')) nbLicenc++;
+    else if(d.motif==='demission') nbDem++;
+    else if(d.motif==='retraite') nbRet++;
+  });
+  function kc(label,val,color){
+    return '<div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;">'+
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;">'+label+'</div>'+
+      '<div style="font-family:var(--fd);font-size:22px;font-weight:800;color:'+color+'">'+val+'</div>'+
+    '</div>';
+  }
+  document.getElementById('reg-kpi').innerHTML =
+    kc('Total départs enregistrés', list.length, 'var(--blanc)') +
+    kc('Total indemnités versées', fmt(total)+' F', 'var(--or)') +
+    kc('Licenciements', nbLicenc, 'var(--rouge)') +
+    kc('Démissions', nbDem, 'var(--bleu)') +
+    kc('Retraites', nbRet, 'var(--vert)');
+}
+
+// ── VOIR DÉTAIL ──
+function voirDetail(id){
+  var d = ST.departes.find(function(x){return x.id===id;}); if(!d) return;
+  document.getElementById('md-nom').textContent = d.nom+' '+(d.prenom||'');
+  document.getElementById('md-body').innerHTML = buildFicheHTML(d);
+  openModal('modal-detail');
+}
+function supprimerDepart(id){
+  if(!confirm('Supprimer ce départ du registre ?')) return;
+  ST.departes = ST.departes.filter(function(d){return d.id!==id;});
+  sauver(); renderRegistre(); updateBadgeReg(); toast('Supprimé');
+}
+
+function buildFicheHTML(d){
+  var info = MOTIFS_INFO[d.motif]||{label:d.motif,color:'var(--gris)'};
+  var html = '<div style="padding:1rem;background:var(--bg3);border-radius:var(--r);margin-bottom:1rem;">';
+  html += '<div style="font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:.25rem;">'+esc(d.nom)+' <span style="color:var(--gris)">'+esc(d.prenom||'')+'</span></div>';
+  html += '<div style="font-size:12px;color:var(--gris)">'+esc(d.poste||'—')+' — '+esc(d.dept||'—')+(d.mat?' — Matricule: '+esc(d.mat):'')+'</div>';
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">';
+  var rows2 = [
+    ['Type de contrat', d.contrat||'CDI'],['Date d\'entrée', d.entree||'—'],
+    ['Date de départ', d.depart||'—'],['Ancienneté', d.anciennete||'—'],
+    ['Motif de rupture','<span style="color:'+info.color+';font-weight:700">'+info.label+'</span>'],
+    ['Date du calcul', d.date_calcul||'—']
+  ];
+  rows2.forEach(function(r){
+    html += '<div style="background:var(--bg3);border-radius:var(--r);padding:.6rem .875rem;"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">'+r[0]+'</div><div style="font-size:13px;font-weight:600;">'+r[1]+'</div></div>';
+  });
+  html += '</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem;">';
+  html += '<thead><tr style="background:var(--bg3);"><th style="padding:7px 10px;text-align:left;font-size:9px;text-transform:uppercase;color:var(--gris);">Élément</th><th style="padding:7px 10px;text-align:right;font-size:9px;text-transform:uppercase;color:var(--gris);">Montant (FCFA)</th></tr></thead><tbody>';
+  var elems = [
+    ['Salaire de référence', d.sal_ref, false],
+    ['Indemnité de licenciement', d.indemnite_licenc, false],
+    ['Indemnité de préavis ('+d.preavis_jours+' j.)', d.indemnite_preavis, false],
+    ['Indemnité congés payés ('+d.conges_jours+' j.)', d.indemnite_conges, false],
+    ['Autres éléments', d.autres||0, false]
+  ];
+  elems.forEach(function(e){
+    if(e[1]<=0) return;
+    html += '<tr style="border-bottom:1px solid rgba(30,30,46,.5);"><td style="padding:6px 10px;">'+e[0]+'</td><td style="padding:6px 10px;text-align:right;font-family:var(--fd);font-weight:700;">'+fmt(e[1])+' F</td></tr>';
+  });
+  html += '<tr style="background:var(--bg3);"><td style="padding:8px 10px;font-family:var(--fd);font-weight:700;font-size:13px;">TOTAL NET À PAYER</td><td style="padding:8px 10px;text-align:right;font-family:var(--fd);font-weight:800;font-size:16px;color:var(--or);">'+fmt(d.total)+' FCFA</td></tr>';
+  html += '</tbody></table>';
+  return html;
+}
+
+// ── IMPRESSION ──
+function imprimerFiche(){
+  if(!_dernierCalc){ toast('Effectuez d\'abord un calcul'); return; }
+  window.print();
+}
+function imprimerFicheId(id){
+  var d = ST.departes.find(function(x){return x.id===id;}); if(!d) return;
+  var win = window.open('','_blank','width=900,height=700');
+  win.document.write(buildPrintHTML(d));
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 500);
+}
+function imprimerDetail(){
+  var id = parseInt(document.querySelector('#modal-detail .mb').getAttribute('data-id')||'0');
+  var body = document.getElementById('md-body');
+  var nom = document.getElementById('md-nom').textContent;
+  var win = window.open('','_blank','width=900,height=700');
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiche — '+nom+'</title><style>body{font-family:Arial,sans-serif;padding:2rem;color:#222;} table{width:100%;border-collapse:collapse;} th,td{padding:7px 10px;border-bottom:1px solid #ddd;} th{background:#f5f5f5;text-align:left;} .total td{font-weight:700;background:#fff8e1;} h2{color:#C9A84C;} .badge{display:inline;padding:2px 8px;border-radius:10px;font-size:11px;}</style></head><body>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;border-bottom:2px solid #C9A84C;padding-bottom:1rem;">';
+  html += '<div><div style="font-size:22px;font-weight:700;">Elite <span style="color:#C9A84C">RH</span> Consulting</div><div style="font-size:11px;color:#888;letter-spacing:.1em;">INDEMNITÉS DE LICENCIEMENT</div></div>';
+  html += '<div style="font-size:11px;color:#888;">Généré le '+new Date().toLocaleDateString('fr-FR')+'</div></div>';
+  html += body.innerHTML;
+  html += '</body></html>';
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 500);
+}
+
+function buildPrintHTML(d){
+  var info = MOTIFS_INFO[d.motif]||{label:d.motif};
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Indemnités — '+d.nom+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;padding:2.5rem;color:#222;max-width:800px;margin:0 auto;} h1{font-size:22px;color:#C9A84C;} h2{font-size:15px;color:#555;margin-top:1.5rem;border-bottom:1px solid #ddd;padding-bottom:.35rem;} table{width:100%;border-collapse:collapse;margin-top:.75rem;} th,td{padding:7px 12px;border-bottom:1px solid #ddd;text-align:left;} th{background:#f9f9f9;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666;} .total-row{font-weight:700;background:#fff8e1;} .total-row td{font-size:15px;} .label{color:#888;font-size:11px;} .val{font-weight:600;} .header-line{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #C9A84C;padding-bottom:1rem;margin-bottom:1.5rem;}</style></head><body>'+
+    '<div class="header-line">'+
+      '<div><div style="font-size:24px;font-weight:700;">Elite <span style="color:#C9A84C">RH</span> Consulting</div><div style="font-size:11px;color:#888;letter-spacing:.1em;margin-top:3px;">FICHE DE CALCUL — INDEMNITÉS DE LICENCIEMENT</div></div>'+
+      '<div style="text-align:right;font-size:11px;color:#888;">Généré le '+new Date().toLocaleDateString('fr-FR')+'<br>Ref: LIC-'+d.id+'</div>'+
+    '</div>'+
+    '<h2>Identification</h2>'+
+    '<table><tr><td class="label">Nom complet</td><td class="val">'+esc(d.nom)+' '+esc(d.prenom||'')+'</td><td class="label">Matricule</td><td class="val">'+esc(d.mat||'—')+'</td></tr>'+
+    '<tr><td class="label">Poste</td><td class="val">'+esc(d.poste||'—')+'</td><td class="label">Département</td><td class="val">'+esc(d.dept||'—')+'</td></tr>'+
+    '<tr><td class="label">Type de contrat</td><td class="val">'+esc(d.contrat||'CDI')+'</td><td class="label">Motif de rupture</td><td class="val" style="color:#C9A84C;font-weight:700;">'+esc(info.label)+'</td></tr>'+
+    '<tr><td class="label">Date d\'entrée</td><td class="val">'+esc(d.entree)+'</td><td class="label">Date de départ</td><td class="val">'+esc(d.depart)+'</td></tr>'+
+    '<tr><td class="label" colspan="2">Ancienneté</td><td class="val" colspan="2" style="color:#333;font-weight:700;">'+esc(d.anciennete)+'</td></tr></table>'+
+    '<h2>Éléments de Salaire</h2>'+
+    '<table><tr><th>Élément</th><th style="text-align:right;">Montant (FCFA)</th></tr>'+
+    '<tr><td>Salaire de base mensuel</td><td style="text-align:right;">'+fmt(d.salaire)+'</td></tr>'+
+    (d.primes>0?'<tr><td>Primes mensuelles</td><td style="text-align:right;">'+fmt(d.primes)+'</td></tr>':'')+
+    (d.avantages>0?'<tr><td>Logement & avantages</td><td style="text-align:right;">'+fmt(d.avantages)+'</td></tr>':'')+
+    '<tr style="background:#f9f9f9;"><td><strong>Salaire de référence</strong></td><td style="text-align:right;font-weight:700;">'+fmt(d.sal_ref)+'</td></tr></table>'+
+    '<h2>Calcul des Indemnités</h2>'+
+    '<table><tr><th>Nature</th><th>Détail</th><th style="text-align:right;">Montant (FCFA)</th></tr>'+
+    (d.indemnite_licenc>0?'<tr><td>Indemnité de licenciement</td><td>'+d.anciennete_ans+' an(s)</td><td style="text-align:right;font-weight:700;color:#C9A84C;">'+fmt(d.indemnite_licenc)+'</td></tr>':'<tr><td>Indemnité de licenciement</td><td style="color:#999;">Non due</td><td style="text-align:right;color:#999;">0</td></tr>')+
+    (d.indemnite_preavis>0?'<tr><td>Indemnité de préavis</td><td>'+d.preavis_jours+' jour(s)</td><td style="text-align:right;">'+fmt(d.indemnite_preavis)+'</td></tr>':'')+
+    (d.indemnite_conges>0?'<tr><td>Indemnité congés payés</td><td>'+d.conges_jours+' j. / 24 j. annuels</td><td style="text-align:right;">'+fmt(d.indemnite_conges)+'</td></tr>':'')+
+    (d.autres>0?'<tr><td>Autres éléments</td><td>—</td><td style="text-align:right;">'+fmt(d.autres)+'</td></tr>':'')+
+    (d.mont_accompagnement>0?'<tr style="background:#fffce6;"><td><strong>Mesures d\'accompagnement économique</strong></td><td>'+d.accompagnement_mois+' mois (plancher légal : 3 mois)</td><td style="text-align:right;font-weight:700;color:#C9A84C;">'+fmt(d.mont_accompagnement)+'</td></tr>':'')+
+    '<tr class="total-row"><td colspan="2"><strong>TOTAL NET À PAYER</strong></td><td style="text-align:right;color:#C9A84C;font-size:18px;">'+fmt(d.total)+' FCFA</td></tr></table>'+
+    '<div style="margin-top:2.5rem;padding-top:1rem;border-top:1px solid #ddd;display:flex;justify-content:space-between;font-size:11px;color:#999;">'+
+      '<div>Elite RH Consulting — contact@eliterhconsulting.com — +229 01 99 34 47 39</div>'+
+      '<div>Cotonou, Bénin</div>'+
+    '</div>'+
+    '</body></html>';
+}
+
+// ── CONFIG ──
+function renderConfig(){
+  var t = ST.taux; var p = ST.preavis;
+  var g = document.getElementById('taux-grid');
+  g.innerHTML =
+    tcCard('eco_1_5','or','Licenc. Éco / Faute simple — 1 à 5 ans','Mois de salaire par année d\'ancienneté (tranches 1–5)',t.eco_1_5)+
+    tcCard('eco_6_10','bleu','Licenc. Éco / Faute simple — 6 à 10 ans','Mois de salaire par année d\'ancienneté (tranches 6–10)',t.eco_6_10)+
+    tcCard('eco_sup10','violet','Licenc. Éco / Faute simple — au-delà de 10 ans','Mois de salaire par année d\'ancienneté (>10 ans)',t.eco_sup10)+
+    tcCard('ret_1_5','vert','Retraite — 1 à 5 ans','Mois par année — Départ volontaire ou à la retraite',t.ret_1_5)+
+    tcCard('ret_6_10','cyan','Retraite — 6 à 10 ans','Mois par année',t.ret_6_10)+
+    tcCard('ret_sup10','orange','Retraite — au-delà de 10 ans','Mois par année',t.ret_sup10);
+
+  var pg = document.getElementById('preavis-grid');
+  pg.innerHTML =
+    pCard('cadre','Cadres','Directeurs, Responsables, Managers',p.cadre)+
+    pCard('maitrise','Agents de maîtrise','Superviseurs, Chefs d\'équipe',p.maitrise)+
+    pCard('employe','Employés / Ouvriers','Personnel d\'exécution',p.employe);
+}
+
+function tcCard(key,color,title,desc,val){
+  var colors = {or:'var(--or)',bleu:'var(--bleu)',violet:'var(--violet)',vert:'var(--vert)',cyan:'var(--cyan)',orange:'var(--orange)'};
+  var c = colors[color]||'var(--or)';
+  return '<div class="taux-card" style="border-color:'+c+'">'+
+    '<div style="font-size:11px;font-weight:700;color:'+c+';margin-bottom:.25rem;">'+title+'</div>'+
+    '<div style="font-size:10px;color:var(--gris);margin-bottom:.5rem;">'+desc+'</div>'+
+    '<div style="display:flex;align-items:center;gap:8px;">'+
+      '<input class="taux-inp" type="number" min="0" max="10" step="0.5" value="'+val+'" oninput="saveTauxConfig(\''+key+'\',this.value)"/>'+
+      '<span style="font-size:12px;color:var(--gris)">% du sal. moyen / an</span>'+
+    '</div>'+
+  '</div>';
+}
+function pCard(key,title,desc,val){
+  return '<div class="ff">'+
+    '<label>'+title+' <span style="font-weight:400;color:var(--gris2);">('+desc+')</span></label>'+
+    '<input type="number" min="0" max="365" value="'+val+'" oninput="savePreavisConfig(\''+key+'\',this.value)" placeholder="Jours"/>'+
+    '<div class="hint">Durée légale de préavis en jours</div>'+
+  '</div>';
+}
+function saveTauxConfig(key,val){ ST.taux[key]=parseFloat(val)||0; sauver(); calculer(); }
+function savePreavisConfig(key,val){ ST.preavis[key]=parseInt(val)||0; sauver(); }
+function resetTaux(){
+  if(!confirm('Remettre les taux légaux béninois ?')) return;
+  ST.taux = Object.assign({},TAUX_DEFAUT);
+  ST.preavis = Object.assign({},PREAVIS_DEFAUT);
+  sauver(); renderConfig(); calculer(); toast('Taux légaux restaurés');
+}
+
+// ── EXPORT ──
+function exporterExcel(){
+  if(!window.XLSX){ loadXLSX(exporterExcel); return; }
+  if(!_dernierCalc){ toast('Effectuez d\'abord un calcul'); return; }
+  var d = _dernierCalc;
+  var wb = XLSX.utils.book_new();
+  var data = [
+    ['FICHE DE CALCUL — INDEMNITÉS DE LICENCIEMENT','','','Elite RH Consulting'],['','','',''],
+    ['Nom complet',d.nom+' '+(d.prenom||''),'Matricule',d.mat||'—'],
+    ['Poste',d.poste||'—','Département',d.dept||'—'],
+    ['Type contrat',d.contrat||'CDI','Motif',d.motif_label],
+    ['Date entrée',d.entree,'Date départ',d.depart],
+    ['Ancienneté',d.anciennete,'',''],['','','',''],
+    ['ÉLÉMENTS DE SALAIRE','','',''],
+    ['Salaire de base',d.salaire,'Primes',d.primes],
+    ['Avantages',d.avantages,'Salaire de référence',d.sal_ref],['','','',''],
+    ['INDEMNITÉS','','',''],
+    ['Indemnité de licenciement',d.indemnite_licenc,'',''],
+    ['Indemnité de préavis ('+d.preavis_jours+' j.)',d.indemnite_preavis,'',''],
+    ['Congés payés ('+d.conges_jours+' j.)',d.indemnite_conges,'',''],
+    ['Autres éléments',d.autres||0,'',''],
+    ['TOTAL NET À PAYER',d.total,'','']
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Indemnités');
+  XLSX.writeFile(wb,'Indemnites-'+d.nom+'-'+d.depart+'.xlsx');
+}
+function exporterRegistreExcel(){
+  if(!window.XLSX){ loadXLSX(exporterRegistreExcel); return; }
+  var wb = XLSX.utils.book_new();
+  var data = [['Matricule','Nom','Prénoms','Poste','Département','Contrat','Entrée','Départ','Ancienneté','Motif','Sal. Réf.','Ind. Licenc.','Préavis','Congés','Autres','Total Net']];
+  ST.departes.forEach(function(d){
+    data.push([d.mat||'',d.nom,d.prenom||'',d.poste||'',d.dept||'',d.contrat||'',d.entree,d.depart,d.anciennete,d.motif_label,d.sal_ref,d.indemnite_licenc,d.indemnite_preavis,d.indemnite_conges,d.autres||0,d.total]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Registre des départs');
+  XLSX.writeFile(wb,'Registre-Departs.xlsx');
+  toast('Registre exporté');
+}
+
+function loadXLSX(cb){
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  s.onload=cb; document.head.appendChild(s);
+}
+
+// ── UTILS ──
+function resetForm(){
+  ['s-nom','s-prenom','s-mat','s-poste','s-dept','s-entree','s-depart','s-salaire','s-base-detail','s-primes-detail','s-avantages-detail','s-autres-detail','s-preavis','s-conges','s-autres','s-accompagnement-mois'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('s-anciennete').value='';
+  document.getElementById('s-ref-display').textContent='—';
+  document.getElementById('result-section').style.display='none';
+  document.getElementById('motif-info').innerHTML='';
+  _dernierCalc=null;
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='registre') renderRegistre();
+  if(tab==='config') renderConfig();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function fmt(v){return Math.round(v||0).toLocaleString('fr-FR');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+// ── INIT ──
+charger();
+onMotifChange();
+renderConfig();
+updateBadgeReg();
+
+// Dates par défaut
+var today = new Date().toISOString().split('T')[0];
+document.getElementById('s-depart').value = today;
+</script>
+</body>
+</html>

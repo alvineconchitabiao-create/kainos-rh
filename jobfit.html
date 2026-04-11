@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Jobfit — Plateforme Consultants RH & Missions · KAINOS RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--m:#071428;--m2:#0A1F3D;--m3:#0F2A50;--or:#C9A84C;--bl:#F5F2EA;--gr:#8A9AB8;--gr3:#1E2E48;--rd:#E85A4F;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--m);color:var(--bl);overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--rd);border-radius:2px;}
+a{text-decoration:none;color:inherit;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(7,20,40,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(232,90,79,.1);}
+.nlogo{font-family:var(--fd);font-size:16px;font-weight:800;}.nlogo span{color:var(--rd);}
+.nback{font-size:11px;color:var(--gr);border:1px solid var(--gr3);padding:6px 14px;border-radius:20px;transition:all .2s;}
+.nback:hover{color:var(--or);border-color:rgba(201,168,76,.3);}
+.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 5vw 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at top,rgba(232,90,79,.1) 0%,transparent 65%);pointer-events:none;}
+.hmark{width:72px;height:72px;background:linear-gradient(135deg,#8B1A14,var(--rd));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 1rem;box-shadow:0 0 50px rgba(232,90,79,.2);}
+.htag{display:inline-flex;align-items:center;gap:7px;background:rgba(232,90,79,.08);border:1px solid rgba(232,90,79,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--rd);margin-bottom:1.5rem;}
+.hname{font-family:var(--fd);font-size:clamp(3rem,7vw,5rem);font-weight:800;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 0%,var(--rd) 60%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hsub{font-size:13px;color:var(--rd);font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin:.3rem 0 1rem;}
+h1{font-family:var(--fd);font-size:clamp(1.1rem,2vw,1.6rem);font-weight:600;color:rgba(245,242,234,.7);line-height:1.5;margin-bottom:.875rem;}
+.hdesc{font-size:14px;color:var(--gr);line-height:1.85;max-width:560px;margin:0 auto 2rem;font-weight:300;}
+.btns{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;}
+.btn-rd{background:var(--rd);color:#fff;padding:12px 28px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;display:inline-flex;align-items:center;gap:7px;transition:all .2s;}
+.btn-rd:hover{opacity:.88;transform:translateY(-1px);}
+.btn-gh{background:transparent;color:var(--bl);padding:12px 28px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);letter-spacing:.06em;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-gh:hover{border-color:var(--or);color:var(--or);}
+.sec{padding:80px 5vw;}.sec-inner{max-width:1100px;margin:0 auto;}
+.sey{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--rd);margin-bottom:.75rem;}.stitle{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;margin-bottom:1rem;letter-spacing:-.015em;}.stitle em{font-style:normal;color:var(--rd);}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:2.5rem;}
+.profile-card{background:var(--m2);border:1px solid var(--gr3);border-radius:14px;padding:1.75rem;border-top:3px solid;}
+.pc-consultant{border-top-color:var(--rd);}
+.pc-entreprise{border-top-color:var(--or);}
+.pc-icon{font-size:2rem;margin-bottom:.875rem;}
+.pc-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.6rem;}
+.pc-desc{font-size:12px;color:var(--gr);line-height:1.75;margin-bottom:1rem;}
+.pc-list{display:flex;flex-direction:column;gap:.4rem;}
+.pc-item{font-size:11px;color:var(--gr);display:flex;align-items:flex-start;gap:6px;}
+.pc-item::before{content:'✓';font-weight:700;flex-shrink:0;}
+.pc-consultant .pc-item::before{color:var(--rd);}
+.pc-entreprise .pc-item::before{color:var(--or);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;position:relative;}
+.how-grid::before{content:'';position:absolute;top:26px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,rgba(232,90,79,.3),transparent);}
+.hc{text-align:center;position:relative;z-index:1;}
+.hc-num{width:52px;height:52px;border-radius:50%;background:var(--m2);border:1px solid var(--gr3);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:18px;font-weight:800;color:var(--rd);margin:0 auto .75rem;}
+.hc-title{font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:.3rem;}
+.hc-desc{font-size:11px;color:var(--gr);line-height:1.6;}
+.wzone{max-width:540px;margin:3rem auto 0;text-align:center;}
+.wtitle{font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:.875rem;}
+.wform{display:flex;gap:.5rem;margin-bottom:.6rem;}
+.winput{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--gr3);border-radius:8px;color:var(--bl);font-family:var(--fb);font-size:12px;padding:11px 14px;outline:none;transition:border-color .2s;}
+.winput:focus{border-color:var(--rd);}
+.wbtn{background:var(--rd);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-family:var(--fd);font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.06em;white-space:nowrap;}
+.wnote{font-size:10px;color:var(--gr);}
+footer{background:#040D1A;border-top:1px solid rgba(232,90,79,.1);padding:2rem 5vw;text-align:center;}
+.fl{font-family:var(--fd);font-size:15px;font-weight:800;margin-bottom:.4rem;}.fl span{color:var(--rd);}
+.flinks{display:flex;gap:2rem;justify-content:center;margin-bottom:.75rem;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:var(--gr);transition:color .2s;}.flinks a:hover{color:var(--or);}
+.fcopy{font-size:11px;color:#2A3A58;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m2);border:1px solid var(--rd);color:var(--bl);padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:768px){.cols2,.how-grid{grid-template-columns:1fr 1fr;}.wform{flex-direction:column;}}
+@media(max-width:480px){.cols2,.how-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><div class="nlogo">Job<span>fit</span></div><a href="kainos-rh.html" class="nback">← KAINOS RH</a></nav>
+<section class="hero">
+  <div>
+    <div class="htag">Service 05 · En développement</div>
+    <div class="hmark">🎯</div>
+    <div class="hname">Jobfit</div>
+    <div class="hsub">Consultants RH & Missions de courte durée</div>
+    <h1>La bonne expertise,<br>au bon moment, pour le bon projet.</h1>
+    <p class="hdesc">Jobfit connecte les entreprises à des consultants RH expérimentés disponibles pour des missions de 1 jour à 12 mois. Matching intelligent, contractualisation simplifiée, résultats garantis.</p>
+    <div class="btns">
+      <a href="kainos-rh.html#contact" class="btn-rd">Je cherche un consultant →</a>
+      <a href="kainos-rh.html#contact" class="btn-gh">Je suis consultant</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--m2);border-top:1px solid var(--gr3);">
+  <div class="sec-inner">
+    <div class="sey">Pour qui ?</div>
+    <h2 class="stitle">Deux côtés,<br>une seule <em>plateforme.</em></h2>
+    <div class="cols2">
+      <div class="profile-card pc-consultant">
+        <div class="pc-icon">👔</div>
+        <div class="pc-title">Pour les consultants RH</div>
+        <div class="pc-desc">Vous êtes expert RH et souhaitez trouver des missions flexibles correspondant à votre profil ? Jobfit vous met en relation avec des entreprises qui ont besoin de votre expertise maintenant.</div>
+        <div class="pc-list">
+          <div class="pc-item">Inscription gratuite et profil certifié KAINOS RH</div>
+          <div class="pc-item">Missions correspondant à votre expertise et disponibilité</div>
+          <div class="pc-item">Contrat et facturation gérés par la plateforme</div>
+          <div class="pc-item">Réseau de consultants RH vérifiés en Afrique de l'Ouest</div>
+          <div class="pc-item">Accompagnement et support tout au long de la mission</div>
+        </div>
+      </div>
+      <div class="profile-card pc-entreprise">
+        <div class="pc-icon">🏢</div>
+        <div class="pc-title">Pour les entreprises</div>
+        <div class="pc-desc">Vous avez besoin d'une expertise RH ponctuelle sans passer par un recrutement permanent ? Jobfit vous donne accès en 48h à des consultants qualifiés disponibles pour vos projets.</div>
+        <div class="pc-list">
+          <div class="pc-item">Accès à un vivier de consultants pré-qualifiés</div>
+          <div class="pc-item">Matching automatique selon votre besoin et secteur</div>
+          <div class="pc-item">Démarrage de mission sous 48h à 5 jours</div>
+          <div class="pc-item">Facturation simplifiée, tout inclus (honoraires + gestion)</div>
+          <div class="pc-item">Évaluation et reporting de mission inclus</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-inner">
+    <div class="sey">Processus</div>
+    <h2 class="stitle">Comment ça <em>marche ?</em></h2>
+    <div class="how-grid">
+      <div class="hc"><div class="hc-num">1</div><div class="hc-title">Soumettez votre besoin</div><div class="hc-desc">Décrivez votre mission, durée, budget et profil recherché en quelques minutes.</div></div>
+      <div class="hc"><div class="hc-num">2</div><div class="hc-title">Matching intelligent</div><div class="hc-desc">Jobfit sélectionne les consultants les mieux adaptés dans notre base vérifiée.</div></div>
+      <div class="hc"><div class="hc-num">3</div><div class="hc-title">Démarrage rapide</div><div class="hc-desc">Entretien de validation et mise en place de la mission sous 48h à 5 jours.</div></div>
+      <div class="hc"><div class="hc-num">4</div><div class="hc-title">Suivi & livrable</div><div class="hc-desc">Suivi de mission hebdomadaire, livrables définis et évaluation de fin de mission.</div></div>
+    </div>
+    <div class="wzone">
+      <div class="wtitle">🎯 Rejoignez la liste d'attente — consultants et entreprises bienvenus.</div>
+      <div class="wform">
+        <input type="email" class="winput" id="wl-email" placeholder="votre@email.com"/>
+        <button class="wbtn" onclick="inscrire()">S'inscrire →</button>
+      </div>
+      <div class="wnote">Inscription gratuite · Lancement prévu 2026 · Accès prioritaire garanti</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">Job<span>fit</span> — by KAINOS RH</div>
+  <div class="flinks"><a href="kainos-rh.html">← KAINOS RH</a><a href="index.html">Elite RH</a><a href="stratos.html">STRATOS</a><a href="rhfit.html">RHFit</a><a href="kainos-rh.html#contact">Contact</a></div>
+  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com</div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Accès prioritaire à Jobfit dès l\'ouverture.');}
+var tt;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
+</script>
+</body>
+</html>

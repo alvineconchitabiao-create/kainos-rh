@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tarifs — Votre RH en ligne · Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --noir: #080808;
+  --noir2: #101010;
+  --noir3: #181818;
+  --noir4: #202020;
+  --or: #C9A84C;
+  --or2: #E2C47A;
+  --or3: #F0D898;
+  --or-pale: rgba(201,168,76,0.08);
+  --or-glow: rgba(201,168,76,0.15);
+  --blanc: #F8F6F0;
+  --gris: #C8C5BC;
+  --gris2: #7A7870;
+  --gris3: #2A2A26;
+  --vert: #1E8449;
+  --fd: 'Cormorant Garamond', serif;
+  --fb: 'Montserrat', sans-serif;
+  --r: 12px;
+  --rl: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--fb); background: var(--noir); color: var(--blanc); min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--or); border-radius: 2px; }
+
+/* ── GRAIN TEXTURE ── */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: .4;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,8,0.95); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  padding: 1rem 4rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { display: flex; flex-direction: column; }
+.logo-name { font-family: var(--fd); font-size: 20px; font-weight: 600; letter-spacing: .14em; color: var(--blanc); }
+.logo-name span { color: var(--or); }
+.logo-sub { font-size: 8px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; color: var(--gris2); margin-top: 1px; }
+.header-nav { display: flex; align-items: center; gap: 2rem; }
+.header-nav a { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); text-decoration: none; transition: color .2s; }
+.header-nav a:hover { color: var(--or); }
+.btn-contact-header {
+  padding: 8px 20px; border: 1px solid var(--or); border-radius: 30px;
+  font-size: 11px; font-weight: 600; color: var(--or); text-decoration: none;
+  letter-spacing: .1em; transition: all .25s; font-family: var(--fb);
+}
+.btn-contact-header:hover { background: var(--or); color: var(--noir); }
+
+/* ── HERO ── */
+.hero {
+  position: relative; padding: 7rem 4rem 5rem;
+  background: var(--noir2);
+  overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; }
+.hero-line { width: 48px; height: 1px; background: var(--or); }
+.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: .3em; text-transform: uppercase; color: var(--or); }
+.hero-title { font-family: var(--fd); font-size: clamp(42px, 6vw, 80px); font-weight: 300; line-height: 1.05; color: var(--blanc); margin-bottom: 1.5rem; }
+.hero-title em { font-style: italic; color: var(--or); }
+.hero-title strong { font-weight: 600; }
+.hero-desc { font-size: 15px; font-weight: 300; color: var(--gris); max-width: 560px; line-height: 1.9; margin-bottom: 2.5rem; }
+.hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border: 1px solid var(--gris3); border-radius: 30px;
+  font-size: 11px; font-weight: 500; color: var(--gris); letter-spacing: .04em;
+}
+.hero-badge span { color: var(--or); font-size: 14px; }
+
+/* ── SECTION ── */
+.section { padding: 5rem 4rem; position: relative; z-index: 1; }
+.section-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.section-line { width: 32px; height: 1px; background: var(--or); opacity: .6; }
+.section-tag-text { font-size: 9px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--or); opacity: .7; }
+.section-title { font-family: var(--fd); font-size: clamp(28px, 4vw, 48px); font-weight: 300; color: var(--blanc); line-height: 1.1; margin-bottom: 1rem; }
+.section-title em { font-style: italic; color: var(--or); }
+
+/* ── GRILLE OUTILS ── */
+.outils-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gris3); border: 1px solid var(--gris3); border-radius: var(--rl); overflow: hidden; margin-top: 3rem; }
+.outil-card { background: var(--noir2); padding: 2.5rem 2rem; position: relative; }
+.outil-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--or), transparent); opacity: 0; transition: opacity .3s; }
+.outil-card:hover::before { opacity: 1; }
+.outil-num { font-family: var(--fd); font-size: 64px; font-weight: 300; color: rgba(201,168,76,0.08); line-height: 1; margin-bottom: 1rem; }
+.outil-icon { font-size: 28px; margin-bottom: 1rem; }
+.outil-name { font-family: var(--fd); font-size: 22px; font-weight: 600; color: var(--blanc); margin-bottom: .5rem; }
+.outil-desc { font-size: 12px; font-weight: 300; color: var(--gris2); line-height: 1.7; margin-bottom: 1.5rem; }
+.outil-prix { display: flex; align-items: baseline; gap: 6px; }
+.outil-prix-val { font-family: var(--fd); font-size: 36px; font-weight: 600; color: var(--or); }
+.outil-prix-unit { font-size: 11px; font-weight: 500; color: var(--gris2); letter-spacing: .06em; }
+.outil-inclus { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 6px; }
+.outil-inclus-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--gris); }
+.outil-inclus-item::before { content: '✓'; color: var(--or); font-weight: 700; flex-shrink: 0; }
+
+/* Pack badge */
+.pack-badge {
+  background: linear-gradient(135deg, var(--noir3), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--rl); padding: 2rem 2.5rem;
+  margin-top: 1px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1.5rem;
+}
+.pack-badge-left { }
+.pack-badge-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .2em; color: var(--or); margin-bottom: .5rem; }
+.pack-badge-title { font-family: var(--fd); font-size: 24px; font-weight: 600; color: var(--blanc); }
+.pack-badge-desc { font-size: 12px; color: var(--gris2); margin-top: 4px; }
+.pack-badge-prix { text-align: right; }
+.pack-badge-val { font-family: var(--fd); font-size: 48px; font-weight: 700; color: var(--or); line-height: 1; }
+.pack-badge-unit { font-size: 12px; color: var(--gris2); margin-top: 4px; }
+.pack-badge-saving { display: inline-block; background: rgba(30,132,73,0.15); color: #2ECC71; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; margin-top: 6px; }
+
+/* ── SIMULATEUR ── */
+.simulateur {
+  background: var(--noir2); border: 1px solid var(--gris3);
+  border-radius: var(--rl); overflow: hidden;
+}
+.simu-header {
+  background: linear-gradient(135deg, var(--noir3) 0%, rgba(201,168,76,0.04) 100%);
+  padding: 2rem 2.5rem; border-bottom: 1px solid var(--gris3);
+  display: flex; align-items: center; gap: 16px;
+}
+.simu-header-icon { font-size: 32px; }
+.simu-header-title { font-family: var(--fd); font-size: 26px; font-weight: 600; color: var(--blanc); }
+.simu-header-sub { font-size: 12px; color: var(--gris2); margin-top: 2px; }
+.simu-body { padding: 2.5rem; }
+.simu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+
+/* Slider */
+.simu-input-section { }
+.simu-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--or); margin-bottom: 1rem; opacity: .8; }
+.simu-nb-display {
+  font-family: var(--fd); font-size: 72px; font-weight: 300; color: var(--blanc); line-height: 1;
+  margin-bottom: .25rem;
+}
+.simu-nb-unit { font-size: 13px; color: var(--gris2); margin-bottom: 1.5rem; letter-spacing: .08em; }
+.slider-wrap { position: relative; margin-bottom: 1rem; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px; border-radius: 2px;
+  background: var(--gris3); outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--or); cursor: pointer;
+  box-shadow: 0 0 12px rgba(201,168,76,0.4);
+  transition: transform .2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.slider-ticks { display: flex; justify-content: space-between; margin-top: 8px; }
+.slider-tick { font-size: 10px; color: var(--gris2); }
+
+/* Remise tag */
+.remise-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  margin-top: 1rem; transition: all .3s;
+}
+.remise-none  { background: rgba(122,120,112,.1);  color: var(--gris2); }
+.remise-5     { background: rgba(52,152,219,.12);  color: #5DADE2; }
+.remise-10    { background: rgba(30,132,73,.12);   color: #2ECC71; }
+
+/* Résultat */
+.simu-result { background: var(--noir3); border: 1px solid var(--gris3); border-radius: var(--rl); padding: 2rem; }
+.result-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--gris2); margin-bottom: 1.5rem; }
+.result-lines { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+.result-line { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.result-line-label { color: var(--gris); display: flex; align-items: center; gap: 8px; }
+.result-line-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--or); opacity: .5; }
+.result-line-val { font-weight: 600; color: var(--blanc); font-family: var(--fd); font-size: 16px; }
+.result-sep { height: 1px; background: var(--gris3); margin: .5rem 0; }
+.result-total { display: flex; justify-content: space-between; align-items: flex-end; }
+.result-total-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--or); }
+.result-total-val { font-family: var(--fd); font-size: 42px; font-weight: 700; color: var(--or); line-height: 1; }
+.result-total-unit { font-size: 11px; color: var(--gris2); margin-top: 2px; text-align: right; }
+.result-economy {
+  background: rgba(30,132,73,.1); border: 1px solid rgba(46,204,113,.15);
+  border-radius: 10px; padding: 10px 14px; margin-top: 1rem;
+  font-size: 12px; color: #2ECC71; display: none; align-items: center; gap: 8px;
+}
+.result-economy.show { display: flex; }
+.result-economy-icon { font-size: 16px; }
+
+/* CTA résultat */
+.result-ctas { display: flex; flex-direction: column; gap: 8px; margin-top: 1.5rem; }
+.btn-devis {
+  width: 100%; padding: 13px; background: var(--or); color: var(--noir);
+  border: none; border-radius: var(--r); font-family: var(--fb); font-size: 13px;
+  font-weight: 700; cursor: pointer; transition: all .2s; letter-spacing: .04em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-devis:hover { background: var(--or2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.25); }
+.btn-whatsapp {
+  width: 100%; padding: 11px; background: transparent; color: #25D366;
+  border: 1px solid rgba(37,211,102,.25); border-radius: var(--r);
+  font-family: var(--fb); font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .2s; letter-spacing: .04em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+}
+.btn-whatsapp:hover { background: rgba(37,211,102,.08); border-color: #25D366; }
+
+/* ── PALIERS ── */
+.paliers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.palier {
+  border-radius: var(--rl); padding: 2rem; position: relative; overflow: hidden;
+  transition: transform .25s;
+}
+.palier:hover { transform: translateY(-4px); }
+.palier-standard { background: var(--noir3); border: 1px solid var(--gris3); }
+.palier-mid { background: var(--noir3); border: 1px solid rgba(93,173,226,.2); }
+.palier-top {
+  background: linear-gradient(135deg, var(--noir3) 0%, rgba(201,168,76,0.06) 100%);
+  border: 1px solid rgba(201,168,76,.3);
+}
+.palier-top::before {
+  content: '✦ Meilleure remise';
+  position: absolute; top: 14px; right: 14px;
+  background: var(--or); color: var(--noir);
+  font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+}
+.palier-range { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .18em; margin-bottom: 1rem; }
+.palier-standard .palier-range { color: var(--gris2); }
+.palier-mid .palier-range { color: #5DADE2; }
+.palier-top .palier-range { color: var(--or); }
+.palier-title { font-family: var(--fd); font-size: 20px; font-weight: 600; color: var(--blanc); margin-bottom: .75rem; }
+.palier-prix { display: flex; align-items: baseline; gap: 4px; margin-bottom: .5rem; }
+.palier-prix-val { font-family: var(--fd); font-size: 32px; font-weight: 700; }
+.palier-standard .palier-prix-val { color: var(--blanc); }
+.palier-mid .palier-prix-val { color: #5DADE2; }
+.palier-top .palier-prix-val { color: var(--or); }
+.palier-prix-unit { font-size: 11px; color: var(--gris2); }
+.palier-remise {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; margin-bottom: 1rem;
+}
+.palier-standard .palier-remise { background: rgba(255,255,255,.06); color: var(--gris2); }
+.palier-mid .palier-remise { background: rgba(93,173,226,.1); color: #5DADE2; }
+.palier-top .palier-remise { background: rgba(46,204,113,.1); color: #2ECC71; }
+.palier-sep { height: 1px; background: var(--gris3); margin: 1rem 0; }
+.palier-features { display: flex; flex-direction: column; gap: 7px; }
+.palier-feature { font-size: 12px; color: var(--gris); display: flex; align-items: center; gap: 8px; }
+.palier-feature::before { content: '✓'; color: var(--or); font-weight: 700; font-size: 11px; flex-shrink: 0; }
+
+/* ── FAQ ── */
+.faq { max-width: 720px; margin: 3rem auto 0; }
+.faq-item { border-bottom: 1px solid var(--gris3); }
+.faq-q {
+  width: 100%; padding: 1.25rem 0; background: none; border: none;
+  color: var(--blanc); font-family: var(--fb); font-size: 14px; font-weight: 500;
+  text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; transition: color .2s;
+}
+.faq-q:hover { color: var(--or); }
+.faq-arrow { color: var(--or); font-size: 18px; transition: transform .3s; flex-shrink: 0; }
+.faq-item.open .faq-arrow { transform: rotate(45deg); }
+.faq-a { font-size: 13px; font-weight: 300; color: var(--gris); line-height: 1.8; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s; }
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.25rem; }
+
+/* ── CTA FINAL ── */
+.cta-final {
+  background: linear-gradient(135deg, var(--noir2) 0%, rgba(201,168,76,0.04) 50%, var(--noir2) 100%);
+  border-top: 1px solid rgba(201,168,76,0.12);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  padding: 5rem 4rem; text-align: center;
+}
+.cta-final-title { font-family: var(--fd); font-size: clamp(32px, 5vw, 56px); font-weight: 300; color: var(--blanc); margin-bottom: 1rem; }
+.cta-final-title em { font-style: italic; color: var(--or); }
+.cta-final-sub { font-size: 14px; color: var(--gris); margin-bottom: 2.5rem; font-weight: 300; }
+.cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-or {
+  padding: 14px 36px; background: var(--or); color: var(--noir);
+  border: none; border-radius: 30px; font-family: var(--fb); font-size: 13px;
+  font-weight: 700; cursor: pointer; text-decoration: none; letter-spacing: .06em;
+  transition: all .25s; display: inline-flex; align-items: center; gap: 10px;
+}
+.btn-or:hover { background: var(--or2); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.3); }
+.btn-outline {
+  padding: 14px 36px; background: transparent; color: var(--blanc);
+  border: 1px solid var(--gris3); border-radius: 30px; font-family: var(--fb);
+  font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none;
+  letter-spacing: .06em; transition: all .25s; display: inline-flex; align-items: center; gap: 10px;
+}
+.btn-outline:hover { border-color: var(--or); color: var(--or); }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--noir2); border-top: 1px solid var(--gris3);
+  padding: 2rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-size: 11px; color: var(--gris2); }
+.footer-contact { font-size: 11px; color: var(--gris2); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .header { padding: 1rem 1.5rem; }
+  .hero, .section { padding: 4rem 1.5rem; }
+  .outils-grid { grid-template-columns: 1fr; }
+  .simu-grid { grid-template-columns: 1fr; }
+  .paliers { grid-template-columns: 1fr; }
+  .cta-final { padding: 4rem 1.5rem; }
+  .footer { padding: 1.5rem; flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-name">Elite <span>RH</span> Consulting</div>
+    <div class="logo-sub">Cabinet RH · Bénin</div>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html">Accueil</a>
+    <a href="formations.html">Formations</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="index.html#contact" class="btn-contact-header">Nous contacter</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <div class="hero-line"></div>
+    <div class="hero-tag">Votre RH en ligne</div>
+  </div>
+  <h1 class="hero-title">Des outils RH <em>professionnels</em><br>à portée de main</h1>
+  <p class="hero-desc">Fiches de poste, KPI, matrices de compétences — des outils conçus par des experts RH pour professionnaliser la gestion de vos talents. Tarification transparente, sans surprise.</p>
+  <div class="hero-badges">
+    <div class="hero-badge"><span>✦</span> Outils 100% personnalisables</div>
+    <div class="hero-badge"><span>✦</span> Export PDF &amp; Word inclus</div>
+    <div class="hero-badge"><span>✦</span> Conforme au droit béninois</div>
+    <div class="hero-badge"><span>✦</span> Réductions à partir de 50 employés</div>
+  </div>
+</section>
+
+<!-- TARIFS OUTILS -->
+<section class="section" style="background:var(--noir)">
+  <div class="section-eyebrow">
+    <div class="section-line"></div>
+    <div class="section-tag-text">Tarification détaillée</div>
+  </div>
+  <h2 class="section-title">Nos <em>outils</em> &amp; tarifs</h2>
+  <p style="font-size:13px;color:var(--gris2);font-weight:300;max-width:500px;line-height:1.8">Chaque outil est facturé par employé traité. Combinez-les pour un accompagnement RH complet.</p>
+
+  <div class="outils-grid">
+    <!-- Fiche de poste -->
+    <div class="outil-card">
+      <div class="outil-num">01</div>
+      <div class="outil-icon">📋</div>
+      <div class="outil-name">Fiche de Poste</div>
+      <div class="outil-desc">Générez une fiche de poste structurée et professionnelle en 6 étapes guidées. Missions, compétences, conditions, rémunération.</div>
+      <div class="outil-prix">
+        <div class="outil-prix-val">2 000</div>
+        <div class="outil-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="outil-inclus">
+        <div class="outil-inclus-item">Saisie guidée en 6 étapes</div>
+        <div class="outil-inclus-item">Export PDF &amp; Word</div>
+        <div class="outil-inclus-item">Aperçu avant téléchargement</div>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="outil-card">
+      <div class="outil-num">02</div>
+      <div class="outil-icon">📊</div>
+      <div class="outil-name">KPI du Poste</div>
+      <div class="outil-desc">Définissez les indicateurs de performance clés pour chaque poste. KPI quantitatifs, qualitatifs et délais avec pondération.</div>
+      <div class="outil-prix">
+        <div class="outil-prix-val">1 500</div>
+        <div class="outil-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="outil-inclus">
+        <div class="outil-inclus-item">3 catégories de KPI</div>
+        <div class="outil-inclus-item">Pondération par curseur</div>
+        <div class="outil-inclus-item">Export PDF &amp; Word</div>
+      </div>
+    </div>
+
+    <!-- Matrice -->
+    <div class="outil-card">
+      <div class="outil-num">03</div>
+      <div class="outil-icon">🎯</div>
+      <div class="outil-name">Matrice de Compétences</div>
+      <div class="outil-desc">Évaluez les niveaux requis et actuels pour chaque compétence. Identifiez les écarts et priorisez les plans de développement.</div>
+      <div class="outil-prix">
+        <div class="outil-prix-val">1 500</div>
+        <div class="outil-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="outil-inclus">
+        <div class="outil-inclus-item">4 types de compétences</div>
+        <div class="outil-inclus-item">Notation 1 à 4 niveaux</div>
+        <div class="outil-inclus-item">Synthèse + plan de développement</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pack complet -->
+  <div class="pack-badge" style="background:linear-gradient(135deg,var(--noir3),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.25);border-radius:0 0 var(--rl) var(--rl);margin-top:0">
+    <div class="pack-badge-left">
+      <div class="pack-badge-label">✦ Pack tout-en-un</div>
+      <div class="pack-badge-title">Fiche de poste + KPI + Matrice</div>
+      <div class="pack-badge-desc">Les 3 outils combinés pour un suivi RH complet de l'employé</div>
+    </div>
+    <div class="pack-badge-prix">
+      <div class="pack-badge-val">5 000</div>
+      <div class="pack-badge-unit">FCFA par employé</div>
+      <div class="pack-badge-saving">Économisez le temps de 3 traitements séparés</div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATEUR -->
+<section class="section" style="background:var(--noir2)">
+  <div class="section-eyebrow">
+    <div class="section-line"></div>
+    <div class="section-tag-text">Calculez votre budget</div>
+  </div>
+  <h2 class="section-title">Simulateur <em>de coût</em></h2>
+  <p style="font-size:13px;color:var(--gris2);font-weight:300;max-width:500px;line-height:1.8;margin-bottom:2.5rem">Déplacez le curseur pour voir instantanément le coût total selon votre effectif et les réductions applicables.</p>
+
+  <div class="simulateur">
+    <div class="simu-header">
+      <div class="simu-header-icon">🧮</div>
+      <div>
+        <div class="simu-header-title">Calculateur de tarif</div>
+        <div class="simu-header-sub">Pack complet · Fiche de poste + KPI + Matrice de compétences</div>
+      </div>
+    </div>
+    <div class="simu-body">
+      <div class="simu-grid">
+        <!-- Input -->
+        <div class="simu-input-section">
+          <div class="simu-label">Nombre d'employés</div>
+          <div class="simu-nb-display" id="simu-nb">10</div>
+          <div class="simu-nb-unit">employé(s)</div>
+          <div class="slider-wrap">
+            <input type="range" id="simu-slider" min="1" max="200" value="10" oninput="calculer(this.value)"/>
+          </div>
+          <div class="slider-ticks">
+            <span class="slider-tick">1</span>
+            <span class="slider-tick">50</span>
+            <span class="slider-tick">100</span>
+            <span class="slider-tick">200</span>
+          </div>
+          <div class="remise-tag remise-none" id="remise-tag">
+            <span id="remise-icon">○</span>
+            <span id="remise-text">Aucune remise (1–49 employés)</span>
+          </div>
+
+          <!-- Détail manuel -->
+          <div style="margin-top:2rem;padding:1.25rem;background:var(--noir3);border:1px solid var(--gris3);border-radius:var(--r)">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--gris2);margin-bottom:.75rem">Ou saisir directement</div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input type="number" id="simu-input-direct" min="1" max="9999" placeholder="Ex: 75"
+                style="background:var(--noir2);border:1px solid var(--gris3);border-radius:8px;color:var(--blanc);font-family:var(--fb);font-size:16px;font-weight:600;padding:10px 14px;outline:none;width:120px;transition:border-color .2s"
+                oninput="calculerDirect(this.value)" onfocus="this.style.borderColor='var(--or)'" onblur="this.style.borderColor='var(--gris3)'"/>
+              <span style="font-size:13px;color:var(--gris2)">employés</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Résultat -->
+        <div class="simu-result">
+          <div class="result-title">Détail du calcul</div>
+          <div class="result-lines">
+            <div class="result-line">
+              <span class="result-line-label"><span class="dot"></span>Nb. employés</span>
+              <span class="result-line-val" id="res-nb">10</span>
+            </div>
+            <div class="result-line">
+              <span class="result-line-label"><span class="dot"></span>Prix unitaire</span>
+              <span class="result-line-val" id="res-unit">5 000 FCFA</span>
+            </div>
+            <div class="result-line">
+              <span class="result-line-label"><span class="dot"></span>Remise appliquée</span>
+              <span class="result-line-val" id="res-remise" style="color:var(--gris2)">Aucune</span>
+            </div>
+            <div class="result-line">
+              <span class="result-line-label"><span class="dot"></span>Montant remise</span>
+              <span class="result-line-val" id="res-montant-remise" style="color:#2ECC71">— FCFA</span>
+            </div>
+          </div>
+          <div class="result-sep"></div>
+          <div class="result-total">
+            <div>
+              <div class="result-total-label">Total à payer</div>
+              <div class="result-total-unit">Pack complet</div>
+            </div>
+            <div style="text-align:right">
+              <div class="result-total-val" id="res-total">50 000</div>
+              <div class="result-total-unit">FCFA</div>
+            </div>
+          </div>
+          <div class="result-economy" id="res-economy">
+            <span class="result-economy-icon">💰</span>
+            <span id="res-economy-text">Vous économisez X FCFA</span>
+          </div>
+          <div class="result-ctas">
+            <button class="btn-devis" id="btn-devis" onclick="demanderDevis()">
+              📩 Demander un devis personnalisé
+            </button>
+            <a class="btn-whatsapp" id="btn-whatsapp" href="#" onclick="whatsappDevis(); return false;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Contacter via WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PALIERS -->
+<section class="section" style="background:var(--noir)">
+  <div class="section-eyebrow">
+    <div class="section-line"></div>
+    <div class="section-tag-text">Réductions volume</div>
+  </div>
+  <h2 class="section-title">Plus vous traitez,<br><em>moins vous payez</em></h2>
+
+  <div class="paliers">
+    <!-- Palier 1 -->
+    <div class="palier palier-standard">
+      <div class="palier-range">1 — 49 employés</div>
+      <div class="palier-title">Tarif Standard</div>
+      <div class="palier-prix">
+        <div class="palier-prix-val">5 000</div>
+        <div class="palier-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="palier-remise">Tarif plein</div>
+      <div class="palier-sep"></div>
+      <div class="palier-features">
+        <div class="palier-feature">Fiche de poste complète</div>
+        <div class="palier-feature">KPI du poste</div>
+        <div class="palier-feature">Matrice de compétences</div>
+        <div class="palier-feature">Export PDF &amp; Word</div>
+      </div>
+    </div>
+
+    <!-- Palier 2 -->
+    <div class="palier palier-mid">
+      <div class="palier-range">50 — 99 employés</div>
+      <div class="palier-title">Remise Entreprise</div>
+      <div class="palier-prix">
+        <div class="palier-prix-val">4 750</div>
+        <div class="palier-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="palier-remise">−5% de réduction</div>
+      <div class="palier-sep"></div>
+      <div class="palier-features">
+        <div class="palier-feature">Tous les outils inclus</div>
+        <div class="palier-feature">Export PDF &amp; Word</div>
+        <div class="palier-feature">Économie jusqu'à 12 500 FCFA</div>
+        <div class="palier-feature">Accompagnement dédié</div>
+      </div>
+    </div>
+
+    <!-- Palier 3 -->
+    <div class="palier palier-top">
+      <div class="palier-range">100 employés et +</div>
+      <div class="palier-title">Remise Grand Compte</div>
+      <div class="palier-prix">
+        <div class="palier-prix-val">4 500</div>
+        <div class="palier-prix-unit">FCFA / employé</div>
+      </div>
+      <div class="palier-remise">−10% de réduction</div>
+      <div class="palier-sep"></div>
+      <div class="palier-features">
+        <div class="palier-feature">Tous les outils inclus</div>
+        <div class="palier-feature">Export PDF &amp; Word</div>
+        <div class="palier-feature">Économie dès 50 000 FCFA</div>
+        <div class="palier-feature">Accompagnement prioritaire</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="background:var(--noir2)">
+  <div class="section-eyebrow">
+    <div class="section-line"></div>
+    <div class="section-tag-text">Questions fréquentes</div>
+  </div>
+  <h2 class="section-title">Vous avez des <em>questions ?</em></h2>
+  <div class="faq">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Comment fonctionne le paiement ?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Après avoir simulé votre tarif, vous nous envoyez un devis par email ou WhatsApp. Nous vous confirmons le montant et vous procédez au paiement via Mobile Money (MTN/Moov) ou carte bancaire. L'accès aux outils est activé dès confirmation du paiement.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Puis-je utiliser un seul outil sans le pack complet ?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Oui, chaque outil est disponible séparément : Fiche de poste à 2 000 FCFA, KPI à 1 500 FCFA, Matrice de compétences à 1 500 FCFA par employé. Les réductions volume s'appliquent également à l'achat d'outils séparés.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        La réduction s'applique-t-elle automatiquement ?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Oui, dès que vous atteignez le seuil de 50 ou 100 employés, la réduction est automatiquement appliquée sur l'ensemble de votre commande. Le simulateur vous montre le tarif exact en temps réel.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Les outils fonctionnent-ils pour tous les secteurs ?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Oui, nos outils sont 100% personnalisables et adaptés à tous les secteurs d'activité. Les contrats générés sont conformes au Code du Travail béninois (Loi n°98-004 du 27/01/1998).</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Puis-je obtenir une facture ?
+        <span class="faq-arrow">+</span>
+      </button>
+      <div class="faq-a">Absolument. Une facture officielle Elite RH Consulting vous est remise après chaque paiement pour vos besoins comptables.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-final">
+  <h2 class="cta-final-title">Prêt à professionnaliser<br>votre <em>gestion RH ?</em></h2>
+  <p class="cta-final-sub">Utilisez le simulateur pour estimer votre budget, puis contactez-nous pour démarrer.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-or" onclick="scrollToSimu(); return false;">🧮 Calculer mon tarif</a>
+    <a href="index.html#contact" class="btn-outline">✉️ Nous contacter</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-copy">© 2025 Elite RH Consulting · Tous droits réservés · Cotonou, Bénin</div>
+  <div class="footer-contact">+229 01 99 34 47 39 · contact@eliterhconsulting.com</div>
+</footer>
+
+<script>
+// ─── SIMULATEUR ───
+const PRIX_UNITAIRE = 5000;
+
+function fmt(n) {
+  return n.toLocaleString('fr-FR').replace(/\u202f/g, ' ');
+}
+
+function getRemise(nb) {
+  if (nb >= 100) return 0.10;
+  if (nb >= 50)  return 0.05;
+  return 0;
+}
+
+function calculer(val) {
+  val = Math.max(1, Math.min(9999, parseInt(val) || 1));
+
+  // Sync slider et input
+  const slider = document.getElementById('simu-slider');
+  const direct = document.getElementById('simu-input-direct');
+  if (slider) slider.value = Math.min(val, 200);
+  if (direct) direct.value = val > 200 ? val : '';
+
+  const remise = getRemise(val);
+  const prixUnit = Math.round(PRIX_UNITAIRE * (1 - remise));
+  const total = prixUnit * val;
+  const totalSansRemise = PRIX_UNITAIRE * val;
+  const economie = totalSansRemise - total;
+
+  // Affichages
+  document.getElementById('simu-nb').textContent = fmt(val);
+  document.getElementById('res-nb').textContent = fmt(val);
+  document.getElementById('res-unit').textContent = fmt(prixUnit) + ' FCFA';
+  document.getElementById('res-total').textContent = fmt(total);
+
+  const remiseTag = document.getElementById('remise-tag');
+  const remiseEl  = document.getElementById('res-remise');
+  const remiseMontantEl = document.getElementById('res-montant-remise');
+
+  if (remise === 0.10) {
+    remiseTag.className = 'remise-tag remise-10';
+    document.getElementById('remise-icon').textContent = '★';
+    document.getElementById('remise-text').textContent = '−10% · Remise Grand Compte (100+)';
+    remiseEl.textContent = '−10%';
+    remiseEl.style.color = '#2ECC71';
+  } else if (remise === 0.05) {
+    remiseTag.className = 'remise-tag remise-5';
+    document.getElementById('remise-icon').textContent = '◆';
+    document.getElementById('remise-text').textContent = '−5% · Remise Entreprise (50–99)';
+    remiseEl.textContent = '−5%';
+    remiseEl.style.color = '#5DADE2';
+  } else {
+    remiseTag.className = 'remise-tag remise-none';
+    document.getElementById('remise-icon').textContent = '○';
+    document.getElementById('remise-text').textContent = 'Aucune remise (1–49 employés)';
+    remiseEl.textContent = 'Aucune';
+    remiseEl.style.color = 'var(--gris2)';
+  }
+
+  remiseMontantEl.textContent = economie > 0 ? '−' + fmt(economie) + ' FCFA' : '— FCFA';
+  remiseMontantEl.style.color = economie > 0 ? '#2ECC71' : 'var(--gris2)';
+
+  const ecoEl = document.getElementById('res-economy');
+  if (economie > 0) {
+    ecoEl.classList.add('show');
+    document.getElementById('res-economy-text').textContent = 'Vous économisez ' + fmt(economie) + ' FCFA grâce à la remise ' + (remise === 0.10 ? 'Grand Compte' : 'Entreprise');
+  } else {
+    ecoEl.classList.remove('show');
+  }
+
+  // Barre de progression slider couleur
+  const pct = ((Math.min(val, 200) - 1) / 199) * 100;
+  document.getElementById('simu-slider').style.background =
+    'linear-gradient(to right, var(--or) ' + pct + '%, var(--gris3) ' + pct + '%)';
+}
+
+function calculerDirect(val) {
+  const n = parseInt(val);
+  if (!isNaN(n) && n >= 1) calculer(n);
+}
+
+// ─── DEVIS PAR EMAIL ───
+function demanderDevis() {
+  const nb = document.getElementById('simu-nb').textContent;
+  const total = document.getElementById('res-total').textContent;
+  const remise = document.getElementById('res-remise').textContent;
+  const sujet = encodeURIComponent('Demande de devis — Votre RH en ligne');
+  const corps = encodeURIComponent(
+    'Bonjour Elite RH Consulting,\n\n' +
+    'Je souhaite obtenir un devis pour le service « Votre RH en ligne ».\n\n' +
+    '— Nombre d\'employés : ' + nb + '\n' +
+    '— Remise applicable : ' + remise + '\n' +
+    '— Montant estimé : ' + total + ' FCFA\n\n' +
+    'Merci de me recontacter pour finaliser la commande.\n\n' +
+    'Cordialement'
+  );
+  window.location.href = 'mailto:contact@eliterhconsulting.com?subject=' + sujet + '&body=' + corps;
+}
+
+// ─── WHATSAPP ───
+function whatsappDevis() {
+  const nb = document.getElementById('simu-nb').textContent;
+  const total = document.getElementById('res-total').textContent;
+  const remise = document.getElementById('res-remise').textContent;
+  const msg = encodeURIComponent(
+    'Bonjour Elite RH Consulting ! 👋\n\n' +
+    'Je suis intéressé(e) par le service *Votre RH en ligne*.\n\n' +
+    '📋 *Mon estimation :*\n' +
+    '• Employés : ' + nb + '\n' +
+    '• Remise : ' + remise + '\n' +
+    '• Total estimé : ' + total + ' FCFA\n\n' +
+    'Pouvez-vous me confirmer le tarif et la procédure de paiement ? Merci !'
+  );
+  window.open('https://wa.me/22901993447399?text=' + msg, '_blank');
+}
+
+// ─── FAQ ───
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ─── SCROLL TO SIMULATEUR ───
+function scrollToSimu() {
+  document.querySelector('.simulateur').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Init
+calculer(10);
+</script>
+</body>
+</html>

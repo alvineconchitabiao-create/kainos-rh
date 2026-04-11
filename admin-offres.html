@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Administration Offres d'Emploi — Elite RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem;}
+.login-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;padding:2.5rem;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-family:var(--fd);font-size:22px;font-weight:800;margin-bottom:.25rem;}
+.login-logo span{color:var(--or);}
+.login-sub{font-size:10px;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem;}
+.lf{text-align:left;margin-bottom:.875rem;}
+.lf label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);display:block;margin-bottom:4px;}
+.lf input{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.lf input:focus{border-color:var(--or);}
+.login-btn{width:100%;padding:12px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer;margin-top:.5rem;transition:background .2s;}
+.login-btn:hover{background:var(--or2);}
+.login-err{color:var(--rouge);font-size:11px;margin-top:.75rem;display:none;}
+
+/* APP */
+.app{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+
+.main{padding:1.5rem 1.75rem;max-width:1200px;margin:0 auto;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;margin-bottom:1.5rem;}
+.kpi{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem 1.25rem;border-top:2px solid;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;}
+.kpi-val{font-family:var(--fd);font-size:26px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.2rem;}
+
+/* TABLE */
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;}
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;text-align:left;}
+.dtbl td{padding:9px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+
+/* FORM */
+.form-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.5rem;margin-bottom:1.25rem;}
+.form-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;gap:8px;}
+.form-title span{color:var(--or);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.b-actif{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-pause{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-clos{background:rgba(90,88,102,.12);color:var(--gris);}
+.b-cdi{background:rgba(74,158,255,.1);color:var(--bleu);}
+.b-cdd{background:rgba(167,139,250,.1);color:var(--violet);}
+.b-urgent{background:rgba(240,90,90,.1);color:var(--rouge);}
+.b-nouveau{background:rgba(201,168,76,.1);color:var(--or);}
+.b-stage{background:rgba(52,199,123,.1);color:var(--vert);}
+
+/* TOGGLE */
+.toggle{position:relative;width:40px;height:22px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--gris3);border-radius:22px;transition:.3s;}
+.toggle-slider::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle input:checked + .toggle-slider{background:var(--or);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(18px);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:700px;max-height:90vh;overflow-y:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;position:sticky;bottom:0;background:var(--bg2);}
+
+/* PREVIEW */
+.offre-preview{background:var(--bg3);border:1px solid var(--gris3);border-radius:12px;padding:1.25rem;margin-top:1rem;}
+.preview-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:.75rem;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){.fg,.fg3,.kpi-row{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.kpi-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Elite <span>RH</span></div>
+    <div class="login-sub">Administration — Offres d'Emploi</div>
+    <div class="lf"><label>Identifiant</label><input type="text" id="l-user" placeholder="admin" onkeydown="if(event.key==='Enter')connecter()"/></div>
+    <div class="lf"><label>Mot de passe</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')connecter()"/></div>
+    <button class="login-btn" onclick="connecter()">Accéder au panneau →</button>
+    <div class="login-err" id="login-err">Identifiant ou mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div style="width:1px;height:18px;background:var(--gris3);"></div>
+    <div style="font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;">Admin Offres</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+    <a href="recrutement-talents.html" target="_blank" class="btn btn-ghost">👁 Voir la page →</a>
+    <button class="btn btn-or" onclick="openModal('modal-offre');modeEdit=false;viderForm()">+ Nouvelle offre</button>
+    <button class="btn btn-ghost" onclick="deconnecter()">Déconnexion</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- KPI -->
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <!-- Filtres rapides -->
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="search" placeholder="🔍 Rechercher une offre..." oninput="renderOffres()" style="flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px 12px;outline:none;"/>
+    <select id="f-statut" onchange="renderOffres()" style="padding:8px 11px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous statuts</option>
+      <option value="actif">Actives</option>
+      <option value="pause">En pause</option>
+      <option value="clos">Clôturées</option>
+    </select>
+    <select id="f-contrat" onchange="renderOffres()" style="padding:8px 11px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous contrats</option>
+      <option value="CDI">CDI</option>
+      <option value="CDD">CDD</option>
+      <option value="Stage">Stage</option>
+      <option value="Freelance">Freelance</option>
+    </select>
+  </div>
+
+  <!-- TABLE OFFRES -->
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📋 Offres d'Emploi <span id="nb-offres" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div>
+      <div style="display:flex;gap:.5rem;">
+        <button class="btn btn-ghost" style="font-size:10px;" onclick="exporterJSON()">⬇ Exporter JSON</button>
+        <button class="btn btn-ghost" style="font-size:10px;" onclick="document.getElementById('fi-import').click()">⬆ Importer JSON</button>
+        <input type="file" id="fi-import" accept=".json" style="display:none" onchange="importerJSON(this)"/>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Titre du poste</th>
+          <th>Secteur</th>
+          <th class="c">Contrat</th>
+          <th class="c">Lieu</th>
+          <th class="c">Publié le</th>
+          <th class="c">Badges</th>
+          <th class="c">Statut</th>
+          <th class="c">Visible</th>
+          <th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="offres-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO SYNC -->
+  <div style="background:var(--bg2);border:1px solid rgba(201,168,76,.2);border-radius:var(--rl);padding:1rem 1.25rem;display:flex;align-items:center;gap:.875rem;font-size:12px;color:var(--gris);">
+    <span style="font-size:1.25rem;">💡</span>
+    <div>
+      <strong style="color:var(--or);">Comment ça marche ?</strong> —
+      Les offres créées ici sont sauvegardées dans le navigateur (localStorage). Pour les afficher sur le site <strong style="color:var(--blanc);">recrutement-talents.html</strong>, les deux fichiers doivent être ouverts dans le <strong style="color:var(--blanc);">même navigateur</strong> sur le même ordinateur.
+      Pour un déploiement en ligne complet, utilisez le bouton <strong style="color:var(--or);">⬇ Exporter JSON</strong> pour récupérer vos offres et les coller dans le code du site.
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL OFFRE -->
+<div class="modal-ov" id="modal-offre">
+  <div class="modal">
+    <div class="mh">
+      <div class="mt" id="modal-title">✏️ <span>Nouvelle Offre</span></div>
+      <button class="mc" onclick="closeModal('modal-offre')">✕</button>
+    </div>
+    <div class="mb">
+
+      <!-- Infos principales -->
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.75rem;">Informations principales</div>
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff ff-full"><label>Titre du poste *</label><input type="text" id="f-titre" placeholder="Ex: Responsable Comptable Senior" oninput="updatePreview()"/></div>
+        <div class="ff"><label>Secteur d'activité *</label>
+          <select id="f-secteur" onchange="updatePreview()">
+            <option value="">— Sélectionner —</option>
+            <option>Finance & Comptabilité</option>
+            <option>Ressources Humaines</option>
+            <option>Commerce & Vente</option>
+            <option>Informatique & Digital</option>
+            <option>Logistique & Transport</option>
+            <option>BTP & Génie Civil</option>
+            <option>Santé & Médical</option>
+            <option>Industrie & Production</option>
+            <option>Marketing & Communication</option>
+            <option>Juridique & Compliance</option>
+            <option>Direction & Stratégie</option>
+            <option>Enseignement & Formation</option>
+          </select>
+        </div>
+        <div class="ff"><label>Type de contrat *</label>
+          <select id="f-contrat" onchange="updatePreview()">
+            <option value="CDI">CDI</option>
+            <option value="CDD">CDD</option>
+            <option value="Stage">Stage</option>
+            <option value="Freelance">Freelance / Mission</option>
+          </select>
+        </div>
+        <div class="ff"><label>Lieu de travail</label>
+          <select id="f-lieu" onchange="updatePreview()">
+            <option>Cotonou</option>
+            <option>Porto-Novo</option>
+            <option>Parakou</option>
+            <option>Abomey-Calavi</option>
+            <option>Bénin (tout pays)</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="ff"><label>Salaire / Rémunération</label><input type="text" id="f-salaire" placeholder="Ex: Selon profil / 250 000 - 400 000 F" oninput="updatePreview()"/></div>
+        <div class="ff"><label>Entreprise cliente</label><input type="text" id="f-entreprise" placeholder="Ex: Groupe industriel (confidentiel)" oninput="updatePreview()"/></div>
+        <div class="ff"><label>Date de publication</label><input type="date" id="f-date"/></div>
+        <div class="ff"><label>Icône (emoji)</label><input type="text" id="f-icon" placeholder="Ex: 💰 🏗️ 💻 👥" maxlength="4" oninput="updatePreview()"/></div>
+      </div>
+
+      <!-- Description -->
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.875rem 0 .75rem;">Description & Profil</div>
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff ff-full"><label>Description du poste *</label><textarea id="f-desc" rows="3" placeholder="Décrivez les missions, le contexte et les responsabilités du poste..." oninput="updatePreview()"></textarea></div>
+        <div class="ff ff-full"><label>Profil recherché *</label><textarea id="f-profil" rows="3" placeholder="Diplômes requis, années d'expérience, compétences indispensables..." oninput="updatePreview()"></textarea></div>
+      </div>
+
+      <!-- Options -->
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.875rem 0 .75rem;">Options d'affichage</div>
+      <div class="fg3" style="margin-bottom:1rem;">
+        <div class="ff">
+          <label>Statut de l'offre</label>
+          <select id="f-statut">
+            <option value="actif">✅ Active — visible sur le site</option>
+            <option value="pause">⏸ En pause — masquée temporairement</option>
+            <option value="clos">❌ Clôturée — recrutement terminé</option>
+          </select>
+        </div>
+        <div class="ff" style="flex-direction:row;align-items:center;gap:12px;padding-top:1rem;">
+          <label style="margin:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);">Badge Urgent</label>
+          <label class="toggle"><input type="checkbox" id="f-urgent" onchange="updatePreview()"/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="ff" style="flex-direction:row;align-items:center;gap:12px;padding-top:1rem;">
+          <label style="margin:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);">Badge Nouveau</label>
+          <label class="toggle"><input type="checkbox" id="f-nouveau" onchange="updatePreview()"/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Prévisualisation -->
+      <div class="offre-preview">
+        <div class="preview-label">👁 Prévisualisation de la carte</div>
+        <div id="preview-content" style="font-size:12px;color:var(--gris);">Remplissez les champs pour voir la prévisualisation.</div>
+      </div>
+
+      <input type="hidden" id="f-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-offre')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverOffre()">✓ Enregistrer l'offre</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM SUPPRESSION -->
+<div class="modal-ov" id="modal-confirm">
+  <div class="modal" style="max-width:420px;">
+    <div class="mh"><div class="mt">⚠️ <span>Confirmer la suppression</span></div><button class="mc" onclick="closeModal('modal-confirm')">✕</button></div>
+    <div class="mb">
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🗑️</div>
+        <div style="font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:.5rem;">Supprimer cette offre ?</div>
+        <div style="font-size:12px;color:var(--gris);" id="confirm-label">Cette action est irréversible.</div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn btn-rouge" onclick="confirmerSuppression()">🗑️ Supprimer définitivement</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'eliteoffres_v1';
+var ADMIN_CREDS = { login:'kainosrh', pass:'kainosrh2026' };
+var ST = { offres:[], nextId:10 };
+var nextId = 10;
+var modeEdit = false;
+var _idToDelete = null;
+function uid(){ return ++nextId; }
+
+var SECTEUR_ICONS = {
+  'Finance & Comptabilité':'💰','Ressources Humaines':'👥',
+  'Commerce & Vente':'🤝','Informatique & Digital':'💻',
+  'Logistique & Transport':'🚛','BTP & Génie Civil':'🏗️',
+  'Santé & Médical':'🏥','Industrie & Production':'⚙️',
+  'Marketing & Communication':'📣','Juridique & Compliance':'⚖️',
+  'Direction & Stratégie':'📊','Enseignement & Formation':'🎓'
+};
+var SECTEUR_BG = {
+  'Finance & Comptabilité':'rgba(52,199,123,.08)','Ressources Humaines':'rgba(201,168,76,.08)',
+  'Commerce & Vente':'rgba(167,139,250,.08)','Informatique & Digital':'rgba(34,211,238,.08)',
+  'Logistique & Transport':'rgba(251,146,60,.08)','BTP & Génie Civil':'rgba(74,158,255,.08)',
+  'Santé & Médical':'rgba(240,90,90,.08)','Industrie & Production':'rgba(251,199,36,.08)',
+  'Marketing & Communication':'rgba(74,158,255,.08)','Juridique & Compliance':'rgba(167,139,250,.08)',
+  'Direction & Stratégie':'rgba(201,168,76,.08)','Enseignement & Formation':'rgba(52,199,123,.08)'
+};
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||10; }
+    else{ initOffresDefaut(); }
+  }catch(e){ initOffresDefaut(); }
+}
+function sauver(){
+  try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST));
+    // Synchroniser aussi vers la page recrutement
+    localStorage.setItem('eliteoffres_site_v1', JSON.stringify(ST.offres.filter(function(o){return o.statut==='actif';})));
+  }catch(e){ toast('Erreur sauvegarde'); }
+}
+function initOffresDefaut(){
+  ST={ offres:[
+    {id:1,titre:'Responsable Comptable',secteur:'Finance & Comptabilité',contrat:'CDI',lieu:'Cotonou',icon:'💰',bg:'rgba(52,199,123,.08)',urgent:true,nouveau:false,entreprise:'Entreprise industrielle (confidentiel)',salaire:'Selon profil',desc:'Supervision de la comptabilité générale et analytique, préparation des états financiers, suivi fiscal et gestion de la trésorerie.',profil:'DSCG ou équivalent, 5 ans min. d\'expérience en comptabilité d\'entreprise.',date:'15 Jan 2026',statut:'actif'},
+    {id:2,titre:'Chargé(e) RH & Paie',secteur:'Ressources Humaines',contrat:'CDI',lieu:'Cotonou',icon:'👥',bg:'rgba(201,168,76,.08)',urgent:false,nouveau:true,entreprise:'Groupe commercial (confidentiel)',salaire:'Selon profil',desc:'Gestion administrative du personnel, traitement de la paie mensuelle, suivi des congés et des déclarations sociales.',profil:'Bac+3 en GRH ou équivalent, maîtrise d\'un logiciel de paie, 3 ans min.',date:'20 Jan 2026',statut:'actif'},
+    {id:3,titre:'Ingénieur Génie Civil',secteur:'BTP & Génie Civil',contrat:'CDI',lieu:'Cotonou',icon:'🏗️',bg:'rgba(74,158,255,.08)',urgent:true,nouveau:false,entreprise:'Bureau d\'études (confidentiel)',salaire:'Compétitif',desc:'Direction et supervision des projets de construction, coordination des équipes terrain, suivi technique et contrôle qualité.',profil:'Diplôme d\'ingénieur Génie Civil, 5 ans min. en conduite de travaux.',date:'10 Jan 2026',statut:'actif'},
+    {id:4,titre:'Commercial(e) Terrain',secteur:'Commerce & Vente',contrat:'CDI',lieu:'Bénin (tout pays)',icon:'🤝',bg:'rgba(167,139,250,.08)',urgent:false,nouveau:true,entreprise:'Société de distribution (confidentiel)',salaire:'Fixe + commissions',desc:'Développement d\'un portefeuille clients BtoB, prospection active, négociation et suivi des contrats commerciaux.',profil:'Bac+2 min., permis B, expérience terrain en vente B2B souhaitée.',date:'22 Jan 2026',statut:'actif'},
+    {id:5,titre:'Développeur Web Full Stack',secteur:'Informatique & Digital',contrat:'CDD',lieu:'Cotonou',icon:'💻',bg:'rgba(34,211,238,.08)',urgent:false,nouveau:true,entreprise:'Start-up Fintech (confidentiel)',salaire:'Selon profil',desc:'Développement et maintenance d\'applications web, intégration d\'API, participation aux sprints agiles.',profil:'Bac+3/5 en informatique, maîtrise React / Node.js / SQL, portfolio requis.',date:'25 Jan 2026',statut:'actif'},
+    {id:6,titre:'Responsable Logistique',secteur:'Logistique & Transport',contrat:'CDI',lieu:'Abomey-Calavi',icon:'🚛',bg:'rgba(251,146,60,.08)',urgent:false,nouveau:false,entreprise:'Entreprise agroalimentaire (confidentiel)',salaire:'Selon profil',desc:'Pilotage de la chaîne logistique, gestion des stocks, coordination transporteurs et planification des livraisons.',profil:'Bac+3 en logistique ou supply chain, 4 ans min., maîtrise des outils ERP.',date:'05 Jan 2026',statut:'actif'}
+  ], nextId:10 };
+  sauver();
+}
+
+// ── LOGIN ──
+function connecter(){
+  var u=document.getElementById('l-user').value.trim();
+  var p=document.getElementById('l-pass').value.trim();
+  if(u===ADMIN_CREDS.login&&p===ADMIN_CREDS.pass){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('login-err').style.display='none';
+    renderAll();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function deconnecter(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+}
+
+// ── KPI ──
+function renderKPI(){
+  var total=ST.offres.length;
+  var actives=ST.offres.filter(function(o){return o.statut==='actif';}).length;
+  var pause=ST.offres.filter(function(o){return o.statut==='pause';}).length;
+  var closes=ST.offres.filter(function(o){return o.statut==='clos';}).length;
+  function kc(label,val,sub,color,bc){
+    return '<div class="kpi" style="border-top-color:'+bc+'"><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+color+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('kpi-row').innerHTML=
+    kc('Total offres',total,'dans le système','var(--blanc)','var(--or)')+
+    kc('Actives',actives,'visibles sur le site','var(--vert)','var(--vert)')+
+    kc('En pause',pause,'masquées temporairement','var(--jaune)','var(--jaune)')+
+    kc('Clôturées',closes,'recrutement terminé','var(--gris)','var(--gris3)');
+}
+
+// ── TABLE ──
+function renderOffres(){
+  var search=(document.getElementById('search').value||'').toLowerCase();
+  var fStat=document.getElementById('f-statut').value;
+  var fCon=document.getElementById('f-contrat').value;
+  var list=ST.offres.filter(function(o){
+    if(fStat&&o.statut!==fStat) return false;
+    if(fCon&&o.contrat!==fCon) return false;
+    if(search&&!(o.titre+(o.secteur||'')+(o.lieu||'')).toLowerCase().includes(search)) return false;
+    return true;
+  });
+  document.getElementById('nb-offres').textContent='— '+list.length+' offre(s)';
+  var tbody=document.getElementById('offres-tbody');
+  tbody.innerHTML='';
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--gris);padding:2.5rem">Aucune offre trouvée.</td></tr>';
+    return;
+  }
+  list.forEach(function(o){
+    var statutCls=o.statut==='actif'?'b-actif':o.statut==='pause'?'b-pause':'b-clos';
+    var statutLabel=o.statut==='actif'?'Active':o.statut==='pause'?'En pause':'Clôturée';
+    var contratCls=o.contrat==='CDI'?'b-cdi':o.contrat==='CDD'?'b-cdd':o.contrat==='Stage'?'b-stage':'b-cdi';
+    tbody.innerHTML+='<tr>'+
+      '<td>'+
+        '<div style="font-weight:700;font-size:12px;">'+esc(o.icon||'📋')+' '+esc(o.titre)+'</div>'+
+        '<div style="font-size:10px;color:var(--gris);margin-top:2px;">'+esc(o.entreprise||'—')+'</div>'+
+      '</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(o.secteur||'—')+'</td>'+
+      '<td class="c"><span class="badge '+contratCls+'">'+esc(o.contrat||'—')+'</span></td>'+
+      '<td class="c" style="font-size:11px">'+esc(o.lieu||'—')+'</td>'+
+      '<td class="c" style="font-size:11px;color:var(--gris)">'+esc(o.date||'—')+'</td>'+
+      '<td class="c">'+
+        (o.urgent?'<span class="badge b-urgent">Urgent</span> ':'')+
+        (o.nouveau?'<span class="badge b-nouveau">Nouveau</span>':'—')+
+      '</td>'+
+      '<td class="c"><span class="badge '+statutCls+'">'+statutLabel+'</span></td>'+
+      '<td class="c">'+
+        '<label class="toggle" title="'+(o.statut==='actif'?'Masquer':'Activer')+' l\'offre">'+
+          '<input type="checkbox" '+(o.statut==='actif'?'checked':'')+' onchange="toggleStatut('+o.id+',this.checked)"/>'+
+          '<span class="toggle-slider"></span>'+
+        '</label>'+
+      '</td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="editerOffre('+o.id+')" class="btn btn-ghost" style="padding:3px 8px;font-size:9px;" title="Modifier">✏️</button> '+
+        '<button onclick="dupliquerOffre('+o.id+')" class="btn btn-ghost" style="padding:3px 8px;font-size:9px;" title="Dupliquer">📋</button> '+
+        '<button onclick="demanderSuppression('+o.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:16px;" title="Supprimer">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── ACTIONS ──
+function toggleStatut(id, checked){
+  var o=ST.offres.find(function(x){return x.id===id;}); if(!o) return;
+  o.statut=checked?'actif':'pause';
+  sauver(); renderKPI(); renderOffres();
+  toast(checked?'Offre activée — visible sur le site':'Offre mise en pause');
+}
+function editerOffre(id){
+  var o=ST.offres.find(function(x){return x.id===id;}); if(!o) return;
+  modeEdit=true;
+  document.getElementById('modal-title').innerHTML='✏️ <span>Modifier l\'offre</span>';
+  document.getElementById('f-titre').value=o.titre||'';
+  document.getElementById('f-secteur').value=o.secteur||'';
+  document.getElementById('f-contrat').value=o.contrat||'CDI';
+  document.getElementById('f-lieu').value=o.lieu||'Cotonou';
+  document.getElementById('f-salaire').value=o.salaire||'';
+  document.getElementById('f-entreprise').value=o.entreprise||'';
+  document.getElementById('f-date').value=dateToInput(o.date);
+  document.getElementById('f-icon').value=o.icon||'';
+  document.getElementById('f-desc').value=o.desc||'';
+  document.getElementById('f-profil').value=o.profil||'';
+  document.getElementById('f-statut').value=o.statut||'actif';
+  document.getElementById('f-urgent').checked=!!o.urgent;
+  document.getElementById('f-nouveau').checked=!!o.nouveau;
+  document.getElementById('f-id').value=id;
+  updatePreview();
+  openModal('modal-offre');
+}
+function dupliquerOffre(id){
+  var o=ST.offres.find(function(x){return x.id===id;}); if(!o) return;
+  var copy=Object.assign({},o,{id:uid(),titre:'[Copie] '+o.titre,statut:'pause',nouveau:true,date:formatDateFR(new Date())});
+  ST.offres.push(copy);
+  sauver(); renderAll();
+  toast('Offre dupliquée — en pause, à activer quand prête');
+}
+function demanderSuppression(id){
+  var o=ST.offres.find(function(x){return x.id===id;}); if(!o) return;
+  _idToDelete=id;
+  document.getElementById('confirm-label').textContent='Supprimer "'+o.titre+'" ? Cette action est irréversible.';
+  openModal('modal-confirm');
+}
+function confirmerSuppression(){
+  if(!_idToDelete) return;
+  ST.offres=ST.offres.filter(function(x){return x.id!==_idToDelete;});
+  sauver(); closeModal('modal-confirm'); renderAll();
+  toast('Offre supprimée définitivement');
+  _idToDelete=null;
+}
+
+// ── FORMULAIRE ──
+function viderForm(){
+  ['f-titre','f-salaire','f-entreprise','f-date','f-icon','f-desc','f-profil','f-id'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('f-secteur').value='';
+  document.getElementById('f-contrat').value='CDI';
+  document.getElementById('f-lieu').value='Cotonou';
+  document.getElementById('f-statut').value='actif';
+  document.getElementById('f-urgent').checked=false;
+  document.getElementById('f-nouveau').checked=true;
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('modal-title').innerHTML='✏️ <span>Nouvelle Offre</span>';
+  document.getElementById('preview-content').innerHTML='<span style="color:var(--gris);font-size:12px;">Remplissez les champs pour voir la prévisualisation.</span>';
+}
+function sauverOffre(){
+  var titre=document.getElementById('f-titre').value.trim();
+  var secteur=document.getElementById('f-secteur').value;
+  if(!titre||!secteur){ toast('Titre et secteur obligatoires'); return; }
+  var dateRaw=document.getElementById('f-date').value;
+  var iconVal=document.getElementById('f-icon').value.trim()||SECTEUR_ICONS[secteur]||'📋';
+  var data={
+    titre:titre, secteur:secteur,
+    contrat:document.getElementById('f-contrat').value,
+    lieu:document.getElementById('f-lieu').value,
+    salaire:document.getElementById('f-salaire').value.trim()||'Selon profil',
+    entreprise:document.getElementById('f-entreprise').value.trim()||'Entreprise cliente (confidentiel)',
+    date:dateRaw?formatDateFR(new Date(dateRaw)):formatDateFR(new Date()),
+    icon:iconVal,
+    bg:SECTEUR_BG[secteur]||'rgba(201,168,76,.08)',
+    desc:document.getElementById('f-desc').value.trim(),
+    profil:document.getElementById('f-profil').value.trim(),
+    urgent:document.getElementById('f-urgent').checked,
+    nouveau:document.getElementById('f-nouveau').checked,
+    statut:document.getElementById('f-statut').value
+  };
+  var idVal=document.getElementById('f-id').value;
+  if(modeEdit&&idVal){
+    var o=ST.offres.find(function(x){return x.id===parseInt(idVal);});
+    if(o) Object.assign(o,data);
+    toast('Offre mise à jour ✓');
+  } else {
+    data.id=uid();
+    ST.offres.unshift(data); // Ajouter en première position
+    toast('Offre créée et ajoutée au site ✓');
+  }
+  sauver(); closeModal('modal-offre'); renderAll();
+}
+
+// ── PRÉVISUALISATION ──
+function updatePreview(){
+  var titre=document.getElementById('f-titre').value||'Titre du poste';
+  var secteur=document.getElementById('f-secteur').value||'Secteur';
+  var contrat=document.getElementById('f-contrat').value||'CDI';
+  var lieu=document.getElementById('f-lieu').value||'Lieu';
+  var salaire=document.getElementById('f-salaire').value||'Selon profil';
+  var desc=document.getElementById('f-desc').value||'Description du poste...';
+  var urgent=document.getElementById('f-urgent').checked;
+  var nouveau=document.getElementById('f-nouveau').checked;
+  var icon=document.getElementById('f-icon').value||SECTEUR_ICONS[secteur]||'📋';
+  var bg=SECTEUR_BG[secteur]||'rgba(201,168,76,.08)';
+  var contratCls=contrat==='CDI'?'b-cdi':contrat==='CDD'?'b-cdd':contrat==='Stage'?'b-stage':'b-cdi';
+  document.getElementById('preview-content').innerHTML=
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.75rem;">'+
+      '<div style="width:40px;height:40px;border-radius:8px;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+icon+'</div>'+
+      '<div style="display:flex;gap:.4rem;flex-wrap:wrap;">'+
+        '<span class="badge '+contratCls+'">'+contrat+'</span>'+
+        (urgent?'<span class="badge b-urgent">🔴 Urgent</span>':'')+
+        (nouveau?'<span class="badge b-nouveau">✨ Nouveau</span>':'')+
+      '</div>'+
+    '</div>'+
+    '<div style="font-weight:700;font-size:13px;margin-bottom:.25rem;">'+esc(titre)+'</div>'+
+    '<div style="font-size:11px;color:var(--gris);margin-bottom:.75rem;">'+esc(secteur)+' · 📍 '+esc(lieu)+' · 💵 '+esc(salaire)+'</div>'+
+    '<div style="font-size:11px;color:var(--gris);line-height:1.6;">'+esc(desc.substring(0,120))+(desc.length>120?'...':'')+'</div>';
+}
+
+// ── EXPORT / IMPORT ──
+function exporterJSON(){
+  var data=JSON.stringify(ST.offres, null, 2);
+  var blob=new Blob([data],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='offres-elite-rh-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Export JSON téléchargé');
+}
+function importerJSON(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var imported=JSON.parse(e.target.result);
+      if(!Array.isArray(imported)){toast('Format JSON invalide');return;}
+      var added=0;
+      imported.forEach(function(o){
+        if(!o.titre) return;
+        if(!ST.offres.find(function(x){return x.titre===o.titre&&x.date===o.date;})){
+          o.id=uid(); ST.offres.push(o); added++;
+        }
+      });
+      sauver(); renderAll(); toast(added+' offre(s) importée(s) avec succès');
+    }catch(err){ toast('Erreur lors de l\'import: '+err.message); }
+  };
+  reader.readAsText(file); input.value='';
+}
+
+// ── UTILS ──
+function formatDateFR(d){
+  var moisNoms=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  return d.getDate()+' '+moisNoms[d.getMonth()]+' '+d.getFullYear();
+}
+function dateToInput(str){
+  if(!str) return '';
+  // "15 Jan 2026" → "2026-01-15"
+  var moisMap={Jan:'01',Fév:'02',Mar:'03',Avr:'04',Mai:'05',Jun:'06',Jul:'07',Aoû:'08',Sep:'09',Oct:'10',Nov:'11',Déc:'12'};
+  var parts=str.split(' ');
+  if(parts.length<3) return '';
+  return parts[2]+'-'+(moisMap[parts[1]]||'01')+'-'+(parts[0]<10?'0':'')+parts[0];
+}
+function renderAll(){ renderKPI(); renderOffres(); }
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},4000);}
+
+// ── INIT ──
+charger();
+</script>
+</body>
+</html>

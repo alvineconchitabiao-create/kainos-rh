@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Registre du Personnel — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-bleu{background:rgba(74,158,255,.12);color:var(--bleu);border:1px solid rgba(74,158,255,.2);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;text-align:left;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.fg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+.sec-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em;margin:1.25rem 0 .75rem;padding-bottom:.4rem;border-bottom:1px solid rgba(201,168,76,.15);}
+
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.b-actif{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-inactif{background:rgba(240,90,90,.12);color:var(--rouge);}
+.b-essai{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-cdi{background:rgba(74,158,255,.12);color:var(--bleu);}
+.b-cdd{background:rgba(167,139,250,.1);color:var(--violet);}
+
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:900px;margin:auto;animation:popIn .22s ease;}
+.modal-lg{max-width:1100px;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:78vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+
+/* FICHE IMPRESSION */
+@media print{
+  .hdr,.tabs,.no-print{display:none!important;}
+  #fiche-print{display:block!important;}
+  body{background:#fff;color:#000;}
+}
+#fiche-print{display:none;}
+
+.vm-apte{background:rgba(52,199,123,.12);color:var(--vert);display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.vm-reserve{background:rgba(251,199,36,.1);color:var(--jaune);display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.vm-inapte{background:rgba(240,90,90,.12);color:var(--rouge);display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.vm-attente{background:rgba(251,146,60,.1);color:var(--orange);display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.vm-aucune{background:rgba(90,88,102,.15);color:var(--gris);display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){.fg,.fg3,.fg4{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Registre du Personnel</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+    <button class="btn btn-or" onclick="openModal('modal-employe');modeEdition=false;viderForm();">+ Nouvel employé</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('fi-import').click()">⬆ Importer Excel</button>
+    <input type="file" id="fi-import" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerExcel(this)"/>
+    <button class="btn btn-ghost" onclick="importerDepuisPayroll()">🔗 Importer depuis Paie</button>
+    <button class="btn btn-vert" onclick="pousserVersPayroll(null, true)">⬆ Pousser tout vers Paie</button>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="imprimerRegistre()">🖨️ Imprimer Registre</button>
+  </div>
+</header>
+
+<nav class="tabs no-print">
+  <button class="tab active" onclick="showTab('registre',this)"><span class="tdot" style="background:var(--or)"></span>📋 Registre</button>
+  <button class="tab" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--bleu)"></span>📊 Tableau de bord</button>
+  <button class="tab" onclick="showTab('mouvements',this)"><span class="tdot" style="background:var(--violet)"></span>🔄 Mouvements</button>
+  <button class="tab" onclick="showTab('visites',this)"><span class="tdot" style="background:var(--vert)"></span>🏥 Visites Médicales <span id="badge-visites" style="display:none;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px;"></span></button>
+  <button class="tab" onclick="showTab('sanctions',this)"><span class="tdot" style="background:var(--rouge)"></span>⚖️ Sanctions <span id="badge-sanctions" style="display:none;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px;"></span></button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ REGISTRE ═══ -->
+<div class="panel active" id="panel-registre">
+  <!-- Barre de recherche & filtres -->
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="search-input" placeholder="🔍 Rechercher par nom, matricule, poste..." oninput="renderRegistre()" style="flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px 12px;outline:none;"/>
+    <select id="f-dept" onchange="renderRegistre()" style="padding:8px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;min-width:150px;">
+      <option value="">Tous départements</option>
+    </select>
+    <select id="f-contrat" onchange="renderRegistre()" style="padding:8px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous contrats</option>
+      <option value="CDI">CDI</option>
+      <option value="CDD">CDD</option>
+      <option value="Stage">Stage</option>
+      <option value="Freelance">Freelance</option>
+    </select>
+    <select id="f-statut" onchange="renderRegistre()" style="padding:8px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous statuts</option>
+      <option value="actif">Actif</option>
+      <option value="inactif">Inactif / Sorti</option>
+    </select>
+  </div>
+
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👥 Liste du Personnel <span id="registre-count" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div>
+    </div>
+    <div style="overflow-x:auto;max-height:620px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>#</th><th>Matricule</th><th>Nom & Prénoms</th><th>Sexe</th>
+          <th>Poste</th><th>Département</th><th>Contrat</th>
+          <th class="c">Date entrée</th><th class="c">Ancienneté</th>
+          <th class="c">N° CNSS</th><th class="c">Salaire base</th>
+          <th class="c">Statut</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="registre-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="panel" id="panel-dashboard">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏢 Effectif par Département</div></div>
+      <div class="sc-body" id="dept-bars"></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📊 Répartition par Contrat</div></div>
+      <div style="padding:1rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+        <canvas id="donut-contrat" width="160" height="160"></canvas>
+        <div id="donut-legend" style="display:flex;flex-direction:column;gap:.5rem;font-size:12px;"></div>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">👥 Répartition Hommes / Femmes</div></div>
+      <div class="sc-body" id="genre-bars"></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🎂 Pyramide des Anciennetés</div></div>
+      <div class="sc-body" id="anciennete-bars"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MOUVEMENTS ═══ -->
+<div class="panel" id="panel-mouvements">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">🔄 Historique des Mouvements</div>
+      <div style="display:flex;gap:8px;">
+        <select id="f-mv-type" onchange="renderMouvements()" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:11px;outline:none;">
+          <option value="">Tous types</option>
+          <option value="recrutement">Recrutement</option>
+          <option value="promotion">Promotion</option>
+          <option value="mutation">Mutation</option>
+          <option value="augmentation">Augmentation</option>
+          <option value="depart">Départ</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Date</th><th>Employé</th><th>Matricule</th><th>Type</th><th>Détail</th><th>Ancien</th><th>Nouveau</th><th>Saisi par</th></tr></thead>
+        <tbody id="mv-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VISITES MÉDICALES ═══ -->
+<div class="panel" id="panel-visites">
+
+  <!-- KPI visites -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.875rem;margin-bottom:1.25rem;" id="vm-kpi-grid"></div>
+
+  <!-- Alertes résumées -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+
+    <!-- Visites manquantes / en retard -->
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-title" style="color:var(--rouge);">🔴 Visites Manquantes ou en Retard</div>
+        <a href="visites-medicales.html" target="_blank" class="btn btn-ghost" style="font-size:10px;">Ouvrir l'outil ↗</a>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Employé</th><th>Département</th><th class="c">Type requis</th><th class="c">Dernière visite</th><th class="c">Situation</th><th class="c">Action</th></tr></thead>
+          <tbody id="vm-retard-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Visites de reprise requises (maladie >1 mois) -->
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-title" style="color:var(--orange);">🔄 Reprises après Maladie &gt;1 mois</div>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Employé</th><th>Département</th><th class="c">Absence du</th><th class="c">Au</th><th class="c">Durée</th><th class="c">Visite reprise</th><th class="c">Aptitude</th><th class="c">Action</th></tr></thead>
+          <tbody id="vm-reprise-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tableau complet des visites par employé -->
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👥 État des Visites par Employé</div>
+      <div style="display:flex;gap:8px;">
+        <select id="vm-f-statut" onchange="renderVisites()" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:11px;outline:none;">
+          <option value="">Tous</option>
+          <option value="ok">✅ À jour</option>
+          <option value="bientot">🟡 Bientôt</option>
+          <option value="retard">🔴 En retard</option>
+          <option value="aucune">⚪ Aucune visite</option>
+        </select>
+        <a href="visites-medicales.html" target="_blank" class="btn btn-vert" style="font-size:10px;">🏥 Gérer les visites ↗</a>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Matricule</th><th>Nom & Prénoms</th><th>Département</th><th>Poste</th>
+          <th class="c">Embauche</th>
+          <th class="c">Dernière périodique</th>
+          <th class="c">Prochaine périodique</th>
+          <th class="c">Statut visite</th>
+          <th class="c">Dernier résultat</th>
+          <th class="c">Action</th>
+        </tr></thead>
+        <tbody id="vm-etat-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ SANCTIONS DISCIPLINAIRES ═══ -->
+<div class="panel" id="panel-sanctions">
+
+  <!-- KPI -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.875rem;margin-bottom:1.25rem;" id="sd-kpi-grid"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+
+    <!-- Dossiers en cours -->
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-title" style="color:var(--rouge);">⏳ Dossiers en cours</div>
+        <a href="sanctions-disciplinaires.html" target="_blank" class="btn btn-ghost" style="font-size:10px;">Ouvrir l'outil ↗</a>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Employé</th><th>Département</th><th class="c">Type sanction</th><th class="c">Ouvert le</th><th class="c">Étape</th></tr></thead>
+          <tbody id="sd-encours-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top récidivistes -->
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title" style="color:var(--orange);">🔁 Employés avec plusieurs sanctions</div></div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Employé</th><th>Département</th><th class="c">Nb sanctions</th><th class="c">Dernière</th><th class="c">Type</th></tr></thead>
+          <tbody id="sd-recidiv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau historique par employé -->
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📋 Historique des Sanctions par Employé</div>
+      <div style="display:flex;gap:8px;">
+        <select id="sd-f-dept" onchange="renderSanctions()" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:11px;outline:none;min-width:140px;">
+          <option value="">Tous départements</option>
+        </select>
+        <a href="sanctions-disciplinaires.html" target="_blank" class="btn btn-rouge" style="font-size:10px;">⚖️ Gérer les sanctions ↗</a>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Matricule</th><th>Nom & Prénoms</th><th>Département</th><th>Poste</th>
+          <th class="c">Nb sanctions</th>
+          <th class="c">Dernière sanction</th>
+          <th class="c">Type</th>
+          <th class="c">Étape</th>
+          <th class="c">Réf. dossier</th>
+        </tr></thead>
+        <tbody id="sd-hist-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /main -->
+
+<!-- ═══ MODAL EMPLOYÉ (AJOUT / ÉDITION) ═══ -->
+<div class="modal-ov" id="modal-employe">
+  <div class="modal modal-lg">
+    <div class="mh">
+      <div class="mt" id="modal-emp-title">👤 <span>Nouvel Employé</span></div>
+      <button class="mc" onclick="closeModal('modal-employe')">✕</button>
+    </div>
+    <div class="mb">
+
+      <!-- INFOS CIVILES -->
+      <div class="sec-title">👤 Informations Civiles</div>
+      <div class="fg4" style="margin-bottom:.75rem;">
+        <div class="ff"><label>Matricule *</label><input type="text" id="f-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="f-nom" placeholder="Ex: DOSSOU"/></div>
+        <div class="ff"><label>Prénoms *</label><input type="text" id="f-prenom" placeholder="Ex: Aline"/></div>
+        <div class="ff"><label>Sexe</label>
+          <select id="f-sexe"><option value="">—</option><option value="M">Masculin</option><option value="F">Féminin</option></select>
+        </div>
+        <div class="ff"><label>Date de naissance</label><input type="date" id="f-naissance"/></div>
+        <div class="ff"><label>Lieu de naissance</label><input type="text" id="f-lieu-naissance" placeholder="Ex: Cotonou"/></div>
+        <div class="ff"><label>Nationalité</label><input type="text" id="f-nationalite" placeholder="Ex: Béninoise" value="Béninoise"/></div>
+        <div class="ff"><label>Situation matrimoniale</label>
+          <select id="f-matrimonial">
+            <option value="">—</option>
+            <option value="Célibataire">Célibataire</option>
+            <option value="Marié(e)">Marié(e)</option>
+            <option value="Divorcé(e)">Divorcé(e)</option>
+            <option value="Veuf/Veuve">Veuf/Veuve</option>
+          </select>
+        </div>
+        <div class="ff"><label>Nombre d'enfants</label><input type="number" id="f-enfants" min="0" placeholder="0" value="0"/></div>
+        <div class="ff ff-full"><label>Ayants droit (noms, liens)</label><input type="text" id="f-ayants-droit" placeholder="Ex: DOSSOU Marie (épouse), DOSSOU Paul (fils)"/></div>
+      </div>
+
+      <!-- COORDONNÉES -->
+      <div class="sec-title">📍 Coordonnées</div>
+      <div class="fg3" style="margin-bottom:.75rem;">
+        <div class="ff ff-full"><label>Adresse complète</label><input type="text" id="f-adresse" placeholder="Ex: Quartier Akpakpa, Rue 12, Cotonou"/></div>
+        <div class="ff"><label>Téléphone principal</label><input type="text" id="f-tel" placeholder="Ex: +229 01 XX XX XX XX"/></div>
+        <div class="ff"><label>Téléphone secondaire</label><input type="text" id="f-tel2" placeholder="Ex: +229 01 XX XX XX XX"/></div>
+        <div class="ff"><label>Email professionnel</label><input type="email" id="f-email" placeholder="Ex: a.dossou@entreprise.com"/></div>
+        <div class="ff"><label>Email personnel</label><input type="email" id="f-email-perso" placeholder="Ex: aline.dossou@gmail.com"/></div>
+        <div class="ff"><label>Personne à contacter (urgence)</label><input type="text" id="f-urgence" placeholder="Ex: DOSSOU Rémi — +229 01 XX"/></div>
+      </div>
+
+      <!-- INFOS CONTRACTUELLES -->
+      <div class="sec-title">📄 Informations Contractuelles</div>
+      <div class="fg4" style="margin-bottom:.75rem;">
+        <div class="ff"><label>Type de contrat</label>
+          <select id="f-contrat"><option value="CDI">CDI</option><option value="CDD">CDD</option><option value="Stage">Stage</option><option value="Freelance">Freelance</option><option value="Autre">Autre</option></select>
+        </div>
+        <div class="ff"><label>Date d'entrée *</label><input type="date" id="f-entree"/></div>
+        <div class="ff"><label>Date fin contrat (si CDD)</label><input type="date" id="f-fin-contrat"/></div>
+        <div class="ff"><label>Période d'essai (mois)</label><input type="number" id="f-essai" min="0" max="12" placeholder="0"/></div>
+        <div class="ff"><label>Poste / Fonction *</label><input type="text" id="f-poste" placeholder="Ex: Responsable Comptable"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="f-dept" placeholder="Ex: Finance"/></div>
+        <div class="ff"><label>Service</label><input type="text" id="f-service" placeholder="Ex: Comptabilité Générale"/></div>
+        <div class="ff"><label>Lieu de travail</label><input type="text" id="f-lieu-travail" placeholder="Ex: Siège Cotonou"/></div>
+        <div class="ff"><label>Classification / Catégorie</label><input type="text" id="f-classification" placeholder="Ex: Cadre, Agent de maîtrise, Employé"/></div>
+        <div class="ff"><label>Échelon / Grade</label><input type="text" id="f-echelon" placeholder="Ex: E610, Grade B"/></div>
+        <div class="ff"><label>Responsable / Manager</label><input type="text" id="f-manager" placeholder="Ex: KPOSSOU Jean"/></div>
+        <div class="ff"><label>Statut</label>
+          <select id="f-statut-emp"><option value="actif">Actif</option><option value="essai">Période d'essai</option><option value="inactif">Inactif / Sorti</option></select>
+        </div>
+      </div>
+
+      <!-- RÉMUNÉRATION -->
+      <div class="sec-title">💰 Rémunération</div>
+      <div class="fg4" style="margin-bottom:.75rem;">
+        <div class="ff"><label>Salaire de base (FCFA/mois)</label><input type="number" id="f-salaire" min="0" placeholder="Ex: 250000"/></div>
+        <div class="ff"><label>Primes mensuelles</label><input type="number" id="f-primes" min="0" placeholder="0"/></div>
+        <div class="ff"><label>Logement (FCFA/mois)</label><input type="number" id="f-logement" min="0" placeholder="0"/></div>
+        <div class="ff"><label>Autres avantages</label><input type="text" id="f-avantages" placeholder="Ex: Véhicule, Téléphone..."/></div>
+      </div>
+
+      <!-- DOCUMENTS -->
+      <div class="sec-title">📎 Documents & Références</div>
+      <div class="fg4" style="margin-bottom:.75rem;">
+        <div class="ff"><label>N° CNSS</label><input type="text" id="f-cnss" placeholder="Ex: 1234567"/></div>
+        <div class="ff"><label>N° IFU</label><input type="text" id="f-ifu" placeholder="Ex: 1234567890123"/></div>
+        <div class="ff"><label>N° CIN / CNI</label><input type="text" id="f-cin" placeholder="Ex: BEN-2024-XXXXXX"/></div>
+        <div class="ff"><label>Date expiration CIN</label><input type="date" id="f-cin-exp"/></div>
+        <div class="ff"><label>N° Passeport</label><input type="text" id="f-passeport" placeholder="Ex: BN1234567"/></div>
+        <div class="ff"><label>Date expiration Passeport</label><input type="date" id="f-pass-exp"/></div>
+        <div class="ff"><label>Niveau d'études</label>
+          <select id="f-niveau"><option value="">—</option><option value="BEPC">BEPC</option><option value="BAC">BAC</option><option value="BAC+2">BAC+2</option><option value="BAC+3">BAC+3</option><option value="BAC+4">BAC+4</option><option value="BAC+5">BAC+5</option><option value="BAC+6 et +">BAC+6 et +</option></select>
+        </div>
+        <div class="ff"><label>Diplôme / Spécialité</label><input type="text" id="f-diplome" placeholder="Ex: Master Finances, BTS Comptabilité"/></div>
+        <div class="ff ff-full"><label>Observations / Notes</label><textarea id="f-obs" rows="2" placeholder="Informations complémentaires..."></textarea></div>
+      </div>
+
+      <input type="hidden" id="f-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-employe')">Annuler</button>
+      <button class="btn btn-violet" onclick="ajouterMouvement()" id="btn-mouvement" style="display:none;">+ Ajouter mouvement</button>
+      <button class="btn btn-or" onclick="sauverEmploye()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL MOUVEMENT ═══ -->
+<div class="modal-ov" id="modal-mouvement">
+  <div class="modal" style="max-width:540px;">
+    <div class="mh"><div class="mt">🔄 <span>Enregistrer un Mouvement</span></div><button class="mc" onclick="closeModal('modal-mouvement')">✕</button></div>
+    <div class="mb">
+      <div class="fg" style="margin-bottom:.75rem;">
+        <div class="ff"><label>Type de mouvement *</label>
+          <select id="mv-type">
+            <option value="promotion">Promotion</option>
+            <option value="mutation">Mutation</option>
+            <option value="augmentation">Augmentation</option>
+            <option value="depart">Départ</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="ff"><label>Date *</label><input type="date" id="mv-date"/></div>
+        <div class="ff"><label>Valeur / Poste avant</label><input type="text" id="mv-ancien" placeholder="Ex: Comptable, 200 000 FCFA"/></div>
+        <div class="ff"><label>Valeur / Poste après</label><input type="text" id="mv-nouveau" placeholder="Ex: Chef Comptable, 280 000 FCFA"/></div>
+        <div class="ff ff-full"><label>Détail / Motif</label><textarea id="mv-detail" rows="2" placeholder="Description du mouvement..."></textarea></div>
+      </div>
+      <input type="hidden" id="mv-emp-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-mouvement')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverMouvement()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- FICHE IMPRESSION (cachée) -->
+<div id="fiche-print"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitereg_v1';
+var ST = { employes:[], mouvements:[], nextId:100 };
+var nextId = 100;
+var modeEdition = false;
+var empIdCourant = null;
+function uid(){ return ++nextId; }
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d = localStorage.getItem(SK);
+    if(d){ ST = JSON.parse(d); nextId = ST.nextId||100; }
+    else { ST = {employes:[],mouvements:[],nextId:100}; }
+  }catch(e){ ST = {employes:[],mouvements:[],nextId:100}; }
+}
+function sauver(){
+  try{ ST.nextId = nextId; localStorage.setItem(SK, JSON.stringify(ST)); }
+  catch(e){ toast('Erreur sauvegarde'); }
+}
+
+// ── CALCUL ANCIENNETÉ ──
+function calcAnc(dateEntree){
+  if(!dateEntree) return '—';
+  var d1 = new Date(dateEntree), d2 = new Date();
+  var ans = d2.getFullYear() - d1.getFullYear();
+  var m = d2.getMonth() - d1.getMonth();
+  if(m < 0 || (m === 0 && d2.getDate() < d1.getDate())) ans--;
+  var mois = ((d2.getMonth() - d1.getMonth()) + 12) % 12;
+  if(!ans && !mois) return '< 1 mois';
+  if(!ans) return mois + ' mois';
+  if(!mois) return ans + ' an' + (ans>1?'s':'');
+  return ans + ' an'+(ans>1?'s':'')+' '+mois+' mois';
+}
+
+function calcAncAns(dateEntree){
+  if(!dateEntree) return 0;
+  var d1 = new Date(dateEntree), d2 = new Date();
+  var ans = d2.getFullYear() - d1.getFullYear();
+  if(d2.getMonth() < d1.getMonth() || (d2.getMonth()===d1.getMonth() && d2.getDate() < d1.getDate())) ans--;
+  return Math.max(0, ans);
+}
+
+// ── REGISTRE ──
+function renderRegistre(){
+  var search = (document.getElementById('search-input').value||'').toLowerCase();
+  var fDept = document.getElementById('f-dept').value;
+  var fContrat = document.getElementById('f-contrat').value;
+  var fStatut = document.getElementById('f-statut').value;
+
+  var list = ST.employes.filter(function(e){
+    if(fDept && e.dept !== fDept) return false;
+    if(fContrat && e.contrat !== fContrat) return false;
+    if(fStatut && e.statut_emp !== fStatut) return false;
+    if(search){
+      var hay = ((e.nom||'')+(e.prenom||'')+(e.mat||'')+(e.poste||'')+(e.dept||'')).toLowerCase();
+      if(hay.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('registre-count').textContent = '— ' + list.length + ' employé(s)';
+
+  var tbody = document.getElementById('registre-tbody');
+  tbody.innerHTML = '';
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--gris);padding:2rem">Aucun employé trouvé.</td></tr>';
+    return;
+  }
+  list.forEach(function(e, i){
+    var contratCls = e.contrat==='CDI'?'b-cdi':e.contrat==='CDD'?'b-cdd':'b-essai';
+    var statutCls = e.statut_emp==='actif'?'b-actif':e.statut_emp==='essai'?'b-essai':'b-inactif';
+    tbody.innerHTML += '<tr>'+
+      '<td style="color:var(--gris);font-size:10px;">'+(i+1)+'</td>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or);">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom||'—')+'</strong> '+esc(e.prenom||'')+'</td>'+
+      '<td class="c" style="font-size:11px;">'+esc(e.sexe||'—')+'</td>'+
+      '<td style="font-size:11px;">'+esc(e.poste||'—')+'</td>'+
+      '<td style="font-size:11px;">'+esc(e.dept||'—')+'</td>'+
+      '<td class="c"><span class="badge '+contratCls+'">'+esc(e.contrat||'—')+'</span></td>'+
+      '<td class="c" style="font-size:11px;">'+esc(e.date_entree||'—')+'</td>'+
+      '<td class="c" style="font-size:11px;color:var(--cyan);">'+calcAnc(e.date_entree)+'</td>'+
+      '<td class="c" style="font-size:11px;color:var(--gris);">'+esc(e.cnss||'—')+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-size:11px;color:var(--vert);">'+(e.salaire?fmt(e.salaire)+' F':'—')+'</td>'+
+      '<td class="c"><span class="badge '+statutCls+'">'+esc(e.statut_emp||'actif')+'</span></td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="voirFiche('+e.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Voir fiche">👁</button> '+
+        '<button onclick="editerEmploye('+e.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Modifier">✏️</button> '+
+        '<button onclick="supprimerEmploye('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;" title="Supprimer">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+
+  // Remplir filtre départements
+  var deptSet = {};
+  ST.employes.forEach(function(e){ if(e.dept) deptSet[e.dept]=true; });
+  var sel = document.getElementById('f-dept');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">Tous départements</option>';
+  Object.keys(deptSet).sort().forEach(function(d){
+    sel.innerHTML += '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+esc(d)+'</option>';
+  });
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var actifs = ST.employes.filter(function(e){ return e.statut_emp !== 'inactif'; });
+  var hommes = actifs.filter(function(e){ return e.sexe==='M'; }).length;
+  var femmes = actifs.filter(function(e){ return e.sexe==='F'; }).length;
+  var cdi = actifs.filter(function(e){ return e.contrat==='CDI'; }).length;
+  var cdd = actifs.filter(function(e){ return e.contrat==='CDD'; }).length;
+  var masseSal = actifs.reduce(function(s,e){ return s+(parseFloat(e.salaire)||0); },0);
+
+  // KPI
+  function kc(label,val,sub,color){
+    return '<div class="kpi-card"><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+color+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('kpi-grid').innerHTML =
+    kc('Effectif total', ST.employes.length, actifs.length+' actifs / '+(ST.employes.length-actifs.length)+' sortis', 'var(--blanc)') +
+    kc('CDI', cdi, Math.round(cdi/Math.max(1,actifs.length)*100)+'% des actifs', 'var(--bleu)') +
+    kc('CDD', cdd, Math.round(cdd/Math.max(1,actifs.length)*100)+'% des actifs', 'var(--violet)') +
+    kc('Hommes', hommes, Math.round(hommes/Math.max(1,actifs.length)*100)+'%', 'var(--bleu)') +
+    kc('Femmes', femmes, Math.round(femmes/Math.max(1,actifs.length)*100)+'%', 'var(--violet)') +
+    kc('Masse salariale', fmt(masseSal)+' F', 'Salaires de base actifs', 'var(--or)');
+
+  // Par département (barres)
+  var deptMap = {};
+  actifs.forEach(function(e){ var d=e.dept||'N/A'; deptMap[d]=(deptMap[d]||0)+1; });
+  var maxD = Math.max(1,...Object.values(deptMap));
+  var dHTML = '<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(deptMap).sort(function(a,b){return deptMap[b]-deptMap[a];}).forEach(function(d){
+    var pct = Math.round(deptMap[d]/maxD*100);
+    dHTML += '<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:140px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(d)+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--bleu);border-radius:5px;transition:width .5s;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:30px;text-align:right;color:var(--bleu);">'+deptMap[d]+'</div>'+
+    '</div>';
+  });
+  document.getElementById('dept-bars').innerHTML = dHTML+'</div>';
+
+  // Donut contrat
+  var contratMap = {};
+  actifs.forEach(function(e){ var c=e.contrat||'Autre'; contratMap[c]=(contratMap[c]||0)+1; });
+  var CONTRAT_COLORS = {CDI:'#4A9EFF',CDD:'#A78BFA',Stage:'#34C77B',Freelance:'#FBC724',Autre:'#9896A4'};
+  var canvas = document.getElementById('donut-contrat');
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,160,160);
+  var total = actifs.length||1;
+  var start = -Math.PI/2;
+  Object.keys(contratMap).forEach(function(k){
+    var slice = (contratMap[k]/total)*Math.PI*2-0.03;
+    ctx.beginPath(); ctx.moveTo(80,80); ctx.arc(80,80,70,start,start+slice);
+    ctx.closePath(); ctx.fillStyle=CONTRAT_COLORS[k]||'#888'; ctx.fill();
+    start+=slice+0.03;
+  });
+  ctx.beginPath(); ctx.arc(80,80,44,0,Math.PI*2); ctx.fillStyle='#0D0D18'; ctx.fill();
+  ctx.fillStyle='#E2C47A'; ctx.font='bold 18px Syne'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(actifs.length,80,74); ctx.fillStyle='#9896A4'; ctx.font='11px DM Sans'; ctx.fillText('actifs',80,90);
+  var leg = document.getElementById('donut-legend');
+  leg.innerHTML = Object.keys(contratMap).map(function(k){
+    return '<div style="display:flex;align-items:center;gap:8px;">'+
+      '<div style="width:10px;height:10px;border-radius:2px;background:'+(CONTRAT_COLORS[k]||'#888')+'"></div>'+
+      '<span>'+k+'</span><span style="margin-left:auto;font-family:var(--fd);font-weight:700;color:'+(CONTRAT_COLORS[k]||'#888')+'">'+contratMap[k]+'</span>'+
+    '</div>';
+  }).join('');
+
+  // Genre
+  var gHTML = '<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  var genres = [{label:'Hommes (M)',nb:hommes,color:'var(--bleu)'},{label:'Femmes (F)',nb:femmes,color:'var(--violet)'}];
+  var maxG = Math.max(1,hommes,femmes);
+  genres.forEach(function(g){
+    var pct=Math.round(g.nb/maxG*100);
+    gHTML += '<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:100px;color:var(--gris);">'+g.label+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+g.color+';border-radius:5px;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:40px;text-align:right;color:'+g.color+';">'+g.nb+' ('+Math.round(g.nb/Math.max(1,actifs.length)*100)+'%)</div>'+
+    '</div>';
+  });
+  document.getElementById('genre-bars').innerHTML = gHTML+'</div>';
+
+  // Ancienneté
+  var ancMap = {'0–2 ans':0,'3–5 ans':0,'6–10 ans':0,'11–20 ans':0,'>20 ans':0};
+  actifs.forEach(function(e){
+    var a = calcAncAns(e.date_entree);
+    if(a<=2) ancMap['0–2 ans']++;
+    else if(a<=5) ancMap['3–5 ans']++;
+    else if(a<=10) ancMap['6–10 ans']++;
+    else if(a<=20) ancMap['11–20 ans']++;
+    else ancMap['>20 ans']++;
+  });
+  var maxA = Math.max(1,...Object.values(ancMap));
+  var aHTML = '<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(ancMap).forEach(function(k){
+    var pct=Math.round(ancMap[k]/maxA*100);
+    aHTML += '<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:80px;color:var(--gris);">'+k+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--or);border-radius:5px;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:30px;text-align:right;color:var(--or);">'+ancMap[k]+'</div>'+
+    '</div>';
+  });
+  document.getElementById('anciennete-bars').innerHTML = aHTML+'</div>';
+}
+
+// ── MOUVEMENTS ──
+function renderMouvements(){
+  var fType = document.getElementById('f-mv-type').value;
+  var mvs = ST.mouvements.filter(function(m){ return !fType||m.type===fType; }).slice().reverse();
+  var tbody = document.getElementById('mv-tbody');
+  tbody.innerHTML = '';
+  if(!mvs.length){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gris);padding:2rem">Aucun mouvement enregistré.</td></tr>'; return; }
+  var typeColors={promotion:'var(--vert)',mutation:'var(--bleu)',augmentation:'var(--or)',depart:'var(--rouge)',recrutement:'var(--cyan)',autre:'var(--gris)'};
+  mvs.forEach(function(m){
+    tbody.innerHTML += '<tr>'+
+      '<td style="font-size:11px;color:var(--gris);">'+esc(m.date||'—')+'</td>'+
+      '<td><strong>'+esc(m.emp_nom||'—')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--or);">'+esc(m.emp_mat||'—')+'</td>'+
+      '<td><span style="font-size:10px;font-weight:700;color:'+(typeColors[m.type]||'var(--gris)')+'">'+esc(m.type)+'</span></td>'+
+      '<td style="font-size:11px;color:var(--gris);">'+esc(m.detail||'—')+'</td>'+
+      '<td style="font-size:11px;">'+esc(m.ancien||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--vert);">'+esc(m.nouveau||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris);">'+esc(m.saisi_par||'—')+'</td>'+
+    '</tr>';
+  });
+}
+
+// ── FORM EMPLOYÉ ──
+function viderForm(){
+  var ids=['f-mat','f-nom','f-prenom','f-naissance','f-lieu-naissance','f-nationalite',
+    'f-adresse','f-tel','f-tel2','f-email','f-email-perso','f-urgence',
+    'f-fin-contrat','f-essai','f-poste','f-dept','f-service','f-lieu-travail',
+    'f-classification','f-echelon','f-manager','f-entree',
+    'f-salaire','f-primes','f-logement','f-avantages',
+    'f-cnss','f-ifu','f-cin','f-cin-exp','f-passeport','f-pass-exp','f-diplome','f-obs',
+    'f-ayants-droit','f-enfants','f-id'];
+  ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('f-nationalite').value='Béninoise';
+  document.getElementById('f-enfants').value='0';
+  document.getElementById('f-contrat').value='CDI';
+  document.getElementById('f-sexe').value='';
+  document.getElementById('f-matrimonial').value='';
+  document.getElementById('f-statut-emp').value='actif';
+  document.getElementById('f-niveau').value='';
+  document.getElementById('btn-mouvement').style.display='none';
+  document.getElementById('modal-emp-title').innerHTML='👤 <span>Nouvel Employé</span>';
+}
+
+function sauverEmploye(){
+  var nom = document.getElementById('f-nom').value.trim();
+  var prenom = document.getElementById('f-prenom').value.trim();
+  var mat = document.getElementById('f-mat').value.trim();
+  if(!nom){ toast('Le nom est obligatoire'); return; }
+
+  var data = {
+    mat:mat, nom:nom.toUpperCase(), prenom:prenom,
+    sexe:document.getElementById('f-sexe').value,
+    date_naissance:document.getElementById('f-naissance').value,
+    lieu_naissance:document.getElementById('f-lieu-naissance').value.trim(),
+    nationalite:document.getElementById('f-nationalite').value.trim()||'Béninoise',
+    matrimonial:document.getElementById('f-matrimonial').value,
+    nb_enfants:parseInt(document.getElementById('f-enfants').value)||0,
+    ayants_droit:document.getElementById('f-ayants-droit').value.trim(),
+    adresse:document.getElementById('f-adresse').value.trim(),
+    tel:document.getElementById('f-tel').value.trim(),
+    tel2:document.getElementById('f-tel2').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    email_perso:document.getElementById('f-email-perso').value.trim(),
+    urgence:document.getElementById('f-urgence').value.trim(),
+    contrat:document.getElementById('f-contrat').value,
+    date_entree:document.getElementById('f-entree').value,
+    date_fin_contrat:document.getElementById('f-fin-contrat').value,
+    periode_essai:parseInt(document.getElementById('f-essai').value)||0,
+    poste:document.getElementById('f-poste').value.trim(),
+    dept:document.getElementById('f-dept').value.trim(),
+    service:document.getElementById('f-service').value.trim(),
+    lieu_travail:document.getElementById('f-lieu-travail').value.trim(),
+    classification:document.getElementById('f-classification').value.trim(),
+    echelon:document.getElementById('f-echelon').value.trim(),
+    manager:document.getElementById('f-manager').value.trim(),
+    statut_emp:document.getElementById('f-statut-emp').value,
+    salaire:parseFloat(document.getElementById('f-salaire').value)||0,
+    primes:parseFloat(document.getElementById('f-primes').value)||0,
+    logement:parseFloat(document.getElementById('f-logement').value)||0,
+    avantages:document.getElementById('f-avantages').value.trim(),
+    cnss:document.getElementById('f-cnss').value.trim(),
+    ifu:document.getElementById('f-ifu').value.trim(),
+    cin:document.getElementById('f-cin').value.trim(),
+    cin_exp:document.getElementById('f-cin-exp').value,
+    passeport:document.getElementById('f-passeport').value.trim(),
+    pass_exp:document.getElementById('f-pass-exp').value,
+    niveau:document.getElementById('f-niveau').value,
+    diplome:document.getElementById('f-diplome').value.trim(),
+    obs:document.getElementById('f-obs').value.trim(),
+    date_saisie:new Date().toISOString().split('T')[0]
+  };
+
+  var idVal = document.getElementById('f-id').value;
+  if(modeEdition && idVal){
+    var emp = ST.employes.find(function(e){return e.id===parseInt(idVal);});
+    if(emp){
+      Object.assign(emp, data);
+    }
+  } else {
+    if(mat && ST.employes.find(function(e){return e.mat===mat;})){
+      toast('Ce matricule existe déjà'); return;
+    }
+    data.id = uid();
+    ST.employes.push(data);
+    // Enregistrer mouvement recrutement
+    ST.mouvements.push({id:uid(),emp_id:data.id,emp_nom:data.nom+' '+data.prenom,emp_mat:data.mat,type:'recrutement',date:data.date_entree||data.date_saisie,detail:'Entrée dans l\'effectif — '+data.poste,ancien:'—',nouveau:data.poste||'—',saisi_par:'RH'});
+    sauver();
+    var nbP = pousserVersPayroll(data.id, false);
+    closeModal('modal-employe'); renderAll();
+    toast('Employé enregistré' + (nbP ? ' — synchronisé dans la Paie ✓' : ''));
+    return;
+  }
+  // Mode édition : mettre à jour + pousser
+  sauver();
+  pousserVersPayroll(parseInt(idVal), false);
+  closeModal('modal-employe'); renderAll();
+  toast('Employé mis à jour — Paie synchronisée ✓');
+}
+
+function editerEmploye(id){
+  var e = ST.employes.find(function(x){return x.id===id;}); if(!e) return;
+  modeEdition = true; empIdCourant = id;
+  document.getElementById('modal-emp-title').innerHTML='✏️ <span>Modifier — '+esc(e.nom)+' '+esc(e.prenom||'')+'</span>';
+  document.getElementById('btn-mouvement').style.display='flex';
+  var fields = {
+    'f-mat':e.mat,'f-nom':e.nom,'f-prenom':e.prenom||'',
+    'f-naissance':e.date_naissance||'','f-lieu-naissance':e.lieu_naissance||'',
+    'f-nationalite':e.nationalite||'Béninoise','f-ayants-droit':e.ayants_droit||'',
+    'f-enfants':e.nb_enfants||0,'f-adresse':e.adresse||'',
+    'f-tel':e.tel||'','f-tel2':e.tel2||'','f-email':e.email||'',
+    'f-email-perso':e.email_perso||'','f-urgence':e.urgence||'',
+    'f-entree':e.date_entree||'','f-fin-contrat':e.date_fin_contrat||'',
+    'f-essai':e.periode_essai||0,'f-poste':e.poste||'','f-dept':e.dept||'',
+    'f-service':e.service||'','f-lieu-travail':e.lieu_travail||'',
+    'f-classification':e.classification||'','f-echelon':e.echelon||'',
+    'f-manager':e.manager||'','f-salaire':e.salaire||'','f-primes':e.primes||'',
+    'f-logement':e.logement||'','f-avantages':e.avantages||'',
+    'f-cnss':e.cnss||'','f-ifu':e.ifu||'','f-cin':e.cin||'',
+    'f-cin-exp':e.cin_exp||'','f-passeport':e.passeport||'','f-pass-exp':e.pass_exp||'',
+    'f-diplome':e.diplome||'','f-obs':e.obs||'','f-id':id
+  };
+  Object.keys(fields).forEach(function(fid){
+    var el=document.getElementById(fid); if(el) el.value=fields[fid];
+  });
+  document.getElementById('f-sexe').value=e.sexe||'';
+  document.getElementById('f-matrimonial').value=e.matrimonial||'';
+  document.getElementById('f-statut-emp').value=e.statut_emp||'actif';
+  document.getElementById('f-contrat').value=e.contrat||'CDI';
+  document.getElementById('f-niveau').value=e.niveau||'';
+  openModal('modal-employe');
+}
+
+function supprimerEmploye(id){
+  if(!confirm('Supprimer définitivement cet employé du registre ?')) return;
+  ST.employes = ST.employes.filter(function(e){return e.id!==id;});
+  ST.mouvements = ST.mouvements.filter(function(m){return m.emp_id!==id;});
+  sauver(); renderAll(); toast('Employé supprimé');
+}
+
+// ── FICHE INDIVIDUELLE ──
+function voirFiche(id){
+  var e = ST.employes.find(function(x){return x.id===id;}); if(!e) return;
+  var mvs = ST.mouvements.filter(function(m){return m.emp_id===id;});
+  var win = window.open('','_blank','width=900,height=700');
+  win.document.write(buildFicheHTML(e, mvs));
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 600);
+}
+
+function buildFicheHTML(e, mvs){
+  var anc = calcAnc(e.date_entree);
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiche — '+e.nom+'</title>'+
+  '<style>body{font-family:Arial,sans-serif;padding:2rem;color:#222;max-width:900px;margin:0 auto;font-size:12px;}'+
+  'h1{font-size:20px;color:#C9A84C;margin-bottom:.25rem;}'+
+  '.sub{color:#888;font-size:11px;margin-bottom:1.5rem;}'+
+  'h2{font-size:13px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #eee;padding-bottom:.3rem;margin:1.25rem 0 .75rem;}'+
+  '.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem .75rem;margin-bottom:.75rem;}'+
+  '.field{padding:.4rem .6rem;background:#f9f9f9;border-radius:4px;}'+
+  '.field-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:2px;}'+
+  '.field-val{font-weight:600;color:#222;}'+
+  'table{width:100%;border-collapse:collapse;margin-top:.5rem;}'+
+  'th{text-align:left;padding:5px 8px;font-size:10px;text-transform:uppercase;background:#f5f5f5;color:#666;}'+
+  'td{padding:5px 8px;border-bottom:1px solid #eee;}'+
+  '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #C9A84C;padding-bottom:1rem;margin-bottom:1.25rem;}'+
+  '.total{background:#fff8e1;font-weight:700;}'+
+  '@media print{button{display:none}}</style></head><body>'+
+  '<div class="header">'+
+    '<div>'+
+      '<div style="font-size:20px;font-weight:700;">Elite <span style="color:#C9A84C">RH</span> Consulting</div>'+
+      '<div style="font-size:10px;color:#888;letter-spacing:.1em;margin-top:3px;">FICHE INDIVIDUELLE DU PERSONNEL</div>'+
+    '</div>'+
+    '<div style="text-align:right;font-size:10px;color:#888;">Éditée le '+new Date().toLocaleDateString('fr-FR')+'<br>Matricule : <strong>'+esc(e.mat||'—')+'</strong></div>'+
+  '</div>'+
+  '<h1>'+esc(e.nom)+' '+esc(e.prenom||'')+'</h1>'+
+  '<div class="sub">'+esc(e.poste||'—')+' — '+esc(e.dept||'—')+' | Ancienneté : '+anc+' | '+esc(e.contrat||'CDI')+'</div>'+
+
+  '<h2>Informations Civiles</h2>'+
+  '<div class="grid">'+
+    field('Matricule',e.mat)+field('Sexe',e.sexe==='M'?'Masculin':e.sexe==='F'?'Féminin':'—')+field('Date de naissance',e.date_naissance||'—')+
+    field('Lieu de naissance',e.lieu_naissance||'—')+field('Nationalité',e.nationalite||'—')+field('Sit. matrimoniale',e.matrimonial||'—')+
+    field('Nb enfants',e.nb_enfants||0)+field('Ayants droit',e.ayants_droit||'—')+
+  '</div>'+
+
+  '<h2>Coordonnées</h2>'+
+  '<div class="grid">'+
+    field('Adresse',e.adresse||'—')+field('Tél. principal',e.tel||'—')+field('Tél. secondaire',e.tel2||'—')+
+    field('Email professionnel',e.email||'—')+field('Email personnel',e.email_perso||'—')+field('Contact urgence',e.urgence||'—')+
+  '</div>'+
+
+  '<h2>Informations Contractuelles</h2>'+
+  '<div class="grid">'+
+    field('Type de contrat',e.contrat||'—')+field('Date d\'entrée',e.date_entree||'—')+field('Fin de contrat',e.date_fin_contrat||'—')+
+    field('Poste',e.poste||'—')+field('Département',e.dept||'—')+field('Service',e.service||'—')+
+    field('Lieu de travail',e.lieu_travail||'—')+field('Classification',e.classification||'—')+field('Échelon/Grade',e.echelon||'—')+
+    field('Manager',e.manager||'—')+field('Ancienneté',anc)+field('Statut',e.statut_emp||'actif')+
+  '</div>'+
+
+  '<h2>Rémunération</h2>'+
+  '<div class="grid">'+
+    field('Salaire de base',e.salaire?fmtP(e.salaire)+' FCFA':'—')+
+    field('Primes mensuelles',e.primes?fmtP(e.primes)+' FCFA':'—')+
+    field('Logement',e.logement?fmtP(e.logement)+' FCFA':'—')+
+    field('Autres avantages',e.avantages||'—')+
+    field('Total brut estimé',fmtP((e.salaire||0)+(e.primes||0)+(e.logement||0))+' FCFA')+
+  '</div>'+
+
+  '<h2>Documents & Références</h2>'+
+  '<div class="grid">'+
+    field('N° CNSS',e.cnss||'—')+field('N° IFU',e.ifu||'—')+field('N° CIN',e.cin||'—')+
+    field('Expiration CIN',e.cin_exp||'—')+field('N° Passeport',e.passeport||'—')+field('Expiration Passeport',e.pass_exp||'—')+
+    field('Niveau d\'études',e.niveau||'—')+field('Diplôme',e.diplome||'—')+
+  '</div>'+
+
+  (mvs&&mvs.length?'<h2>Historique des Mouvements</h2>'+
+  '<table><thead><tr><th>Date</th><th>Type</th><th>Détail</th><th>Avant</th><th>Après</th></tr></thead><tbody>'+
+  mvs.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td>'+esc(m.type)+'</td><td>'+esc(m.detail||'—')+'</td><td>'+esc(m.ancien||'—')+'</td><td>'+esc(m.nouveau||'—')+'</td></tr>';}).join('')+
+  '</tbody></table>':'')+
+
+  (e.obs?'<h2>Observations</h2><div style="padding:.75rem;background:#f9f9f9;border-radius:4px;color:#555;">'+esc(e.obs)+'</div>':'')+
+
+  '<div style="margin-top:3rem;display:flex;justify-content:space-between;padding-top:1rem;border-top:1px solid #eee;font-size:10px;color:#aaa;">'+
+    '<div>Elite RH Consulting — contact@eliterhconsulting.com</div>'+
+    '<div>Document confidentiel — usage interne</div>'+
+  '</div></body></html>';
+}
+function field(label,val){ return '<div class="field"><div class="field-label">'+label+'</div><div class="field-val">'+esc(String(val||'—'))+'</div></div>'; }
+function fmtP(v){ return Math.round(v||0).toLocaleString('fr-FR'); }
+
+// ── IMPRESSION REGISTRE ──
+function imprimerRegistre(){
+  var actifs = ST.employes;
+  var win = window.open('','_blank','width:1200px,height:800px');
+  var rows = actifs.map(function(e,i){
+    return '<tr>'+
+      '<td>'+(i+1)+'</td><td>'+esc(e.mat||'—')+'</td>'+
+      '<td>'+esc(e.nom)+' '+esc(e.prenom||'')+'</td>'+
+      '<td>'+esc(e.sexe||'—')+'</td><td>'+esc(e.date_naissance||'—')+'</td>'+
+      '<td>'+esc(e.nationalite||'—')+'</td><td>'+esc(e.poste||'—')+'</td>'+
+      '<td>'+esc(e.dept||'—')+'</td><td>'+esc(e.contrat||'—')+'</td>'+
+      '<td>'+esc(e.date_entree||'—')+'</td><td>'+calcAnc(e.date_entree)+'</td>'+
+      '<td>'+esc(e.cnss||'—')+'</td><td>'+(e.salaire?fmtP(e.salaire)+' F':'—')+'</td>'+
+      '<td>'+esc(e.statut_emp||'actif')+'</td>'+
+    '</tr>';
+  }).join('');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registre du Personnel</title>'+
+    '<style>body{font-family:Arial,sans-serif;padding:1.5rem;font-size:10px;}h1{font-size:16px;color:#C9A84C;}'+
+    'table{width:100%;border-collapse:collapse;}th{background:#f5f5f5;padding:5px 6px;text-align:left;font-size:9px;text-transform:uppercase;border:1px solid #ddd;}'+
+    'td{padding:4px 6px;border:1px solid #eee;}tr:nth-child(even){background:#fafafa;}'+
+    '.header{display:flex;justify-content:space-between;border-bottom:2px solid #C9A84C;padding-bottom:.75rem;margin-bottom:1rem;}</style></head><body>'+
+    '<div class="header"><div><strong style="font-size:18px;color:#C9A84C">Elite RH</strong> Consulting<br><span style="font-size:10px;color:#888;">REGISTRE DU PERSONNEL</span></div>'+
+    '<div style="text-align:right;font-size:10px;color:#888;">Édité le '+new Date().toLocaleDateString('fr-FR')+'<br>'+actifs.length+' employé(s)</div></div>'+
+    '<table><thead><tr><th>#</th><th>Matricule</th><th>Nom & Prénoms</th><th>Sexe</th><th>Date naiss.</th><th>Nationalité</th>'+
+    '<th>Poste</th><th>Département</th><th>Contrat</th><th>Date entrée</th><th>Ancienneté</th><th>N° CNSS</th><th>Salaire base</th><th>Statut</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></body></html>');
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 600);
+}
+
+// ── MOUVEMENTS ──
+function ajouterMouvement(){
+  var idVal = document.getElementById('f-id').value;
+  if(!idVal){ toast('Sauvegardez d\'abord l\'employé'); return; }
+  document.getElementById('mv-emp-id').value = idVal;
+  document.getElementById('mv-date').value = new Date().toISOString().split('T')[0];
+  ['mv-ancien','mv-nouveau','mv-detail'].forEach(function(id){document.getElementById(id).value='';});
+  openModal('modal-mouvement');
+}
+function sauverMouvement(){
+  var empId = parseInt(document.getElementById('mv-emp-id').value);
+  var emp = ST.employes.find(function(e){return e.id===empId;});
+  if(!emp){ toast('Employé non trouvé'); return; }
+  var type = document.getElementById('mv-type').value;
+  var date = document.getElementById('mv-date').value;
+  if(!date){ toast('Date obligatoire'); return; }
+  ST.mouvements.push({
+    id:uid(), emp_id:empId, emp_nom:emp.nom+' '+(emp.prenom||''), emp_mat:emp.mat||'',
+    type:type, date:date,
+    detail:document.getElementById('mv-detail').value.trim(),
+    ancien:document.getElementById('mv-ancien').value.trim(),
+    nouveau:document.getElementById('mv-nouveau').value.trim(),
+    saisi_par:'RH'
+  });
+  sauver(); closeModal('modal-mouvement'); renderMouvements();
+  toast('Mouvement enregistré');
+}
+
+// ── IMPORT DEPUIS PAYROLL ──
+function importerDepuisPayroll(){
+  var stPay = {};
+  try{ stPay = JSON.parse(localStorage.getItem('payrollmgr_v2')||'{}'); }catch(e){}
+  var agentsAll = [];
+  // Chercher dans la période courante ou agents globaux
+  var periodes = stPay.periodes||{};
+  var keys = Object.keys(periodes);
+  if(keys.length){
+    var lastKey = keys.sort().reverse()[0];
+    agentsAll = (periodes[lastKey]&&periodes[lastKey].agents)||[];
+  }
+  if(!agentsAll.length) agentsAll = stPay.agents||[];
+
+  var added=0, updated=0;
+  agentsAll.forEach(function(a){
+    var mat = (a.matricule||'').trim();
+    var nom = (a.nom||'').trim();
+    if(!nom) return;
+    var exist = ST.employes.find(function(e){ return mat&&e.mat===mat; });
+    if(exist){
+      // Mise à jour salaire/poste
+      if(a.base) exist.salaire = parseFloat(a.base)||exist.salaire;
+      if(a.poste) exist.poste = a.poste||exist.poste;
+      if(a.dept) exist.dept = a.dept||exist.dept;
+      updated++;
+    } else {
+      ST.employes.push({
+        id:uid(), mat:mat||'IMP'+uid(), nom:nom.toUpperCase(),
+        prenom:a.prenom||'', poste:a.poste||'', dept:a.dept||'',
+        service:a.service||'', contrat:a.contrat||'CDI',
+        date_entree:a.date_entree||'', salaire:parseFloat(a.base)||0,
+        primes:parseFloat(a.primes)||0, logement:parseFloat(a.logement)||0,
+        statut_emp:'actif', sexe:a.sexe||'', cnss:'', nationalite:'Béninoise',
+        date_saisie:new Date().toISOString().split('T')[0]
+      });
+      added++;
+    }
+  });
+  sauver(); renderAll();
+  toast(added+' importé(s), '+updated+' mis à jour depuis la Paie');
+}
+
+// ── IMPORT EXCEL ──
+function importerExcel(input){
+  if(!input.files[0]||!window.XLSX){toast('XLSX non disponible');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      var g=function(r){var keys=Array.prototype.slice.call(arguments,1);for(var i=0;i<keys.length;i++){var k=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(keys[i].toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(k&&r[k]!==undefined&&r[k]!=='')return String(r[k]).trim();}return '';};
+      var added=0;
+      rows.forEach(function(r){
+        var nom=g(r,'nom','lastname','name'); if(!nom) return;
+        var mat=g(r,'matricule','mat')||'MAT'+uid();
+        if(ST.employes.find(function(e){return e.mat===mat;})) return;
+        ST.employes.push({
+          id:uid(),mat:mat,nom:nom.toUpperCase(),prenom:g(r,'prenom','firstname'),
+          sexe:g(r,'sexe','genre','sex'),date_naissance:g(r,'naissance','datenaissance','birthdate'),
+          nationalite:g(r,'nationalite')||'Béninoise',poste:g(r,'poste','fonction','jobtitle'),
+          dept:g(r,'departement','dept','direction'),service:g(r,'service'),
+          contrat:g(r,'contrat','typecontrat')||'CDI',date_entree:g(r,'entree','dateentree','datearrivee'),
+          salaire:parseFloat(g(r,'salaire','salairebase','base'))||0,
+          cnss:g(r,'cnss','numerocnss'),tel:g(r,'telephone','tel','phone'),
+          email:g(r,'email','mail'),manager:g(r,'manager','responsable'),
+          statut_emp:'actif',nationalite:'Béninoise',
+          date_saisie:new Date().toISOString().split('T')[0]
+        });
+        added++;
+      });
+      sauver(); renderAll(); toast(added+' employé(s) importé(s)');
+    }catch(e){toast('Erreur: '+e.message);}
+  };
+  reader.readAsBinaryString(input.files[0]); input.value='';
+}
+
+// ── EXPORT EXCEL ──
+function exporterExcel(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var wb = XLSX.utils.book_new();
+  var headers=['Matricule','Nom','Prénoms','Sexe','Date naissance','Lieu naissance','Nationalité',
+    'Sit. matrimoniale','Nb enfants','Ayants droit','Adresse','Téléphone','Email',
+    'Contrat','Date entrée','Fin contrat','Poste','Département','Service','Lieu travail',
+    'Classification','Échelon','Manager','Statut','Salaire base','Primes','Logement','Avantages',
+    'N° CNSS','N° IFU','N° CIN','Exp. CIN','N° Passeport','Exp. Passeport','Niveau études','Diplôme','Observations'];
+  var data=[headers];
+  ST.employes.forEach(function(e){
+    data.push([e.mat||'',e.nom,e.prenom||'',e.sexe||'',e.date_naissance||'',e.lieu_naissance||'',
+      e.nationalite||'',e.matrimonial||'',e.nb_enfants||0,e.ayants_droit||'',
+      e.adresse||'',e.tel||'',e.email||'',e.contrat||'CDI',e.date_entree||'',
+      e.date_fin_contrat||'',e.poste||'',e.dept||'',e.service||'',e.lieu_travail||'',
+      e.classification||'',e.echelon||'',e.manager||'',e.statut_emp||'actif',
+      e.salaire||0,e.primes||0,e.logement||0,e.avantages||'',
+      e.cnss||'',e.ifu||'',e.cin||'',e.cin_exp||'',e.passeport||'',e.pass_exp||'',
+      e.niveau||'',e.diplome||'',e.obs||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Registre Personnel');
+
+  // Mouvements
+  var data2=[['Date','Employé','Matricule','Type','Détail','Avant','Après']];
+  ST.mouvements.forEach(function(m){
+    data2.push([m.date||'',m.emp_nom||'',m.emp_mat||'',m.type||'',m.detail||'',m.ancien||'',m.nouveau||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data2),'Mouvements');
+  XLSX.writeFile(wb,'Registre-Personnel-'+new Date().toISOString().split('T')[0]+'.xlsx');
+  toast('Export généré');
+}
+
+// ── POUSSER VERS PAYROLL ──
+function pousserVersPayroll(empId, showToast){
+  // Lire le localStorage payroll
+  var SK_PAY = 'payrollmgr_v2';
+  var stPay = {};
+  try{ stPay = JSON.parse(localStorage.getItem(SK_PAY)||'{}'); }catch(e){}
+
+  // Identifier la période courante (la plus récente ou agents globaux)
+  var periodes = stPay.periodes||{};
+  var keys = Object.keys(periodes).sort();
+  var agentsRef; // référence vers le tableau à modifier
+  var periodeKey = null;
+  if(keys.length){
+    periodeKey = keys[keys.length-1]; // période la plus récente
+    if(!periodes[periodeKey].agents) periodes[periodeKey].agents = [];
+    agentsRef = periodes[periodeKey].agents;
+  } else {
+    if(!stPay.agents) stPay.agents = [];
+    agentsRef = stPay.agents;
+  }
+
+  // Liste des employés à pousser
+  var cibles = empId ? ST.employes.filter(function(e){return e.id===empId;}) : ST.employes.filter(function(e){return e.statut_emp==='actif';});
+
+  var pushed=0, updated=0;
+  cibles.forEach(function(e){
+    var mat = (e.mat||'').trim();
+    var nom = (e.nom||'').trim();
+    if(!nom) return;
+
+    // Construire l'objet agent au format payroll
+    var agentPayroll = {
+      matricule: mat,
+      nom: e.nom||'',
+      prenom: e.prenom||'',
+      poste: e.poste||'',
+      dept: e.dept||'',
+      service: e.service||'',
+      section: '',
+      sexe: e.sexe||'',
+      contrat: e.contrat||'CDI',
+      staff1: e.classification||'',
+      statut2: '',
+      staff2: '',
+      bu: '',
+      grade: e.echelon||'',
+      staffprime: '',
+      base: parseFloat(e.salaire)||0,
+      hsupp: 0,
+      primes: parseFloat(e.primes)||0,
+      logement: parseFloat(e.logement)||0,
+      commission: 0,
+      deduction: 0,
+      actif: true,
+      date_entree: e.date_entree||''
+    };
+
+    // Chercher si l'agent existe déjà dans la paie (par matricule)
+    var existIdx = mat ? agentsRef.findIndex(function(a){ return (a.matricule||'').trim()===mat; }) : -1;
+
+    if(existIdx >= 0){
+      // Mise à jour des champs essentiels sans écraser les données paie spécifiques
+      var existing = agentsRef[existIdx];
+      existing.nom = agentPayroll.nom;
+      existing.prenom = agentPayroll.prenom;
+      existing.poste = agentPayroll.poste;
+      existing.dept = agentPayroll.dept;
+      existing.service = agentPayroll.service;
+      existing.contrat = agentPayroll.contrat;
+      existing.grade = agentPayroll.grade;
+      existing.date_entree = agentPayroll.date_entree;
+      // Mise à jour salaire seulement si différent (pour ne pas écraser les modifs paie)
+      if(agentPayroll.base > 0 && existing.base !== agentPayroll.base){
+        existing.base = agentPayroll.base;
+        existing.primes = agentPayroll.primes;
+        existing.logement = agentPayroll.logement;
+      }
+      updated++;
+    } else {
+      // Nouveau : attribuer à la première compagnie disponible ou sans compagnie
+      var companies = stPay.compagnies||[];
+      agentPayroll.company = companies.length ? companies[0].nom : '';
+      agentPayroll.id = (stPay.nextId||1000) + pushed + 1;
+      agentsRef.push(agentPayroll);
+      pushed++;
+    }
+  });
+
+  // Sauvegarder dans le localStorage payroll
+  if(periodeKey){
+    stPay.periodes = periodes;
+  } else {
+    stPay.agents = agentsRef;
+  }
+  try{ localStorage.setItem(SK_PAY, JSON.stringify(stPay)); }catch(err){ console.error('Erreur push payroll:', err); }
+
+  if(showToast){
+    var msg = '';
+    if(pushed > 0) msg += pushed+' agent(s) ajouté(s) dans la Paie. ';
+    if(updated > 0) msg += updated+' agent(s) mis à jour dans la Paie.';
+    if(!msg) msg = 'Aucun agent à pousser (vérifiez les matricules et la Paie).';
+    toast(msg);
+  }
+  return pushed + updated;
+}
+
+// ── UTILS ──
+function renderAll(){
+  renderRegistre();
+  renderDashboard();
+  renderMouvements();
+  renderVisites();
+  renderSanctions();
+}
+
+// ── VISITES MÉDICALES ──
+function lireVisites(){
+  try{ return JSON.parse(localStorage.getItem('elitemedical_v1')||'{}'); }catch(e){ return {}; }
+}
+function lireAbsences(){
+  try{ return JSON.parse(localStorage.getItem('eliteabs_v1')||'{}'); }catch(e){ return {}; }
+}
+
+function getDerniereVisiteEmp(mat, stMed){
+  var visites = (stMed.visites||[]).filter(function(v){ return v.mat===mat; })
+    .sort(function(a,b){ return b.date>a.date?1:-1; });
+  return visites.length ? visites[0] : null;
+}
+function getDerniereVisiteType(mat, type, stMed){
+  var visites = (stMed.visites||[]).filter(function(v){ return v.mat===mat && v.type===type; })
+    .sort(function(a,b){ return b.date>a.date?1:-1; });
+  return visites.length ? visites[0] : null;
+}
+function diffJoursVM(d1,d2){
+  if(!d1||!d2) return null;
+  return Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24));
+}
+function fmtDateVM(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function statutEchVM(prochaine){
+  if(!prochaine) return {label:'Non définie',cls:'vm-aucune',code:'aucune'};
+  var t=new Date().toISOString().split('T')[0];
+  var j=diffJoursVM(t,prochaine);
+  if(j===null) return {label:'—',cls:'vm-aucune',code:'aucune'};
+  if(j<0) return {label:'Retard '+Math.abs(j)+'j',cls:'vm-inapte',code:'retard'};
+  if(j<=30) return {label:'Dans '+j+'j',cls:'vm-reserve',code:'bientot'};
+  return {label:'À jour',cls:'vm-apte',code:'ok'};
+}
+function resultCls(r){
+  if(!r) return 'vm-aucune';
+  if(r==='apte') return 'vm-apte';
+  if(r==='apte_reserve') return 'vm-reserve';
+  if(r==='inapte_tmp'||r==='inapte_def') return 'vm-inapte';
+  return 'vm-aucune';
+}
+function resultLabel(r){
+  var m={apte:'Apte',apte_reserve:'Apte+réserves',inapte_tmp:'Inapte tmp.',inapte_def:'Inapte déf.'};
+  return m[r]||'—';
+}
+
+function renderVisites(){
+  var stMed = lireVisites();
+  var stAbs = lireAbsences();
+  var fStatut = document.getElementById('vm-f-statut') ? document.getElementById('vm-f-statut').value : '';
+  var today = new Date().toISOString().split('T')[0];
+
+  // ── KPI ──
+  var nbTotal=ST.employes.length, nbSans=0, nbRetard=0, nbBientot=0, nbOk=0, nbReprise=0;
+  var maladiesLongues = (stAbs.absences||[]).filter(function(a){
+    return a.type==='maladie' && a.statut==='validee' && parseFloat(a.jours)>=30;
+  });
+
+  ST.employes.forEach(function(e){
+    var derniere = getDerniereVisiteEmp(e.mat, stMed);
+    if(!derniere){ nbSans++; return; }
+    var proch = derniere.prochaine_visite||'';
+    var s = statutEchVM(proch);
+    if(s.code==='ok') nbOk++;
+    else if(s.code==='bientot') nbBientot++;
+    else nbRetard++;
+  });
+  maladiesLongues.forEach(function(a){
+    var repriseOk = (stMed.visites||[]).some(function(v){
+      return v.mat===a.mat && v.type==='reprise' && v.date >= (a.date_fin||a.date_debut);
+    });
+    if(!repriseOk) nbReprise++;
+  });
+
+  var totalAlertes = nbSans + nbRetard + nbReprise;
+  var b=document.getElementById('badge-visites');
+  if(b){ b.textContent=totalAlertes; b.style.display=totalAlertes>0?'inline':'none'; }
+
+  function kc(label,val,sub,color,borderColor){
+    return '<div class="kpi-card" style="border-top:2px solid '+borderColor+';">'+
+      '<div class="kpi-label">'+label+'</div>'+
+      '<div class="kpi-val" style="color:'+color+'">'+val+'</div>'+
+      '<div class="kpi-sub">'+sub+'</div></div>';
+  }
+  var kg = document.getElementById('vm-kpi-grid');
+  if(kg) kg.innerHTML =
+    kc('Effectif total',nbTotal,'employés',  'var(--blanc)','var(--or)')+
+    kc('Sans visite',nbSans,'à planifier', nbSans>0?'var(--rouge)':'var(--gris)','var(--rouge)')+
+    kc('En retard',nbRetard,'échéance dépassée',nbRetard>0?'var(--rouge)':'var(--gris)','var(--rouge)')+
+    kc('Dans 30 jours',nbBientot,'à planifier',nbBientot>0?'var(--jaune)':'var(--gris)','var(--jaune)')+
+    kc('À jour',nbOk,'visites conformes','var(--vert)','var(--vert)')+
+    kc('Reprises requises',nbReprise,'maladie >1 mois',nbReprise>0?'var(--orange)':'var(--gris)','var(--orange)');
+
+  // ── RETARDS / MANQUANTS ──
+  var tbody1 = document.getElementById('vm-retard-tbody');
+  if(tbody1){
+    var retards = [];
+    ST.employes.forEach(function(e){
+      var derniere = getDerniereVisiteEmp(e.mat, stMed);
+      var typeReq = e.contrat==='CDI'||e.contrat==='CDD' ? 'périodique' : 'embauche';
+      if(!derniere){
+        retards.push({e:e, situation:'Aucune visite', cls:'vm-inapte', typeReq:'Embauche + Périodique', derniere:'—'});
+      } else {
+        var s = statutEchVM(derniere.prochaine_visite||'');
+        if(s.code==='retard'||s.code==='aucune'){
+          retards.push({e:e, situation:s.label, cls:s.cls, typeReq:'Périodique', derniere:fmtDateVM(derniere.date)});
+        }
+      }
+    });
+    tbody1.innerHTML = '';
+    if(!retards.length){
+      tbody1.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--vert);padding:1.25rem;">✅ Toutes les visites sont à jour</td></tr>';
+    } else {
+      retards.forEach(function(r){
+        tbody1.innerHTML+='<tr>'+
+          '<td><strong>'+esc(r.e.nom)+' '+esc(r.e.prenom||'')+'</strong></td>'+
+          '<td style="font-size:11px;color:var(--gris)">'+esc(r.e.dept||'—')+'</td>'+
+          '<td class="c" style="font-size:11px">'+r.typeReq+'</td>'+
+          '<td class="c" style="font-size:11px">'+r.derniere+'</td>'+
+          '<td class="c"><span class="'+r.cls+'">'+r.situation+'</span></td>'+
+          '<td class="c"><a href="visites-medicales.html" target="_blank" class="btn btn-ghost" style="padding:2px 8px;font-size:9px;">+ Visite</a></td>'+
+        '</tr>';
+      });
+    }
+  }
+
+  // ── REPRISES (maladie > 1 mois) ──
+  var tbody2 = document.getElementById('vm-reprise-tbody');
+  if(tbody2){
+    tbody2.innerHTML='';
+    var mLongues = (stAbs.absences||[]).filter(function(a){
+      return a.type==='maladie' && a.statut==='validee' && parseFloat(a.jours)>=30;
+    }).sort(function(a,b){ return b.date_debut>a.date_debut?1:-1; });
+
+    if(!mLongues.length){
+      tbody2.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gris);padding:1.25rem;">Aucune absence maladie de plus d'1 mois enregistrée.</td></tr>';
+    } else {
+      mLongues.forEach(function(a){
+        // Chercher visite de reprise postérieure à la fin de l'absence
+        var dateReprise = a.date_fin||a.date_debut;
+        var visiteReprise = (stMed.visites||[]).filter(function(v){
+          return v.mat===a.mat && v.type==='reprise' && v.date>=dateReprise;
+        }).sort(function(a,b){ return b.date>a.date?1:-1; })[0];
+
+        var statutReprise, aptitudeBadge;
+        if(visiteReprise){
+          statutReprise = '<span class="vm-apte">✅ Faite le '+fmtDateVM(visiteReprise.date)+'</span>';
+          aptitudeBadge = '<span class="'+resultCls(visiteReprise.resultat)+'">'+resultLabel(visiteReprise.resultat)+'</span>';
+        } else {
+          statutReprise = '<span class="vm-attente">⏳ Non effectuée</span>';
+          aptitudeBadge = '<span class="vm-aucune">—</span>';
+        }
+        tbody2.innerHTML+='<tr>'+
+          '<td><strong>'+esc(a.nom||'—')+'</strong></td>'+
+          '<td style="font-size:11px;color:var(--gris)">'+esc(a.dept||'—')+'</td>'+
+          '<td class="c" style="font-size:11px">'+esc(a.date_debut||'—')+'</td>'+
+          '<td class="c" style="font-size:11px">'+esc(a.date_fin||a.date_debut||'—')+'</td>'+
+          '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--orange)">'+parseFloat(a.jours||0).toFixed(0)+' j.</td>'+
+          '<td class="c">'+statutReprise+'</td>'+
+          '<td class="c">'+aptitudeBadge+'</td>'+
+          '<td class="c">'+(visiteReprise?'':'<a href="visites-medicales.html" target="_blank" class="btn btn-ghost" style="padding:2px 8px;font-size:9px;">+ Reprise</a>')+'</td>'+
+        '</tr>';
+      });
+    }
+  }
+
+  // ── ÉTAT GÉNÉRAL PAR EMPLOYÉ ──
+  var tbody3 = document.getElementById('vm-etat-tbody');
+  if(!tbody3) return;
+  tbody3.innerHTML='';
+
+  var list = ST.employes.filter(function(e){ return e.statut_emp!=='inactif'; });
+  list.forEach(function(e){
+    var vEmbauche = getDerniereVisiteType(e.mat, 'embauche', stMed);
+    var vPeriod   = getDerniereVisiteType(e.mat, 'periodique', stMed);
+    var vDerniere = getDerniereVisiteEmp(e.mat, stMed);
+
+    var proch = vPeriod ? vPeriod.prochaine_visite||'' : '';
+    var s = proch ? statutEchVM(proch) : {label:'Aucune périodique',cls:'vm-aucune',code:'aucune'};
+
+    // Filtre statut
+    if(fStatut && s.code!==fStatut) return;
+
+    var embaucheCell = vEmbauche ?
+      '<span class="vm-apte">✅ '+fmtDateVM(vEmbauche.date)+'</span>' :
+      '<span class="vm-aucune">Non enregistrée</span>';
+
+    var periodCell = vPeriod ?
+      fmtDateVM(vPeriod.date) :
+      '<span class="vm-aucune">—</span>';
+
+    var prochCell = proch ?
+      '<span class="'+s.cls+'">'+fmtDateVM(proch)+'</span>' :
+      '<span class="vm-aucune">—</span>';
+
+    var resultatCell = vDerniere ?
+      '<span class="'+resultCls(vDerniere.resultat)+'">'+resultLabel(vDerniere.resultat)+'</span>' :
+      '<span class="vm-aucune">—</span>';
+
+    tbody3.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or)">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom||'—')+'</strong> '+esc(e.prenom||'')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.poste||'—')+'</td>'+
+      '<td class="c">'+embaucheCell+'</td>'+
+      '<td class="c" style="font-size:11px">'+periodCell+'</td>'+
+      '<td class="c">'+prochCell+'</td>'+
+      '<td class="c"><span class="'+s.cls+'">'+s.label+'</span></td>'+
+      '<td class="c">'+resultatCell+'</td>'+
+      '<td class="c"><a href="visites-medicales.html" target="_blank" class="btn btn-ghost" style="padding:2px 8px;font-size:9px;">🏥</a></td>'+
+    '</tr>';
+  });
+  if(!tbody3.innerHTML) tbody3.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--gris);padding:2rem;">Aucun employé actif.</td></tr>';
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='visites') renderVisites();
+  if(tab==='sanctions') renderSanctions();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function fmt(v){return Math.round(v||0).toLocaleString('fr-FR');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+// ── SANCTIONS DISCIPLINAIRES ──
+function lireSanctions(){
+  try{ return JSON.parse(localStorage.getItem('elitesanctions_v1')||'{}'); }catch(e){ return {}; }
+}
+
+var TYPES_SANCTIONS_REG = {
+  avertissement:    { label:'Avertissement',     color:'var(--jaune)',  icon:'⚠️' },
+  blame:            { label:'Blâme',              color:'var(--orange)', icon:'📋' },
+  mise_en_demeure:  { label:'Mise en demeure',   color:'var(--violet)', icon:'📬' },
+  map_conservatoire:{ label:'MAP conservatoire', color:'var(--rouge)',  icon:'🔒' },
+  map_disciplinaire:{ label:'MAP disciplinaire', color:'var(--rouge)',  icon:'🔴' },
+  mutation:         { label:'Mutation discipl.',  color:'var(--bleu)',   icon:'🔄' },
+  retrogradation:   { label:'Rétrogradation',    color:'var(--cyan)',   icon:'⬇️' },
+  licenciement_faute:{ label:'Licenciement',     color:'var(--rouge)',  icon:'❌' },
+  classement:       { label:'Classement s/suite',color:'var(--gris)',   icon:'📁' }
+};
+var ETAPES_REG = {
+  explication:'Demande d'expl.', entretien:'Entretien',
+  decision:'Décision', notification:'Notification', clos:'Clôturé'
+};
+
+function renderSanctions(){
+  var stS = lireSanctions();
+  var dossiers = stS.dossiers || [];
+  var fDept = document.getElementById('sd-f-dept') ? document.getElementById('sd-f-dept').value : '';
+
+  // Remplir filtre département
+  var deptSet = {};
+  dossiers.forEach(function(d){ if(d.dept) deptSet[d.dept]=true; });
+  ST.employes.forEach(function(e){ if(e.dept) deptSet[e.dept]=true; });
+  var selD = document.getElementById('sd-f-dept');
+  if(selD){
+    var cur = selD.value;
+    selD.innerHTML = '<option value="">Tous départements</option>';
+    Object.keys(deptSet).sort().forEach(function(d){
+      selD.innerHTML += '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+esc(d)+'</option>';
+    });
+  }
+
+  // KPI
+  var enCours = dossiers.filter(function(d){ return d.etape!=='clos'; });
+  var clos = dossiers.filter(function(d){ return d.etape==='clos'; });
+  var typeMap = {};
+  dossiers.forEach(function(d){
+    var t = d.sanction_finale||d.type;
+    typeMap[t] = (typeMap[t]||0)+1;
+  });
+
+  // Badge
+  var b = document.getElementById('badge-sanctions');
+  if(b){ b.textContent=enCours.length; b.style.display=enCours.length>0?'inline':'none'; }
+
+  function kc(label,val,sub,color,bc){
+    return '<div class="kpi-card" style="border-top:2px solid '+bc+';">'+
+      '<div class="kpi-label">'+label+'</div>'+
+      '<div class="kpi-val" style="color:'+color+'">'+val+'</div>'+
+      '<div class="kpi-sub">'+sub+'</div></div>';
+  }
+  var kg = document.getElementById('sd-kpi-grid');
+  if(kg) kg.innerHTML =
+    kc('Total dossiers', dossiers.length, 'depuis ouverture', 'var(--blanc)', 'var(--or)') +
+    kc('En cours', enCours.length, 'procédures actives', enCours.length>0?'var(--rouge)':'var(--gris)', 'var(--rouge)') +
+    kc('Clôturés', clos.length, 'dossiers terminés', 'var(--vert)', 'var(--vert)') +
+    kc('Avertissements', (typeMap['avertissement']||0)+(typeMap['blame']||0), 'avert. + blâmes', 'var(--jaune)', 'var(--jaune)') +
+    kc('Mises à pied', (typeMap['map_conservatoire']||0)+(typeMap['map_disciplinaire']||0), 'conserv. + discipl.', 'var(--rouge)', 'var(--rouge)') +
+    kc('Licenciements', typeMap['licenciement_faute']||0, 'pour faute', 'var(--rouge)', 'var(--rouge)');
+
+  // Dossiers en cours
+  var tbody1 = document.getElementById('sd-encours-tbody');
+  if(tbody1){
+    tbody1.innerHTML = '';
+    if(!enCours.length){
+      tbody1.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--vert);padding:1.25rem;">✅ Aucun dossier en cours</td></tr>';
+    } else {
+      enCours.slice().reverse().forEach(function(d){
+        var t = TYPES_SANCTIONS_REG[d.sanction_finale||d.type]||{label:d.type,color:'var(--gris)',icon:'?'};
+        var etLabel = ETAPES_REG[d.etape]||d.etape;
+        tbody1.innerHTML += '<tr>'+
+          '<td><strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong><br><span style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</span></td>'+
+          '<td style="font-size:11px;color:var(--gris)">'+esc(d.dept||'—')+'</td>'+
+          '<td class="c" style="color:'+t.color+';font-size:11px;">'+t.icon+' '+t.label+'</td>'+
+          '<td class="c" style="font-size:11px;">'+fmtS(d.date_ouverture)+'</td>'+
+          '<td class="c"><span style="font-size:9px;font-weight:700;color:var(--jaune)">'+esc(etLabel)+'</span></td>'+
+        '</tr>';
+      });
+    }
+  }
+
+  // Récidivistes (>1 sanction)
+  var empMap = {};
+  dossiers.forEach(function(d){
+    var mat = d.mat||('_'+d.nom);
+    if(!empMap[mat]) empMap[mat]={nom:d.nom,prenom:d.prenom||'',dept:d.dept||'',dossiers:[]};
+    empMap[mat].dossiers.push(d);
+  });
+  var recidiv = Object.values(empMap).filter(function(e){return e.dossiers.length>1;})
+    .sort(function(a,b){return b.dossiers.length-a.dossiers.length;});
+
+  var tbody2 = document.getElementById('sd-recidiv-tbody');
+  if(tbody2){
+    tbody2.innerHTML='';
+    if(!recidiv.length){
+      tbody2.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1.25rem;">Aucun employé avec plusieurs sanctions</td></tr>';
+    } else {
+      recidiv.slice(0,10).forEach(function(e){
+        var derniere = e.dossiers.slice().sort(function(a,b){return b.date_ouverture>a.date_ouverture?1:-1;})[0];
+        var t = TYPES_SANCTIONS_REG[derniere.sanction_finale||derniere.type]||{label:'—',color:'var(--gris)',icon:'?'};
+        tbody2.innerHTML += '<tr>'+
+          '<td><strong>'+esc(e.nom)+' '+esc(e.prenom)+'</strong></td>'+
+          '<td style="font-size:11px;color:var(--gris)">'+esc(e.dept)+'</td>'+
+          '<td class="c" style="font-family:var(--fd);font-weight:800;color:'+(e.dossiers.length>=3?'var(--rouge)':'var(--orange)')+'">'+e.dossiers.length+'</td>'+
+          '<td class="c" style="font-size:11px;">'+fmtS(derniere.date_ouverture)+'</td>'+
+          '<td class="c" style="color:'+t.color+';font-size:10px;">'+t.icon+' '+t.label+'</td>'+
+        '</tr>';
+      });
+    }
+  }
+
+  // Historique par employé (depuis registre du personnel)
+  var tbody3 = document.getElementById('sd-hist-tbody');
+  if(!tbody3) return;
+  tbody3.innerHTML = '';
+
+  var list = ST.employes.filter(function(e){
+    if(e.statut_emp==='inactif') return false;
+    if(fDept && e.dept!==fDept) return false;
+    return true;
+  });
+
+  list.forEach(function(e){
+    var dossiersEmp = dossiers.filter(function(d){
+      return (d.mat||'').trim().toUpperCase() === (e.mat||'').trim().toUpperCase();
+    }).sort(function(a,b){return b.date_ouverture>a.date_ouverture?1:-1;});
+
+    var derniere = dossiersEmp.length ? dossiersEmp[0] : null;
+    var t = derniere ? TYPES_SANCTIONS_REG[derniere.sanction_finale||derniere.type]||{label:'—',color:'var(--gris)',icon:'?'} : null;
+    var etLabel = derniere ? ETAPES_REG[derniere.etape]||derniere.etape : '—';
+    var nbColor = dossiersEmp.length>=3?'var(--rouge)':dossiersEmp.length>=1?'var(--orange)':'var(--gris)';
+
+    tbody3.innerHTML += '<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or)">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom)+' '+esc(e.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-size:11px;">'+esc(e.poste||'—')+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:800;color:'+nbColor+'">'+
+        (dossiersEmp.length>0?dossiersEmp.length:'<span style="color:var(--gris)">0</span>')+
+      '</td>'+
+      '<td class="c" style="font-size:11px;">'+fmtS(derniere?derniere.date_ouverture:'')+'</td>'+
+      '<td class="c">'+(t?'<span style="font-size:10px;font-weight:700;color:'+t.color+'">'+t.icon+' '+t.label+'</span>':'<span style="color:var(--gris);font-size:10px;">—</span>')+'</td>'+
+      '<td class="c"><span style="font-size:9px;font-weight:700;color:'+(derniere&&derniere.etape!=='clos'?'var(--jaune)':'var(--gris)')+'">'+esc(etLabel)+'</span></td>'+
+      '<td class="c" style="font-family:var(--fd);font-size:10px;color:var(--or)">'+esc(derniere?derniere.ref||'—':'—')+'</td>'+
+    '</tr>';
+  });
+
+  if(!tbody3.innerHTML) tbody3.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--gris);padding:2rem">Aucun employé actif.</td></tr>';
+}
+
+function fmtS(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+
+charger();
+renderAll();
+</script>
+</body>
+</html>

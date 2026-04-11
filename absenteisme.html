@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tableau de Bord Absentéisme — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem;}
+.login-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;text-align:center;}
+.login-logo{font-family:var(--fd);font-size:22px;font-weight:800;margin-bottom:.25rem;}
+.login-logo span{color:var(--or);}
+.login-subtitle{font-size:11px;color:var(--gris);margin-bottom:.75rem;letter-spacing:.06em;}
+.login-mode{display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.lm-btn{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--gris3);background:transparent;color:var(--gris);font-family:var(--fd);transition:all .2s;}
+.lm-btn.active{background:var(--or);color:var(--bg);border-color:var(--or);}
+.lf{text-align:left;margin-bottom:.875rem;}
+.lf label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);display:block;margin-bottom:4px;}
+.lf input,.lf select{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.lf input:focus,.lf select:focus{border-color:var(--or);}
+.login-btn{width:100%;padding:11px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer;margin-top:.5rem;}
+.login-btn:hover{background:var(--or2);}
+.login-err{color:var(--rouge);font-size:11px;margin-top:.5rem;display:none;}
+
+/* APP */
+.app{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:14px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.user-badge{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:4px 12px;font-size:11px;display:flex;align-items:center;gap:6px;}
+.udot{width:7px;height:7px;border-radius:50%;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.5rem;display:flex;overflow-x:auto;}
+.tab{padding:10px 14px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:5px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.nbadge{display:inline-flex;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px;}
+
+.main{padding:1.25rem 1.5rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* CARDS */
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:7px;}
+.sc-body{padding:1.25rem;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.4rem;}
+.kpi-val{font-family:var(--fd);font-size:22px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+
+/* TABLE */
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:6px 9px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:6px 9px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.b-att{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-mgr{background:rgba(74,158,255,.12);color:var(--bleu);}
+.b-dir{background:rgba(167,139,250,.1);color:var(--violet);}
+.b-val{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-ref{background:rgba(240,90,90,.12);color:var(--rouge);}
+
+/* GRAPHIQUE BARRES */
+.bar-wrap{display:flex;flex-direction:column;gap:.5rem;}
+.bar-row{display:flex;align-items:center;gap:.75rem;}
+.bar-label{font-size:11px;min-width:140px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:5px;transition:width .5s ease;}
+.bar-val{font-family:var(--fd);font-size:11px;font-weight:700;min-width:50px;text-align:right;}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;padding:1rem;}
+.donut-legend{display:flex;flex-direction:column;gap:.5rem;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:680px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:14px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:65vh;overflow-y:auto;}
+.mf{padding:.75rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 16px;border-radius:var(--r);font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){.fg,.fg3{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Elite <span>RH</span></div>
+    <div class="login-subtitle">TABLEAU DE BORD ABSENTÉISME</div>
+    <div class="login-mode">
+      <button class="lm-btn active" onclick="setMode('employe',this)">Employé</button>
+      <button class="lm-btn" onclick="setMode('manager',this)">Manager</button>
+      <button class="lm-btn" onclick="setMode('rh',this)">RH</button>
+      <button class="lm-btn" onclick="setMode('directeur',this)">Directeur</button>
+    </div>
+    <div class="lf"><label>Identifiant</label><input type="text" id="l-user" placeholder="Votre identifiant" onkeydown="if(event.key==='Enter')connecter()"/></div>
+    <div class="lf"><label>Mot de passe</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')connecter()"/></div>
+    <button class="login-btn" onclick="connecter()">Se connecter →</button>
+    <div class="login-err" id="login-err">Identifiant ou mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Absentéisme</div>
+  </div>
+  <div class="hdr-right">
+    <div class="user-badge"><div class="udot" id="u-dot"></div><span id="u-label">—</span></div>
+    <button class="btn btn-or" id="btn-new-abs" onclick="openModal('modal-absence')" style="display:none">+ Déclarer une absence</button>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="deconnecter()">Déconnexion</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--or)"></span>📊 Dashboard</button>
+  <button class="tab" id="tab-mes" onclick="showTab('mes-absences',this)" style="display:none"><span class="tdot" style="background:var(--vert)"></span>📋 Mes absences</button>
+  <button class="tab" id="tab-val" onclick="showTab('validation',this)" style="display:none"><span class="tdot" style="background:var(--bleu)"></span>✅ Validation <span id="badge-val" class="nbadge" style="display:none">0</span></button>
+  <button class="tab" id="tab-analyse" onclick="showTab('analyse',this)" style="display:none"><span class="tdot" style="background:var(--violet)"></span>📈 Analyses</button>
+  <button class="tab" id="tab-config" onclick="showTab('config',this)" style="display:none"><span class="tdot" style="background:var(--gris)"></span>⚙️ Configuration</button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="panel active" id="panel-dashboard">
+  <!-- Filtres -->
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <select id="f-mois" class="ff" style="width:130px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderDashboard()">
+      <option value="">Tous les mois</option>
+    </select>
+    <select id="f-annee" class="ff" style="width:100px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderDashboard()">
+      <option value="">Toutes années</option>
+    </select>
+    <select id="f-dept" class="ff" style="width:150px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderDashboard()">
+      <option value="">Tous départements</option>
+    </select>
+    <select id="f-type" class="ff" style="width:160px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderDashboard()">
+      <option value="">Tous types</option>
+    </select>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- Tableaux -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <!-- Par département -->
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏢 Par Département</div></div>
+      <div class="sc-body" id="dept-chart"></div>
+    </div>
+    <!-- Par type -->
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏷️ Par Type d'Absence</div></div>
+      <div style="padding:1rem;">
+        <canvas id="donut-type" width="160" height="160" style="display:block;margin:0 auto;"></canvas>
+        <div class="donut-legend" id="donut-legend" style="margin-top:.875rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top absents + dernières absences -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🔴 Top 10 Absents</div></div>
+      <div style="overflow-x:auto;"><table class="dtbl"><thead><tr><th>#</th><th>Nom</th><th>Département</th><th class="c">Jours</th><th class="c">Absences</th></tr></thead><tbody id="top-tbody"></tbody></table></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📋 Dernières déclarations</div></div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;"><table class="dtbl"><thead><tr><th>Employé</th><th>Type</th><th class="c">Du</th><th class="c">Au</th><th class="c">Jours</th><th class="c">Statut</th></tr></thead><tbody id="recent-tbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MES ABSENCES ═══ -->
+<div class="panel" id="panel-mes-absences">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📋 Mes Absences Déclarées</div>
+      <button class="btn btn-or" onclick="openModal('modal-absence')">+ Déclarer</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Type</th><th class="c">Date début</th><th class="c">Date fin</th><th class="c">Jours</th><th>Motif</th><th class="c">Statut</th><th class="c">Obs. manager</th><th class="c">Actions</th></tr></thead>
+        <tbody id="mes-abs-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VALIDATION ═══ -->
+<div class="panel" id="panel-validation">
+  <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <select id="f-val-statut" style="padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderValidation()">
+      <option value="">Tous statuts</option>
+      <option value="en_attente">En attente manager</option>
+      <option value="val_manager">En attente RH</option>
+      <option value="val_rh">En attente Directeur</option>
+    </select>
+    <select id="f-val-dept" style="width:150px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderValidation()">
+      <option value="">Tous départements</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">✅ Absences à Valider</div>
+      <button class="btn btn-vert" onclick="validerTout()">✓ Tout valider (filtré)</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Employé</th><th>Matricule</th><th>Département</th><th>Type</th><th class="c">Du</th><th class="c">Au</th><th class="c">Jours</th><th>Motif</th><th class="c">Saisi le</th><th class="c">Statut</th><th class="c">Actions</th></tr></thead>
+        <tbody id="val-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ANALYSES ═══ -->
+<div class="panel" id="panel-analyse">
+  <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <select id="f-an-annee" style="padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderAnalyse()">
+      <option value="">Toutes années</option>
+    </select>
+    <select id="f-an-dept" style="width:150px;padding:6px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;" onchange="renderAnalyse()">
+      <option value="">Tous départements</option>
+    </select>
+  </div>
+
+  <!-- Comparaison mois par mois -->
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head"><div class="sc-title">📅 Jours d'Absence par Mois</div></div>
+    <div style="padding:1.25rem;">
+      <canvas id="chart-mensuel" width="900" height="220" style="width:100%;max-height:220px;"></canvas>
+    </div>
+  </div>
+
+  <!-- Heures/Jours par département -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏢 Jours & Heures par Département</div></div>
+      <div style="overflow-x:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Département</th><th class="c">Absences</th><th class="c">Jours</th><th class="c">Heures</th><th class="c">Taux abs.</th></tr></thead>
+          <tbody id="dept-analyse-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏷️ Par Type d'Absence</div></div>
+      <div style="overflow-x:auto;">
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th class="c">Nb</th><th class="c">Jours</th><th class="c">Heures</th><th class="c">%</th></tr></thead>
+          <tbody id="type-analyse-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taux absentéisme -->
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📊 Taux d'Absentéisme — Calcul détaillé</div></div>
+    <div class="sc-body" id="taux-detail"></div>
+  </div>
+</div>
+
+<!-- ═══ CONFIGURATION ═══ -->
+<div class="panel" id="panel-config">
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head"><div class="sc-title">👥 Utilisateurs</div><button class="btn btn-or" onclick="openModal('modal-add-user')">+ Ajouter</button></div>
+    <div style="overflow-x:auto;"><table class="dtbl"><thead><tr><th>Login</th><th>Nom</th><th>Matricule</th><th>Département</th><th>Rôle</th><th>Actions</th></tr></thead><tbody id="users-tbody"></tbody></table></div>
+  </div>
+  <div class="sc" style="margin-bottom:1.25rem;">
+    <div class="sc-head"><div class="sc-title">👤 Base Personnel</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="openModal('modal-add-emp')">+ Ajouter</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('fi-emp').click()">⬆ Importer Excel</button>
+        <input type="file" id="fi-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerPersonnel(this)"/>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:320px;overflow-y:auto;"><table class="dtbl"><thead><tr><th>Matricule</th><th>Nom</th><th>Prénoms</th><th>Poste</th><th>Département</th><th>Manager</th><th>Actions</th></tr></thead><tbody id="pers-tbody"></tbody></table></div>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">⚙️ Paramètres</div></div>
+    <div class="sc-body">
+      <div class="fg">
+        <div class="ff"><label>Jours ouvrables/mois (pour taux)</label><input type="number" id="cfg-jours" value="22" min="1" max="31" onchange="saveCfg()"/><div class="hint">Utilisé pour calculer le taux d'absentéisme</div></div>
+        <div class="ff"><label>Heures de travail/jour</label><input type="number" id="cfg-heures" value="8" min="1" max="12" step=".5" onchange="saveCfg()"/></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL DÉCLARATION ABSENCE -->
+<div class="modal-ov" id="modal-absence">
+  <div class="modal">
+    <div class="mh"><div class="mt">📋 <span>Déclarer une Absence</span></div><button class="mc" onclick="closeModal('modal-absence')">✕</button></div>
+    <div class="mb">
+      <div class="fg" style="margin-bottom:.75rem;">
+        <div class="ff" id="ff-mat-wrap">
+          <label>Employé (matricule) *</label>
+          <input type="text" id="d-mat" placeholder="Ex: MAT001" oninput="rechercherEmpAbs(this.value)"/>
+          <div class="hint" id="d-emp-info" style="color:var(--vert);"></div>
+        </div>
+        <div class="ff">
+          <label>Type d'absence *</label>
+          <select id="d-type" onchange="onTypeChange()">
+            <option value="maladie">🤒 Maladie</option>
+            <option value="absence_injustifiee">❌ Absence injustifiée</option>
+            <option value="accident_travail">⚠️ Accident de travail</option>
+            <option value="conge_maternite">🤰 Congé maternité / paternité</option>
+            <option value="conge_sans_solde">💸 Congé sans solde</option>
+            <option value="autorisation">✅ Autorisation d'absence</option>
+            <option value="retard">⏰ Retard</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label>Date début *</label>
+          <input type="date" id="d-debut" onchange="calcJours()"/>
+        </div>
+        <div class="ff" id="ff-fin">
+          <label>Date fin *</label>
+          <input type="date" id="d-fin" onchange="calcJours()"/>
+        </div>
+        <div class="ff" id="ff-retard" style="display:none;">
+          <label>Durée du retard (minutes)</label>
+          <input type="number" id="d-retard-min" min="1" max="480" placeholder="Ex: 30"/>
+        </div>
+        <div class="ff">
+          <label>Jours calculés</label>
+          <input type="text" id="d-jours" readonly style="background:var(--bg4);color:var(--or);font-weight:700;"/>
+        </div>
+        <div class="ff ff-full">
+          <label>Motif / Justification</label>
+          <textarea id="d-motif" rows="2" placeholder="Expliquez brièvement la raison de l'absence..."></textarea>
+        </div>
+        <div class="ff ff-full">
+          <label>Pièce justificative (référence)</label>
+          <input type="text" id="d-justif" placeholder="Ex: Certificat médical N°123, Autorisation N°..."/>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-absence')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverAbsence()">✓ Soumettre</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VALIDATION -->
+<div class="modal-ov" id="modal-valider">
+  <div class="modal" style="max-width:520px;">
+    <div class="mh"><div class="mt">✅ <span id="mv-titre">Valider / Refuser</span></div><button class="mc" onclick="closeModal('modal-valider')">✕</button></div>
+    <div class="mb">
+      <div id="mv-detail" style="background:var(--bg3);border-radius:var(--r);padding:.875rem;margin-bottom:.75rem;font-size:12px;line-height:1.9;"></div>
+      <div class="ff"><label>Observation</label><textarea id="mv-obs" rows="2" placeholder="Commentaire (optionnel)..."></textarea></div>
+      <input type="hidden" id="mv-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-valider')">Annuler</button>
+      <button class="btn btn-rouge" onclick="refuserAbs()">✗ Refuser</button>
+      <button class="btn btn-vert" id="btn-valider-abs" onclick="validerAbs()">✓ Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADD USER -->
+<div class="modal-ov" id="modal-add-user">
+  <div class="modal" style="max-width:520px;">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un utilisateur</span></div><button class="mc" onclick="closeModal('modal-add-user')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Identifiant *</label><input type="text" id="u-login"/></div>
+        <div class="ff"><label>Mot de passe *</label><input type="password" id="u-pass"/></div>
+        <div class="ff"><label>Nom complet *</label><input type="text" id="u-nom"/></div>
+        <div class="ff"><label>Matricule</label><input type="text" id="u-mat"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="u-dept"/></div>
+        <div class="ff"><label>Rôle *</label>
+          <select id="u-role">
+            <option value="employe">Employé</option>
+            <option value="manager">Manager</option>
+            <option value="rh">RH</option>
+            <option value="directeur">Directeur</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-user')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverUser()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADD EMP -->
+<div class="modal-ov" id="modal-add-emp">
+  <div class="modal" style="max-width:580px;">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un Employé</span></div><button class="mc" onclick="closeModal('modal-add-emp')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Matricule *</label><input type="text" id="e-mat"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="e-nom"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="e-prenom"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="e-poste"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="e-dept"/></div>
+        <div class="ff"><label>Manager (nom)</label><input type="text" id="e-mgr"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-emp')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEmp()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'eliteabs_v1';
+var ST = { users:[], personnel:[], absences:[], cfg:{jours_mois:22,heures_jour:8}, nextId:100 };
+var SESSION = { logged:false, user:null, role:null };
+var nextId = 100;
+function uid(){ return ++nextId; }
+var _loginMode = 'employe';
+
+var TYPES_ABS = {
+  maladie:           { label:'Maladie',                   color:'#F05A5A', icon:'🤒' },
+  absence_injustifiee:{ label:'Absence injustifiée',      color:'#FB923C', icon:'❌' },
+  accident_travail:  { label:'Accident de travail',       color:'#FBC724', icon:'⚠️' },
+  conge_maternite:   { label:'Congé maternité/paternité', color:'#A78BFA', icon:'🤰' },
+  conge_sans_solde:  { label:'Congé sans solde',          color:'#4A9EFF', icon:'💸' },
+  autorisation:      { label:'Autorisation d\'absence',   color:'#34C77B', icon:'✅' },
+  retard:            { label:'Retard',                    color:'#22D3EE', icon:'⏰' }
+};
+
+var STATUTS = {
+  en_attente:  { label:'En attente manager', cls:'b-att' },
+  val_manager: { label:'Validé manager / att. RH', cls:'b-mgr' },
+  val_rh:      { label:'Validé RH / att. Directeur', cls:'b-dir' },
+  validee:     { label:'Validée', cls:'b-val' },
+  refusee:     { label:'Refusée', cls:'b-ref' }
+};
+
+// ── PERSISTANCE ──
+function charger(){
+  try{
+    var d = localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; }
+    else{ ST={users:[],personnel:[],absences:[],cfg:{jours_mois:22,heures_jour:8},nextId:100}; initDefaut(); }
+    if(!ST.cfg) ST.cfg={jours_mois:22,heures_jour:8};
+  }catch(e){ ST={users:[],personnel:[],absences:[],cfg:{jours_mois:22,heures_jour:8},nextId:100}; initDefaut(); }
+}
+function sauver(){ try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }catch(e){ toast('Erreur sauvegarde'); } }
+function initDefaut(){
+  ST.users=[
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'Administrateur RH',mat:'',dept:'RH',role:'rh'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'Directeur Général',mat:'',dept:'Direction',role:'directeur'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'DOSSOU Aline',mat:'',dept:'RH',role:'manager'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'ZANNOU Jean',mat:'MAT001',dept:'Commercial',role:'employe'}
+  ];
+  ST.personnel=[
+    {id:uid(),mat:'MAT001',nom:'ZANNOU',prenom:'Jean',poste:'Commercial',dept:'Commercial',mgr:'DOSSOU Aline'},
+    {id:uid(),mat:'MAT002',nom:'KPOSSOU',prenom:'Sylvie',poste:'Comptable',dept:'Finance',mgr:'DOSSOU Aline'},
+    {id:uid(),mat:'MAT003',nom:'HOUENOU',prenom:'Patrick',poste:'Technicien',dept:'Production',mgr:'KPOSSOU Jean'}
+  ];
+  sauver();
+}
+function saveCfg(){
+  ST.cfg.jours_mois = parseInt(document.getElementById('cfg-jours').value)||22;
+  ST.cfg.heures_jour = parseFloat(document.getElementById('cfg-heures').value)||8;
+  sauver();
+}
+
+// ── LOGIN ──
+function setMode(mode, btn){
+  _loginMode = mode;
+  document.querySelectorAll('.lm-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function connecter(){
+  var login=document.getElementById('l-user').value.trim();
+  var pass=document.getElementById('l-pass').value.trim();
+  var user=ST.users.find(function(u){return u.login===login&&u.pass===pass;});
+  if(!user){ document.getElementById('login-err').style.display='block'; return; }
+  SESSION={logged:true,user:user,role:user.role};
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('login-err').style.display='none';
+  var dotColors={employe:'var(--vert)',manager:'var(--bleu)',rh:'var(--or)',directeur:'var(--violet)'};
+  document.getElementById('u-dot').style.background=dotColors[user.role]||'var(--gris)';
+  document.getElementById('u-label').textContent=user.nom+' ('+roleLabel(user.role)+')';
+  setupUI();
+  renderAll();
+}
+function deconnecter(){
+  SESSION={logged:false,user:null,role:null};
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+}
+function roleLabel(r){ return {employe:'Employé',manager:'Manager',rh:'RH',directeur:'Directeur'}[r]||r; }
+
+function setupUI(){
+  var r=SESSION.role;
+  document.getElementById('btn-new-abs').style.display='flex';
+  document.getElementById('tab-mes').style.display=(r==='employe'||r==='manager')?'flex':'none';
+  document.getElementById('tab-val').style.display=(r==='manager'||r==='rh'||r==='directeur')?'flex':'none';
+  document.getElementById('tab-analyse').style.display=(r==='rh'||r==='directeur')?'flex':'none';
+  document.getElementById('tab-config').style.display=(r==='rh'||r==='directeur')?'flex':'none';
+  // Matricule dans modal : pré-remplir si employé
+  if(r==='employe'){
+    document.getElementById('d-mat').value=SESSION.user.mat||'';
+    document.getElementById('d-mat').readOnly=true;
+    if(SESSION.user.mat) rechercherEmpAbs(SESSION.user.mat);
+  } else {
+    document.getElementById('d-mat').readOnly=false;
+  }
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  remplirFiltres();
+  renderDashboard();
+  renderMesAbsences();
+  renderValidation();
+  if(SESSION.role==='rh'||SESSION.role==='directeur'){ renderAnalyse(); renderConfig(); }
+  updateBadgeVal();
+}
+
+// ── FILTRES ──
+function remplirFiltres(){
+  var anneesSet={}, deptSet={};
+  ST.absences.forEach(function(a){
+    if(a.date_debut) anneesSet[a.date_debut.substring(0,4)]=true;
+    if(a.dept) deptSet[a.dept]=true;
+  });
+  ST.personnel.forEach(function(p){if(p.dept) deptSet[p.dept]=true;});
+
+  var moisNoms=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var moisSet={};
+  ST.absences.forEach(function(a){if(a.date_debut) moisSet[a.date_debut.substring(0,7)]=true;});
+  var moisList=Object.keys(moisSet).sort().reverse();
+
+  ['f-mois'].forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var cur=sel.value; sel.innerHTML='<option value="">Tous les mois</option>';
+    moisList.forEach(function(m){
+      var p=m.split('-'); var nom=moisNoms[parseInt(p[1])-1]+' '+p[0];
+      sel.innerHTML+='<option value="'+m+'"'+(m===cur?' selected':'')+'>'+nom+'</option>';
+    });
+  });
+  ['f-annee','f-an-annee'].forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var cur=sel.value; sel.innerHTML='<option value="">Toutes années</option>';
+    Object.keys(anneesSet).sort().reverse().forEach(function(a){ sel.innerHTML+='<option value="'+a+'"'+(a===cur?' selected':'')+'>'+a+'</option>'; });
+  });
+  ['f-dept','f-val-dept','f-an-dept'].forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var cur=sel.value; sel.innerHTML='<option value="">Tous départements</option>';
+    Object.keys(deptSet).sort().forEach(function(d){ sel.innerHTML+='<option value="'+d+'"'+(d===cur?' selected':'')+'>'+esc(d)+'</option>'; });
+  });
+  ['f-type'].forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var cur=sel.value; sel.innerHTML='<option value="">Tous types</option>';
+    Object.keys(TYPES_ABS).forEach(function(k){ sel.innerHTML+='<option value="'+k+'"'+(k===cur?' selected':'')+'>'+TYPES_ABS[k].icon+' '+TYPES_ABS[k].label+'</option>'; });
+  });
+}
+
+// ── FILTRER ABS ──
+function filtrerAbs(fMois,fAnnee,fDept,fType,valideesUniq){
+  return ST.absences.filter(function(a){
+    if(fMois && (!a.date_debut||a.date_debut.substring(0,7)!==fMois)) return false;
+    if(fAnnee && (!a.date_debut||a.date_debut.substring(0,4)!==fAnnee)) return false;
+    if(fDept && a.dept!==fDept) return false;
+    if(fType && a.type!==fType) return false;
+    if(valideesUniq && a.statut!=='validee') return false;
+    return true;
+  });
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var fMois=document.getElementById('f-mois').value;
+  var fAnnee=document.getElementById('f-annee').value;
+  var fDept=document.getElementById('f-dept').value;
+  var fType=document.getElementById('f-type').value;
+  var abs=filtrerAbs(fMois,fAnnee,fDept,fType,false);
+  var absVal=abs.filter(function(a){return a.statut==='validee';});
+
+  var totalJours=0,totalH=0,nbAbs=abs.length,nbVal=absVal.length;
+  absVal.forEach(function(a){
+    var j=parseFloat(a.jours)||0;
+    totalJours+=j;
+    totalH+=j*(ST.cfg.heures_jour||8);
+  });
+  var nbEmp=ST.personnel.length;
+  var joursDispo=nbEmp*(ST.cfg.jours_mois||22)*(fMois?1:12);
+  var taux=joursDispo>0?Math.round(totalJours/joursDispo*10000)/100:0;
+
+  // KPI
+  var kg=document.getElementById('kpi-grid');
+  function kc(label,val,sub,color,borderColor){
+    return '<div class="kpi-card" style="border-top-color:'+borderColor+';"><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+color+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
+  }
+  kg.innerHTML=
+    kc('Total déclarations',nbAbs,'absences saisies','var(--blanc)','var(--or)')+
+    kc('Absences validées',nbVal,'confirmées','var(--vert)','var(--vert)')+
+    kc('Jours d\'absence',totalJours.toFixed(1),'jours ouvrés perdus','var(--or)','var(--or)')+
+    kc('Heures perdues',Math.round(totalH)+'h','équivalent heures','var(--violet)','var(--violet)')+
+    kc('Taux absentéisme',taux+'%',nbEmp+' employés, '+joursDispo+' j. dispo',taux>5?'var(--rouge)':taux>3?'var(--jaune)':'var(--vert)','var(--bleu)')+
+    kc('En attente validation',abs.filter(function(a){return a.statut!=='validee'&&a.statut!=='refusee';}).length,'à traiter','var(--jaune)','var(--jaune)');
+
+  // Par département (barres)
+  var deptMap={};
+  absVal.forEach(function(a){
+    var d=a.dept||'N/A';
+    if(!deptMap[d]) deptMap[d]={jours:0,nb:0};
+    deptMap[d].jours+=parseFloat(a.jours)||0;
+    deptMap[d].nb++;
+  });
+  var maxJ=Math.max(1,...Object.values(deptMap).map(function(v){return v.jours;}));
+  var deptHTML='<div class="bar-wrap">';
+  Object.keys(deptMap).sort(function(a,b){return deptMap[b].jours-deptMap[a].jours;}).forEach(function(d){
+    var pct=Math.round(deptMap[d].jours/maxJ*100);
+    var color=pct>70?'var(--rouge)':pct>40?'var(--jaune)':'var(--bleu)';
+    deptHTML+='<div class="bar-row">'+
+      '<div class="bar-label">'+esc(d)+'</div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'+
+      '<div class="bar-val" style="color:'+color+'">'+deptMap[d].jours.toFixed(1)+'j</div>'+
+    '</div>';
+  });
+  if(!Object.keys(deptMap).length) deptHTML+='<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem;">Aucune donnée</div>';
+  document.getElementById('dept-chart').innerHTML=deptHTML+'</div>';
+
+  // Donut par type
+  var typeMap={};
+  absVal.forEach(function(a){
+    if(!typeMap[a.type]) typeMap[a.type]={nb:0,jours:0};
+    typeMap[a.type].nb++;
+    typeMap[a.type].jours+=parseFloat(a.jours)||0;
+  });
+  drawDonut('donut-type',typeMap,'donut-legend');
+
+  // Top absents
+  var empMap={};
+  absVal.forEach(function(a){
+    var k=a.mat||a.nom;
+    if(!empMap[k]) empMap[k]={nom:a.nom,dept:a.dept||'—',jours:0,nb:0};
+    empMap[k].jours+=parseFloat(a.jours)||0;
+    empMap[k].nb++;
+  });
+  var top=Object.values(empMap).sort(function(a,b){return b.jours-a.jours;}).slice(0,10);
+  var ttbody=document.getElementById('top-tbody');
+  ttbody.innerHTML='';
+  top.forEach(function(e,i){
+    ttbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(i+1)+'</td>'+
+      '<td><strong>'+esc(e.nom)+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.dept)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--rouge)">'+e.jours.toFixed(1)+'</td>'+
+      '<td class="c">'+e.nb+'</td>'+
+    '</tr>';
+  });
+  if(!top.length) ttbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1rem">Aucune donnée</td></tr>';
+
+  // Dernières absences
+  var rtbody=document.getElementById('recent-tbody');
+  rtbody.innerHTML='';
+  abs.slice().reverse().slice(0,15).forEach(function(a){
+    var ti=TYPES_ABS[a.type]||{label:a.type,icon:'?'};
+    rtbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(a.nom)+'</strong></td>'+
+      '<td style="font-size:10px;color:'+(ti.color||'var(--gris)')+'">'+ti.icon+' '+ti.label+'</td>'+
+      '<td class="c">'+esc(a.date_debut)+'</td>'+
+      '<td class="c">'+esc(a.date_fin||a.date_debut)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700">'+a.jours+'</td>'+
+      '<td class="c">'+statutBadge(a.statut)+'</td>'+
+    '</tr>';
+  });
+  if(!abs.length) rtbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--gris);padding:1rem">Aucune absence</td></tr>';
+}
+
+// ── DONUT ──
+function drawDonut(canvasId, typeMap, legendId){
+  var canvas=document.getElementById(canvasId);
+  var legend=document.getElementById(legendId);
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  var total=Object.values(typeMap).reduce(function(s,v){return s+v.jours;},0);
+  if(!total){
+    ctx.fillStyle='var(--gris)';ctx.font='11px DM Sans';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Aucune donnée',80,80);
+    if(legend) legend.innerHTML='';return;
+  }
+  var cx=80,cy=80,r=65,ir=42,start=-Math.PI/2,gap=0.03;
+  var entries=Object.keys(typeMap).sort(function(a,b){return typeMap[b].jours-typeMap[a].jours;});
+  entries.forEach(function(k){
+    var slice=(typeMap[k].jours/total)*Math.PI*2-gap;
+    var ti=TYPES_ABS[k]||{color:'#888'};
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+slice);
+    ctx.closePath();ctx.fillStyle=ti.color;ctx.fill();
+    start+=slice+gap;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,ir,0,Math.PI*2);ctx.fillStyle='#0D0D18';ctx.fill();
+  ctx.fillStyle='#E2C47A';ctx.font='bold 16px Syne';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(total.toFixed(0),cx,cy-6);
+  ctx.fillStyle='#9896A4';ctx.font='10px DM Sans';ctx.fillText('jours',cx,cy+9);
+  if(legend){
+    legend.innerHTML=entries.map(function(k){
+      var ti=TYPES_ABS[k]||{label:k,color:'#888',icon:''};
+      var pct=Math.round(typeMap[k].jours/total*100);
+      return '<div class="legend-item"><div class="legend-dot" style="background:'+ti.color+'"></div>'+
+        '<span style="color:var(--gris)">'+ti.icon+' '+ti.label+'</span>'+
+        '<span style="margin-left:auto;font-family:var(--fd);font-weight:700;color:'+ti.color+'">'+typeMap[k].jours.toFixed(1)+'j ('+pct+'%)</span></div>';
+    }).join('');
+  }
+}
+
+// ── MES ABSENCES ──
+function renderMesAbsences(){
+  var abs=ST.absences.filter(function(a){
+    if(SESSION.role==='employe') return a.mat===SESSION.user.mat||a.saisi_par_id===SESSION.user.id;
+    if(SESSION.role==='manager') return a.saisi_par_id===SESSION.user.id||a.mgr_id===SESSION.user.id;
+    return true;
+  }).slice().reverse();
+  var tbody=document.getElementById('mes-abs-tbody');
+  tbody.innerHTML='';
+  if(!abs.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gris);padding:2rem">Aucune absence déclarée.</td></tr>';return;}
+  abs.forEach(function(a){
+    var ti=TYPES_ABS[a.type]||{label:a.type,icon:'?',color:'var(--gris)'};
+    tbody.innerHTML+='<tr>'+
+      '<td style="color:'+ti.color+'">'+ti.icon+' '+ti.label+'</td>'+
+      '<td class="c">'+esc(a.date_debut)+'</td>'+
+      '<td class="c">'+esc(a.date_fin||a.date_debut)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+a.jours+'</td>'+
+      '<td style="font-size:11px;color:var(--gris);max-width:160px;white-space:normal">'+esc(a.motif||'—')+'</td>'+
+      '<td class="c">'+statutBadge(a.statut)+'</td>'+
+      '<td class="c" style="font-size:10px;color:var(--gris)">'+esc(a.obs||'—')+'</td>'+
+      '<td class="c">'+(a.statut==='en_attente'?'<button onclick="supprimerAbs('+a.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button>':'')+'</td>'+
+    '</tr>';
+  });
+}
+
+// ── VALIDATION ──
+function renderValidation(){
+  var fStat=document.getElementById('f-val-statut').value;
+  var fDept=document.getElementById('f-val-dept').value;
+  var abs=ST.absences.filter(function(a){
+    if(SESSION.role==='manager' && a.statut!=='en_attente') return false;
+    if(SESSION.role==='rh' && a.statut!=='val_manager') return false;
+    if(SESSION.role==='directeur' && a.statut!=='val_rh') return false;
+    if(fStat && a.statut!==fStat) return false;
+    if(fDept && a.dept!==fDept) return false;
+    return a.statut!=='validee'&&a.statut!=='refusee';
+  }).slice().reverse();
+
+  var tbody=document.getElementById('val-tbody');
+  tbody.innerHTML='';
+  if(!abs.length){tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--gris);padding:2rem">Aucune absence à valider.</td></tr>';return;}
+  abs.forEach(function(a){
+    var ti=TYPES_ABS[a.type]||{label:a.type,icon:'?',color:'var(--gris)'};
+    tbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(a.nom)+'</strong></td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(a.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(a.dept||'—')+'</td>'+
+      '<td style="color:'+ti.color+';font-size:11px">'+ti.icon+' '+ti.label+'</td>'+
+      '<td class="c">'+esc(a.date_debut)+'</td>'+
+      '<td class="c">'+esc(a.date_fin||a.date_debut)+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+a.jours+'</td>'+
+      '<td style="font-size:11px;color:var(--gris);max-width:130px;white-space:normal">'+esc(a.motif||'—')+'</td>'+
+      '<td class="c" style="font-size:10px;color:var(--gris)">'+esc(a.date_saisie||'—')+'</td>'+
+      '<td class="c">'+statutBadge(a.statut)+'</td>'+
+      '<td class="c"><button onclick="ouvrirValidation('+a.id+')" class="btn btn-vert" style="padding:2px 8px;font-size:9px;">✅ Traiter</button></td>'+
+    '</tr>';
+  });
+}
+
+function ouvrirValidation(id){
+  var a=ST.absences.find(function(x){return x.id===id;}); if(!a) return;
+  var ti=TYPES_ABS[a.type]||{label:a.type,icon:'?'};
+  document.getElementById('mv-id').value=id;
+  document.getElementById('mv-obs').value=a.obs||'';
+  var r=SESSION.role;
+  var titre=r==='manager'?'Validation Manager (1ère étape)':r==='rh'?'Validation RH (2e étape)':'Confirmation Directeur (3e étape)';
+  document.getElementById('mv-titre').textContent=titre;
+  document.getElementById('mv-detail').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">'+
+    '<div><span style="color:var(--gris);font-size:10px">Employé</span><div style="font-weight:700">'+esc(a.nom)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Type</span><div>'+ti.icon+' '+ti.label+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Du</span><div>'+esc(a.date_debut)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Au</span><div>'+esc(a.date_fin||a.date_debut)+'</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Durée</span><div style="font-family:var(--fd);font-weight:700;color:var(--or)">'+a.jours+' jour(s)</div></div>'+
+    '<div><span style="color:var(--gris);font-size:10px">Justificatif</span><div>'+esc(a.justif||'—')+'</div></div>'+
+    '<div style="grid-column:1/-1"><span style="color:var(--gris);font-size:10px">Motif</span><div>'+esc(a.motif||'—')+'</div></div>'+
+    '</div>';
+  openModal('modal-valider');
+}
+
+function validerAbs(){
+  var id=parseInt(document.getElementById('mv-id').value);
+  var a=ST.absences.find(function(x){return x.id===id;}); if(!a) return;
+  var obs=document.getElementById('mv-obs').value.trim();
+  var r=SESSION.role;
+  if(r==='manager'){ a.statut='val_manager'; a.validee_par_manager=SESSION.user.nom; }
+  else if(r==='rh'){ a.statut='val_rh'; a.validee_par_rh=SESSION.user.nom; }
+  else if(r==='directeur'){ a.statut='validee'; a.validee_par_dir=SESSION.user.nom; }
+  a.obs=obs;
+  sauver(); closeModal('modal-valider'); renderAll();
+  toast('Absence validée — en attente étape suivante');
+}
+function refuserAbs(){
+  var id=parseInt(document.getElementById('mv-id').value);
+  var a=ST.absences.find(function(x){return x.id===id;}); if(!a) return;
+  a.statut='refusee'; a.obs=document.getElementById('mv-obs').value.trim();
+  sauver(); closeModal('modal-valider'); renderAll(); toast('Absence refusée');
+}
+function validerTout(){
+  var count=0;
+  ST.absences.forEach(function(a){
+    if(a.statut==='validee'||a.statut==='refusee') return;
+    var r=SESSION.role;
+    if(r==='manager'&&a.statut==='en_attente'){ a.statut='val_manager'; a.validee_par_manager=SESSION.user.nom; count++; }
+    else if(r==='rh'&&a.statut==='val_manager'){ a.statut='val_rh'; a.validee_par_rh=SESSION.user.nom; count++; }
+    else if(r==='directeur'&&a.statut==='val_rh'){ a.statut='validee'; a.validee_par_dir=SESSION.user.nom; count++; }
+  });
+  sauver(); renderAll(); toast(count+' absence(s) validée(s)');
+}
+function updateBadgeVal(){
+  var r=SESSION.role;
+  var nb=ST.absences.filter(function(a){
+    if(r==='manager') return a.statut==='en_attente';
+    if(r==='rh') return a.statut==='val_manager';
+    if(r==='directeur') return a.statut==='val_rh';
+    return false;
+  }).length;
+  var b=document.getElementById('badge-val');
+  if(b){b.textContent=nb;b.style.display=nb>0?'inline':'none';}
+}
+
+// ── ANALYSE ──
+function renderAnalyse(){
+  var fAnnee=document.getElementById('f-an-annee').value;
+  var fDept=document.getElementById('f-an-dept').value;
+  var absVal=ST.absences.filter(function(a){
+    if(a.statut!=='validee') return false;
+    if(fAnnee&&(!a.date_debut||a.date_debut.substring(0,4)!==fAnnee)) return false;
+    if(fDept&&a.dept!==fDept) return false;
+    return true;
+  });
+
+  // Graphique mensuel (barres canvas)
+  var moisMap={};
+  var moisNoms=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  for(var m=1;m<=12;m++) moisMap[(m<10?'0':'')+m]={jours:0,nb:0};
+  absVal.forEach(function(a){
+    if(!a.date_debut) return;
+    var mm=a.date_debut.substring(5,7);
+    if(!moisMap[mm]) moisMap[mm]={jours:0,nb:0};
+    moisMap[mm].jours+=parseFloat(a.jours)||0;
+    moisMap[mm].nb++;
+  });
+  var canvas=document.getElementById('chart-mensuel');
+  var ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||900; canvas.height=220;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  var keys=Object.keys(moisMap).sort();
+  var maxJ=Math.max(1,...keys.map(function(k){return moisMap[k].jours;}));
+  var barW=Math.floor((canvas.width-60)/keys.length*0.65);
+  var gap=Math.floor((canvas.width-60)/keys.length*0.35);
+  var chartH=160; var chartY=20;
+  keys.forEach(function(k,i){
+    var x=30+i*(barW+gap);
+    var h=Math.round(moisMap[k].jours/maxJ*chartH);
+    var col=moisMap[k].jours>5?'#F05A5A':moisMap[k].jours>2?'#FBC724':'#4A9EFF';
+    if(h>0){ ctx.fillStyle=col; ctx.beginPath(); ctx.roundRect(x,chartY+chartH-h,barW,h,3); ctx.fill(); }
+    ctx.fillStyle='#9896A4'; ctx.font='9px DM Sans'; ctx.textAlign='center';
+    ctx.fillText(moisNoms[parseInt(k)-1],x+barW/2,chartY+chartH+14);
+    if(moisMap[k].jours>0){
+      ctx.fillStyle=col; ctx.font='bold 10px Syne';
+      ctx.fillText(moisMap[k].jours.toFixed(1),x+barW/2,chartY+chartH-h-5);
+    }
+  });
+  ctx.strokeStyle='rgba(30,30,46,.8)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(25,chartY+chartH); ctx.lineTo(canvas.width-10,chartY+chartH); ctx.stroke();
+
+  // Par département
+  var deptMap={};
+  absVal.forEach(function(a){
+    var d=a.dept||'N/A';
+    if(!deptMap[d]) deptMap[d]={nb:0,jours:0};
+    deptMap[d].nb++; deptMap[d].jours+=parseFloat(a.jours)||0;
+  });
+  var totalJ=Object.values(deptMap).reduce(function(s,v){return s+v.jours;},0)||1;
+  var dtbody=document.getElementById('dept-analyse-tbody');
+  dtbody.innerHTML='';
+  Object.keys(deptMap).sort(function(a,b){return deptMap[b].jours-deptMap[a].jours;}).forEach(function(d){
+    var v=deptMap[d];
+    var heures=Math.round(v.jours*(ST.cfg.heures_jour||8));
+    var tauxDept=ST.personnel.filter(function(p){return p.dept===d;}).length;
+    var tauxPct=tauxDept>0?Math.round(v.jours/(tauxDept*(ST.cfg.jours_mois||22)*(fAnnee?12:12))*10000)/100:0;
+    dtbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(d)+'</strong></td>'+
+      '<td class="c">'+v.nb+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+v.jours.toFixed(1)+'</td>'+
+      '<td class="c" style="color:var(--violet)">'+heures+'h</td>'+
+      '<td class="c" style="color:'+( tauxPct>5?'var(--rouge)':tauxPct>3?'var(--jaune)':'var(--vert)')+'">'+tauxPct+'%</td>'+
+    '</tr>';
+  });
+  if(!Object.keys(deptMap).length) dtbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1rem">Aucune donnée</td></tr>';
+
+  // Par type
+  var typeMap={};
+  absVal.forEach(function(a){
+    if(!typeMap[a.type]) typeMap[a.type]={nb:0,jours:0};
+    typeMap[a.type].nb++; typeMap[a.type].jours+=parseFloat(a.jours)||0;
+  });
+  var totalT=absVal.reduce(function(s,a){return s+(parseFloat(a.jours)||0);},0)||1;
+  var ttbody=document.getElementById('type-analyse-tbody');
+  ttbody.innerHTML='';
+  Object.keys(typeMap).sort(function(a,b){return typeMap[b].jours-typeMap[a].jours;}).forEach(function(k){
+    var v=typeMap[k]; var ti=TYPES_ABS[k]||{label:k,icon:'?',color:'var(--gris)'};
+    var pct=Math.round(v.jours/totalT*100);
+    ttbody.innerHTML+='<tr>'+
+      '<td style="color:'+ti.color+'">'+ti.icon+' '+ti.label+'</td>'+
+      '<td class="c">'+v.nb+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--or)">'+v.jours.toFixed(1)+'</td>'+
+      '<td class="c" style="color:var(--violet)">'+Math.round(v.jours*(ST.cfg.heures_jour||8))+'h</td>'+
+      '<td class="c">'+
+        '<div style="display:flex;align-items:center;gap:6px;">'+
+          '<div style="width:60px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">'+
+            '<div style="width:'+pct+'%;height:100%;background:'+ti.color+';border-radius:3px;"></div>'+
+          '</div>'+
+          '<span style="font-size:10px;font-family:var(--fd);font-weight:700;color:'+ti.color+'">'+pct+'%</span>'+
+        '</div>'+
+      '</td>'+
+    '</tr>';
+  });
+  if(!Object.keys(typeMap).length) ttbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1rem">Aucune donnée</td></tr>';
+
+  // Taux absentéisme détaillé
+  var nbEmp=ST.personnel.length;
+  var joursDispo=nbEmp*(ST.cfg.jours_mois||22)*(fAnnee?12:12);
+  var totalJV=absVal.reduce(function(s,a){return s+(parseFloat(a.jours)||0);},0);
+  var tauxGlobal=joursDispo>0?Math.round(totalJV/joursDispo*10000)/100:0;
+  document.getElementById('taux-detail').innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;">'+
+    '<div style="background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;">'+
+      '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">Effectif</div>'+
+      '<div style="font-family:var(--fd);font-size:20px;font-weight:700;">'+nbEmp+' personnes</div>'+
+    '</div>'+
+    '<div style="background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;">'+
+      '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">Jours théoriques disponibles</div>'+
+      '<div style="font-family:var(--fd);font-size:20px;font-weight:700;">'+joursDispo+' jours</div>'+
+      '<div style="font-size:10px;color:var(--gris2)">'+nbEmp+' × '+(ST.cfg.jours_mois||22)+' j/mois × '+(fAnnee?12:12)+' mois</div>'+
+    '</div>'+
+    '<div style="background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;">'+
+      '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">Jours d\'absence réels</div>'+
+      '<div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--rouge)">'+totalJV.toFixed(1)+' jours</div>'+
+    '</div>'+
+    '<div style="background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;border:1px solid rgba(201,168,76,.2);">'+
+      '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">Taux d\'absentéisme</div>'+
+      '<div style="font-family:var(--fd);font-size:28px;font-weight:800;color:'+(tauxGlobal>5?'var(--rouge)':tauxGlobal>3?'var(--jaune)':'var(--vert)')+'">'+tauxGlobal+'%</div>'+
+      '<div style="font-size:10px;color:var(--gris2)">Jours abs. ÷ Jours théoriques</div>'+
+    '</div>'+
+    '</div>';
+}
+
+// ── DÉCLARATION ──
+function onTypeChange(){
+  var type=document.getElementById('d-type').value;
+  var isRetard=type==='retard';
+  document.getElementById('ff-fin').style.display=isRetard?'none':'flex';
+  document.getElementById('ff-retard').style.display=isRetard?'flex':'none';
+  calcJours();
+}
+function calcJours(){
+  var debut=document.getElementById('d-debut').value;
+  var fin=document.getElementById('d-fin').value;
+  var type=document.getElementById('d-type').value;
+  if(type==='retard'){
+    document.getElementById('d-jours').value='< 1 j (retard)';
+    return;
+  }
+  if(!debut||!fin){document.getElementById('d-jours').value='—';return;}
+  var d1=new Date(debut),d2=new Date(fin);
+  if(d2<d1){document.getElementById('d-jours').value='Dates invalides';return;}
+  var diff=Math.round((d2-d1)/(1000*60*60*24))+1;
+  document.getElementById('d-jours').value=diff+' jour(s)';
+}
+function rechercherEmpAbs(mat){
+  var emp=ST.personnel.find(function(e){return e.mat&&e.mat.toLowerCase()===mat.toLowerCase();});
+  var info=document.getElementById('d-emp-info');
+  if(emp){ info.textContent='✓ '+emp.nom+' '+emp.prenom+' — '+emp.dept; info.style.color='var(--vert)'; }
+  else if(mat.length>=3){ info.textContent='Matricule non trouvé'; info.style.color='var(--rouge)'; }
+  else info.textContent='';
+}
+function sauverAbsence(){
+  var mat=document.getElementById('d-mat').value.trim();
+  var debut=document.getElementById('d-debut').value;
+  var type=document.getElementById('d-type').value;
+  if(!debut||!type){toast('Date de début et type obligatoires');return;}
+  var fin=type==='retard'?debut:(document.getElementById('d-fin').value||debut);
+  var d1=new Date(debut),d2=new Date(fin);
+  var jours=type==='retard'?0.5:Math.round((d2-d1)/(1000*60*60*24))+1;
+  var emp=ST.personnel.find(function(e){return e.mat&&e.mat.toLowerCase()===mat.toLowerCase();});
+  var nom=emp?emp.nom+' '+(emp.prenom||''):(SESSION.user.nom);
+  var dept=emp?emp.dept:(SESSION.user.dept||'');
+  ST.absences.push({
+    id:uid(), mat:mat||SESSION.user.mat||'', nom:nom, dept:dept,
+    type:type, date_debut:debut, date_fin:fin, jours:jours,
+    retard_min:type==='retard'?(parseInt(document.getElementById('d-retard-min').value)||0):0,
+    motif:document.getElementById('d-motif').value.trim(),
+    justif:document.getElementById('d-justif').value.trim(),
+    statut:'en_attente',
+    saisi_par_id:SESSION.user.id, saisi_par_role:SESSION.role,
+    date_saisie:new Date().toISOString().split('T')[0],
+    mgr_id:null, obs:''
+  });
+  sauver(); closeModal('modal-absence'); viderModal(); renderAll(); remplirFiltres();
+  toast('Absence déclarée — en attente de validation manager');
+}
+function viderModal(){
+  ['d-mat','d-debut','d-fin','d-motif','d-justif','d-retard-min'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('d-jours').value='';
+  document.getElementById('d-emp-info').textContent='';
+  if(SESSION.role!=='employe') document.getElementById('d-mat').value='';
+}
+function supprimerAbs(id){
+  if(!confirm('Supprimer cette déclaration ?')) return;
+  ST.absences=ST.absences.filter(function(a){return a.id!==id;});
+  sauver(); renderAll(); toast('Supprimée');
+}
+
+// ── USERS & PERSONNEL ──
+function renderConfig(){
+  renderUsers(); renderPersonnel();
+  document.getElementById('cfg-jours').value=ST.cfg.jours_mois||22;
+  document.getElementById('cfg-heures').value=ST.cfg.heures_jour||8;
+}
+function renderUsers(){
+  var tbody=document.getElementById('users-tbody'); tbody.innerHTML='';
+  ST.users.forEach(function(u){
+    var dotColors={employe:'var(--vert)',manager:'var(--bleu)',rh:'var(--or)',directeur:'var(--violet)'};
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px">'+esc(u.login)+'</td>'+
+      '<td><strong>'+esc(u.nom)+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(u.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(u.dept||'—')+'</td>'+
+      '<td><span style="font-size:10px;font-weight:700;color:'+dotColors[u.role]+'">'+roleLabel(u.role)+'</span></td>'+
+      '<td><button onclick="supprimerUser('+u.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+function renderPersonnel(){
+  var tbody=document.getElementById('pers-tbody'); tbody.innerHTML='';
+  ST.personnel.forEach(function(e){
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom)+'</strong></td>'+
+      '<td>'+esc(e.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.mgr||'—')+'</td>'+
+      '<td><button onclick="supprimerEmpList('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+function sauverUser(){
+  var login=document.getElementById('u-login').value.trim();
+  var pass=document.getElementById('u-pass').value.trim();
+  var nom=document.getElementById('u-nom').value.trim();
+  if(!login||!pass||!nom){toast('Identifiant, mot de passe et nom requis');return;}
+  if(ST.users.find(function(u){return u.login===login;})){toast('Identifiant déjà utilisé');return;}
+  ST.users.push({id:uid(),login:login,pass:pass,nom:nom,mat:document.getElementById('u-mat').value.trim(),dept:document.getElementById('u-dept').value.trim(),role:document.getElementById('u-role').value});
+  sauver(); closeModal('modal-add-user'); renderUsers(); toast('Utilisateur ajouté');
+  ['u-login','u-pass','u-nom','u-mat','u-dept'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerUser(id){
+  if(!confirm('Supprimer cet utilisateur ?')) return;
+  ST.users=ST.users.filter(function(u){return u.id!==id;});
+  sauver(); renderUsers(); toast('Supprimé');
+}
+function sauverEmp(){
+  var mat=document.getElementById('e-mat').value.trim();
+  var nom=document.getElementById('e-nom').value.trim();
+  if(!nom){toast('Nom obligatoire');return;}
+  if(mat&&ST.personnel.find(function(e){return e.mat===mat;})){toast('Matricule déjà existant');return;}
+  ST.personnel.push({id:uid(),mat:mat||'MAT'+uid(),nom:nom.toUpperCase(),prenom:document.getElementById('e-prenom').value.trim(),poste:document.getElementById('e-poste').value.trim(),dept:document.getElementById('e-dept').value.trim(),mgr:document.getElementById('e-mgr').value.trim()});
+  sauver(); closeModal('modal-add-emp'); renderPersonnel(); remplirFiltres(); toast('Employé ajouté');
+  ['e-mat','e-nom','e-prenom','e-poste','e-dept','e-mgr'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerEmpList(id){
+  if(!confirm('Supprimer ?')) return;
+  ST.personnel=ST.personnel.filter(function(e){return e.id!==id;});
+  sauver(); renderPersonnel(); toast('Supprimé');
+}
+function importerPersonnel(input){
+  if(!input.files[0]||!window.XLSX){toast('XLSX non disponible');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      var g=function(r){var keys=Array.prototype.slice.call(arguments,1);for(var i=0;i<keys.length;i++){var k=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(keys[i].toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(k&&r[k]!==undefined&&r[k]!=='')return String(r[k]).trim();}return '';};
+      var added=0;
+      rows.forEach(function(r){
+        var nom=g(r,'nom','lastname','name'); if(!nom) return;
+        var mat=g(r,'matricule','mat')||'MAT'+uid();
+        if(ST.personnel.find(function(e){return e.mat===mat;})) return;
+        ST.personnel.push({id:uid(),mat:mat,nom:nom.toUpperCase(),prenom:g(r,'prenom','firstname'),poste:g(r,'poste','fonction'),dept:g(r,'departement','dept'),mgr:g(r,'manager','responsable')});
+        added++;
+      });
+      sauver(); renderPersonnel(); remplirFiltres(); toast(added+' employés importés');
+    }catch(e){toast('Erreur: '+e.message);}
+  };
+  reader.readAsBinaryString(input.files[0]); input.value='';
+}
+
+// ── EXPORT EXCEL ──
+function exporterExcel(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var wb=XLSX.utils.book_new();
+  var data=[['Matricule','Nom','Département','Type','Date début','Date fin','Jours','Retard (min)','Motif','Justificatif','Statut','Saisi le','Validé manager','Validé RH','Validé Directeur']];
+  ST.absences.forEach(function(a){
+    var ti=TYPES_ABS[a.type]||{label:a.type};
+    data.push([a.mat||'',a.nom,a.dept||'',ti.label,a.date_debut,a.date_fin||a.date_debut,a.jours,a.retard_min||0,a.motif||'',a.justif||'',a.statut,a.date_saisie||'',a.validee_par_manager||'',a.validee_par_rh||'',a.validee_par_dir||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Absences');
+  // Synthèse par département
+  var deptMap={};
+  ST.absences.filter(function(a){return a.statut==='validee';}).forEach(function(a){
+    var d=a.dept||'N/A';
+    if(!deptMap[d]) deptMap[d]={nb:0,jours:0};
+    deptMap[d].nb++;deptMap[d].jours+=parseFloat(a.jours)||0;
+  });
+  var data2=[['Département','Nb absences validées','Jours perdus','Heures perdues']];
+  Object.keys(deptMap).sort().forEach(function(d){
+    data2.push([d,deptMap[d].nb,deptMap[d].jours.toFixed(1),Math.round(deptMap[d].jours*(ST.cfg.heures_jour||8))]);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data2),'Synthèse départements');
+  XLSX.writeFile(wb,'Absenteisme-'+new Date().toISOString().split('T')[0]+'.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function statutBadge(s){
+  var st=STATUTS[s]||{label:s,cls:'b-att'};
+  return '<span class="badge '+st.cls+'">'+st.label+'</span>';
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='dashboard') renderDashboard();
+  if(tab==='mes-absences') renderMesAbsences();
+  if(tab==='validation') renderValidation();
+  if(tab==='analyse') renderAnalyse();
+  if(tab==='config') renderConfig();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+charger();
+</script>
+</body>
+</html>

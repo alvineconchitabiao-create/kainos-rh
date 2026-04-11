@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prêts & Avances sur Salaire — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;--or-g:rgba(201,168,76,.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.7rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:.75rem;flex-wrap:wrap;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:20px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.btn{display:flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;text-decoration:none;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-vert:hover{background:rgba(52,199,123,.22);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-jaune{background:rgba(251,199,36,.1);color:var(--jaune);border:1px solid rgba(251,199,36,.2);}
+
+.period-badge{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gris);}
+.period-badge select,.period-badge input{background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:12px;font-weight:700;outline:none;cursor:pointer;}
+.period-badge input{width:50px;text-align:center;}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+.main{padding:1.25rem 1.75rem;}
+.panel{display:none;} .panel.active{display:block;}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.75rem;margin-bottom:1.25rem;}
+.kpi{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.kpi:hover{border-color:rgba(201,168,76,.2);}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ac,var(--or)),transparent);}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.5rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:700;color:var(--blanc);line-height:1;}
+.kpi-u{font-size:10px;color:var(--gris);margin-left:3px;}
+.kpi-sub{font-size:10px;margin-top:.35rem;color:var(--gris);}
+
+.tbl-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1rem;}
+.tbl-bar{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.tbl-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);}
+.tbl-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.search{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:6px 10px;outline:none;width:190px;transition:border-color .2s;}
+.search:focus{border-color:var(--or);}
+.fsel{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--gris);font-family:var(--fd);font-size:11px;padding:5px 10px;outline:none;cursor:pointer;}
+.fsel option{background:var(--bg2);}
+.scroll-x{overflow-x:auto;max-height:560px;overflow-y:auto;}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;position:sticky;top:0;cursor:pointer;transition:color .2s;user-select:none;}
+.dtbl th:hover{color:var(--or);}
+.dtbl th.r,.dtbl td.r{text-align:right;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);color:var(--blanc);vertical-align:middle;white-space:nowrap;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl tr.cloture td{opacity:.5;}
+.dtbl tr.instance td{background:rgba(251,199,36,.03);}
+
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.bv{background:rgba(52,199,123,.12);color:var(--vert);}
+.br{background:rgba(240,90,90,.12);color:var(--rouge);}
+.bo{background:rgba(201,168,76,.12);color:var(--or);}
+.by{background:rgba(251,199,36,.1);color:var(--jaune);}
+.bvl{background:rgba(167,139,250,.1);color:var(--violet);}
+.bb{background:rgba(74,158,255,.12);color:var(--bleu);}
+.bg{background:rgba(90,88,102,.2);color:var(--gris);}
+
+.statut-encours{background:rgba(74,158,255,.12);color:var(--bleu);border:1px solid rgba(74,158,255,.2);}
+.statut-instance{background:rgba(251,199,36,.1);color:var(--jaune);border:1px solid rgba(251,199,36,.2);}
+.statut-cloture{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.statut-refuse{background:rgba(240,90,90,.12);color:var(--rouge);border:1px solid rgba(240,90,90,.2);}
+
+.prog-wrap{display:flex;align-items:center;gap:8px;min-width:100px;}
+.prog-track{flex:1;height:6px;background:var(--gris3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .5s;}
+.prog-pct{font-family:var(--fd);font-size:10px;font-weight:700;min-width:28px;text-align:right;}
+
+.echeance-cell{font-family:var(--fd);font-size:12px;font-weight:700;}
+.echeance-ok{color:var(--vert);}
+.echeance-alerte{color:var(--jaune);}
+.echeance-retard{color:var(--rouge);}
+
+/* Calendrier de remboursement */
+.cal-rembours{display:grid;gap:4px;}
+.cal-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--r);background:var(--bg3);font-size:11px;}
+.cal-row.payee{background:rgba(52,199,123,.07);border-left:3px solid var(--vert);}
+.cal-row.encours{background:rgba(201,168,76,.08);border-left:3px solid var(--or);}
+.cal-row.future{border-left:3px solid var(--gris3);}
+.cal-mois{font-weight:600;min-width:90px;}
+.cal-montant{font-family:var(--fd);font-weight:700;color:var(--or);margin-left:auto;}
+.cal-statut{font-size:9px;}
+
+/* Chart barres */
+.chart-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;}
+.chart-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.bar-row{margin-bottom:8px;}
+.bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
+.bar-track{height:8px;background:var(--gris3);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .7s ease;}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;margin:auto;animation:popIn .22s ease;}
+.modal-sm{max-width:480px;} .modal-md{max-width:660px;} .modal-lg{max-width:920px;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.03));}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--blanc);}
+.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mc:hover{color:var(--rouge);}
+.mb{padding:1.25rem;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff textarea{resize:vertical;min-height:56px;line-height:1.5;}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.full{grid-column:1/-1;}
+.fsec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);opacity:.8;margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--gris3);}
+.preview-box{background:var(--bg3);border:1px solid rgba(201,168,76,.15);border-radius:var(--r);padding:.875rem;margin-top:.5rem;}
+.preview-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.6rem;}
+.preview-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;}
+.preview-item{text-align:center;}
+.preview-lbl{font-size:9px;color:var(--gris);margin-bottom:2px;}
+.preview-val{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+.sect-title{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.35rem;}
+.sect-sub{font-size:12px;color:var(--gris);margin-bottom:1rem;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+
+@media(max-width:900px){.fg,.fg3,.grid2,.grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Prêts &amp; Avances sur Salaire</div>
+  </div>
+  <div class="hdr-right">
+    <div class="period-badge">
+      <select id="sel-mois" onchange="changePeriode()">
+        <option value="01">Janvier</option><option value="02">Février</option>
+        <option value="03">Mars</option><option value="04">Avril</option>
+        <option value="05">Mai</option><option value="06">Juin</option>
+        <option value="07">Juillet</option><option value="08">Août</option>
+        <option value="09">Septembre</option><option value="10">Octobre</option>
+        <option value="11">Novembre</option><option value="12">Décembre</option>
+      </select>
+      <input type="number" id="inp-annee" value="2026" min="2020" max="2035" onchange="changePeriode()"/>
+    </div>
+    <div id="memo-wrap" style="display:none;background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:4px 10px;align-items:center;gap:6px;font-size:10px;color:var(--gris);">
+      <span>📚</span>
+      <select id="sel-memo" onchange="naviguerPeriode(this.value)" style="background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:11px;font-weight:700;outline:none;cursor:pointer;">
+        <option value="">Périodes</option>
+      </select>
+    </div>
+    <button class="btn btn-ghost" onclick="document.getElementById('file-import').click()">⬆ Importer personnel</button>
+    <input type="file" id="file-import" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerPersonnel(this)"/>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export</button>
+    <button class="btn btn-ghost" onclick="chargerDemo()">🎲 Démo</button>
+    <button class="btn btn-vert" onclick="cloturerPeriode()" title="Défalquer les échéances du mois et passer au mois suivant">✅ Clôturer le mois</button>
+    <button class="btn btn-or" onclick="openModal('modal-new-pret')">+ Nouveau prêt</button>
+    <a href="index.html" class="btn btn-ghost">← Site</a>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:#C9A84C"></span>📊 Tableau de bord</button>
+  <button class="tab" onclick="showTab('prets',this)"><span class="tdot" style="background:#4A9EFF"></span>💳 Prêts actifs <span id="badge-instance" style="display:none;background:var(--jaune);color:var(--bg);border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" onclick="showTab('calendrier',this)"><span class="tdot" style="background:#34C77B"></span>📅 Calendrier de remboursement</button>
+  <button class="tab" onclick="showTab('analyses',this)"><span class="tdot" style="background:#A78BFA"></span>📈 Analyses</button>
+  <button class="tab" onclick="showTab('historique',this)"><span class="tdot" style="background:#FB923C"></span>📜 Historique</button>
+  <button class="tab" onclick="showTab('config',this)"><span class="tdot" style="background:#22D3EE"></span>⚙️ Configuration</button>
+</nav>
+
+<div class="main">
+<!-- DASHBOARD -->
+<div class="panel active" id="panel-dashboard">
+  <div class="kpi-row" id="kpi-row"></div>
+  <div class="grid2" style="margin-bottom:1rem;">
+    <div class="tbl-wrap">
+      <div class="tbl-bar"><div class="tbl-title">💳 Prêts en cours</div></div>
+      <div id="dash-prets-encours"></div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-bar"><div class="tbl-title">⚠️ Prêts en instance (à valider)</div></div>
+      <div id="dash-prets-instance"></div>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="chart-card">
+      <div class="chart-title">🏢 Encours par Département</div>
+      <div id="chart-dept"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⚙️ Par Service</div>
+      <div id="chart-service"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📊 Prêts vs Masse Salariale</div>
+      <div id="chart-masse"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRÊTS ACTIFS -->
+<div class="panel" id="panel-prets">
+  <div class="tbl-wrap">
+    <div class="tbl-bar">
+      <div class="tbl-title">Registre des Prêts &amp; Avances — <span id="lbl-period" style="color:var(--or)"></span></div>
+      <div class="tbl-tools">
+        <input class="search" type="text" placeholder="Rechercher..." id="srch-prets" oninput="filtrerPrets()"/>
+        <select class="fsel" id="f-dept" onchange="filtrerPrets()"><option value="">Tous les départements</option></select>
+        <select class="fsel" id="f-service" onchange="filtrerPrets()"><option value="">Tous les services</option></select>
+        <select class="fsel" id="f-statut" onchange="filtrerPrets()">
+          <option value="">Tous les statuts</option>
+          <option value="instance">En instance</option>
+          <option value="encours">En cours</option>
+          <option value="cloture">Clôturé</option>
+          <option value="refuse">Refusé</option>
+        </select>
+        <select class="fsel" id="f-sort" onchange="filtrerPrets()">
+          <option value="">Trier par...</option>
+          <option value="montant_desc">Montant accordé ↓</option>
+          <option value="solde_desc">Solde restant ↓</option>
+          <option value="echeance_asc">Prochaine échéance ↑</option>
+          <option value="nom_asc">Nom A→Z</option>
+        </select>
+      </div>
+    </div>
+    <div id="empty-prets" style="padding:3rem;text-align:center;display:none;">
+      <div style="font-size:40px;margin-bottom:.75rem">💳</div>
+      <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);margin-bottom:.5rem">Aucun prêt enregistré</div>
+      <div style="font-size:12px;color:var(--gris);margin-bottom:1.25rem">Importez votre personnel ou ajoutez directement un prêt.</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="btn btn-or" onclick="openModal('modal-new-pret')">+ Nouveau prêt</button>
+        <button class="btn btn-ghost" onclick="chargerDemo()">🎲 Charger la démo</button>
+      </div>
+    </div>
+    <div class="scroll-x" id="table-prets-wrap">
+      <table class="dtbl" id="table-prets">
+        <thead><tr>
+          <th>#</th>
+          <th onclick="sortPrets('nom')">Employé</th>
+          <th onclick="sortPrets('dept')">Département</th>
+          <th onclick="sortPrets('service')">Service</th>
+          <th onclick="sortPrets('section')">Section</th>
+          <th onclick="sortPrets('salaire')" class="r">Salaire Base</th>
+          <th onclick="sortPrets('montant_demande')" class="r">Montant demandé</th>
+          <th onclick="sortPrets('montant_accorde')" class="r">Montant accordé</th>
+          <th onclick="sortPrets('pct_salaire')" class="r">% Salaire</th>
+          <th onclick="sortPrets('nb_mois')" class="r">Nb mois</th>
+          <th onclick="sortPrets('mensualite')" class="r">Mensualité</th>
+          <th onclick="sortPrets('date_premiere')" >1ère échéance</th>
+          <th onclick="sortPrets('solde')" class="r">Solde restant</th>
+          <th>Remboursement</th>
+          <th onclick="sortPrets('statut')">Statut</th>
+          <th>Observations</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody id="tbody-prets"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDRIER DE REMBOURSEMENT -->
+<div class="panel" id="panel-calendrier">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div class="sect-title">📅 Calendrier de Remboursement</div>
+      <div class="sect-sub">Échéancier mensuel de tous les prêts actifs</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <select class="fsel" id="cal-f-employe" onchange="renderCalendrier()"><option value="">Tous les employés</option></select>
+      <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export</button>
+    </div>
+  </div>
+  <div id="cal-container"></div>
+</div>
+
+<!-- ANALYSES -->
+<div class="panel" id="panel-analyses">
+  <div class="sect-title">📈 Analyses &amp; Statistiques</div>
+  <div class="sect-sub">Répartition des prêts par département, service, section et comparaison avec la masse salariale</div>
+  <div class="kpi-row" id="analyses-kpis" style="margin-bottom:1.25rem;"></div>
+  <div class="grid2" style="margin-bottom:1rem;">
+    <div class="chart-card">
+      <div class="chart-title">🏢 Encours par Département — Montant &amp; % MS</div>
+      <div id="an-dept"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⚙️ Services les plus demandeurs</div>
+      <div id="an-service"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="chart-card">
+      <div class="chart-title">📂 Par Section</div>
+      <div id="an-section"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📊 Prêts vs Masse Salariale globale</div>
+      <div id="an-masse-detail"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORIQUE -->
+<div class="panel" id="panel-historique">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div class="sect-title">📜 Historique mensuel</div>
+      <div class="sect-sub">Toutes les périodes mémorisées — défalcations et clôtures</div>
+    </div>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export</button>
+  </div>
+  <div id="historique-container"></div>
+</div>
+
+<!-- CONFIGURATION -->
+<div class="panel" id="panel-config">
+  <div class="sect-title">⚙️ Configuration Générale</div>
+  <div class="sect-sub">Paramètres communs à tous les prêts</div>
+  <div style="max-width:600px;">
+    <div class="tbl-wrap">
+      <div class="tbl-bar"><div class="tbl-title">Règles d'octroi des prêts</div></div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem;">
+        <div class="fg">
+          <div class="ff">
+            <label>Montant maximum accordé (FCFA)</label>
+            <input type="number" id="cfg-max-montant" placeholder="Ex: 500000" onchange="sauverConfig()"/>
+            <div class="hint">Plafond commun à tous les employés</div>
+          </div>
+          <div class="ff">
+            <label>% Maximum du salaire</label>
+            <input type="number" id="cfg-max-pct" placeholder="Ex: 50" min="1" max="100" onchange="sauverConfig()"/>
+            <div class="hint">Ex: 50 = le prêt ne dépasse pas 50% du salaire</div>
+          </div>
+          <div class="ff">
+            <label>Nombre max de mois de remboursement</label>
+            <input type="number" id="cfg-max-mois" placeholder="Ex: 12" min="1" max="60" onchange="sauverConfig()"/>
+            <div class="hint">Durée maximale autorisée</div>
+          </div>
+          <div class="ff">
+            <label>Taux d'intérêt mensuel (%)</label>
+            <input type="number" id="cfg-taux" placeholder="0 = sans intérêt" min="0" step="0.1" onchange="sauverConfig()"/>
+            <div class="hint">0% = avance sans frais</div>
+          </div>
+          <div class="ff full">
+            <label>Condition d'ancienneté minimale (mois)</label>
+            <input type="number" id="cfg-anciennete" placeholder="Ex: 6" min="0" onchange="sauverConfig()"/>
+            <div class="hint">Nb de mois d'ancienneté requis pour être éligible</div>
+          </div>
+        </div>
+        <div id="cfg-recap" style="background:var(--bg3);border:1px solid rgba(201,168,76,.15);border-radius:var(--r);padding:.875rem;"></div>
+        <button class="btn btn-vert" onclick="sauverConfig()" style="width:fit-content;">💾 Sauvegarder la configuration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<!-- MODAL NOUVEAU PRÊT -->
+<div class="modal-ov" id="modal-new-pret">
+  <div class="modal modal-lg">
+    <div class="mh">
+      <div class="mt">💳 <span id="modal-pret-title">Nouveau Prêt / Avance</span></div>
+      <button class="mc" onclick="closeModal('modal-new-pret')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="fsec" style="margin-top:0">Identification de l'employé</div>
+      <div class="fg">
+        <div class="ff full">
+          <label>Employé *</label>
+          <select id="p-employe" onchange="onEmployeChange()">
+            <option value="">— Sélectionner ou saisir manuellement —</option>
+          </select>
+        </div>
+        <div class="ff"><label>Nom *</label><input type="text" id="p-nom" placeholder="Ex: SAMBA"/></div>
+        <div class="ff"><label>Prénom</label><input type="text" id="p-prenom" placeholder="Ex: David"/></div>
+        <div class="ff"><label>Matricule</label><input type="text" id="p-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="p-dept" placeholder="Ex: MAINTENANCE"/></div>
+        <div class="ff"><label>Service</label><input type="text" id="p-service" placeholder="Ex: ATELIER"/></div>
+        <div class="ff"><label>Section</label><input type="text" id="p-section" placeholder="Ex: Génie Civil"/></div>
+        <div class="ff"><label>Salaire de base (FCFA) *</label><input type="number" id="p-salaire" placeholder="Ex: 150000" oninput="recalcPret()"/></div>
+      </div>
+
+      <div class="fsec">Détails du Prêt</div>
+      <div class="fg">
+        <div class="ff"><label>Type</label>
+          <select id="p-type" onchange="recalcPret()">
+            <option value="Prêt">Prêt</option>
+            <option value="Avance sur salaire">Avance sur salaire</option>
+            <option value="Prêt exceptionnel">Prêt exceptionnel</option>
+          </select>
+        </div>
+        <div class="ff"><label>Montant demandé (FCFA) *</label><input type="number" id="p-demande" placeholder="Ex: 300000" oninput="recalcPret()"/></div>
+        <div class="ff"><label>Montant accordé (FCFA)</label><input type="number" id="p-accorde" placeholder="= Montant demandé si accordé" oninput="recalcPret()"/></div>
+        <div class="ff"><label>Nombre de mois de remboursement *</label><input type="number" id="p-nb-mois" placeholder="Ex: 12" min="1" oninput="recalcPret()"/></div>
+        <div class="ff"><label>Date de la 1ère échéance *</label><input type="date" id="p-date-debut" onchange="recalcPret()"/></div>
+        <div class="ff"><label>Statut initial</label>
+          <select id="p-statut">
+            <option value="instance">En instance (à valider)</option>
+            <option value="encours">Approuvé — En cours</option>
+            <option value="refuse">Refusé</option>
+          </select>
+        </div>
+        <div class="ff full"><label>Motif / Objet du prêt</label><input type="text" id="p-motif" placeholder="Ex: Frais scolaires, urgence médicale, construction..."/></div>
+        <div class="ff full"><label>Observations / Conditions particulières</label><textarea id="p-obs" placeholder="Ex: Accord DRH du 15/03/2026 — Remboursement par précompte sur salaire..."></textarea></div>
+      </div>
+
+      <!-- Prévisualisation -->
+      <div class="preview-box" id="preview-pret" style="display:none;">
+        <div class="preview-title">⚡ Simulation du prêt</div>
+        <div class="preview-grid">
+          <div class="preview-item"><div class="preview-lbl">Mensualité</div><div class="preview-val" id="prev-mens">—</div></div>
+          <div class="preview-item"><div class="preview-lbl">% du Salaire</div><div class="preview-val" id="prev-pct">—</div></div>
+          <div class="preview-item"><div class="preview-lbl">Dernière échéance</div><div class="preview-val" id="prev-fin">—</div></div>
+        </div>
+        <div id="prev-alerte" style="margin-top:.5rem;font-size:11px;color:var(--rouge);display:none;"></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-pret')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverPret()">✓ Enregistrer le prêt</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAIL PRÊT -->
+<div class="modal-ov" id="modal-detail-pret">
+  <div class="modal modal-lg">
+    <div class="mh">
+      <div class="mt">📋 Détail du <span>Prêt</span></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:10px" onclick="window.print()">🖨️ Imprimer</button>
+        <button class="mc" onclick="closeModal('modal-detail-pret')">✕</button>
+      </div>
+    </div>
+    <div class="mb" id="modal-detail-body"></div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-detail-pret')">Fermer</button>
+      <button class="btn btn-vert" id="btn-approuver-modal" onclick="approuverDepuisModal()" style="display:none;">✓ Approuver</button>
+      <button class="btn btn-rouge" id="btn-refuser-modal" onclick="refuserDepuisModal()" style="display:none;">✗ Refuser</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉFALCATION MANUELLE -->
+<div class="modal-ov" id="modal-defalcation">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mt">💰 Défalcation <span>manuelle</span></div><button class="mc" onclick="closeModal('modal-defalcation')">✕</button></div>
+    <div class="mb">
+      <div style="background:var(--bg3);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:.875rem;">
+        <div style="font-size:12px;font-weight:600;color:var(--blanc)" id="def-name"></div>
+        <div style="font-size:10px;color:var(--gris)" id="def-meta"></div>
+      </div>
+      <div class="fg">
+        <div class="ff"><label>Mois de défalcation</label><input type="month" id="def-mois"/></div>
+        <div class="ff"><label>Montant défalqué (FCFA)</label><input type="number" id="def-montant" placeholder="= Mensualité par défaut"/></div>
+        <div class="ff full"><label>Note</label><input type="text" id="def-note" placeholder="Ex: Précompte sur salaire mars 2026"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-defalcation')">Annuler</button>
+      <button class="btn btn-or" onclick="confirmerDefalcation()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// ════════════════════════════════════════
+// ÉTAT & MÉMOIRE MENSUELLE
+// ════════════════════════════════════════
+var SK = 'eliteprets_v1';
+var STORE = { periodes:{}, personnel:[], config:{}, nextId:100 };
+var DB    = { prets:[], personnel:[] };  // données du mois actif
+var CONFIG = { max_montant:500000, max_pct:50, max_mois:12, taux:0, anciennete:0 };
+var nextId = 100;
+function uid(){ return ++nextId; }
+var sortColPrets='nom'; var sortDirPrets=1;
+var detailPretId=null; var defalcPretId=null;
+var MOIS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+// ── PERSISTANCE ──
+function chargerStore(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ STORE=JSON.parse(d); nextId=STORE.nextId||100; CONFIG=STORE.config||CONFIG; }
+    else{ STORE={periodes:{},personnel:[],config:CONFIG,nextId:100}; }
+  }catch(e){ STORE={periodes:{},personnel:[],config:CONFIG,nextId:100}; }
+}
+function sauverStore(){
+  try{
+    var p=getPeriode();
+    if(!STORE.periodes) STORE.periodes={};
+    STORE.periodes[p]={prets:DB.prets.map(function(x){return Object.assign({},x,{echeances:(x.echeances||[]).slice()});})};
+    STORE.personnel=DB.personnel;
+    STORE.config=CONFIG;
+    STORE.nextId=nextId;
+    localStorage.setItem(SK,JSON.stringify(STORE));
+    renderSelecteurPeriode();
+  }catch(e){ toast('Erreur sauvegarde: '+e.message); }
+}
+function sauverConfig(){
+  CONFIG.max_montant=parseFloat(document.getElementById('cfg-max-montant').value)||500000;
+  CONFIG.max_pct    =parseFloat(document.getElementById('cfg-max-pct').value)||50;
+  CONFIG.max_mois   =parseFloat(document.getElementById('cfg-max-mois').value)||12;
+  CONFIG.taux       =parseFloat(document.getElementById('cfg-taux').value)||0;
+  CONFIG.anciennete =parseFloat(document.getElementById('cfg-anciennete').value)||0;
+  STORE.config=CONFIG; sauverStore();
+  renderConfigRecap(); toast('Configuration sauvegardée');
+}
+
+function chargerPeriode(p){
+  if(STORE.periodes&&STORE.periodes[p]){
+    var snap=STORE.periodes[p];
+    DB.prets=(snap.prets||[]).map(function(x){return Object.assign({},x,{echeances:(x.echeances||[]).slice()});});
+  } else {
+    // Nouveau mois: reporter les prêts en cours du dernier mois
+    var periodes=getPeriodesDisponibles();
+    if(periodes.length>0){
+      var dernier=periodes[0];
+      var snap=STORE.periodes[dernier];
+      DB.prets=((snap&&snap.prets)||[])
+        .filter(function(x){return x.statut==='encours';})
+        .map(function(x){return Object.assign({},x,{echeances:(x.echeances||[]).slice()});});
+    } else { DB.prets=[]; }
+  }
+  DB.personnel=STORE.personnel||[];
+}
+
+function getPeriodesDisponibles(){
+  return Object.keys(STORE.periodes||{}).sort().reverse();
+}
+function getPeriode(){
+  return document.getElementById('inp-annee').value+'-'+document.getElementById('sel-mois').value;
+}
+function getPeriodeLabel(){
+  var m=parseInt(document.getElementById('sel-mois').value);
+  return MOIS_FR[m-1]+' '+document.getElementById('inp-annee').value;
+}
+function changePeriode(){
+  var p=getPeriode();
+  chargerPeriode(p);
+  renderAll();
+}
+
+// ── SÉLECTEUR PÉRIODES ──
+function renderSelecteurPeriode(){
+  var periodes=getPeriodesDisponibles();
+  var wrap=document.getElementById('memo-wrap');
+  var sel=document.getElementById('sel-memo');
+  if(!wrap||!sel) return;
+  wrap.style.display=periodes.length?'flex':'none';
+  var actif=getPeriode();
+  sel.innerHTML='<option value="">📚 '+periodes.length+' période(s)</option>';
+  periodes.forEach(function(p){
+    var parts=p.split('-');
+    var label=MOIS_FR[parseInt(parts[1])-1]+' '+parts[0];
+    var snap=STORE.periodes[p];
+    var nb=(snap&&snap.prets)?snap.prets.filter(function(x){return x.statut==='encours';}).length:0;
+    sel.innerHTML+='<option value="'+p+'"'+(p===actif?' selected':'')+'>'+label+' ('+nb+' actifs)'+(p===actif?' ◀':'')+'</option>';
+  });
+}
+function naviguerPeriode(p){
+  if(!p) return;
+  var parts=p.split('-');
+  document.getElementById('sel-mois').value=parts[1];
+  document.getElementById('inp-annee').value=parts[0];
+  chargerPeriode(p);
+  renderAll();
+  toast('Période : '+getPeriodeLabel());
+}
+
+// ── CLÔTURE DU MOIS ──
+function cloturerPeriode(){
+  var p=getPeriode(); var label=getPeriodeLabel();
+  var actifs=DB.prets.filter(function(x){return x.statut==='encours';});
+  if(!actifs.length){ toast('Aucun pret actif a defaquer'); return; }
+  if(!confirm('Cloturer '+label+' ?')) return;
+  var nbDefalques=0; var nbClotures=0;
+  DB.prets.forEach(function(pret){
+    if(pret.statut!=='encours') return;
+    var p_mois=getPeriode();
+    var echeanceExiste=(pret.echeances||[]).some(function(e){return e.periode===p_mois&&e.paye;});
+    if(echeanceExiste) return;
+    var montant=pret.mensualite;
+    var solde=parseFloat(pret.solde)||0;
+    var montantReel=Math.min(montant,solde);
+    if(!pret.echeances) pret.echeances=[];
+    pret.echeances.push({periode:p_mois,montant:montantReel,paye:true,date:new Date().toISOString().split('T')[0]});
+    pret.solde=Math.max(0,Math.round(solde-montantReel));
+    if(pret.solde<=0){pret.statut='cloture';pret.date_cloture=new Date().toISOString().split('T')[0];nbClotures++;}
+    nbDefalques++;
+  });
+  sauverStore();
+  var parts=p.split('-'); var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+  var moNext=mo===12?1:mo+1; var anNext=mo===12?an+1:an;
+  document.getElementById('sel-mois').value=String(moNext).padStart(2,'0');
+  document.getElementById('inp-annee').value=anNext;
+  chargerPeriode(getPeriode());
+  renderAll(); renderSelecteurPeriode();
+  toast('Cloture OK — '+nbDefalques+' defalcations, '+nbClotures+' pret(s) solde(s)');
+}
+
+// ════════════════════════════════════════
+// IMPORT PERSONNEL
+// ════════════════════════════════════════
+function importerPersonnel(input){
+  if(!input.files[0]) return;
+  var file=input.files[0]; var ext=file.name.split('.').pop().toLowerCase();
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var rows=[];
+      if(ext==='csv'){
+        var lines=ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var hdrs=lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows=lines.slice(1).map(function(line){
+          var vals=line.split(/[,;]/); var obj={};
+          hdrs.forEach(function(h,i){obj[h.trim()]=(vals[i]||'').trim().replace(/"/g,'');});
+          return obj;
+        });
+      } else {
+        var wb=XLSX.read(ev.target.result,{type:'binary'});
+        rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      }
+      var g=function(r){
+        var keys=Array.prototype.slice.call(arguments,1);
+        for(var i=0;i<keys.length;i++){
+          var k=keys[i];
+          var found=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(k.toLowerCase().replace(/[^a-z]/g,''))!==-1;});
+          if(found&&r[found]!==undefined&&r[found]!=='') return String(r[found]).trim();
+        }
+        return '';
+      };
+      var added=0;
+      rows.forEach(function(r){
+        var nom=g(r,'nom','lastname','name'); if(!nom) return;
+        var mat=g(r,'matricule','mat');
+        var exists=DB.personnel.find(function(p){return p.mat===mat||(p.nom.toLowerCase()===nom.toLowerCase());});
+        if(!exists){
+          DB.personnel.push({
+            id:uid(),nom:nom.toUpperCase(),prenom:g(r,'prenom','firstname'),
+            mat:mat,dept:g(r,'departement','dept','department'),
+            service:g(r,'service'),section:g(r,'section'),
+            salaire:parseFloat(g(r,'salaire','salairebase','base'))||0
+          });
+          added++;
+        }
+      });
+      sauverStore(); renderAll(); populateSelects();
+      toast(added+' employés importés');
+    }catch(e){ toast('Erreur: '+e.message); }
+  };
+  ext==='csv'?reader.readAsText(file):reader.readAsBinaryString(file);
+  input.value='';
+}
+
+// ════════════════════════════════════════
+// DÉMO
+// ════════════════════════════════════════
+function chargerDemo(){
+  DB.personnel=[
+    {id:uid(),nom:'ADJOBI',prenom:'Kossi',mat:'MAT001',dept:'Direction',service:'DG',section:'Direction',salaire:450000},
+    {id:uid(),nom:'DOSSOU',prenom:'Aline',mat:'MAT002',dept:'RH',service:'Gestion RH',section:'Admin',salaire:320000},
+    {id:uid(),nom:'HOUENOU',prenom:'Patrick',mat:'MAT003',dept:'RH',service:'Recrutement',section:'Admin',salaire:250000},
+    {id:uid(),nom:'KPOSSOU',prenom:'Jean',mat:'MAT004',dept:'Commercial',service:'Ventes',section:'Grand Compte',salaire:380000},
+    {id:uid(),nom:'ZANNOU',prenom:'Sylvie',mat:'MAT005',dept:'Commercial',service:'Ventes',section:'PME',salaire:290000},
+    {id:uid(),nom:'GBENOU',prenom:'Abel',mat:'MAT006',dept:'Commercial',service:'Terrain',section:'PME',salaire:220000},
+    {id:uid(),nom:'SOGLO',prenom:'Nadège',mat:'MAT007',dept:'Finance',service:'Comptabilité',section:'Trésorerie',salaire:350000},
+    {id:uid(),nom:'LOKO',prenom:'Théodore',mat:'MAT008',dept:'Finance',service:'Comptabilité',section:'Contrôle',salaire:280000},
+    {id:uid(),nom:'HOUNSOU',prenom:'Rémi',mat:'MAT009',dept:'Production',service:'Opérations',section:'Equipe A',salaire:300000},
+    {id:uid(),nom:'TOSSOU',prenom:'Barnabé',mat:'MAT010',dept:'Production',service:'Opérations',section:'Equipe A',salaire:240000},
+    {id:uid(),nom:'AKPO',prenom:'Fatima',mat:'MAT011',dept:'Production',service:'Opérations',section:'Equipe B',salaire:230000},
+    {id:uid(),nom:'GBESSI',prenom:'Romuald',mat:'MAT012',dept:'IT',service:'Infrastructure',section:'Dev',salaire:400000},
+  ];
+  var p=getPeriode();
+  DB.prets=[
+    mkDemoPret(DB.personnel[1],'Prêt',300000,300000,12,'2026-01-05',['2026-01','2026-02']),
+    mkDemoPret(DB.personnel[3],'Prêt exceptionnel',400000,350000,10,'2026-02-05',['2026-02']),
+    mkDemoPret(DB.personnel[6],'Avance sur salaire',175000,175000,5,'2026-01-05',['2026-01','2026-02']),
+    mkDemoPret(DB.personnel[8],'Prêt',250000,250000,8,'2026-03-05',[]),
+    mkDemoPret(DB.personnel[4],'Prêt',150000,150000,6,'2026-02-05',['2026-02']),
+    mkDemoPret(DB.personnel[11],'Avance sur salaire',200000,200000,4,'2026-01-05',['2026-01','2026-02']),
+    mkDemoPret(DB.personnel[0],'Prêt',500000,450000,12,'2026-03-05',[],'instance'),
+    mkDemoPret(DB.personnel[9],'Prêt',120000,120000,6,'2026-03-05',[],'instance'),
+  ];
+  STORE.personnel=DB.personnel;
+  STORE.periodes[p]={prets:DB.prets.map(function(x){return Object.assign({},x,{echeances:(x.echeances||[]).slice()});})};
+  // Mois précédents
+  var parts=p.split('-'); var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+  var p1=(mo===1?(an-1)+'-12':an+'-'+String(mo-1).padStart(2,'0'));
+  STORE.periodes[p1]={prets:DB.prets.filter(function(x){return x.statut==='encours';}).map(function(x){return Object.assign({},x);})};
+  STORE.nextId=nextId; STORE.config=CONFIG;
+  localStorage.setItem(SK,JSON.stringify(STORE));
+  renderAll(); renderSelecteurPeriode(); populateSelects();
+  toast('Démo chargée — 12 employés · 8 prêts dont 2 en instance');
+}
+
+function mkDemoPret(emp,type,demande,accorde,nbMois,dateDebut,moisPaies,statut){
+  var mensualite=Math.round(accorde/nbMois);
+  var echeances=[];
+  (moisPaies||[]).forEach(function(m){echeances.push({periode:m,montant:mensualite,paye:true,date:m+'-05'});});
+  var solde=Math.max(0,accorde-mensualite*(moisPaies||[]).length);
+  var pctSalaire=emp.salaire?Math.round(accorde/emp.salaire*100):0;
+  return {
+    id:uid(),
+    employe_id:emp.id,nom:emp.nom,prenom:emp.prenom,mat:emp.mat,
+    dept:emp.dept,service:emp.service,section:emp.section,
+    salaire:emp.salaire,type:type||'Prêt',
+    montant_demande:demande,montant_accorde:accorde,
+    nb_mois:nbMois,mensualite:mensualite,
+    date_premiere:dateDebut,
+    solde:solde,pct_salaire:pctSalaire,
+    statut:statut||'encours',
+    motif:'Frais scolaires et urgence familiale',
+    obs:'Accord DRH — remboursement par précompte mensuel',
+    echeances:echeances,
+    date_creation:new Date().toISOString().split('T')[0]
+  };
+}
+
+// ════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════
+function renderAll(){
+  document.getElementById('lbl-period').textContent=getPeriodeLabel();
+  updateKPIs();
+  renderDashboard();
+  filtrerPrets();
+  renderCalendrier();
+  renderAnalyses();
+  renderHistorique();
+  updateBadgeInstance();
+  populateSelects();
+}
+
+function updateBadgeInstance(){
+  var n=DB.prets.filter(function(p){return p.statut==='instance';}).length;
+  var b=document.getElementById('badge-instance');
+  b.textContent=n; b.style.display=n>0?'inline':'none';
+}
+
+// ── KPIs ──
+function updateKPIs(){
+  var prets=DB.prets;
+  var actifs=prets.filter(function(p){return p.statut==='encours';});
+  var instances=prets.filter(function(p){return p.statut==='instance';});
+  var clotures=prets.filter(function(p){return p.statut==='cloture';});
+  var totalAccorde=actifs.reduce(function(s,p){return s+(p.montant_accorde||0);},0);
+  var totalSolde  =actifs.reduce(function(s,p){return s+(p.solde||0);},0);
+  var totalMs     =DB.personnel.reduce(function(s,p){return s+(p.salaire||0);},0);
+  var echeanceMois=actifs.reduce(function(s,p){return s+(p.mensualite||0);},0);
+  var pctMs=totalMs?Math.round(totalSolde/totalMs*100):0;
+
+  var el=document.getElementById('kpi-row');
+  el.innerHTML=
+    mkKPI('Prêts actifs',actifs.length,'','#4A9EFF','Remboursements en cours')+
+    mkKPI('En instance',instances.length,'','#FBC724','En attente de validation')+
+    mkKPI('Clôturés',clotures.length,'','#34C77B','Entièrement remboursés')+
+    mkKPI('Capital accordé total',fmtM(totalAccorde),'FCFA','#C9A84C','Tous prêts actifs')+
+    mkKPI('Solde restant total',fmtM(totalSolde),'FCFA','#F05A5A','Encore à rembourser')+
+    mkKPI('Échéances ce mois',fmtM(echeanceMois),'FCFA','#A78BFA','Total mensualités')+
+    mkKPI('Encours / Masse Salariale',pctMs,'%',pctMs>30?'#F05A5A':pctMs>15?'#FBC724':'#34C77B','Ratio engagements');
+}
+function mkKPI(l,v,u,ac,sub){return '<div class="kpi" style="--ac:'+ac+'"><div class="kpi-lbl">'+l+'</div><div><span class="kpi-val">'+v+'</span><span class="kpi-u">'+u+'</span></div><div class="kpi-sub">'+sub+'</div></div>';}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var instances=DB.prets.filter(function(p){return p.statut==='instance';});
+
+  var elActifs=document.getElementById('dash-prets-encours');
+  elActifs.innerHTML='<div style="padding:.5rem">';
+  actifs.slice(0,6).forEach(function(p){
+    var pct=p.montant_accorde?Math.round((1-p.solde/p.montant_accorde)*100):100;
+    var color=pct>=90?'var(--vert)':pct>=50?'var(--bleu)':'var(--or)';
+    elActifs.innerHTML+='<div style="padding:.5rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;gap:.75rem">'+
+      '<div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--blanc)">'+esc(p.nom)+' '+esc(p.prenom||'')+'</div>'+
+      '<div style="font-size:10px;color:var(--gris)">'+esc(p.dept||'')+'</div></div>'+
+      '<div style="text-align:right"><div style="font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or)">'+fmt(p.solde)+' FCFA</div>'+
+      '<div style="font-size:9px;color:var(--gris)">restant sur '+fmt(p.montant_accorde)+'</div></div>'+
+      '<div style="width:60px"><div style="height:4px;background:var(--gris3);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:2px"></div></div>'+
+      '<div style="font-size:9px;color:'+color+';text-align:right;margin-top:2px">'+pct+'%</div></div>'+
+    '</div>';
+  });
+  if(!actifs.length) elActifs.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--gris);font-size:12px">Aucun prêt actif</div>';
+  elActifs.innerHTML+='</div>';
+
+  var elInst=document.getElementById('dash-prets-instance');
+  elInst.innerHTML='<div style="padding:.5rem">';
+  instances.forEach(function(p){
+    elInst.innerHTML+='<div style="padding:.5rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;gap:.75rem">'+
+      '<div><div style="font-size:11px;font-weight:600;color:var(--blanc)">'+esc(p.nom)+' '+esc(p.prenom||'')+'</div>'+
+      '<div style="font-size:10px;color:var(--gris)">'+esc(p.type)+'</div></div>'+
+      '<div style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--jaune)">'+fmt(p.montant_demande)+' FCFA</div>'+
+      '<div style="display:flex;gap:4px">'+
+        '<button onclick="approuverPret('+p.id+')" class="btn btn-vert" style="padding:3px 8px;font-size:9px">✓</button>'+
+        '<button onclick="refuserPret('+p.id+')" class="btn btn-rouge" style="padding:3px 8px;font-size:9px">✗</button>'+
+        '<button onclick="ouvrirDetail('+p.id+')" class="btn btn-ghost" style="padding:3px 8px;font-size:9px">👁</button>'+
+      '</div>'+
+    '</div>';
+  });
+  if(!instances.length) elInst.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--gris);font-size:12px">Aucun prêt en instance</div>';
+  elInst.innerHTML+='</div>';
+
+  renderChartGroupe('chart-dept','dept');
+  renderChartGroupe('chart-service','service');
+  renderChartMasse('chart-masse');
+}
+
+function renderChartGroupe(elId,field){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var groups={};
+  actifs.forEach(function(p){
+    var k=p[field]||'N/A';
+    if(!groups[k]) groups[k]={key:k,solde:0,nb:0};
+    groups[k].solde+=(p.solde||0); groups[k].nb++;
+  });
+  var sorted=Object.values(groups).sort(function(a,b){return b.solde-a.solde;});
+  var max=sorted.length?sorted[0].solde||1:1;
+  var el=document.getElementById(elId); el.innerHTML='';
+  sorted.slice(0,6).forEach(function(g){
+    var pct=Math.round(g.solde/max*100);
+    el.innerHTML+='<div class="bar-row"><div class="bar-label">'+
+      '<span style="color:var(--blanc)">'+esc(g.key)+'</span>'+
+      '<span style="color:var(--or);font-family:var(--fd);font-weight:700;font-size:10px">'+fmtM(g.solde)+' FCFA</span></div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:var(--or)"></div></div>'+
+    '</div>';
+  });
+  if(!sorted.length) el.innerHTML='<div style="color:var(--gris);font-size:11px;text-align:center;padding:.75rem">Aucune donnée</div>';
+}
+
+function renderChartMasse(elId){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var totalSolde=actifs.reduce(function(s,p){return s+(p.solde||0);},0);
+  var totalMs=DB.personnel.reduce(function(s,p){return s+(p.salaire||0);},0);
+  var pct=totalMs?Math.round(totalSolde/totalMs*100):0;
+  var color=pct>=30?'var(--rouge)':pct>=15?'var(--jaune)':'var(--vert)';
+  var el=document.getElementById(elId);
+  el.innerHTML=
+    '<div style="text-align:center;margin-bottom:.75rem">'+
+      '<div style="font-family:var(--fd);font-size:32px;font-weight:700;color:'+color+'">'+pct+'%</div>'+
+      '<div style="font-size:11px;color:var(--gris)">des encours / masse salariale</div>'+
+    '</div>'+
+    '<div style="height:10px;background:var(--gris3);border-radius:5px;overflow:hidden;margin-bottom:.5rem">'+
+      '<div style="height:100%;width:'+Math.min(pct,100)+'%;background:'+color+';border-radius:5px;transition:width .8s"></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gris)">'+
+      '<span>Encours: <strong style="color:var(--blanc)">'+fmtM(totalSolde)+' FCFA</strong></span>'+
+      '<span>MS: <strong style="color:var(--blanc)">'+fmtM(totalMs)+' FCFA</strong></span>'+
+    '</div>';
+}
+
+// ── TABLE PRÊTS ──
+function populateSelects(){
+  var depts=[...new Set(DB.prets.map(function(p){return p.dept;}).filter(Boolean))].sort();
+  var svcs =[...new Set(DB.prets.map(function(p){return p.service;}).filter(Boolean))].sort();
+  setOpts('f-dept',depts,'Tous les départements');
+  setOpts('f-service',svcs,'Tous les services');
+  // Select employé modal
+  var sel=document.getElementById('p-employe');
+  sel.innerHTML='<option value="">— Sélectionner un employé —</option>';
+  DB.personnel.forEach(function(e){sel.innerHTML+='<option value="'+e.id+'">'+e.nom+' '+e.prenom+' ('+e.dept+' — '+fmt(e.salaire)+' FCFA)</option>';});
+  // Select filtre calendrier
+  var sel2=document.getElementById('cal-f-employe');
+  sel2.innerHTML='<option value="">Tous les employés</option>';
+  DB.prets.filter(function(p){return p.statut==='encours';}).forEach(function(p){
+    sel2.innerHTML+='<option value="'+p.id+'">'+p.nom+' '+p.prenom+'</option>';
+  });
+}
+function setOpts(id,vals,ph){
+  var el=document.getElementById(id); if(!el) return; var prev=el.value;
+  el.innerHTML='<option value="">'+ph+'</option>';
+  vals.forEach(function(v){el.innerHTML+='<option value="'+v+'">'+v+'</option>';});
+  el.value=prev;
+}
+
+function getFilteredPrets(){
+  var srch=(document.getElementById('srch-prets').value||'').toLowerCase();
+  var fDept=document.getElementById('f-dept').value;
+  var fSvc =document.getElementById('f-service').value;
+  var fStat=document.getElementById('f-statut').value;
+  var fSort=document.getElementById('f-sort').value;
+  var result=DB.prets.filter(function(p){
+    if(srch&&!(p.nom+' '+p.prenom+' '+(p.mat||'')).toLowerCase().includes(srch)) return false;
+    if(fDept&&p.dept!==fDept) return false;
+    if(fSvc&&p.service!==fSvc) return false;
+    if(fStat&&p.statut!==fStat) return false;
+    return true;
+  });
+  if(fSort){
+    result=result.slice().sort(function(a,b){
+      if(fSort==='montant_desc') return (b.montant_accorde||0)-(a.montant_accorde||0);
+      if(fSort==='solde_desc')   return (b.solde||0)-(a.solde||0);
+      if(fSort==='nom_asc')      return a.nom.localeCompare(b.nom);
+      if(fSort==='echeance_asc') return (a.date_premiere||'').localeCompare(b.date_premiere||'');
+      return 0;
+    });
+  } else {
+    result=result.slice().sort(function(a,b){
+      if(sortColPrets==='nom') return a.nom.localeCompare(b.nom)*sortDirPrets;
+      var v1=a[sortColPrets]||0; var v2=b[sortColPrets]||0;
+      return (parseFloat(v1)-parseFloat(v2))*sortDirPrets;
+    });
+  }
+  return result;
+}
+
+function filtrerPrets(){
+  var prets=getFilteredPrets();
+  var tbody=document.getElementById('tbody-prets');
+  var emptyEl=document.getElementById('empty-prets');
+  var tableWrap=document.getElementById('table-prets-wrap');
+  if(!DB.prets.length){
+    emptyEl.style.display='block'; tableWrap.style.display='none'; return;
+  }
+  emptyEl.style.display='none'; tableWrap.style.display='block';
+  tbody.innerHTML='';
+  prets.forEach(function(p,i){
+    var pct=p.montant_accorde?Math.round((1-(p.solde||0)/p.montant_accorde)*100):100;
+    var color=pct>=90?'var(--vert)':pct>=50?'var(--bleu)':'var(--or)';
+    var stCls='badge '+({instance:'by',encours:'bb',cloture:'bv',refuse:'br'}[p.statut]||'bg');
+    var stLbl={instance:'En instance',encours:'En cours',cloture:'Clôturé',refuse:'Refusé'}[p.statut]||p.statut;
+    var soldePct=p.montant_accorde?Math.round(p.solde/p.montant_accorde*100):0;
+    var soldColor=(p.solde||0)<=0?'var(--vert)':soldePct<25?'var(--jaune)':'var(--blanc)';
+    // Prochaine échéance
+    var prochaine=getProchaineEcheance(p);
+    var echHtml='<span class="echeance-cell '+(prochaine?'echeance-ok':'')+'">'+
+      (prochaine?prochaine:'Soldé')+'</span>';
+
+    tbody.innerHTML+=
+      '<tr class="'+(p.statut==='instance'?'instance':p.statut==='cloture'?'cloture':'')+'">'+
+      '<td style="color:var(--gris)">'+(i+1)+'</td>'+
+      '<td><div style="display:flex;align-items:center;gap:7px">'+
+        '<div style="width:28px;height:28px;border-radius:50%;background:var(--or-g);color:var(--or);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+
+        (p.nom.charAt(0)+(p.prenom||'').charAt(0)).toUpperCase()+'</div>'+
+        '<div><div style="font-weight:600">'+esc(p.nom)+'</div><div style="font-size:10px;color:var(--gris)">'+esc(p.prenom||'')+'</div></div>'+
+      '</div></td>'+
+      '<td style="font-size:11px">'+esc(p.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(p.service||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris2)">'+esc(p.section||'—')+'</td>'+
+      '<td class="r">'+fmt(p.salaire)+'</td>'+
+      '<td class="r">'+fmt(p.montant_demande)+'</td>'+
+      '<td class="r" style="font-weight:600;color:var(--or)">'+fmt(p.montant_accorde)+'</td>'+
+      '<td class="r"><span class="badge '+(p.pct_salaire>50?'br':p.pct_salaire>30?'by':'bv')+'">'+p.pct_salaire+'%</span></td>'+
+      '<td class="r">'+p.nb_mois+' mois</td>'+
+      '<td class="r" style="font-family:var(--fd);font-weight:700">'+fmt(p.mensualite)+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(p.date_premiere||'—')+'</td>'+
+      '<td class="r"><div><span style="font-family:var(--fd);font-weight:700;color:'+soldColor+'">'+fmt(p.solde)+'</span>'+
+        '<div style="font-size:9px;color:var(--gris)">'+soldePct+'% restant</div></div></td>'+
+      '<td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'+
+        '<span class="prog-pct" style="color:'+color+'">'+pct+'%</span></div></td>'+
+      '<td><span class="badge '+stCls+'">'+stLbl+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:150px;white-space:normal;line-height:1.4">'+esc(p.obs||p.motif||'—')+'</td>'+
+      '<td style="white-space:nowrap">'+
+        '<button onclick="ouvrirDetail('+p.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px" title="Détail">👁</button>'+
+        (p.statut==='instance'?
+          '<button onclick="approuverPret('+p.id+')" class="btn btn-vert" style="padding:2px 7px;font-size:9px;margin-left:2px" title="Approuver">✓</button>'+
+          '<button onclick="refuserPret('+p.id+')" class="btn btn-rouge" style="padding:2px 7px;font-size:9px;margin-left:2px" title="Refuser">✗</button>':'')+
+        (p.statut==='encours'?
+          '<button onclick="ouvrirDefalcation('+p.id+')" class="btn btn-jaune" style="padding:2px 7px;font-size:9px;margin-left:2px" title="Défalquer">💰</button>':'')+ 
+        '<button onclick="supprimerPret('+p.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;margin-left:3px" title="Supprimer">×</button>'+
+      '</td>'+
+      '</tr>';
+  });
+}
+
+function sortPrets(col){
+  if(sortColPrets===col) sortDirPrets*=-1; else{sortColPrets=col;sortDirPrets=1;}
+  filtrerPrets();
+}
+
+function getProchaineEcheance(pret){
+  if(pret.statut!=='encours') return null;
+  var today=new Date(); var p=getPeriode();
+  var parts=p.split('-'); var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+  for(var i=0;i<pret.nb_mois;i++){
+    var ecMo=mo+i; var ecAn=an+Math.floor((ecMo-1)/12);
+    ecMo=((ecMo-1)%12)+1;
+    var ecPeriode=ecAn+'-'+String(ecMo).padStart(2,'0');
+    var dejaPayee=(pret.echeances||[]).some(function(e){return e.periode===ecPeriode&&e.paye;});
+    if(!dejaPayee) return MOIS_FR[ecMo-1]+' '+ecAn;
+  }
+  return null;
+}
+
+// ── CALENDRIER DE REMBOURSEMENT ──
+function renderCalendrier(){
+  var filtre=document.getElementById('cal-f-employe').value;
+  var prets=DB.prets.filter(function(p){
+    return p.statut==='encours'&&(!filtre||String(p.id)===filtre);
+  });
+  var container=document.getElementById('cal-container');
+  if(!prets.length){
+    container.innerHTML='<div style="text-align:center;padding:2rem;color:var(--gris)">Aucun prêt actif</div>';
+    return;
+  }
+  var html='';
+  prets.forEach(function(pret){
+    var p=getPeriode(); var parts=p.split('-');
+    var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+    var soldeCalc=pret.montant_accorde;
+    // Calculer l'état de chaque échéance
+    var echeances=[];
+    for(var i=0;i<pret.nb_mois;i++){
+      var ecMo=mo+i; var ecAn=an+Math.floor((ecMo-1)/12);
+      ecMo=((ecMo-1)%12)+1;
+      var ecPeriode=ecAn+'-'+String(ecMo).padStart(2,'0');
+      var payeeData=(pret.echeances||[]).find(function(e){return e.periode===ecPeriode;});
+      var montant=i===pret.nb_mois-1?soldeCalc:pret.mensualite;
+      if(payeeData&&payeeData.paye) soldeCalc=Math.max(0,soldeCalc-payeeData.montant);
+      echeances.push({
+        periode:ecPeriode, label:MOIS_FR[ecMo-1]+' '+ecAn,
+        montant:pret.mensualite, paye:!!(payeeData&&payeeData.paye),
+        soldeAvant:soldeCalc+(payeeData&&payeeData.paye?payeeData.montant:0),
+        soldeApres:payeeData&&payeeData.paye?soldeCalc:soldeCalc-pret.mensualite
+      });
+    }
+    var nbPaie=echeances.filter(function(e){return e.paye;}).length;
+    var nbRest=echeances.length-nbPaie;
+    html+='<div class="tbl-wrap" style="margin-bottom:1rem;">'+
+      '<div class="tbl-bar">'+
+        '<div class="tbl-title">'+esc(pret.nom)+' '+esc(pret.prenom||'')+
+          ' <span style="font-size:11px;font-weight:400;color:var(--gris)">— '+esc(pret.type)+'</span></div>'+
+        '<div style="display:flex;gap:.75rem;align-items:center;font-size:11px">'+
+          '<span style="color:var(--or)">Accordé: <strong>'+fmt(pret.montant_accorde)+'</strong> FCFA</span>'+
+          '<span style="color:var(--vert)">Mensualité: <strong>'+fmt(pret.mensualite)+'</strong> FCFA</span>'+
+          '<span style="color:var(--bleu)">'+nbPaie+'/'+pret.nb_mois+' échéances payées</span>'+
+          '<span style="color:'+(pret.solde<=0?'var(--vert)':'var(--rouge)')+'">Solde: <strong>'+fmt(pret.solde)+'</strong> FCFA</span>'+
+        '</div>'+
+      '</div>'+
+      '<div style="overflow-x:auto"><table class="dtbl"><thead><tr>'+
+        '<th>Mois</th><th class="r">Mensualité</th><th class="r">Solde avant</th><th class="r">Solde après</th><th>Statut</th>'+
+      '</tr></thead><tbody>';
+    echeances.forEach(function(e){
+      var isCur=e.periode===getPeriode();
+      html+='<tr style="'+(isCur?'background:rgba(201,168,76,.05)':'')+'">'+
+        '<td style="font-weight:'+(isCur?'700':'400')+';color:'+(isCur?'var(--or)':'var(--blanc)')+'">'+e.label+(isCur?' ← Mois actuel':'')+'</td>'+
+        '<td class="r" style="font-family:var(--fd);font-weight:700">'+fmt(e.montant)+'</td>'+
+        '<td class="r" style="color:var(--gris)">'+fmt(e.soldeAvant)+'</td>'+
+        '<td class="r" style="color:var(--blanc)">'+fmt(Math.max(0,e.soldeApres))+'</td>'+
+        '<td>'+(e.paye?'<span class="badge bv">✓ Payée</span>':isCur?'<span class="badge by">⏳ Ce mois</span>':'<span class="badge bg">À venir</span>')+'</td>'+
+      '</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+  container.innerHTML=html;
+}
+
+// ── ANALYSES ──
+function renderAnalyses(){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var totalMs=DB.personnel.reduce(function(s,p){return s+(p.salaire||0);},0);
+  var totalAccorde=actifs.reduce(function(s,p){return s+(p.montant_accorde||0);},0);
+  var totalSolde=actifs.reduce(function(s,p){return s+(p.solde||0);},0);
+  var totalMens=actifs.reduce(function(s,p){return s+(p.mensualite||0);},0);
+  var pctMs=totalMs?Math.round(totalSolde/totalMs*100):0;
+
+  var elK=document.getElementById('analyses-kpis');
+  elK.innerHTML=
+    mkKPI('Capital total accordé',fmtM(totalAccorde),'FCFA','#C9A84C',actifs.length+' prêts actifs')+
+    mkKPI('Encours (solde)',fmtM(totalSolde),'FCFA','#F05A5A','Reste à rembourser')+
+    mkKPI('Mensualités totales',fmtM(totalMens),'FCFA/mois','#4A9EFF','Déduction mensuelle')+
+    mkKPI('Masse salariale',fmtM(totalMs),'FCFA','#34C77B','Base de référence')+
+    mkKPI('Taux engagement',pctMs,'%',pctMs>=30?'#F05A5A':pctMs>=15?'#FBC724':'#34C77B','Encours / MS');
+
+  renderAnalyseGroupe('an-dept','dept',totalMs);
+  renderAnalyseGroupe('an-service','service',totalMs);
+  renderAnalyseGroupe('an-section','section',totalMs);
+  renderMasseDetail('an-masse-detail');
+}
+
+function renderAnalyseGroupe(elId,field,totalMs){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var groups={};
+  actifs.forEach(function(p){
+    var k=p[field]||'N/A';
+    if(!groups[k]) groups[k]={key:k,accorde:0,solde:0,nb:0,ms:0};
+    groups[k].accorde+=(p.montant_accorde||0);
+    groups[k].solde  +=(p.solde||0);
+    groups[k].nb++;
+  });
+  // Masse salariale par groupe
+  DB.personnel.forEach(function(emp){
+    var k=emp[field]||'N/A';
+    if(groups[k]) groups[k].ms+=(emp.salaire||0);
+  });
+  var sorted=Object.values(groups).sort(function(a,b){return b.solde-a.solde;});
+  var max=sorted.length?sorted[0].solde||1:1;
+  var el=document.getElementById(elId); if(!el) return; el.innerHTML='';
+  sorted.forEach(function(g){
+    var pct=Math.round(g.solde/max*100);
+    var pctMs=g.ms?Math.round(g.solde/g.ms*100):0;
+    var color=pctMs>=30?'var(--rouge)':pctMs>=15?'var(--jaune)':'var(--vert)';
+    el.innerHTML+='<div class="bar-row"><div class="bar-label">'+
+      '<span style="color:var(--blanc)">'+esc(g.key)+
+        '<span style="color:var(--gris);font-size:9px;margin-left:4px">'+g.nb+' prêt(s)</span></span>'+
+      '<div style="display:flex;gap:.5rem;align-items:center">'+
+        '<span style="color:'+color+';font-size:9px;font-weight:700">'+pctMs+'% MS</span>'+
+        '<span style="color:var(--or);font-family:var(--fd);font-weight:700;font-size:10px">'+fmtM(g.solde)+'</span>'+
+      '</div></div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:var(--or)"></div></div>'+
+    '</div>';
+  });
+  if(!sorted.length) el.innerHTML='<div style="color:var(--gris);font-size:11px;text-align:center;padding:.75rem">Aucune donnée</div>';
+}
+
+function renderMasseDetail(elId){
+  var actifs=DB.prets.filter(function(p){return p.statut==='encours';});
+  var totalMs=DB.personnel.reduce(function(s,p){return s+(p.salaire||0);},0);
+  var totalSolde=actifs.reduce(function(s,p){return s+(p.solde||0);},0);
+  var totalMens=actifs.reduce(function(s,p){return s+(p.mensualite||0);},0);
+  var pctSolde=totalMs?Math.round(totalSolde/totalMs*100):0;
+  var pctMens=totalMs?Math.round(totalMens/totalMs*100):0;
+  var el=document.getElementById(elId); if(!el) return;
+  var cSolde=pctSolde>=30?'var(--rouge)':pctSolde>=15?'var(--jaune)':'var(--vert)';
+  var cMens=pctMens>=20?'var(--rouge)':pctMens>=10?'var(--jaune)':'var(--vert)';
+  el.innerHTML=
+    '<div style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">'+
+      '<span style="color:var(--blanc)">Encours total / Masse Salariale</span>'+
+      '<span style="color:'+cSolde+';font-family:var(--fd);font-weight:700">'+pctSolde+'%</span></div>'+
+      '<div style="height:8px;background:var(--gris3);border-radius:4px;overflow:hidden">'+
+        '<div style="height:100%;width:'+Math.min(pctSolde,100)+'%;background:'+cSolde+'"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gris);margin-top:3px">'+
+        '<span>'+fmtM(totalSolde)+' FCFA</span><span>MS: '+fmtM(totalMs)+' FCFA</span></div></div>'+
+    '<div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">'+
+      '<span style="color:var(--blanc)">Mensualités / Masse Salariale</span>'+
+      '<span style="color:'+cMens+';font-family:var(--fd);font-weight:700">'+pctMens+'%</span></div>'+
+      '<div style="height:8px;background:var(--gris3);border-radius:4px;overflow:hidden">'+
+        '<div style="height:100%;width:'+Math.min(pctMens,100)+'%;background:'+cMens+'"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gris);margin-top:3px">'+
+        '<span>'+fmtM(totalMens)+' FCFA/mois</span><span>Précompte mensuel</span></div></div>';
+}
+
+// ── HISTORIQUE ──
+function renderHistorique(){
+  var periodes=getPeriodesDisponibles();
+  var container=document.getElementById('historique-container');
+  if(!periodes.length){
+    container.innerHTML='<div style="text-align:center;padding:2rem;color:var(--gris)">Aucune période mémorisée. Clôturez au moins un mois.</div>';
+    return;
+  }
+  var html='';
+  periodes.forEach(function(p){
+    var snap=STORE.periodes[p]; if(!snap) return;
+    var parts=p.split('-');
+    var label=MOIS_FR[parseInt(parts[1])-1]+' '+parts[0];
+    var prets=snap.prets||[];
+    var actifs=prets.filter(function(x){return x.statut==='encours';});
+    var clotures=prets.filter(function(x){return x.statut==='cloture';});
+    var totalSolde=actifs.reduce(function(s,x){return s+(x.solde||0);},0);
+    var totalDefalq=actifs.reduce(function(s,x){
+      var ec=(x.echeances||[]).filter(function(e){return e.periode===p&&e.paye;});
+      return s+ec.reduce(function(ss,e){return ss+(e.montant||0);},0);
+    },0);
+    var isActif=p===getPeriode();
+    html+='<div class="tbl-wrap" style="margin-bottom:1rem">'+
+      '<div class="tbl-bar">'+
+        '<div class="tbl-title">📅 '+label+(isActif?' <span class="badge bo">Actif</span>':'')+'</div>'+
+        '<div style="display:flex;gap:.75rem;font-size:11px;align-items:center">'+
+          '<span>'+actifs.length+' prêts actifs</span>'+
+          '<span style="color:var(--rouge)">'+clotures.length+' clôturés</span>'+
+          '<span style="color:var(--or)">Encours: <strong>'+fmtM(totalSolde)+' FCFA</strong></span>'+
+          '<span style="color:var(--vert)">Défalqué: <strong>'+fmtM(totalDefalq)+' FCFA</strong></span>'+
+          '<button onclick="naviguerPeriode(\'' +p+ '\')" class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Charger</button>'+
+        '</div>'+
+      '</div>'+
+      '<div style="overflow-x:auto"><table class="dtbl"><thead><tr>'+
+        '<th>Employé</th><th>Département</th><th class="r">Accordé</th>'+
+        '<th class="r">Mensualité</th><th class="r">Défalqué ce mois</th><th class="r">Solde</th><th>Statut</th>'+
+      '</tr></thead><tbody>';
+    prets.forEach(function(x){
+      var ec=(x.echeances||[]).filter(function(e){return e.periode===p&&e.paye;});
+      var defalq=ec.reduce(function(s,e){return s+(e.montant||0);},0);
+      var stCls='badge '+({encours:'bb',cloture:'bv',instance:'by',refuse:'br'}[x.statut]||'bg');
+      html+='<tr><td>'+esc(x.nom)+' '+esc(x.prenom||'')+'</td>'+
+        '<td style="font-size:10px;color:var(--gris)">'+esc(x.dept||'—')+'</td>'+
+        '<td class="r">'+fmt(x.montant_accorde)+'</td>'+
+        '<td class="r">'+fmt(x.mensualite)+'</td>'+
+        '<td class="r" style="color:'+(defalq>0?'var(--vert)':'var(--gris)')+'">'+fmt(defalq)+'</td>'+
+        '<td class="r" style="font-weight:700;color:var(--or)">'+fmt(x.solde)+'</td>'+
+        '<td><span class="'+stCls+'">'+(({encours:'En cours',cloture:'Clôturé',instance:'En instance',refuse:'Refusé'})[x.statut]||x.statut)+'</span></td>'+
+      '</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+  container.innerHTML=html;
+}
+
+// ── FORMULAIRE NOUVEAU PRÊT ──
+function onEmployeChange(){
+  var id=parseInt(document.getElementById('p-employe').value);
+  var emp=DB.personnel.find(function(e){return e.id===id;});
+  if(!emp) return;
+  document.getElementById('p-nom').value=emp.nom;
+  document.getElementById('p-prenom').value=emp.prenom||'';
+  document.getElementById('p-mat').value=emp.mat||'';
+  document.getElementById('p-dept').value=emp.dept||'';
+  document.getElementById('p-service').value=emp.service||'';
+  document.getElementById('p-section').value=emp.section||'';
+  document.getElementById('p-salaire').value=emp.salaire||'';
+  recalcPret();
+}
+
+function recalcPret(){
+  var salaire=parseFloat(document.getElementById('p-salaire').value)||0;
+  var accorde=parseFloat(document.getElementById('p-accorde').value)||parseFloat(document.getElementById('p-demande').value)||0;
+  var nbMois=parseInt(document.getElementById('p-nb-mois').value)||0;
+  var dateDebut=document.getElementById('p-date-debut').value;
+  if(!accorde||!nbMois){ document.getElementById('preview-pret').style.display='none'; return; }
+  document.getElementById('preview-pret').style.display='block';
+  var mensualite=Math.round(accorde/nbMois);
+  var pctSal=salaire?Math.round(accorde/salaire*100):0;
+  // Calculer la dernière échéance
+  var dateFin='';
+  if(dateDebut){
+    var d=new Date(dateDebut);
+    d.setMonth(d.getMonth()+nbMois-1);
+    dateFin=MOIS_FR[d.getMonth()]+' '+d.getFullYear();
+  }
+  document.getElementById('prev-mens').textContent=fmt(mensualite)+' FCFA';
+  document.getElementById('prev-pct').textContent=pctSal+'%';
+  document.getElementById('prev-fin').textContent=dateFin||'—';
+  var alertEl=document.getElementById('prev-alerte');
+  var alertMsg='';
+  if(pctSal>CONFIG.max_pct) alertMsg='⚠️ Le montant dépasse '+CONFIG.max_pct+'% du salaire (règle configurée)';
+  if(accorde>CONFIG.max_montant) alertMsg=(alertMsg?alertMsg+' · ':'')+'⚠️ Montant supérieur au plafond de '+fmt(CONFIG.max_montant)+' FCFA';
+  if(nbMois>CONFIG.max_mois) alertMsg=(alertMsg?alertMsg+' · ':'')+'⚠️ Durée supérieure au maximum de '+CONFIG.max_mois+' mois';
+  alertEl.textContent=alertMsg; alertEl.style.display=alertMsg?'block':'none';
+}
+
+function sauverPret(){
+  var nom=document.getElementById('p-nom').value.trim();
+  var salaire=parseFloat(document.getElementById('p-salaire').value)||0;
+  var demande=parseFloat(document.getElementById('p-demande').value)||0;
+  var nbMois=parseInt(document.getElementById('p-nb-mois').value)||0;
+  if(!nom||!demande||!nbMois){ toast('Nom, montant et durée obligatoires'); return; }
+  var accorde=parseFloat(document.getElementById('p-accorde').value)||demande;
+  var mensualite=Math.round(accorde*(1+CONFIG.taux/100)/nbMois);
+  var pctSalaire=salaire?Math.round(accorde/salaire*100):0;
+  var pret={
+    id:uid(),
+    employe_id:parseInt(document.getElementById('p-employe').value)||null,
+    nom:nom.toUpperCase(), prenom:document.getElementById('p-prenom').value.trim(),
+    mat:document.getElementById('p-mat').value.trim(),
+    dept:document.getElementById('p-dept').value.trim(),
+    service:document.getElementById('p-service').value.trim(),
+    section:document.getElementById('p-section').value.trim(),
+    salaire:salaire, type:document.getElementById('p-type').value,
+    montant_demande:demande, montant_accorde:accorde,
+    nb_mois:nbMois, mensualite:mensualite,
+    pct_salaire:pctSalaire,
+    date_premiere:document.getElementById('p-date-debut').value,
+    solde:accorde,
+    statut:document.getElementById('p-statut').value,
+    motif:document.getElementById('p-motif').value.trim(),
+    obs:document.getElementById('p-obs').value.trim(),
+    echeances:[], date_creation:new Date().toISOString().split('T')[0]
+  };
+  DB.prets.push(pret);
+  sauverStore(); closeModal('modal-new-pret'); renderAll();
+  toast('Prêt enregistré — '+pret.nom+' '+pret.prenom);
+  // Reset
+  ['p-nom','p-prenom','p-mat','p-dept','p-service','p-section','p-salaire','p-demande','p-accorde','p-nb-mois','p-date-debut','p-motif','p-obs'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('p-employe').value='';
+  document.getElementById('preview-pret').style.display='none';
+}
+
+// ── APPROUVER / REFUSER ──
+function approuverPret(id){
+  var p=DB.prets.find(function(x){return x.id===id;}); if(!p) return;
+  p.statut='encours'; p.date_approbation=new Date().toISOString().split('T')[0];
+  sauverStore(); renderAll(); toast('Prêt approuvé — '+p.nom);
+}
+function refuserPret(id){
+  var p=DB.prets.find(function(x){return x.id===id;}); if(!p) return;
+  if(!confirm('Refuser le prêt de '+p.nom+' ?')) return;
+  p.statut='refuse'; sauverStore(); renderAll(); toast('Prêt refusé');
+}
+function supprimerPret(id){
+  if(!confirm('Supprimer ce prêt ?')) return;
+  DB.prets=DB.prets.filter(function(x){return x.id!==id;});
+  sauverStore(); renderAll(); toast('Prêt supprimé');
+}
+
+// ── DÉTAIL PRÊT ──
+function ouvrirDetail(id){
+  var p=DB.prets.find(function(x){return x.id===id;}); if(!p) return;
+  detailPretId=id;
+  var stCls={instance:'by',encours:'bb',cloture:'bv',refuse:'br'}[p.statut]||'bg';
+  var stLbl={instance:'En instance',encours:'En cours',cloture:'Clôturé',refuse:'Refusé'}[p.statut]||p.statut;
+  var nbPaie=(p.echeances||[]).filter(function(e){return e.paye;}).length;
+  var html=
+    '<div style="background:var(--bg3);border-radius:var(--r);padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem">'+
+      '<div>'+
+        '<div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">'+esc(p.nom)+' '+esc(p.prenom||'')+'</div>'+
+        '<div style="font-size:11px;color:var(--gris)">'+esc(p.dept||'')+(p.service?' · '+esc(p.service):'')+'</div>'+
+      '</div>'+
+      '<span class="badge '+stCls+'" style="font-size:11px;padding:4px 12px">'+stLbl+'</span>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem">'+
+      mkDetailBox('Type',p.type,'var(--bleu)')+
+      mkDetailBox('Montant demandé',fmt(p.montant_demande)+' FCFA','var(--gris)')+
+      mkDetailBox('Montant accordé',fmt(p.montant_accorde)+' FCFA','var(--or)')+
+      mkDetailBox('Salaire de base',fmt(p.salaire)+' FCFA','var(--gris)')+
+      mkDetailBox('% du Salaire',p.pct_salaire+'%',p.pct_salaire>50?'var(--rouge)':'var(--vert)')+
+      mkDetailBox('Mensualité',fmt(p.mensualite)+' FCFA/mois','var(--or)')+
+      mkDetailBox('Durée',p.nb_mois+' mois','var(--gris)')+
+      mkDetailBox('1ère échéance',p.date_premiere||'—','var(--gris)')+
+      mkDetailBox('Échéances payées',nbPaie+'/'+p.nb_mois,'var(--vert)')+
+    '</div>'+
+    '<div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:var(--r);padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center">'+
+      '<div style="font-size:12px;color:var(--gris)">Solde restant dû</div>'+
+      '<div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--or)">'+fmt(p.solde)+' FCFA</div>'+
+    '</div>';
+  if(p.echeances&&p.echeances.length){
+    html+='<div style="margin-bottom:.75rem"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.5rem">Historique des paiements</div>'+
+      p.echeances.map(function(e){return '<div style="display:flex;justify-content:space-between;padding:.4rem .75rem;background:rgba(52,199,123,.06);border-radius:var(--r);margin-bottom:3px;font-size:11px">'+
+        '<span>'+e.periode+'</span><span style="color:var(--vert);font-weight:600">'+fmt(e.montant)+' FCFA</span></div>';}).join('')+
+    '</div>';
+  }
+  if(p.motif) html+='<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem;margin-bottom:.5rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Motif</div><div style="font-size:12px">'+esc(p.motif)+'</div></div>';
+  if(p.obs)   html+='<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem"><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Observations</div><div style="font-size:12px">'+esc(p.obs)+'</div></div>';
+
+  document.getElementById('modal-detail-body').innerHTML=html;
+  document.getElementById('btn-approuver-modal').style.display=p.statut==='instance'?'flex':'none';
+  document.getElementById('btn-refuser-modal').style.display  =p.statut==='instance'?'flex':'none';
+  openModal('modal-detail-pret');
+}
+function mkDetailBox(label,val,color){
+  return '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem;text-align:center">'+
+    '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">'+label+'</div>'+
+    '<div style="font-family:var(--fd);font-size:15px;font-weight:700;color:'+color+'">'+val+'</div>'+
+  '</div>';
+}
+function approuverDepuisModal(){ if(detailPretId){ approuverPret(detailPretId); closeModal('modal-detail-pret'); } }
+function refuserDepuisModal(){   if(detailPretId){ refuserPret(detailPretId);   closeModal('modal-detail-pret'); } }
+
+// ── DÉFALCATION MANUELLE ──
+function ouvrirDefalcation(id){
+  var p=DB.prets.find(function(x){return x.id===id;}); if(!p) return;
+  defalcPretId=id;
+  document.getElementById('def-name').textContent=p.nom+' '+p.prenom;
+  document.getElementById('def-meta').textContent='Mensualité: '+fmt(p.mensualite)+' FCFA | Solde: '+fmt(p.solde)+' FCFA';
+  document.getElementById('def-mois').value=getPeriode();
+  document.getElementById('def-montant').value=p.mensualite;
+  document.getElementById('def-note').value='';
+  openModal('modal-defalcation');
+}
+function confirmerDefalcation(){
+  var p=DB.prets.find(function(x){return x.id===defalcPretId;}); if(!p) return;
+  var mois=document.getElementById('def-mois').value;
+  var montant=parseFloat(document.getElementById('def-montant').value)||p.mensualite;
+  var note=document.getElementById('def-note').value;
+  var montantReel=Math.min(montant,p.solde);
+  if(!p.echeances) p.echeances=[];
+  var existe=p.echeances.find(function(e){return e.periode===mois;});
+  if(existe){ toast('Une défalcation existe déjà pour cette période'); return; }
+  p.echeances.push({periode:mois,montant:montantReel,paye:true,date:new Date().toISOString().split('T')[0],note:note});
+  p.solde=Math.max(0,Math.round(p.solde-montantReel));
+  if(p.solde<=0){ p.statut='cloture'; p.date_cloture=new Date().toISOString().split('T')[0]; }
+  sauverStore(); closeModal('modal-defalcation'); renderAll();
+  toast('Défalcation enregistrée — Solde restant: '+fmt(p.solde)+' FCFA');
+}
+
+// ── CONFIG ──
+function renderConfigRecap(){
+  var el=document.getElementById('cfg-recap');
+  if(!el) return;
+  el.innerHTML='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.5rem">Règles actuelles</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;font-size:11px">'+
+      '<div style="color:var(--gris)">Plafond max</div><div style="font-weight:600;color:var(--blanc)">'+fmt(CONFIG.max_montant)+' FCFA</div>'+
+      '<div style="color:var(--gris)">% salaire max</div><div style="font-weight:600;color:var(--blanc)">'+CONFIG.max_pct+'%</div>'+
+      '<div style="color:var(--gris)">Durée max</div><div style="font-weight:600;color:var(--blanc)">'+CONFIG.max_mois+' mois</div>'+
+      '<div style="color:var(--gris)">Taux mensuel</div><div style="font-weight:600;color:var(--blanc)">'+(CONFIG.taux||0)+'%</div>'+
+      '<div style="color:var(--gris)">Ancienneté min</div><div style="font-weight:600;color:var(--blanc)">'+(CONFIG.anciennete||0)+' mois</div>'+
+    '</div>';
+}
+function initConfig(){
+  document.getElementById('cfg-max-montant').value=CONFIG.max_montant||500000;
+  document.getElementById('cfg-max-pct').value    =CONFIG.max_pct||50;
+  document.getElementById('cfg-max-mois').value   =CONFIG.max_mois||12;
+  document.getElementById('cfg-taux').value        =CONFIG.taux||0;
+  document.getElementById('cfg-anciennete').value  =CONFIG.anciennete||0;
+  renderConfigRecap();
+}
+
+// ── EXPORT ──
+function exporterExcel(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var wb=XLSX.utils.book_new();
+  var data=[['Employé','Prénom','Matricule','Département','Service','Section','Salaire','Type','Montant demandé','Montant accordé','% Salaire','Nb mois','Mensualité','1ère échéance','Solde','Statut','Motif','Observations']];
+  DB.prets.forEach(function(p){
+    data.push([p.nom,p.prenom||'',p.mat||'',p.dept||'',p.service||'',p.section||'',p.salaire||0,p.type,p.montant_demande,p.montant_accorde,p.pct_salaire+'%',p.nb_mois,p.mensualite,p.date_premiere||'',p.solde,p.statut,p.motif||'',p.obs||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Prets '+getPeriode());
+  // Calendrier
+  var cal=[['Employé','Mois','Mensualité','Payée','Date paiement']];
+  DB.prets.filter(function(p){return p.statut==='encours';}).forEach(function(p){
+    (p.echeances||[]).forEach(function(e){cal.push([p.nom+' '+p.prenom,e.periode,e.montant,e.paye?'Oui':'Non',e.date||'']);});
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cal),'Echeancier');
+  XLSX.writeFile(wb,'Prets-'+getPeriode()+'.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='historique') renderHistorique();
+  if(tab==='analyses')   renderAnalyses();
+  if(tab==='calendrier') renderCalendrier();
+  if(tab==='config')     initConfig();
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+
+function fmt(v){ if(!v&&v!==0) return '—'; return Math.round(v).toLocaleString('fr-FR'); }
+function fmtM(v){ if(!v) return '0'; if(v>=1000000) return (Math.round(v/100000)/10)+'M'; if(v>=1000) return Math.round(v/1000)+'K'; return Math.round(v)+''; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var toastTmr;
+function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastTmr); toastTmr=setTimeout(function(){el.classList.remove('show');},3500); }
+
+// ── INIT ──
+(function(){
+  var now=new Date();
+  document.getElementById('sel-mois').value=String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('inp-annee').value=now.getFullYear();
+})();
+chargerStore();
+chargerPeriode(getPeriode());
+renderAll();
+renderSelecteurPeriode();
+initConfig();
+</script>
+</body>
+</html>

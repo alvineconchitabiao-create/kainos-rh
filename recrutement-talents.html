@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recrutement & Mise à Disposition de Talents — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A28;
+  --or:#C9A84C;--or2:#E2C47A;--or-glow:rgba(201,168,76,.12);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--rouge:#F05A5A;--violet:#A78BFA;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+a{text-decoration:none;color:inherit;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,13,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);}
+.nav-logo{font-family:var(--fd);font-size:16px;font-weight:800;letter-spacing:.06em;}
+.nav-logo span{color:var(--or);}
+.nav-links{display:flex;align-items:center;gap:2rem;}
+.nav-links a{font-size:12px;font-weight:500;color:var(--gris);transition:color .2s;letter-spacing:.04em;}
+.nav-links a:hover{color:var(--or);}
+.nav-cta{background:var(--or);color:var(--bg)!important;padding:8px 20px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700!important;letter-spacing:.06em;}
+.nav-cta:hover{background:var(--or2)!important;}
+.back-link{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--gris);border:1px solid var(--gris3);padding:6px 14px;border-radius:20px;transition:all .2s;}
+.back-link:hover{color:var(--or);border-color:var(--or);}
+
+/* ── HERO ── */
+.hero{padding:130px 5vw 90px;position:relative;overflow:hidden;min-height:75vh;display:flex;align-items:center;}
+.hero::before{content:'';position:absolute;top:-100px;right:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(74,158,255,.04) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--or);margin-bottom:1.5rem;}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--or);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hero-title{font-family:var(--fd);font-size:clamp(2.2rem,4vw,3.4rem);font-weight:800;line-height:1.1;margin-bottom:1.25rem;}
+.hero-title em{font-style:normal;color:var(--or);}
+.hero-desc{font-size:15px;color:var(--gris);line-height:1.8;font-weight:300;margin-bottom:2rem;max-width:480px;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{background:var(--or);color:var(--bg);padding:12px 26px;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.06em;transition:all .2s;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:var(--or2);transform:translateY(-2px);}
+.btn-secondary{background:transparent;color:var(--blanc);padding:12px 26px;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.06em;border:1px solid var(--gris3);transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-secondary:hover{border-color:var(--or);color:var(--or);}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.hstat{background:var(--bg2);border:1px solid var(--gris3);border-radius:12px;padding:1.25rem;text-align:center;transition:all .3s;}
+.hstat:hover{border-color:rgba(201,168,76,.3);background:var(--bg3);}
+.hstat-val{font-family:var(--fd);font-size:2rem;font-weight:800;color:var(--or);}
+.hstat-label{font-size:11px;color:var(--gris);margin-top:.25rem;}
+
+/* ── TABS NAVIGATION ── */
+.page-tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);position:sticky;top:63px;z-index:100;}
+.page-tabs-inner{max-width:1200px;margin:0 auto;padding:0 5vw;display:flex;gap:0;}
+.ptab{padding:16px 24px;font-family:var(--fd);font-size:12px;font-weight:600;color:var(--gris);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.04em;white-space:nowrap;}
+.ptab:hover{color:var(--blanc);}
+.ptab.active{color:var(--or);border-bottom-color:var(--or);}
+
+/* ── SECTIONS ── */
+.section{padding:80px 5vw;max-width:1200px;margin:0 auto;}
+.section-tag{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--or);margin-bottom:.75rem;}
+.section-title{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:.875rem;}
+.section-title em{font-style:normal;color:var(--or);}
+.section-desc{font-size:14px;color:var(--gris);line-height:1.8;max-width:640px;font-weight:300;}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--gris3),transparent);margin:0 5vw;}
+
+/* ── OFFRES D'EMPLOI ── */
+#section-offres{background:var(--bg);}
+.offres-filters{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.filter-select{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px 16px;outline:none;cursor:pointer;transition:border-color .2s;}
+.filter-select:focus{border-color:var(--or);}
+.search-input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px 18px;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:var(--or);}
+.offres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;}
+.offre-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:16px;padding:1.5rem;transition:all .3s;position:relative;overflow:hidden;}
+.offre-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.offre-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--or),transparent);opacity:0;transition:opacity .3s;}
+.offre-card:hover::before{opacity:1;}
+.offre-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;gap:1rem;}
+.offre-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.offre-badges{display:flex;gap:.4rem;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+.b-cdi{background:rgba(52,199,123,.1);color:var(--vert);}
+.b-cdd{background:rgba(167,139,250,.1);color:var(--violet);}
+.b-urgent{background:rgba(240,90,90,.1);color:var(--rouge);}
+.b-nouveau{background:rgba(201,168,76,.1);color:var(--or);}
+.b-stage{background:rgba(74,158,255,.1);color:var(--bleu);}
+.offre-titre{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:.35rem;line-height:1.3;}
+.offre-entreprise{font-size:12px;color:var(--gris);margin-bottom:.875rem;}
+.offre-details{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;}
+.offre-detail{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gris2);}
+.offre-desc{font-size:12px;color:var(--gris);line-height:1.6;margin-bottom:1.25rem;}
+.offre-footer{display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
+.offre-date{font-size:10px;color:var(--gris2);}
+.btn-postuler{background:var(--or);color:var(--bg);padding:8px 18px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-postuler:hover{background:var(--or2);}
+.no-offres{text-align:center;padding:4rem 2rem;color:var(--gris);}
+
+/* ── MISE À DISPOSITION ── */
+#section-mad{background:var(--bg);}
+.mad-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gris3);border-radius:20px;padding:3rem;margin-bottom:3rem;position:relative;overflow:hidden;}
+.mad-hero::after{content:'';position:absolute;bottom:-60px;right:-60px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,var(--or-glow) 0%,transparent 70%);}
+.mad-volets{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem;}
+.volet-card{border-radius:20px;padding:2.5rem;position:relative;overflow:hidden;transition:all .3s;}
+.volet-employes{background:linear-gradient(135deg,rgba(74,158,255,.08),rgba(74,158,255,.02));border:1px solid rgba(74,158,255,.2);}
+.volet-consultants{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.2);}
+.volet-card:hover{transform:translateY(-4px);}
+.volet-icon{font-size:2.5rem;margin-bottom:1rem;}
+.volet-tag{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;}
+.volet-employes .volet-tag{color:var(--bleu);}
+.volet-consultants .volet-tag{color:var(--or);}
+.volet-title{font-family:var(--fd);font-size:1.4rem;font-weight:800;margin-bottom:.75rem;}
+.volet-desc{font-size:13px;color:var(--gris);line-height:1.8;font-weight:300;margin-bottom:1.25rem;}
+.volet-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.volet-list li{font-size:12px;color:var(--gris);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.volet-list li::before{content:'✓';color:var(--vert);font-weight:700;flex-shrink:0;margin-top:1px;}
+.volet-consultants .volet-list li::before{color:var(--or);}
+
+/* PROFILS TABLEAU */
+.profils-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--blanc);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--gris3);}
+.profils-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:3rem;}
+.profil-item{background:var(--bg2);border:1px solid var(--gris3);border-radius:12px;padding:1rem;transition:all .2s;}
+.profil-item:hover{border-color:rgba(201,168,76,.3);}
+.profil-icon{font-size:1.5rem;margin-bottom:.5rem;}
+.profil-cat{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--blanc);margin-bottom:.25rem;}
+.profil-details{font-size:10px;color:var(--gris2);line-height:1.6;}
+
+/* PROCESS */
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:3rem;position:relative;}
+.process-steps::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--or),transparent);z-index:0;}
+.step-item{position:relative;z-index:1;text-align:center;}
+.step-num{width:64px;height:64px;border-radius:50%;background:var(--bg2);border:2px solid var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:20px;font-weight:800;color:var(--or);margin:0 auto 1rem;}
+.step-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:.4rem;}
+.step-desc{font-size:11px;color:var(--gris);line-height:1.6;}
+
+/* AVANTAGES */
+.avantages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem;}
+.avantage-item{background:var(--bg2);border:1px solid var(--gris3);border-radius:14px;padding:1.5rem;transition:all .2s;}
+.avantage-item:hover{border-color:rgba(201,168,76,.25);background:var(--bg3);}
+.avantage-icon{font-size:1.75rem;margin-bottom:.75rem;}
+.avantage-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--or);margin-bottom:.4rem;}
+.avantage-desc{font-size:12px;color:var(--gris);line-height:1.6;}
+
+/* ── SECTION CLAIRE CANDIDATS ── */
+#section-candidats{background:linear-gradient(180deg,#F8F7F2 0%,#FFFEF9 100%);color:#1a1a2e;padding:80px 5vw;}
+.candidats-inner{max-width:1200px;margin:0 auto;}
+.candidats-title{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#1a1a2e;margin-bottom:.5rem;}
+.candidats-title em{font-style:normal;color:var(--or);}
+.candidats-desc{font-size:14px;color:#5a5866;line-height:1.8;font-weight:300;margin-bottom:2.5rem;}
+.cvzone{background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 8px 40px rgba(0,0,0,.08);border:1px solid #e8e6df;}
+.cvzone-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:#1a1a2e;margin-bottom:1.25rem;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;}
+.form-field input,.form-field select,.form-field textarea{background:#F8F7F2;border:1px solid #e0ddd5;border-radius:8px;color:#1a1a2e;font-family:var(--fb);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--or);}
+.form-full{grid-column:1/-1;}
+.btn-submit-clair{background:var(--or);color:#07070D;padding:13px 32px;border-radius:30px;font-family:var(--fd);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s;letter-spacing:.06em;width:100%;margin-top:.5rem;}
+.btn-submit-clair:hover{background:var(--or2);transform:translateY(-2px);}
+
+/* ── FORMULAIRES DARK ── */
+.form-dark{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;padding:2.5rem;}
+.form-dark-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--or);margin-bottom:1.5rem;display:flex;align-items:center;gap:8px;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r,8px);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.ff-full{grid-column:1/-1;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;width:100%;max-width:700px;animation:popIn .22s ease;max-height:90vh;overflow-y:auto;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1;}
+.mt{font-family:var(--fd);font-size:16px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:22px;cursor:pointer;}
+.mb{padding:1.5rem;}
+.mf{padding:1rem 1.5rem;border-top:1px solid var(--gris3);display:flex;gap:.75rem;justify-content:flex-end;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  .hero-inner,.mad-volets{grid-template-columns:1fr;}
+  .process-steps{grid-template-columns:1fr 1fr;}
+  .avantages-grid{grid-template-columns:1fr 1fr;}
+  .form-grid,.fg{grid-template-columns:1fr;}
+  .process-steps::before{display:none;}
+}
+@media(max-width:600px){
+  nav{padding:.875rem 1.25rem;}
+  .process-steps,.avantages-grid,.profils-grid{grid-template-columns:1fr;}
+  .offres-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Elite <span>RH</span></a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a>
+    <a href="index.html#services">Services</a>
+    <a href="#section-offres">Offres d'emploi</a>
+    <a href="#section-mad">Mise à disposition</a>
+    <a href="#section-candidats">Postuler</a>
+    <a href="index.html#contact" class="nav-cta">Nous contacter</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Service 02 — Recrutement & Talents</div>
+      <h1 class="hero-title">Vos Talents,<br><em>Notre Mission.</em></h1>
+      <p class="hero-desc">Elite RH Consulting connecte les entreprises béninoises aux meilleurs profils — recrutement ciblé, mise à disposition d'employés opérationnels et consultants expérimentés à la demande.</p>
+      <div class="hero-btns">
+        <a href="#section-offres" class="btn-primary">📋 Voir les offres d'emploi</a>
+        <a href="#section-mad" class="btn-secondary">🤝 Mise à disposition</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">200+</div><div class="hstat-label">Recrutements réalisés</div></div>
+      <div class="hstat"><div class="hstat-val">48h</div><div class="hstat-label">Délai moyen de réponse</div></div>
+      <div class="hstat"><div class="hstat-val">15+</div><div class="hstat-label">Secteurs d'activité</div></div>
+      <div class="hstat"><div class="hstat-val">95%</div><div class="hstat-label">Taux de satisfaction clients</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="page-tabs">
+  <div class="page-tabs-inner">
+    <button class="ptab active" onclick="scrollToSection('section-offres',this)">📋 Offres d'emploi</button>
+    <button class="ptab" onclick="scrollToSection('section-mad',this)">🤝 Mise à disposition</button>
+    <button class="ptab" onclick="scrollToSection('section-candidats',this)">✉️ Postuler / CV</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 1 — OFFRES D'EMPLOI
+═══════════════════════════════════════ -->
+<section id="section-offres" style="padding:80px 5vw;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-tag">Opportunités Actives</div>
+    <h2 class="section-title">Offres d'<em>Emploi</em></h2>
+    <p class="section-desc" style="margin-bottom:2.5rem;">Consultez nos offres en cours pour le compte de nos entreprises clientes. Chaque offre est sélectionnée avec soin pour correspondre aux meilleurs profils du marché.</p>
+
+    <!-- Filtres -->
+    <div class="offres-filters">
+      <input type="text" class="search-input" id="search-offre" placeholder="🔍 Rechercher un poste, secteur..." oninput="filtrerOffres()"/>
+      <select class="filter-select" id="f-secteur" onchange="filtrerOffres()">
+        <option value="">Tous secteurs</option>
+        <option>Finance & Comptabilité</option>
+        <option>Ressources Humaines</option>
+        <option>Commerce & Vente</option>
+        <option>Informatique & Digital</option>
+        <option>Logistique & Transport</option>
+        <option>BTP & Génie Civil</option>
+        <option>Santé & Médical</option>
+        <option>Industrie & Production</option>
+        <option>Marketing & Communication</option>
+        <option>Juridique & Compliance</option>
+      </select>
+      <select class="filter-select" id="f-contrat" onchange="filtrerOffres()">
+        <option value="">Tous contrats</option>
+        <option value="CDI">CDI</option>
+        <option value="CDD">CDD</option>
+        <option value="Stage">Stage</option>
+        <option value="Freelance">Freelance / Mission</option>
+      </select>
+      <select class="filter-select" id="f-lieu" onchange="filtrerOffres()">
+        <option value="">Tous lieux</option>
+        <option>Cotonou</option>
+        <option>Porto-Novo</option>
+        <option>Parakou</option>
+        <option>Abomey-Calavi</option>
+        <option>Bénin (tout pays)</option>
+      </select>
+    </div>
+
+    <!-- Grille des offres -->
+    <div class="offres-grid" id="offres-grid"></div>
+    <div id="offres-empty" class="no-offres" style="display:none;">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🔍</div>
+      <div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Aucune offre ne correspond à vos critères</div>
+      <div style="font-size:13px;color:var(--gris);">Déposez votre CV spontané — nous vous contacterons dès qu'une opportunité correspondra à votre profil.</div>
+      <button class="btn-primary" onclick="scrollToSection('section-candidats')" style="margin-top:1.5rem;">Déposer mon CV</button>
+    </div>
+
+    <!-- CTA déposer CV -->
+    <div style="margin-top:2.5rem;background:var(--bg2);border:1px solid var(--gris3);border-radius:16px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+      <div>
+        <div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:.35rem;">Vous ne trouvez pas votre poste ?</div>
+        <div style="font-size:13px;color:var(--gris);">Déposez votre candidature spontanée — nous matchons les profils de notre vivier aux nouvelles opportunités.</div>
+      </div>
+      <button class="btn-primary" onclick="scrollToSection('section-candidats')">✉️ Candidature spontanée →</button>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 2 — MISE À DISPOSITION
+═══════════════════════════════════════ -->
+<section id="section-mad" style="padding:80px 5vw;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-tag">Solutions Flexibles</div>
+    <h2 class="section-title">Mise à Disposition<br>de <em>Talents</em></h2>
+    <p class="section-desc" style="margin-bottom:2.5rem;">Renforcez rapidement vos équipes sans les contraintes du recrutement permanent. Elite RH met à votre disposition des profils qualifiés, opérationnels dès le premier jour.</p>
+
+    <!-- Hero MAD -->
+    <div class="mad-hero">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;z-index:1;">
+        <div>
+          <div style="font-family:var(--fd);font-size:1.5rem;font-weight:800;margin-bottom:.75rem;">Renforcez vos équipes<br>à la demande, sans contraintes</div>
+          <p style="font-size:13px;color:var(--gris);line-height:1.8;font-weight:300;">Elite RH gère l'intégralité de la relation d'emploi — contrat, paie, charges sociales, suivi RH — vous bénéficiez uniquement de la compétence, sans la charge administrative.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.75rem;min-width:200px;">
+          <div style="background:rgba(52,199,123,.1);border:1px solid rgba(52,199,123,.2);border-radius:10px;padding:.75rem 1rem;text-align:center;">
+            <div style="font-family:var(--fd);font-size:1.5rem;font-weight:800;color:var(--vert);">72h</div>
+            <div style="font-size:10px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;">Délai de mise en place</div>
+          </div>
+          <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:.75rem 1rem;text-align:center;">
+            <div style="font-family:var(--fd);font-size:1.5rem;font-weight:800;color:var(--or);">100%</div>
+            <div style="font-size:10px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;">Charge admin prise en charge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 Volets -->
+    <div class="mad-volets">
+      <!-- Volet 1 : Employés -->
+      <div class="volet-card volet-employes">
+        <div class="volet-icon">👔</div>
+        <div class="volet-tag">Volet 1</div>
+        <h3 class="volet-title">Mise à Disposition<br>d'Employés</h3>
+        <p class="volet-desc">Intégrez rapidement des profils opérationnels dans vos équipes pour faire face aux pics d'activité, remplacer un collaborateur absent ou tester un profil avant embauche définitive.</p>
+        <ul class="volet-list">
+          <li>Agents d'exécution et de maîtrise disponibles sous 72h</li>
+          <li>Contrats de mise à disposition clairs et conformes au Code du Travail béninois</li>
+          <li>Elite RH reste l'employeur légal — vous gérez uniquement l'activité</li>
+          <li>Période d'essai intégrée — option de recrutement permanent possible</li>
+          <li>Suivi RH mensuel et remplacement garanti si inadéquation</li>
+          <li>Facturation transparente tout inclus (salaire + charges + frais de gestion)</li>
+        </ul>
+      </div>
+      <!-- Volet 2 : Consultants -->
+      <div class="volet-card volet-consultants">
+        <div class="volet-icon">🎯</div>
+        <div class="volet-tag">Volet 2</div>
+        <h3 class="volet-title">Mise à Disposition<br>de Consultants Expérimentés</h3>
+        <p class="volet-desc">Accédez à l'expertise de consultants seniors pour piloter vos projets stratégiques, structurer vos fonctions RH, accompagner vos transformations ou apporter une expertise pointue sur une mission définie.</p>
+        <ul class="volet-list">
+          <li>DRH de transition, Directeurs Administratifs & Financiers, Consultants stratégiques</li>
+          <li>Experts en restructuration, GPEC, systèmes de paie, droit social</li>
+          <li>Mission à durée définie (1 mois à 2 ans) ou temps partiel (mi-temps expert)</li>
+          <li>Transfert de compétences vers vos équipes internes inclus</li>
+          <li>Livrable défini et mesurable — résultats garantis</li>
+          <li>Réseau Elite RH : accès à +50 consultants vérifiés au Bénin et en Afrique de l'Ouest</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Profils disponibles -->
+    <div class="profils-title">📂 Profils disponibles dans notre vivier</div>
+    <div class="profils-grid" id="profils-grid"></div>
+
+    <!-- Comment ça marche -->
+    <div style="margin-bottom:3rem;">
+      <div class="section-tag" style="margin-bottom:.75rem;">Processus</div>
+      <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--blanc);margin-bottom:2rem;">Comment ça marche ?</div>
+      <div class="process-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-title">Analyse du besoin</div>
+          <div class="step-desc">Échange avec votre équipe RH pour qualifier précisément le profil, la mission, la durée et les conditions d'intégration.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-title">Sélection du profil</div>
+          <div class="step-desc">Recherche dans notre vivier ou recrutement ciblé. Présentation de 2 à 3 profils qualifiés sous 72h à 5 jours.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-title">Contractualisation</div>
+          <div class="step-desc">Signature de la convention de mise à disposition. Elite RH établit le contrat de travail et gère la paie du collaborateur.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-title">Suivi & Reporting</div>
+          <div class="step-desc">Point mensuel Elite RH avec vous et le collaborateur. Évaluation de la mission et ajustements si nécessaire.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Avantages -->
+    <div style="margin-bottom:3rem;">
+      <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--blanc);margin-bottom:1.5rem;">Pourquoi choisir Elite RH pour la mise à disposition ?</div>
+      <div class="avantages-grid" id="avantages-grid"></div>
+    </div>
+
+    <!-- Formulaire demande MAD -->
+    <div class="form-dark">
+      <div class="form-dark-title">🤝 Formulaire de Demande de Mise à Disposition</div>
+      <div class="fg" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Raison sociale / Entreprise *</label><input type="text" id="mad-entreprise" placeholder="Ex: ACME Sarl"/></div>
+        <div class="ff"><label>Secteur d'activité</label><input type="text" id="mad-secteur" placeholder="Ex: BTP, Finance, Industrie..."/></div>
+        <div class="ff"><label>Nom & Prénom du contact *</label><input type="text" id="mad-contact" placeholder="Ex: M. DOSSOU Jean"/></div>
+        <div class="ff"><label>Téléphone *</label><input type="tel" id="mad-tel" placeholder="+229 01 XX XX XX XX"/></div>
+        <div class="ff"><label>Email professionnel</label><input type="email" id="mad-email" placeholder="contact@entreprise.bj"/></div>
+        <div class="ff"><label>Type de mise à disposition *</label>
+          <select id="mad-type">
+            <option value="">— Sélectionner —</option>
+            <option value="employe">Volet 1 — Mise à disposition d'employé(s)</option>
+            <option value="consultant">Volet 2 — Consultant(s) expérimenté(s)</option>
+            <option value="mixte">Les deux volets</option>
+          </select>
+        </div>
+        <div class="ff"><label>Profil(s) recherché(s)</label><input type="text" id="mad-profil" placeholder="Ex: Comptable, DRH, Ingénieur process..."/></div>
+        <div class="ff"><label>Durée envisagée</label>
+          <select id="mad-duree">
+            <option>— Durée —</option>
+            <option>Moins d'1 mois</option>
+            <option>1 à 3 mois</option>
+            <option>3 à 6 mois</option>
+            <option>6 mois à 1 an</option>
+            <option>Plus d'1 an</option>
+            <option>Temps partiel / ponctuel</option>
+          </select>
+        </div>
+        <div class="ff ff-full"><label>Description du besoin</label><textarea id="mad-besoin" rows="3" placeholder="Décrivez le contexte, les missions attendues, le profil idéal et toute information utile..."></textarea></div>
+      </div>
+      <button class="btn-primary" onclick="envoyerMAD()" style="width:100%;justify-content:center;margin-top:.25rem;">Envoyer ma demande →</button>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 3 — CANDIDATS (CLAIRE)
+═══════════════════════════════════════ -->
+<section id="section-candidats">
+  <div class="candidats-inner">
+    <div style="max-width:600px;margin:0 auto 3rem;text-align:center;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--or);margin-bottom:.75rem;">Espace Candidats</div>
+      <h2 class="candidats-title">Postulez ou Déposez<br>votre <em>CV</em></h2>
+      <p class="candidats-desc">Rejoignez notre vivier de talents. Nous vous contactons dès qu'une opportunité correspond à votre profil.</p>
+    </div>
+
+    <!-- Deux options -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+      <!-- Postuler à une offre -->
+      <div class="cvzone">
+        <div class="cvzone-title">📋 Postuler à une offre spécifique</div>
+        <div class="form-grid">
+          <div class="form-field"><label>Nom & Prénom *</label><input type="text" id="c-nom" placeholder="Ex: DOSSOU Aline"/></div>
+          <div class="form-field"><label>Téléphone *</label><input type="tel" id="c-tel" placeholder="+229 01 XX XX XX XX"/></div>
+          <div class="form-field form-full"><label>Email *</label><input type="email" id="c-email" placeholder="aline.dossou@email.com"/></div>
+          <div class="form-field form-full"><label>Offre visée</label>
+            <select id="c-offre"><option value="">— Sélectionner l'offre —</option></select>
+          </div>
+          <div class="form-field"><label>Niveau d'études</label>
+            <select id="c-niveau">
+              <option>— Niveau —</option>
+              <option>BTS / DUT</option>
+              <option>Licence / Bachelor</option>
+              <option>Master 1</option>
+              <option>Master 2 / DEA</option>
+              <option>Doctorat</option>
+              <option>Formation professionnelle</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Années d'expérience</label>
+            <select id="c-exp">
+              <option>— Expérience —</option>
+              <option>Débutant (0-1 an)</option>
+              <option>Junior (1-3 ans)</option>
+              <option>Confirmé (3-5 ans)</option>
+              <option>Senior (5-10 ans)</option>
+              <option>Expert (+10 ans)</option>
+            </select>
+          </div>
+          <div class="form-field form-full"><label>Message / Lettre de motivation</label><textarea id="c-message" rows="3" placeholder="Présentez-vous en quelques lignes et exprimez votre motivation..."></textarea></div>
+        </div>
+        <button class="btn-submit-clair" onclick="envoyerCandidature()">📤 Envoyer ma candidature</button>
+      </div>
+
+      <!-- CV spontané -->
+      <div class="cvzone">
+        <div class="cvzone-title">✉️ Candidature spontanée</div>
+        <p style="font-size:13px;color:#5a5866;line-height:1.7;margin-bottom:1.5rem;">Votre profil ne correspond à aucune offre en cours ? Intégrez notre vivier de talents. Nous vous contacterons dès qu'une opportunité émerge.</p>
+        <div class="form-grid">
+          <div class="form-field"><label>Nom & Prénom *</label><input type="text" id="s-nom" placeholder="Ex: HOUENOU Patrick"/></div>
+          <div class="form-field"><label>Téléphone *</label><input type="tel" id="s-tel" placeholder="+229 01 XX XX XX XX"/></div>
+          <div class="form-field form-full"><label>Email *</label><input type="email" id="s-email" placeholder="patrick@email.com"/></div>
+          <div class="form-field form-full"><label>Domaine de compétence *</label>
+            <select id="s-domaine">
+              <option value="">— Votre domaine —</option>
+              <option>Finance & Comptabilité</option>
+              <option>Ressources Humaines</option>
+              <option>Commerce & Vente</option>
+              <option>Informatique & Digital</option>
+              <option>Logistique & Transport</option>
+              <option>BTP & Génie Civil</option>
+              <option>Santé & Médical</option>
+              <option>Industrie & Production</option>
+              <option>Marketing & Communication</option>
+              <option>Juridique & Compliance</option>
+              <option>Enseignement & Formation</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Niveau d'études</label>
+            <select id="s-niveau">
+              <option>— Niveau —</option>
+              <option>BTS / DUT</option>
+              <option>Licence</option>
+              <option>Master 1</option>
+              <option>Master 2</option>
+              <option>Doctorat</option>
+              <option>Formation professionnelle</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Années d'expérience</label>
+            <select id="s-exp">
+              <option>— Expérience —</option>
+              <option>Débutant</option>
+              <option>1 à 3 ans</option>
+              <option>3 à 5 ans</option>
+              <option>5 à 10 ans</option>
+              <option>Plus de 10 ans</option>
+            </select>
+          </div>
+          <div class="form-field form-full"><label>Présentation rapide</label><textarea id="s-message" rows="3" placeholder="Vos compétences clés, votre expérience notable, vos ambitions..."></textarea></div>
+          <div class="form-field form-full">
+            <label>Type de contrat souhaité</label>
+            <select id="s-contrat">
+              <option>— Type contrat —</option>
+              <option>CDI</option>
+              <option>CDD</option>
+              <option>Mission / Freelance</option>
+              <option>Stage</option>
+              <option>Tout type</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-submit-clair" onclick="envoyerSpontane()">🚀 Intégrer le vivier Elite RH</button>
+      </div>
+    </div>
+
+    <!-- Confiance -->
+    <div style="margin-top:2.5rem;background:#fff;border-radius:16px;padding:1.5rem 2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;box-shadow:0 4px 20px rgba(0,0,0,.06);">
+      <div style="font-size:1.75rem;">🔒</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;color:#1a1a2e;">Confidentialité garantie</div>
+        <div style="font-size:12px;color:#9896A4;line-height:1.6;">Vos informations personnelles sont traitées avec la plus stricte confidentialité. Elles ne sont transmises à aucun employeur sans votre accord explicite.</div>
+      </div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+        <div style="text-align:center;"><div style="font-family:var(--fd);font-size:1.25rem;font-weight:800;color:var(--or);">48h</div><div style="font-size:10px;color:#9896A4;">Délai de retour</div></div>
+        <div style="text-align:center;"><div style="font-family:var(--fd);font-size:1.25rem;font-weight:800;color:var(--or);">Gratuit</div><div style="font-size:10px;color:#9896A4;">Pour les candidats</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL POSTULER -->
+<div class="modal-ov" id="modal-postuler">
+  <div class="modal">
+    <div class="mh"><div class="mt">📋 Postuler — <span id="mp-titre">—</span></div><button class="mc" onclick="closeModal('modal-postuler')">✕</button></div>
+    <div class="mb">
+      <div id="mp-offre-info" style="background:var(--bg3);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:12px;color:var(--gris);"></div>
+      <div class="fg">
+        <div class="ff"><label>Nom & Prénom *</label><input type="text" id="mp-nom" placeholder="Ex: DOSSOU Aline"/></div>
+        <div class="ff"><label>Téléphone *</label><input type="tel" id="mp-tel" placeholder="+229 01 XX XX XX XX"/></div>
+        <div class="ff ff-full"><label>Email *</label><input type="email" id="mp-email" placeholder="Email professionnel"/></div>
+        <div class="ff"><label>Niveau d'études</label><select id="mp-niveau"><option>— Niveau —</option><option>BTS/DUT</option><option>Licence</option><option>Master 1</option><option>Master 2</option><option>Doctorat</option></select></div>
+        <div class="ff"><label>Années d'expérience</label><select id="mp-exp"><option>— Expérience —</option><option>Débutant</option><option>1-3 ans</option><option>3-5 ans</option><option>5-10 ans</option><option>+10 ans</option></select></div>
+        <div class="ff ff-full"><label>Lettre de motivation</label><textarea id="mp-message" rows="4" placeholder="Présentez-vous et exprimez votre motivation pour ce poste..."></textarea></div>
+      </div>
+      <input type="hidden" id="mp-offre-id"/>
+    </div>
+    <div class="mf">
+      <button onclick="closeModal('modal-postuler')" style="background:transparent;border:1px solid var(--gris3);color:var(--gris);padding:9px 20px;border-radius:20px;cursor:pointer;font-family:var(--fd);font-size:11px;font-weight:700;">Annuler</button>
+      <button class="btn-primary" onclick="validerCandidature()">📤 Envoyer ma candidature</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:var(--bg2);border-top:1px solid var(--gris3);padding:2.5rem 5vw;text-align:center;">
+  <div style="font-family:var(--fd);font-size:15px;font-weight:800;margin-bottom:.5rem;">Elite <span style="color:var(--or)">RH</span> Consulting</div>
+  <div style="font-size:12px;color:var(--gris);margin-bottom:1rem;">Cotonou, Bénin — +229 01 99 34 47 39 — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e2d21203a2f2d3a0e2b22273a2b3c262d21203d3b223a272029602d2123">[email&#160;protected]</a></div>
+  <a href="index.html" style="font-size:11px;color:var(--or);">← Retour au site principal</a>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══ DONNÉES OFFRES ═══
+var OFFRES = [
+  {id:1, titre:'Responsable Comptable', secteur:'Finance & Comptabilité', contrat:'CDI', lieu:'Cotonou', icon:'💰', bg:'rgba(52,199,123,.08)', urgent:true, nouveau:false,
+   entreprise:'Entreprise industrielle (confidentiel)', salaire:'Selon profil',
+   desc:'Supervision de la comptabilité générale et analytique, préparation des états financiers, suivi fiscal et gestion de la trésorerie.',
+   profil:'DSCG ou équivalent, 5 ans min. d\'expérience en comptabilité d\'entreprise.',
+   date:'15 Jan 2026'},
+  {id:2, titre:'Chargé(e) RH & Paie', secteur:'Ressources Humaines', contrat:'CDI', lieu:'Cotonou', icon:'👥', bg:'rgba(201,168,76,.08)', urgent:false, nouveau:true,
+   entreprise:'Groupe commercial (confidentiel)', salaire:'Selon profil',
+   desc:'Gestion administrative du personnel, traitement de la paie mensuelle, suivi des congés et des déclarations sociales.',
+   profil:'Bac+3 en GRH ou équivalent, maîtrise d\'un logiciel de paie, 3 ans min.',
+   date:'20 Jan 2026'},
+  {id:3, titre:'Ingénieur Génie Civil', secteur:'BTP & Génie Civil', contrat:'CDI', lieu:'Cotonou', icon:'🏗️', bg:'rgba(74,158,255,.08)', urgent:true, nouveau:false,
+   entreprise:'Bureau d\'études (confidentiel)', salaire:'Compétitif',
+   desc:'Direction et supervision des projets de construction, coordination des équipes terrain, suivi technique et contrôle qualité.',
+   profil:'Diplôme d\'ingénieur Génie Civil, 5 ans min. en conduite de travaux.',
+   date:'10 Jan 2026'},
+  {id:4, titre:'Commercial(e) Terrain', secteur:'Commerce & Vente', contrat:'CDI', lieu:'Bénin (tout pays)', icon:'🤝', bg:'rgba(167,139,250,.08)', urgent:false, nouveau:true,
+   entreprise:'Société de distribution (confidentiel)', salaire:'Fixe + commissions',
+   desc:'Développement d\'un portefeuille clients BtoB, prospection active, négociation et suivi des contrats commerciaux.',
+   profil:'Bac+2 min., permis B, expérience terrain en vente B2B souhaitée.',
+   date:'22 Jan 2026'},
+  {id:5, titre:'Développeur Web Full Stack', secteur:'Informatique & Digital', contrat:'CDD', lieu:'Cotonou', icon:'💻', bg:'rgba(34,211,238,.08)', urgent:false, nouveau:true,
+   entreprise:'Start-up Fintech (confidentiel)', salaire:'Selon profil',
+   desc:'Développement et maintenance d\'applications web, intégration d\'API, participation aux sprints agiles.',
+   profil:'Bac+3/5 en informatique, maîtrise React / Node.js / SQL, portfolio requis.',
+   date:'25 Jan 2026'},
+  {id:6, titre:'Responsable Logistique', secteur:'Logistique & Transport', contrat:'CDI', lieu:'Abomey-Calavi', icon:'🚛', bg:'rgba(251,146,60,.08)', urgent:false, nouveau:false,
+   entreprise:'Entreprise agroalimentaire (confidentiel)', salaire:'Selon profil',
+   desc:'Pilotage de la chaîne logistique, gestion des stocks, coordination transporteurs et planification des livraisons.',
+   profil:'Bac+3 en logistique ou supply chain, 4 ans min., maîtrise des outils ERP.',
+   date:'05 Jan 2026'},
+];
+
+var PROFILS = [
+  {icon:'💰',cat:'Finance & Comptabilité',details:'Comptables, DAF, Contrôleurs de gestion, Auditeurs internes'},
+  {icon:'👥',cat:'Ressources Humaines',details:'DRH, Chargés RH, Gestionnaires de paie, Formateurs'},
+  {icon:'🏗️',cat:'BTP & Génie Civil',details:'Ingénieurs GC, Chefs de chantier, Métreurs, Dessinateurs'},
+  {icon:'💻',cat:'Informatique & Digital',details:'Développeurs, Chefs de projet IT, Administrateurs systèmes'},
+  {icon:'🤝',cat:'Commerce & Marketing',details:'Directeurs commerciaux, Responsables marketing, Commerciaux'},
+  {icon:'🚛',cat:'Logistique & Supply Chain',details:'Responsables logistique, Gestionnaires de stocks, Acheteurs'},
+  {icon:'⚙️',cat:'Industrie & Production',details:'Ingénieurs process, Chefs d\'équipe, Techniciens de maintenance'},
+  {icon:'⚖️',cat:'Juridique & Compliance',details:'Juristes d\'entreprise, Responsables compliance, Avocats conseils'},
+  {icon:'🎓',cat:'Formation & Pédagogie',details:'Formateurs experts, Ingénieurs pédagogiques, Coaches certifiés'},
+  {icon:'📊',cat:'Direction & Stratégie',details:'DG de transition, Consultants stratégiques, Chefs de projet'},
+];
+
+var AVANTAGES = [
+  {icon:'⚡',title:'Rapidité de déploiement',desc:'Profils disponibles sous 72h pour les urgences opérationnelles grâce à notre vivier pré-qualifié.'},
+  {icon:'🛡️',title:'Sécurité juridique',desc:'Elite RH est l\'employeur légal. Vous êtes protégé contre les risques de requalification et les litiges prud\'homaux.'},
+  {icon:'💡',title:'Flexibilité totale',desc:'Temps plein, temps partiel, mission courte ou longue durée — nous adaptons la formule à vos besoins réels.'},
+  {icon:'💰',title:'Maîtrise des coûts',desc:'Facturation tout inclus, transparente et prévisible. Pas de surprise sur les charges sociales ou les frais de gestion.'},
+  {icon:'✅',title:'Profils pré-vérifiés',desc:'Chaque profil est rigoureusement sélectionné, vérifié (diplômes, références) et évalué avant intégration.'},
+  {icon:'🔄',title:'Remplacement garanti',desc:'En cas d\'inadéquation, Elite RH remplace le collaborateur sans frais supplémentaires dans les 15 jours.'},
+];
+
+// ═══ RENDU ═══
+function renderOffres(){
+  // Lire les offres depuis l'admin (localStorage) si disponibles
+  try{
+    var stored=localStorage.getItem('eliteoffres_site_v1');
+    if(stored){
+      var parsed=JSON.parse(stored);
+      if(Array.isArray(parsed)&&parsed.length>0) OFFRES=parsed;
+    }
+  }catch(e){}
+
+  var grid=document.getElementById('offres-grid');
+  var search=(document.getElementById('search-offre').value||'').toLowerCase();
+  var fSec=document.getElementById('f-secteur').value;
+  var fCon=document.getElementById('f-contrat').value;
+  var fLieu=document.getElementById('f-lieu').value;
+
+  var filtered=OFFRES.filter(function(o){
+    if(o.statut&&o.statut!=='actif') return false; // Ne montrer que les offres actives
+    if(fSec&&o.secteur!==fSec) return false;
+    if(fCon&&o.contrat!==fCon) return false;
+    if(fLieu&&o.lieu!==fLieu) return false;
+    if(search&&!(o.titre+o.secteur+o.desc).toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById('offres-empty').style.display=filtered.length?'none':'block';
+  grid.innerHTML='';
+  filtered.forEach(function(o){
+    var badges='<span class="badge b-'+(o.contrat==='CDI'?'cdi':o.contrat==='CDD'?'cdd':'stage')+'">'+o.contrat+'</span>';
+    if(o.urgent) badges+=' <span class="badge b-urgent">🔴 Urgent</span>';
+    if(o.nouveau) badges+=' <span class="badge b-nouveau">✨ Nouveau</span>';
+    grid.innerHTML+='<div class="offre-card">'+
+      '<div class="offre-top">'+
+        '<div class="offre-icon" style="background:'+o.bg+'">'+o.icon+'</div>'+
+        '<div class="offre-badges">'+badges+'</div>'+
+      '</div>'+
+      '<div class="offre-titre">'+esc(o.titre)+'</div>'+
+      '<div class="offre-entreprise">'+esc(o.entreprise)+' · '+esc(o.secteur)+'</div>'+
+      '<div class="offre-details">'+
+        '<span class="offre-detail">📍 '+esc(o.lieu)+'</span>'+
+        '<span class="offre-detail">💵 '+esc(o.salaire)+'</span>'+
+      '</div>'+
+      '<div class="offre-desc">'+esc(o.desc)+'</div>'+
+      '<div class="offre-footer">'+
+        '<span class="offre-date">Publié le '+esc(o.date)+'</span>'+
+        '<button class="btn-postuler" onclick="ouvrirPostuler('+o.id+')">Postuler →</button>'+
+      '</div>'+
+    '</div>';
+  });
+
+  // Remplir select offres dans section candidats
+  var sel=document.getElementById('c-offre');
+  sel.innerHTML='<option value="">— Sélectionner l\'offre —</option>';
+  OFFRES.forEach(function(o){ sel.innerHTML+='<option value="'+o.id+'">'+esc(o.titre)+'</option>'; });
+}
+
+function filtrerOffres(){ renderOffres(); }
+
+function renderProfils(){
+  document.getElementById('profils-grid').innerHTML=PROFILS.map(function(p){
+    return '<div class="profil-item">'+
+      '<div class="profil-icon">'+p.icon+'</div>'+
+      '<div class="profil-cat">'+esc(p.cat)+'</div>'+
+      '<div class="profil-details">'+esc(p.details)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderAvantages(){
+  document.getElementById('avantages-grid').innerHTML=AVANTAGES.map(function(a){
+    return '<div class="avantage-item">'+
+      '<div class="avantage-icon">'+a.icon+'</div>'+
+      '<div class="avantage-title">'+esc(a.title)+'</div>'+
+      '<div class="avantage-desc">'+esc(a.desc)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ═══ MODAL POSTULER ═══
+function ouvrirPostuler(id){
+  var o=OFFRES.find(function(x){return x.id===id;}); if(!o) return;
+  document.getElementById('mp-titre').textContent=o.titre;
+  document.getElementById('mp-offre-id').value=id;
+  document.getElementById('mp-offre-info').innerHTML=
+    '<strong style="color:var(--or)">'+esc(o.titre)+'</strong><br>'+
+    esc(o.entreprise)+' · '+esc(o.secteur)+' · '+esc(o.lieu)+' · '+esc(o.contrat)+'<br>'+
+    '<span style="margin-top:.25rem;display:block;color:var(--gris2);">'+esc(o.profil)+'</span>';
+  openModal('modal-postuler');
+}
+function validerCandidature(){
+  var nom=document.getElementById('mp-nom').value.trim();
+  var tel=document.getElementById('mp-tel').value.trim();
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  closeModal('modal-postuler');
+  toast('✅ Candidature envoyée ! Nous vous contactons sous 48h.');
+  ['mp-nom','mp-tel','mp-email','mp-message'].forEach(function(id){document.getElementById(id).value='';});
+}
+
+// ═══ FORMULAIRES ═══
+function envoyerCandidature(){
+  var nom=document.getElementById('c-nom').value.trim();
+  var tel=document.getElementById('c-tel').value.trim();
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  toast('✅ Candidature envoyée ! Nous vous recontactons sous 48h.');
+  ['c-nom','c-tel','c-email','c-message'].forEach(function(id){document.getElementById(id).value='';});
+}
+function envoyerSpontane(){
+  var nom=document.getElementById('s-nom').value.trim();
+  var tel=document.getElementById('s-tel').value.trim();
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  toast('🚀 Profil enregistré dans notre vivier ! Nous vous contacterons dès qu\'une opportunité se présente.');
+  ['s-nom','s-tel','s-email','s-message'].forEach(function(id){document.getElementById(id).value='';});
+}
+function envoyerMAD(){
+  var ent=document.getElementById('mad-entreprise').value.trim();
+  var tel=document.getElementById('mad-tel').value.trim();
+  if(!ent||!tel){toast('Entreprise et téléphone obligatoires');return;}
+  toast('✅ Demande de mise à disposition envoyée ! Notre équipe vous contacte sous 24h.');
+  ['mad-entreprise','mad-secteur','mad-contact','mad-tel','mad-email','mad-profil','mad-besoin'].forEach(function(id){document.getElementById(id).value='';});
+}
+
+// ═══ UTILS ═══
+function scrollToSection(id,btn){
+  var el=document.getElementById(id); if(!el) return;
+  el.scrollIntoView({behavior:'smooth'});
+  if(btn){
+    document.querySelectorAll('.ptab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  }
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},4000);}
+
+// Sync tab active on scroll
+window.addEventListener('scroll',function(){
+  var sections=['section-offres','section-mad','section-candidats'];
+  var active=null;
+  sections.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<=100) active=id;
+  });
+  if(active){
+    var map={'section-offres'

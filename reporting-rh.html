@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reporting RH — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   INTERFACE APP (masquée à l'impression)
+═══════════════════════════════════════════ */
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+.no-print{}.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.ctrl{background:var(--bg2);padding:1.25rem 1.75rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.ctrl-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ctrl select,.ctrl input{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;}
+.ctrl select:focus,.ctrl input:focus{border-color:var(--or);}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:10px 14px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.preview{padding:1.75rem;max-width:1100px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* ═══════════════════════════════════════════
+   RAPPORT (visible à l'impression)
+═══════════════════════════════════════════ */
+.rapport{background:#fff;color:#1a1a2e;font-family:'DM Sans',Arial,sans-serif;font-size:12px;line-height:1.7;max-width:900px;margin:0 auto;padding:2.5rem 3rem;}
+
+/* COUVERTURE */
+.cover{min-height:260px;background:linear-gradient(135deg,#07070D 0%,#1A1A2A 60%,#2a1a0a 100%);border-radius:12px;padding:2.5rem;margin-bottom:2rem;position:relative;overflow:hidden;}
+.cover::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(201,168,76,.08);pointer-events:none;}
+.cover-logo{font-family:'Syne',Arial,sans-serif;font-size:28px;font-weight:800;color:#C9A84C;letter-spacing:.06em;margin-bottom:.25rem;}
+.cover-logo span{color:#F0EEF8;}
+.cover-subtitle{font-size:11px;color:#9896A4;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.5rem;}
+.cover-type{font-family:'Syne',Arial,sans-serif;font-size:22px;font-weight:700;color:#F0EEF8;margin-bottom:.25rem;}
+.cover-periode{font-size:16px;color:#C9A84C;font-weight:600;margin-bottom:.25rem;}
+.cover-date{font-size:11px;color:#9896A4;}
+.cover-line{height:2px;background:linear-gradient(90deg,#C9A84C,transparent);margin:1.25rem 0;}
+
+/* SECTIONS */
+.section{margin-bottom:2rem;break-inside:avoid;}
+.section-header{display:flex;align-items:center;gap:10px;padding:.6rem 1rem;background:linear-gradient(135deg,#07070D,#13131F);border-left:4px solid #C9A84C;border-radius:0 8px 8px 0;margin-bottom:1rem;}
+.section-icon{font-size:18px;}
+.section-title{font-family:'Syne',Arial,sans-serif;font-size:14px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:.08em;}
+.section-period{font-size:10px;color:#9896A4;margin-left:auto;}
+
+/* KPI RAPPORT */
+.kpi-row{display:grid;gap:.75rem;margin-bottom:1rem;}
+.kpi-row-4{grid-template-columns:repeat(4,1fr);}
+.kpi-row-3{grid-template-columns:repeat(3,1fr);}
+.kpi-row-2{grid-template-columns:repeat(2,1fr);}
+.kpi-box{background:#0D0D18;border:1px solid #1E1E2E;border-radius:10px;padding:.875rem 1rem;text-align:center;border-top:3px solid;}
+.kpi-box-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.35rem;}
+.kpi-box-val{font-family:'Syne',Arial,sans-serif;font-size:26px;font-weight:800;line-height:1;}
+.kpi-box-sub{font-size:10px;color:#5A5866;margin-top:.2rem;}
+
+/* TABLE RAPPORT */
+.rtbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:.75rem;}
+.rtbl th{padding:6px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9896A4;background:#0D0D18;border-bottom:1px solid #1E1E2E;text-align:left;}
+.rtbl th.c{text-align:center;}
+.rtbl td{padding:6px 10px;border-bottom:1px solid rgba(30,30,46,.6);color:#F0EEF8;}
+.rtbl td.c{text-align:center;}
+.rtbl tr:nth-child(even) td{background:rgba(13,13,22,.5);}
+
+/* BARRES RAPPORT */
+.rbar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.45rem;}
+.rbar-label{font-size:11px;color:#9896A4;min-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rbar-track{flex:1;height:10px;background:#13131F;border-radius:5px;overflow:hidden;}
+.rbar-fill{height:100%;border-radius:5px;}
+.rbar-val{font-family:'Syne',Arial,sans-serif;font-size:11px;font-weight:700;min-width:60px;text-align:right;}
+
+/* ALERTE BOX */
+.alerte-box{padding:.75rem 1rem;border-radius:8px;margin-bottom:.75rem;font-size:11px;}
+.alerte-rouge{background:rgba(240,90,90,.08);border:1px solid rgba(240,90,90,.2);color:#F05A5A;}
+.alerte-jaune{background:rgba(251,199,36,.06);border:1px solid rgba(251,199,36,.15);color:#FBC724;}
+.alerte-vert{background:rgba(52,199,123,.06);border:1px solid rgba(52,199,123,.12);color:#34C77B;}
+
+/* FOOTER RAPPORT */
+.rapport-footer{margin-top:2rem;padding-top:.875rem;border-top:1px solid #1E1E2E;display:flex;justify-content:space-between;font-size:10px;color:#5A5866;}
+
+/* SOMMAIRE */
+.sommaire{background:#0D0D18;border:1px solid #1E1E2E;border-radius:10px;padding:1rem 1.25rem;margin-bottom:2rem;}
+.sommaire-title{font-family:'Syne',Arial,sans-serif;font-size:12px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;}
+.sommaire-item{display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px dotted #1E1E2E;font-size:11px;color:#9896A4;}
+.sommaire-num{font-family:'Syne',Arial,sans-serif;font-weight:700;color:#C9A84C;min-width:20px;}
+
+/* IMPRESSION */
+@media print{
+  .no-print,.hdr,.ctrl,.tabs{display:none!important;}
+  body{background:#fff;}
+  .preview{padding:0;max-width:100%;}
+  .panel{display:block!important;}
+  .rapport{padding:1.5cm 2cm;max-width:100%;background:#fff;color:#111;}
+  .cover{background:#1a1a2e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .kpi-box,.section-header,.sommaire,.rtbl th,.rtbl tr:nth-child(even) td{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .section{break-inside:avoid;page-break-inside:avoid;}
+  .page-break{page-break-before:always;}
+}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#13131F;border:1px solid #C9A84C;color:#F0EEF8;padding:10px 18px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ═══ INTERFACE ═══ -->
+<header class="hdr no-print">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Reporting RH Automatique</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-ghost" onclick="genererRapport()">🔄 Actualiser</button>
+    <button class="btn btn-or" onclick="window.print()">🖨️ Imprimer / PDF</button>
+  </div>
+</header>
+
+<!-- Contrôles -->
+<div class="ctrl no-print">
+  <span class="ctrl-label">Type :</span>
+  <select id="ctrl-type" onchange="genererRapport()">
+    <option value="mensuel">📅 Rapport Mensuel</option>
+    <option value="annuel">📊 Rapport Annuel</option>
+  </select>
+  <span class="ctrl-label">Période :</span>
+  <select id="ctrl-mois" onchange="genererRapport()"></select>
+  <select id="ctrl-annee" onchange="genererRapport()"></select>
+  <span class="ctrl-label" style="margin-left:auto;color:var(--gris2);font-size:10px;" id="ctrl-info">Données lues depuis les outils connectés</span>
+</div>
+
+<nav class="tabs no-print">
+  <button class="tab active" onclick="showTab('apercu',this)"><span class="tdot" style="background:var(--or)"></span>👁 Aperçu Rapport</button>
+  <button class="tab" onclick="showTab('sources',this)"><span class="tdot" style="background:var(--bleu)"></span>🔗 Sources de données</button>
+</nav>
+
+<div class="preview">
+
+<!-- APERÇU -->
+<div class="panel active" id="panel-apercu">
+  <div id="rapport-container"></div>
+</div>
+
+<!-- SOURCES -->
+<div class="panel" id="panel-sources">
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.5rem;margin-bottom:1rem;">
+    <div style="font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:1rem;color:var(--or);">🔗 Sources de données connectées</div>
+    <div id="sources-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.75rem;"></div>
+    <div style="margin-top:1rem;padding:.875rem 1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:var(--r);font-size:11px;color:var(--gris);line-height:1.9;">
+      <strong style="color:var(--or);">Source principale :</strong> Le <strong style="color:var(--blanc);">Registre du Personnel</strong> (<code>elitereg_v1</code>) fournit toutes les données d'effectif : actifs, entrées, sorties, anciennetés, masse salariale, pyramide des anciennetés, mouvements.<br>
+      Les autres outils enrichissent le rapport avec les données opérationnelles (paie, absences, HS, congés, prêts).<br>
+      Tous les fichiers doivent être ouverts dans le même navigateur pour que les données soient disponibles.
+    </div>
+  </div>
+</div>
+
+</div><!-- /preview -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ LECTURE DONNÉES ═══
+var SOURCES = {
+  registre:  { key:'elitereg_v1',      label:'Registre du Personnel', icon:'👥', color:'var(--or)' },
+  payroll:   { key:'payrollmgr_v2',    label:'Paie Multi-Compagnies', icon:'💰', color:'var(--vert)' },
+  absences:  { key:'eliteabs_v1',      label:'Absentéisme',           icon:'📊', color:'var(--bleu)' },
+  conges:    { key:'eliterhconges_v1', label:'Congés',                icon:'🏖️', color:'var(--violet)' },
+  prets:     { key:'eliteprets_v1',    label:'Prêts & Avances',       icon:'💳', color:'var(--cyan)' },
+  hs:        { key:'elitehs_v1',       label:'Heures Supplémentaires',icon:'⏱️', color:'var(--jaune)' }
+};
+
+function lire(key){ try{ return JSON.parse(localStorage.getItem(key)||'null')||{}; }catch(e){ return {}; } }
+function fmt(v){ return Math.round(v||0).toLocaleString('fr-FR'); }
+function fmtDate(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ═══ INITIALISATION CONTRÔLES ═══
+function initControles(){
+  var moisNoms=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var now=new Date();
+  var selM=document.getElementById('ctrl-mois');
+  selM.innerHTML='';
+  for(var m=1;m<=12;m++){
+    var v=(m<10?'0':'')+m;
+    selM.innerHTML+='<option value="'+v+'"'+(m===now.getMonth()+1?' selected':'')+'>'+moisNoms[m-1]+'</option>';
+  }
+  var selA=document.getElementById('ctrl-annee');
+  selA.innerHTML='';
+  for(var y=now.getFullYear()-2;y<=now.getFullYear()+1;y++){
+    selA.innerHTML+='<option value="'+y+'"'+(y===now.getFullYear()?' selected':'')+'>'+y+'</option>';
+  }
+}
+
+// ═══ COLLECTE DONNÉES ═══
+function collecterDonnees(type, mois, annee){
+  var periodeKey = annee+'-'+mois;
+  var data = {};
+
+  // ── REGISTRE DU PERSONNEL (source principale) ──
+  var reg = lire('elitereg_v1');
+  var employes = reg.employes||[];
+  var mouvements = reg.mouvements||[];
+
+  // Actifs / inactifs
+  var actifs = employes.filter(function(e){return e.statut_emp!=='inactif';});
+  var inactifs = employes.filter(function(e){return e.statut_emp==='inactif';});
+
+  // Entrées & sorties sur la période (depuis registre)
+  var entrees = employes.filter(function(e){
+    var d=e.date_entree||'';
+    return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+  });
+  // Sorties : mouvements de type "depart" sur la période
+  var sortiesMvt = mouvements.filter(function(m){
+    if(m.type!=='depart') return false;
+    var d=m.date||'';
+    return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+  });
+  // Promotions sur la période
+  var promotions = mouvements.filter(function(m){
+    if(m.type!=='promotion'&&m.type!=='augmentation') return false;
+    var d=m.date||'';
+    return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+  });
+
+  // Répartition par département
+  var deptMap={};
+  actifs.forEach(function(e){var d=e.dept||'N/A';deptMap[d]=(deptMap[d]||0)+1;});
+
+  // Répartition par contrat
+  var contratMap={};
+  actifs.forEach(function(e){var c=e.contrat||'CDI';contratMap[c]=(contratMap[c]||0)+1;});
+
+  // Masse salariale depuis le registre (somme salaires de base actifs)
+  var masseSalReg=actifs.reduce(function(s,e){return s+(parseFloat(e.salaire)||0);},0);
+  var massePrimesReg=actifs.reduce(function(s,e){return s+(parseFloat(e.primes)||0);},0);
+  var masseLogReg=actifs.reduce(function(s,e){return s+(parseFloat(e.logement)||0);},0);
+  var masseBrutReg=masseSalReg+massePrimesReg+masseLogReg;
+
+  // Genre
+  var genreM=actifs.filter(function(e){return e.sexe==='M';}).length;
+  var genreF=actifs.filter(function(e){return e.sexe==='F';}).length;
+
+  // Anciennetés
+  var today=new Date();
+  var ancMap={'0–2 ans':0,'3–5 ans':0,'6–10 ans':0,'11–20 ans':0,'>20 ans':0};
+  var ancMoyTotal=0;
+  actifs.forEach(function(e){
+    if(!e.date_entree) return;
+    var ans=today.getFullYear()-new Date(e.date_entree).getFullYear();
+    ancMoyTotal+=ans;
+    if(ans<=2) ancMap['0–2 ans']++;
+    else if(ans<=5) ancMap['3–5 ans']++;
+    else if(ans<=10) ancMap['6–10 ans']++;
+    else if(ans<=20) ancMap['11–20 ans']++;
+    else ancMap['>20 ans']++;
+  });
+  var ancMoy=actifs.length>0?Math.round(ancMoyTotal/actifs.length*10)/10:0;
+
+  // Niveaux d'études
+  var niveauMap={};
+  actifs.forEach(function(e){if(e.niveau){niveauMap[e.niveau]=(niveauMap[e.niveau]||0)+1;}});
+
+  // Répartition par statut emploi
+  var statutMap={actif:0,essai:0,inactif:0};
+  employes.forEach(function(e){var s=e.statut_emp||'actif';statutMap[s]=(statutMap[s]||0)+1;});
+
+  data.effectif={
+    total:actifs.length, total_registre:employes.length,
+    entrees:entrees.length, sorties:sortiesMvt.length,
+    promotions:promotions.length,
+    hommes:genreM, femmes:genreF,
+    masse_sal:masseSalReg, masse_primes:massePrimesReg,
+    masse_log:masseLogReg, masse_brut:masseBrutReg,
+    depts:deptMap, contrats:contratMap,
+    anciennetes:ancMap, anc_moy:ancMoy,
+    niveaux:niveauMap, statuts:statutMap,
+    employes:actifs, mouvements_periode:mouvements.filter(function(m){
+      var d=m.date||'';
+      return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+    })
+  };
+
+  // ── PAIE ──
+  var pay = lire('payrollmgr_v2');
+  var periodesPay = pay.periodes||{};
+  var agentsPayPeriode=[];
+  if(type==='mensuel'){
+    agentsPayPeriode=(periodesPay[periodeKey]&&periodesPay[periodeKey].agents)||pay.agents||[];
+  } else {
+    // Agréger toutes les périodes de l'année
+    Object.keys(periodesPay).filter(function(k){return k.startsWith(annee);}).forEach(function(k){
+      agentsPayPeriode=agentsPayPeriode.concat(periodesPay[k].agents||[]);
+    });
+    if(!agentsPayPeriode.length) agentsPayPeriode=pay.agents||[];
+  }
+  var massePayBrut=agentsPayPeriode.reduce(function(s,a){return s+(parseFloat(a.c_brut)||parseFloat(a.base)||0);},0);
+  var massePayNet=agentsPayPeriode.reduce(function(s,a){return s+(parseFloat(a.c_net_payer)||0);},0);
+  var totalCNSS=agentsPayPeriode.reduce(function(s,a){return s+(parseFloat(a.c_cnss_pat)||0)+(parseFloat(a.c_cnss_sal)||0);},0);
+  var totalITS=agentsPayPeriode.reduce(function(s,a){return s+(parseFloat(a.c_its)||0);},0);
+  var totalHS=agentsPayPeriode.reduce(function(s,a){return s+(parseFloat(a.hsupp)||0);},0);
+  data.paie={ brut:massePayBrut, net:massePayNet, cnss:totalCNSS, its:totalITS,
+    hs:totalHS, nb_agents:agentsPayPeriode.length };
+
+  // ── ABSENTÉISME ──
+  var abs = lire('eliteabs_v1');
+  var absences = (abs.absences||[]).filter(function(a){
+    if(a.statut!=='validee') return false;
+    var d=a.date_debut||'';
+    return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+  });
+  var joursAbs=absences.reduce(function(s,a){return s+(parseFloat(a.jours)||0);},0);
+  var nbEmpAbs=actifs.length||1;
+  var joursDispo=nbEmpAbs*(abs.cfg&&abs.cfg.jours_mois||22)*(type==='mensuel'?1:12);
+  var tauxAbs=joursDispo>0?Math.round(joursAbs/joursDispo*10000)/100:0;
+  var typeAbsMap={};
+  absences.forEach(function(a){typeAbsMap[a.type]=(typeAbsMap[a.type]||0)+1;});
+  var deptAbsMap={};
+  absences.forEach(function(a){var d=a.dept||'N/A';if(!deptAbsMap[d])deptAbsMap[d]={nb:0,jours:0};deptAbsMap[d].nb++;deptAbsMap[d].jours+=parseFloat(a.jours)||0;});
+  data.absenteisme={ total:absences.length, jours:joursAbs, taux:tauxAbs, types:typeAbsMap, depts:deptAbsMap };
+
+  // ── HEURES SUPP ──
+  var hsData = lire('elitehs_v1');
+  var declarations = (hsData.declarations||[]).filter(function(d){
+    var dt=d.date||'';
+    return type==='mensuel'?dt.substring(0,7)===periodeKey:dt.substring(0,4)===annee;
+  });
+  var hsVal=declarations.filter(function(d){return d.statut==='validee';});
+  var totalHsH=hsVal.reduce(function(s,d){return s+(parseFloat(d.h_supp)||0);},0);
+  var totalHsMt=hsVal.reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);
+  data.hs={ total:declarations.length, validees:hsVal.length, heures:totalHsH, montant:totalHsMt };
+
+  // ── CONGÉS ──
+  var cg = lire('eliterhconges_v1');
+  var conges = (cg.conges||[]).filter(function(c){
+    var d=c.debut||'';
+    return type==='mensuel'?d.substring(0,7)===periodeKey:d.substring(0,4)===annee;
+  });
+  var cgValides=conges.filter(function(c){return c.statut==='valide';});
+  var jCg=cgValides.reduce(function(s,c){return s+(parseFloat(c.nb_jours)||0);},0);
+  data.conges={ total:conges.length, valides:cgValides.length, jours:jCg };
+
+  // ── PRÊTS ──
+  var prData = lire('eliteprets_v1');
+  var prets = prData.agents||[];
+  var prActifs=prets.reduce(function(s,a){
+    return s+(a.prets||[]).filter(function(p){return p.statut==='actif'||p.statut==='En cours';}).length;
+  },0);
+  var totalPrets=prets.reduce(function(s,a){
+    return s+(a.prets||[]).reduce(function(ss,p){return ss+(parseFloat(p.montant)||0);},0);
+  },0);
+  data.prets={ actifs:prActifs, montant_total:totalPrets };
+
+  return data;
+}
+
+// ═══ GÉNÉRATION RAPPORT ═══
+function genererRapport(){
+  var type=document.getElementById('ctrl-type').value;
+  var mois=document.getElementById('ctrl-mois').value;
+  var annee=document.getElementById('ctrl-annee').value;
+  var moisNoms=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var periodeLabel=type==='mensuel'?moisNoms[parseInt(mois)-1]+' '+annee:'Année '+annee;
+  
+  var D=collecterDonnees(type,mois,annee);
+  var now=new Date().toLocaleDateString('fr-FR');
+
+  var html='<div class="rapport">';
+
+  // ── COUVERTURE ──
+  html+='<div class="cover">'+
+    '<div class="cover-logo">Elite <span>RH</span></div>'+
+    '<div class="cover-subtitle">Reporting Ressources Humaines</div>'+
+    '<div class="cover-line"></div>'+
+    '<div class="cover-type">Rapport '+(type==='mensuel'?'Mensuel':'Annuel')+' RH</div>'+
+    '<div class="cover-periode">'+periodeLabel+'</div>'+
+    '<div class="cover-date">Généré le '+now+'</div>'+
+  '</div>';
+
+  // ── SOMMAIRE ──
+  html+='<div class="sommaire">'+
+    '<div class="sommaire-title">📑 Sommaire</div>'+
+    [['1','👥','Effectif & Mouvements'],['2','💰','Paie & Charges Sociales'],['3','📊','Absentéisme'],['4','⏱️','Heures Supplémentaires'],['5','🏖️','Congés & Prêts'],['6','📋','Synthèse & Indicateurs Clés']].map(function(s){
+      return '<div class="sommaire-item"><span class="sommaire-num">'+s[0]+'.</span>'+s[1]+' '+s[2]+'</div>';
+    }).join('')+
+  '</div>';
+
+  // ══════════════════════════════════
+  // SECTION 1 — EFFECTIF
+  // ══════════════════════════════════
+  html+=section('1','👥','Effectif & Mouvements',periodeLabel);
+  html+='<div class="kpi-row kpi-row-4">';
+  html+=kbox(D.effectif.total,'Effectif Actif','employés actifs (registre)','var(--blanc)','var(--or)');
+  html+=kbox(D.effectif.entrees,'Entrées','recrutements','var(--vert)','var(--vert)');
+  html+=kbox(D.effectif.sorties,'Sorties','départs enregistrés','var(--rouge)','var(--rouge)');
+  html+=kbox(D.effectif.promotions,'Promotions','et augmentations','var(--violet)','var(--violet)');
+  html+='</div>';
+
+  // Masse salariale depuis registre
+  html+='<div class="kpi-row kpi-row-3">';
+  html+=kbox(fmt(D.effectif.masse_sal)+' F','Masse Salaires Base','tous actifs — registre','var(--or)','var(--or)');
+  html+=kbox(fmt(D.effectif.masse_primes)+' F','Total Primes','primes mensuelles','var(--vert)','var(--vert)');
+  html+=kbox(fmt(D.effectif.masse_brut)+' F','Masse Brute Estimée','base + primes + logement','var(--cyan)','var(--cyan)');
+  html+='</div>';
+
+  // Genre
+  html+='<div class="kpi-row kpi-row-2" style="margin-bottom:1rem;">';
+  var txH=D.effectif.total>0?Math.round(D.effectif.hommes/D.effectif.total*100):0;
+  var txF=D.effectif.total>0?Math.round(D.effectif.femmes/D.effectif.total*100):0;
+  html+=kbox(D.effectif.hommes+' ('+txH+'%)','Hommes','effectif masculin','var(--bleu)','var(--bleu)');
+  html+=kbox(D.effectif.femmes+' ('+txF+'%)','Femmes','effectif féminin','var(--violet)','var(--violet)');
+  html+='</div>';
+
+  // Par département
+  if(Object.keys(D.effectif.depts).length){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Effectif par département (source : Registre du Personnel)</div>';
+    var maxD=Math.max(1,...Object.values(D.effectif.depts));
+    Object.keys(D.effectif.depts).sort(function(a,b){return D.effectif.depts[b]-D.effectif.depts[a];}).forEach(function(d){
+      var pct=Math.round(D.effectif.depts[d]/maxD*100);
+      var txPct=D.effectif.total>0?Math.round(D.effectif.depts[d]/D.effectif.total*100):0;
+      html+='<div class="rbar-row"><div class="rbar-label">'+esc(d)+'</div><div class="rbar-track"><div class="rbar-fill" style="width:'+pct+'%;background:#C9A84C;"></div></div><div class="rbar-val" style="color:#C9A84C;">'+D.effectif.depts[d]+' ('+txPct+'%)</div></div>';
+    });
+    html+='</div>';
+  }
+
+  // Par contrat
+  if(Object.keys(D.effectif.contrats).length){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Répartition par type de contrat</div>';
+    var CONTRAT_C={'CDI':'#4A9EFF','CDD':'#A78BFA','Stage':'#34C77B','Freelance':'#FBC724'};
+    html+='<div style="display:flex;gap:.5rem;flex-wrap:wrap;">';
+    Object.keys(D.effectif.contrats).forEach(function(c){
+      var col=CONTRAT_C[c]||'#9896A4';
+      var pct=D.effectif.total>0?Math.round(D.effectif.contrats[c]/D.effectif.total*100):0;
+      html+='<div style="background:#0D0D18;border:1px solid #1E1E2E;border-top:3px solid '+col+';border-radius:8px;padding:.5rem .875rem;text-align:center;min-width:100px;">'+
+        '<div style="font-size:9px;color:#9896A4;text-transform:uppercase;letter-spacing:.08em;">'+c+'</div>'+
+        '<div style="font-family:Syne,Arial;font-size:20px;font-weight:800;color:'+col+'">'+D.effectif.contrats[c]+'</div>'+
+        '<div style="font-size:10px;color:#5A5866">'+pct+'%</div></div>';
+    });
+    html+='</div></div>';
+  }
+
+  // Anciennetés
+  if(D.effectif.anc_moy>0){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Pyramide des anciennetés — Moyenne : '+D.effectif.anc_moy+' an(s)</div>';
+    var ANC_C={'0–2 ans':'#22D3EE','3–5 ans':'#4A9EFF','6–10 ans':'#C9A84C','11–20 ans':'#FB923C','>20 ans':'#F05A5A'};
+    var maxAnc=Math.max(1,...Object.values(D.effectif.anciennetes));
+    Object.keys(D.effectif.anciennetes).forEach(function(k){
+      var nb=D.effectif.anciennetes[k];
+      var pct=Math.round(nb/maxAnc*100);
+      html+='<div class="rbar-row"><div class="rbar-label">'+k+'</div><div class="rbar-track"><div class="rbar-fill" style="width:'+pct+'%;background:'+ANC_C[k]+';"></div></div><div class="rbar-val" style="color:'+ANC_C[k]+';">'+nb+'</div></div>';
+    });
+    html+='</div>';
+  }
+
+  // Mouvements de la période
+  if(D.effectif.mouvements_periode.length){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Mouvements de la période</div>';
+    html+='<table class="rtbl"><thead><tr><th>Date</th><th>Employé</th><th>Matricule</th><th>Type</th><th>Détail</th><th>Avant</th><th>Après</th></tr></thead><tbody>';
+    D.effectif.mouvements_periode.slice(0,10).forEach(function(m){
+      var MV_C={recrutement:'#34C77B',promotion:'#C9A84C',mutation:'#4A9EFF',augmentation:'#A78BFA',depart:'#F05A5A',autre:'#9896A4'};
+      html+='<tr>'+
+        '<td>'+esc(fmtDate(m.date))+'</td>'+
+        '<td><strong>'+esc(m.emp_nom||'—')+'</strong></td>'+
+        '<td style="color:#C9A84C;font-size:10px;">'+esc(m.emp_mat||'—')+'</td>'+
+        '<td><span style="color:'+(MV_C[m.type]||'#9896A4')+';font-weight:700;font-size:10px;">'+esc(m.type||'—')+'</span></td>'+
+        '<td style="color:#9896A4;font-size:10px;">'+esc((m.detail||'—').substring(0,50))+'</td>'+
+        '<td style="font-size:10px;">'+esc(m.ancien||'—')+'</td>'+
+        '<td style="font-size:10px;color:#34C77B;">'+esc(m.nouveau||'—')+'</td>'+
+      '</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+  html+='</div>';// /section 1
+
+  // ══════════════════════════════════
+  // SECTION 2 — PAIE
+  // ══════════════════════════════════
+  html+='<div class="page-break"></div>';
+  html+=section('2','💰','Paie & Charges Sociales',periodeLabel);
+  html+='<div class="kpi-row kpi-row-3">';
+  html+=kbox(fmt(D.paie.brut)+' F','Masse Brute Totale','salaires bruts','var(--or)','var(--or)');
+  html+=kbox(fmt(D.paie.net)+' F','Masse Nette Totale','nets à payer','var(--vert)','var(--vert)');
+  html+=kbox(D.paie.nb_agents,'Agents sur Fiche','paie traitée','var(--blanc)','var(--bleu)');
+  html+='</div>';
+  html+='<div class="kpi-row kpi-row-3">';
+  html+=kbox(fmt(D.paie.cnss)+' F','Total CNSS','salariale + patronale','var(--violet)','var(--violet)');
+  html+=kbox(fmt(D.paie.its)+' F','Total ITS','impôt sur salaires','var(--orange)','var(--orange)');
+  html+=kbox(fmt(D.paie.hs)+' F','Heures Supp. (Paie)','montant HS en paie','var(--cyan)','var(--cyan)');
+  html+='</div>';
+
+  if(D.paie.brut>0){
+    var txCharges=D.paie.brut>0?Math.round((D.paie.cnss+D.paie.its)/D.paie.brut*100):0;
+    var txNet=D.paie.brut>0?Math.round(D.paie.net/D.paie.brut*100):0;
+    html+='<div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;">';
+    html+=alerteBox('Taux de charges sociales : '+txCharges+'% de la masse brute',txCharges>30?'rouge':txCharges>20?'jaune':'vert');
+    html+=alerteBox('Taux brut→net : '+txNet+'% ('+fmt(D.paie.brut-D.paie.net)+' F de retenues totales)',txNet<60?'rouge':txNet<75?'jaune':'vert');
+    html+='</div>';
+  }
+
+  // ══════════════════════════════════
+  // SECTION 3 — ABSENTÉISME
+  // ══════════════════════════════════
+  html+=section('3','📊','Absentéisme',periodeLabel);
+  html+='<div class="kpi-row kpi-row-4">';
+  html+=kbox(D.absenteisme.total,'Déclarations','absences validées','var(--blanc)','var(--or)');
+  html+=kbox(D.absenteisme.jours.toFixed(1),'Jours Perdus','jours ouvrés','var(--rouge)','var(--rouge)');
+  html+=kbox(D.absenteisme.taux+'%','Taux Absentéisme',D.effectif.total+' employés',D.absenteisme.taux>5?'var(--rouge)':D.absenteisme.taux>3?'var(--jaune)':'var(--vert)',D.absenteisme.taux>5?'var(--rouge)':'var(--vert)');
+  html+=kbox(Math.round(D.absenteisme.jours*8)+'h','Heures Perdues','équivalent heures','var(--violet)','var(--violet)');
+  html+='</div>';
+
+  var TYPE_ABS_LABELS={'maladie':'Maladie','absence_injustifiee':'Injustifiée','accident_travail':'Accident travail','conge_maternite':'Maternité/Paternité','conge_sans_solde':'Sans solde','autorisation':'Autorisation','retard':'Retard'};
+  if(Object.keys(D.absenteisme.types).length){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Répartition par type d\'absence</div>';
+    var ABS_C={'maladie':'#F05A5A','absence_injustifiee':'#FB923C','accident_travail':'#FBC724','conge_maternite':'#A78BFA','conge_sans_solde':'#4A9EFF','autorisation':'#34C77B','retard':'#22D3EE'};
+    var maxAbs=Math.max(1,...Object.values(D.absenteisme.types));
+    Object.keys(D.absenteisme.types).sort(function(a,b){return D.absenteisme.types[b]-D.absenteisme.types[a];}).forEach(function(k){
+      var pct=Math.round(D.absenteisme.types[k]/maxAbs*100);
+      var col=ABS_C[k]||'#9896A4';
+      html+='<div class="rbar-row"><div class="rbar-label">'+esc(TYPE_ABS_LABELS[k]||k)+'</div><div class="rbar-track"><div class="rbar-fill" style="width:'+pct+'%;background:'+col+';"></div></div><div class="rbar-val" style="color:'+col+';">'+D.absenteisme.types[k]+'</div></div>';
+    });
+    html+='</div>';
+  }
+
+  if(Object.keys(D.absenteisme.depts).length){
+    html+='<div style="margin-bottom:1rem;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin-bottom:.6rem;">Absentéisme par département</div>';
+    html+='<table class="rtbl"><thead><tr><th>Département</th><th class="c">Absences</th><th class="c">Jours perdus</th><th class="c">Heures perdues</th></tr></thead><tbody>';
+    Object.keys(D.absenteisme.depts).sort(function(a,b){return D.absenteisme.depts[b].jours-D.absenteisme.depts[a].jours;}).forEach(function(d){
+      var v=D.absenteisme.depts[d];
+      html+='<tr><td>'+esc(d)+'</td><td class="c">'+v.nb+'</td><td class="c" style="color:#F05A5A;font-weight:700;">'+v.jours.toFixed(1)+'</td><td class="c">'+Math.round(v.jours*8)+'h</td></tr>';
+    });
+    html+='</tbody></table>';
+  }
+
+  html+=alerteBox('Taux d\'absentéisme : '+D.absenteisme.taux+'% — '+(D.absenteisme.taux>5?'⚠️ Taux élevé, action corrective recommandée':D.absenteisme.taux>3?'📊 Taux modéré, à surveiller':'✅ Taux satisfaisant'),D.absenteisme.taux>5?'rouge':D.absenteisme.taux>3?'jaune':'vert');
+
+  // ══════════════════════════════════
+  // SECTION 4 — HEURES SUPP
+  // ══════════════════════════════════
+  html+=section('4','⏱️','Heures Supplémentaires',periodeLabel);
+  html+='<div class="kpi-row kpi-row-4">';
+  html+=kbox(D.hs.total,'Déclarations','heures supp déclarées','var(--blanc)','var(--or)');
+  html+=kbox(D.hs.validees,'Validées','approuvées et payées','var(--vert)','var(--vert)');
+  html+=kbox(D.hs.heures.toFixed(1)+'h','Heures Total','toutes HS validées','var(--jaune)','var(--jaune)');
+  html+=kbox(fmt(D.hs.montant)+' F','Montant Total','coût des HS','var(--orange)','var(--orange)');
+  html+='</div>';
+  if(D.hs.total>0){
+    var txValid=Math.round(D.hs.validees/D.hs.total*100);
+    html+=alerteBox('Taux de validation des HS : '+txValid+'% ('+D.hs.validees+'/'+D.hs.total+' déclarations)',txValid>80?'vert':'jaune');
+  }
+
+  // ══════════════════════════════════
+  // SECTION 5 — CONGÉS & PRÊTS
+  // ══════════════════════════════════
+  html+=section('5','🏖️','Congés & Prêts',periodeLabel);
+  html+='<div class="kpi-row kpi-row-3">';
+  html+=kbox(D.conges.total,'Demandes Congés','toutes demandes','var(--blanc)','var(--bleu)');
+  html+=kbox(D.conges.valides,'Congés Validés','approuvés','var(--vert)','var(--vert)');
+  html+=kbox(D.conges.jours,'Jours de Congés','jours accordés','var(--violet)','var(--violet)');
+  html+='</div>';
+  html+='<div class="kpi-row kpi-row-2">';
+  html+=kbox(D.prets.actifs,'Prêts en Cours','actifs & en cours','var(--cyan)','var(--cyan)');
+  html+=kbox(fmt(D.prets.montant_total)+' F','Encours Prêts','total à rembourser','var(--orange)','var(--orange)');
+  html+='</div>';
+
+  // ══════════════════════════════════
+  // SECTION 6 — SYNTHÈSE
+  // ══════════════════════════════════
+  html+='<div class="page-break"></div>';
+  html+=section('6','📋','Synthèse & Indicateurs Clés',periodeLabel);
+
+  // Tableau synthèse
+  html+='<table class="rtbl"><thead><tr><th>Indicateur</th><th class="c">Valeur</th><th>Commentaire</th></tr></thead><tbody>';
+  var syntRows=[
+    ['Effectif actif (registre)',D.effectif.total+' employés','Hors sortis / inactifs'],
+    ['Total employés enregistrés',D.effectif.total_registre+' personnes','Actifs + inactifs'],
+    ['Taux de féminisation',txF+'%','Femmes sur effectif actif'],
+    ['Ancienneté moyenne',D.effectif.anc_moy+' an(s)','Tous actifs — registre'],
+    ['Entrées période',D.effectif.entrees+' recrutement(s)',type==='mensuel'?'Sur le mois':'Sur l\'année'],
+    ['Promotions / Augmentations',D.effectif.promotions+' mouvement(s)',type==='mensuel'?'Sur le mois':'Sur l\'année'],
+    ['Masse salaires base (registre)',fmt(D.effectif.masse_sal)+' FCFA','Salaires de base actifs'],
+    ['Masse brute estimée (registre)',fmt(D.effectif.masse_brut)+' FCFA','Base + primes + logement'],
+    ['Masse brute paie traitée',fmt(D.paie.brut)+' FCFA',D.paie.nb_agents+' agents sur fiche paie'],
+    ['Coût CNSS + ITS',fmt(D.paie.cnss+D.paie.its)+' FCFA','Charges fiscales & sociales'],
+    ['Taux d\'absentéisme',D.absenteisme.taux+'%',D.absenteisme.taux>5?'⚠️ Élevé':D.absenteisme.taux>3?'⚡ Modéré':'✅ Normal'],
+    ['Heures supp. validées',D.hs.heures.toFixed(1)+' h — '+fmt(D.hs.montant)+' F','Coût total HS'],
+    ['Congés accordés',D.conges.jours+' jours',''+D.conges.valides+' demandes validées'],
+    ['Prêts actifs',D.prets.actifs+' prêts','Encours : '+fmt(D.prets.montant_total)+' F']
+  ];
+  syntRows.forEach(function(r){
+    html+='<tr><td style="font-weight:600;">'+r[0]+'</td><td class="c" style="font-family:Syne,Arial;font-weight:700;color:#C9A84C;">'+r[1]+'</td><td style="color:#9896A4;font-size:10px;">'+r[2]+'</td></tr>';
+  });
+  html+='</tbody></table>';
+
+  // Points d'attention
+  var alertes=[];
+  if(D.absenteisme.taux>5) alertes.push({msg:'Taux d\'absentéisme élevé ('+D.absenteisme.taux+'%) — Identifier les causes et mettre en place des actions correctives',cls:'rouge'});
+  if(D.effectif.sorties>D.effectif.entrees) alertes.push({msg:'Solde entrées/sorties négatif : '+D.effectif.entrees+' entrées / '+D.effectif.sorties+' sorties — Risque de sous-effectif',cls:'rouge'});
+  if(D.hs.heures>100) alertes.push({msg:'Volume élevé d\'heures supplémentaires ('+D.hs.heures.toFixed(0)+'h) — Analyser la charge de travail par département',cls:'jaune'});
+  if(D.prets.montant_total>D.paie.brut*0.3&&D.paie.brut>0) alertes.push({msg:'Encours prêts ('+fmt(D.prets.montant_total)+' F) représente plus de 30% de la masse salariale brute',cls:'jaune'});
+
+  if(alertes.length){
+    html+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9896A4;margin:1rem 0 .5rem;">Points d\'attention</div>';
+    alertes.forEach(function(a){ html+=alerteBox('⚠️ '+a.msg,a.cls); });
+  } else {
+    html+=alerteBox('✅ Aucun point d\'attention majeur identifié pour cette période — Indicateurs globalement satisfaisants.','vert');
+  }
+
+  html+='<div class="rapport-footer"><div>Elite RH Consulting — Rapport RH '+periodeLabel+'</div><div>Généré le '+now+' — Confidentiel</div></div>';
+  html+='</div>';// /rapport
+
+  document.getElementById('rapport-container').innerHTML=html;
+  document.getElementById('ctrl-info').textContent='Rapport généré le '+now;
+}
+
+
+// ═══ HELPERS HTML ═══
+function section(num,icon,title,period){
+  return '<div class="section"><div class="section-header"><div class="section-icon">'+icon+'</div><div class="section-title">'+num+'. '+title+'</div><div class="section-period">'+period+'</div></div>';
+}
+// Note: section() ne ferme pas le div — on doit fermer avec </div> manuellement
+// Correction : on inclut le contenu dans la section
+
+function kbox(val,label,sub,color,borderColor){
+  return '<div class="kpi-box" style="border-top-color:'+borderColor+'">'+
+    '<div class="kpi-box-label">'+label+'</div>'+
+    '<div class="kpi-box-val" style="color:'+color+'">'+val+'</div>'+
+    '<div class="kpi-box-sub">'+sub+'</div></div>';
+}
+function alerteBox(msg,type){
+  var cls='alerte-'+(type||'jaune');
+  return '<div class="alerte-box '+cls+'">'+msg+'</div>';
+}
+
+// ═══ SOURCES ═══
+function renderSources(){
+  var html='';
+  Object.keys(SOURCES).forEach(function(k){
+    var s=SOURCES[k];
+    var d=lire(s.key);
+    var hasData=Object.keys(d).length>0;
+    html+='<div style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.875rem 1rem;border-left:3px solid '+(hasData?s.color:'var(--gris3)')+'">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:.35rem;">'+
+      '<span style="font-size:16px">'+s.icon+'</span>'+
+      '<span style="font-family:var(--fd);font-size:12px;font-weight:700;color:'+(hasData?s.color:'var(--gris)')+'">'+s.label+'</span>'+
+      '<span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:'+(hasData?'rgba(52,199,123,.1)':'rgba(90,88,102,.12)')+';color:'+(hasData?'var(--vert)':'var(--gris)')+';">'+(hasData?'✓ Connecté':'Non disponible')+'</span>'+
+    '</div>';
+    html+='<div style="font-size:10px;color:var(--gris2);">Clé : '+s.key+'</div>';
+    if(hasData){
+      var nb=0;
+      if(k==='registre') nb=(d.employes||[]).length+' employé(s)';
+      else if(k==='payroll') nb=Object.keys(d.periodes||{}).length+' période(s)';
+      else if(k==='absences') nb=(d.absences||[]).length+' absence(s)';
+      else if(k==='conges') nb=(d.conges||[]).length+' demande(s)';
+      else if(k==='prets') nb=(d.agents||[]).length+' agent(s)';
+      else if(k==='hs') nb=(d.declarations||[]).length+' déclaration(s)';
+      html+='<div style="font-size:11px;color:var(--blanc);margin-top:.25rem;font-weight:600;">'+nb+'</div>';
+    }
+    html+='</div>';
+  });
+  document.getElementById('sources-grid').innerHTML=html;
+}
+
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='sources') renderSources();
+}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+// ═══ INIT ═══
+initControles();
+// Fixer type2 dynamiquement
+genererRapport();
+</script>
+</body>
+</html>

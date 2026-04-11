@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Générateur de Contrats & Lettres – Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+<style>
+:root {
+  --noir:#0C0C0C; --noir2:#161616; --noir3:#1E1E1E;
+  --or:#C9A84C; --or2:#E2C47A; --or-pale:#FDF6E3;
+  --blanc:#FAFAF8; --gris:#8A8880; --gris2:#C8C6BF; --gris3:#ECEAE3;
+  --bleu:#1A5FA8; --vert:#2D6A1F; --rouge:#A32020;
+  --vert-clair:#EAF4E3; --rouge-clair:#FCEAEA; --bleu-clair:#E6F0FB;
+  --fond:#F2F0EA;
+  --fd:'Playfair Display',serif; --fb:'Outfit',sans-serif;
+  --r:10px; --rl:16px; --rxl:24px;
+  --sh:0 2px 12px rgba(0,0,0,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--fond);color:var(--noir);min-height:100vh}
+
+/* HEADER */
+header{background:var(--noir);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(201,168,76,0.2)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:34px;height:34px;border:1.5px solid var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;color:var(--or);font-weight:600;letter-spacing:0.05em}
+.logo-text{font-family:var(--fd);font-size:15px;color:var(--blanc);font-weight:500;letter-spacing:0.05em}
+.logo-text span{color:var(--or)}
+.back-link{font-size:12px;color:var(--gris2);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-link:hover{color:var(--or)}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 62px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--noir2);border-right:1px solid rgba(255,255,255,0.06);padding:1.5rem 0;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.sidebar-section{padding:0.5rem 1.25rem 0.25rem;font-size:9px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.5);margin-top:0.5rem}
+.doc-btn{display:flex;align-items:center;gap:10px;padding:11px 1.25rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;position:relative}
+.doc-btn:hover{background:rgba(255,255,255,0.04)}
+.doc-btn.active{background:rgba(201,168,76,0.1)}
+.doc-btn.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--or)}
+.doc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.doc-name{font-size:13px;font-weight:500;color:var(--blanc);flex:1;line-height:1.3}
+.doc-name small{display:block;font-size:10px;color:var(--gris);font-weight:400;margin-top:1px}
+.doc-arrow{font-size:10px;color:var(--or);opacity:0}
+.doc-btn.active .doc-arrow{opacity:1}
+
+/* MAIN */
+.main{padding:2rem;overflow-y:auto}
+.step-header{margin-bottom:1.75rem}
+.step-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:20px;font-size:11px;color:var(--or);font-weight:600;letter-spacing:0.05em;margin-bottom:10px}
+.step-title{font-family:var(--fd);font-size:26px;font-weight:600;color:var(--noir);line-height:1.2}
+.step-desc{font-size:13px;color:var(--gris);margin-top:6px;line-height:1.6;max-width:600px}
+
+/* FORM GRID */
+.form-card{background:white;border-radius:var(--rl);border:1px solid var(--gris3);padding:1.5rem;margin-bottom:1.25rem;box-shadow:var(--sh)}
+.form-card-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--noir);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--gris3)}
+.form-card-title .icon{font-size:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--gris)}
+.field input,.field select,.field textarea{font-family:var(--fb);font-size:13px;color:var(--noir);background:var(--fond);border:1px solid var(--gris3);border-radius:var(--r);padding:9px 12px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field-note{font-size:11px;color:var(--gris);margin-top:2px;font-style:italic}
+
+/* TYPE SELECTOR */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.type-card{border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;cursor:pointer;background:white;transition:all .2s;text-align:left}
+.type-card:hover{border-color:var(--or);background:var(--or-pale)}
+.type-card.selected{border-color:var(--or);background:var(--or-pale);box-shadow:0 0 0 2px rgba(201,168,76,0.2)}
+.type-card-icon{font-size:22px;margin-bottom:6px}
+.type-card-name{font-size:13px;font-weight:600;color:var(--noir);font-family:var(--fd)}
+.type-card-desc{font-size:11px;color:var(--gris);margin-top:3px;line-height:1.4}
+
+/* ACTIONS */
+.action-bar{display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid var(--gris3)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--fb);transition:all .15s;border:none;text-decoration:none}
+.btn-primary{background:var(--noir);color:var(--or)}
+.btn-primary:hover{background:var(--noir3)}
+.btn-secondary{background:white;color:var(--noir);border:1px solid var(--gris3)}
+.btn-secondary:hover{border-color:var(--or);color:var(--or)}
+.btn-blue{background:var(--bleu);color:white}
+.btn-blue:hover{background:#134d8a}
+.btn-green{background:var(--vert);color:white}
+.btn-green:hover{background:#235518}
+
+/* PREVIEW */
+.preview-wrap{background:white;border-radius:var(--rl);border:1px solid var(--gris3);overflow:hidden;margin-bottom:1.5rem}
+.preview-toolbar{background:var(--noir);padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.preview-toolbar-title{font-size:13px;color:var(--gris2);font-family:var(--fd)}
+.preview-toolbar-title span{color:var(--or)}
+.preview-body{padding:3rem 3.5rem;font-size:13px;line-height:1.8;color:#1a1a1a;min-height:300px;max-height:580px;overflow-y:auto}
+.preview-body h1{font-family:var(--fd);font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em}
+.preview-body h2{font-family:var(--fd);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin:18px 0 8px;border-bottom:2px solid #1a1a1a;padding-bottom:4px}
+.preview-body p{margin-bottom:10px}
+.preview-body .meta-row{display:flex;gap:2rem;margin:12px 0;flex-wrap:wrap}
+.preview-body .meta-item{font-size:12px}
+.preview-body .meta-item strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#888;margin-bottom:2px}
+.preview-body .sign-block{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.preview-body .sign-col{text-align:center}
+.preview-body .sign-line{border-top:1px solid #333;margin-top:2rem;padding-top:8px;font-size:11px;color:#555}
+.preview-body .article{margin-bottom:12px}
+.preview-body .article-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.preview-body .highlight{background:#FDF6E3;border-left:3px solid var(--or);padding:8px 12px;margin:10px 0;font-size:12px}
+
+/* SECTION TOGGLE */
+.section-toggle{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-280px;top:62px;z-index:150;transition:left .3s;height:calc(100vh - 62px)}
+  .sidebar.open{left:0}
+  .form-grid,.form-grid-3,.type-grid{grid-template-columns:1fr}
+  .main{padding:1rem}
+  .preview-body{padding:1.5rem}
+}
+
+@media print{
+  header,.sidebar,.action-bar,.preview-toolbar,.step-header,.form-card{display:none!important}
+  .app{display:block}
+  .preview-body{max-height:none;padding:0;font-size:12pt;line-height:1.8}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">E·RH</div>
+    <div class="logo-text">Elite RH <span>Consulting</span></div>
+  </a>
+  <a href="index.html" class="back-link">← Retour au site</a>
+</header>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">Contrats de travail</div>
+
+    <button class="doc-btn active" onclick="setDoc('contrat')" id="btn-contrat">
+      <div class="doc-icon" style="background:rgba(26,95,168,0.15)">📄</div>
+      <div class="doc-name">Contrat de travail<small>CDI ou CDD au choix</small></div>
+      <span class="doc-arrow">›</span>
+    </button>
+
+    <button class="doc-btn" onclick="setDoc('stage')" id="btn-stage">
+      <div class="doc-icon" style="background:rgba(201,168,76,0.15)">🎓</div>
+      <div class="doc-name">Stage / Apprentissage<small>Convention de stage</small></div>
+      <span class="doc-arrow">›</span>
+    </button>
+
+
+    <button class="doc-btn" onclick="setDoc('expatrie')" id="btn-expatrie">
+      <div class="doc-icon" style="background:rgba(100,60,180,0.15)">✈️</div>
+      <div class="doc-name">CDD Expatrié<small>Contrat international</small></div>
+      <span class="doc-arrow">›</span>
+    </button>
+
+    <div class="sidebar-section" style="margin-top:1rem">Courriers RH</div>
+
+    <button class="doc-btn" onclick="setDoc('embauche')" id="btn-embauche">
+      <div class="doc-icon" style="background:rgba(45,106,31,0.15)">✉️</div>
+      <div class="doc-name">Lettre d'embauche<small>Proposition officielle</small></div>
+      <span class="doc-arrow">›</span>
+    </button>
+
+    <button class="doc-btn" onclick="setDoc('renouvellement')" id="btn-renouvellement">
+      <div class="doc-icon" style="background:rgba(201,168,76,0.15)">🔄</div>
+      <div class="doc-name">Renouvellement de contrat<small>Lettre de renouvellement</small></div>
+      <span class="doc-arrow">›</span>
+    </button>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+    <!-- Contenu injecté par JS -->
+  </main>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// ÉTAT
+// ─────────────────────────────────────────────
+let currentDoc = 'cdi';
+const state = {};
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function setDoc(type) {
+  currentDoc = type;
+  document.querySelectorAll('.doc-btn').forEach(b => b.classList.remove('active'));
+  const btnId = (type === 'cdi' || type === 'cdd') ? 'btn-contrat' : 'btn-' + type;
+  const btn = document.getElementById(btnId);
+  if (btn) btn.classList.add('active');
+  renderForm(type);
+}
+
+// ─────────────────────────────────────────────
+// CHAMPS COMMUNS EMPLOYEUR / EMPLOYÉ
+// ─────────────────────────────────────────────
+const fieldsEmployeur = `
+  <div class="form-grid">
+    <div class="field"><label>Raison sociale *</label><input type="text" id="emp-raison" placeholder="Ex: SARL BENIN TECH" oninput="updatePreview()"/></div>
+    <div class="field"><label>Forme juridique</label><input type="text" id="emp-forme" placeholder="Ex: SARL, SA, ONG..." oninput="updatePreview()"/></div>
+    <div class="field"><label>N° RCCM / IFU</label><input type="text" id="emp-rccm" placeholder="Numéro d'immatriculation" oninput="updatePreview()"/></div>
+    <div class="field"><label>Siège social</label><input type="text" id="emp-siege" placeholder="Adresse complète" oninput="updatePreview()"/></div>
+    <div class="field"><label>Représentant légal</label><input type="text" id="emp-rep" placeholder="Nom du DG / Directeur" oninput="updatePreview()"/></div>
+    <div class="field"><label>Qualité du représentant</label><input type="text" id="emp-qual" placeholder="Ex: Directeur Général" oninput="updatePreview()"/></div>
+  </div>`;
+
+const fieldsEmploye = `
+  <div class="form-grid">
+    <div class="field"><label>Nom *</label><input type="text" id="sal-nom" placeholder="Nom de famille" oninput="updatePreview()"/></div>
+    <div class="field"><label>Prénom(s) *</label><input type="text" id="sal-prenom" placeholder="Prénom(s)" oninput="updatePreview()"/></div>
+    <div class="field"><label>Date de naissance</label><input type="date" id="sal-ddn" oninput="updatePreview()"/></div>
+    <div class="field"><label>Lieu de naissance</label><input type="text" id="sal-lieu-nais" placeholder="Ville, Pays" oninput="updatePreview()"/></div>
+    <div class="field"><label>Nationalité</label><input type="text" id="sal-nat" placeholder="Ex: Béninoise" oninput="updatePreview()"/></div>
+    <div class="field"><label>N° pièce d'identité</label><input type="text" id="sal-pi" placeholder="CIN / Passeport" oninput="updatePreview()"/></div>
+    <div class="field"><label>Adresse de résidence</label><input type="text" id="sal-adresse" placeholder="Adresse complète" oninput="updatePreview()"/></div>
+    <div class="field"><label>Téléphone</label><input type="text" id="sal-tel" placeholder="+229..." oninput="updatePreview()"/></div>
+  </div>`;
+
+const fieldsPoste = (extra='') => `
+  <div class="form-grid">
+    <div class="field"><label>Intitulé du poste *</label><input type="text" id="poste-titre" placeholder="Ex: Responsable Commercial" oninput="updatePreview()"/></div>
+    <div class="field"><label>Département / Service</label><input type="text" id="poste-dept" placeholder="Ex: Direction Commerciale" oninput="updatePreview()"/></div>
+    <div class="field"><label>Lieu de travail</label><input type="text" id="poste-lieu" placeholder="Ex: Cotonou, Bénin" oninput="updatePreview()"/></div>
+    <div class="field"><label>Classification / Catégorie</label><input type="text" id="poste-cat" placeholder="Ex: Cadre, Agent de maîtrise..." oninput="updatePreview()"/></div>
+    ${extra}
+  </div>`;
+
+const fieldsRemuneration = (showPrime=true) => `
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;font-family:var(--fb)">
+      <thead>
+        <tr style="background:var(--noir);color:var(--or)">
+          <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:60%">Composante salariale</th>
+          <th style="padding:9px 12px;text-align:right;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:40%">Montant (FCFA)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--gris3)">
+          <td style="padding:9px 12px"><label style="font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">Salaire Catégoriel</label>
+            <div style="font-size:11px;color:var(--gris);font-style:italic">Selon grille de classification conventionnelle</div></td>
+          <td style="padding:9px 12px;text-align:right"><input type="text" id="rem-categoriel" placeholder="0" style="text-align:right;width:140px;font-family:var(--fb);font-size:13px;color:var(--noir);background:var(--fond);border:1px solid var(--gris3);border-radius:var(--r);padding:7px 10px;outline:none" oninput="calcBrut()"/></td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gris3)">
+          <td style="padding:9px 12px"><label style="font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">Sursalaire</label>
+            <div style="font-size:11px;color:var(--gris);font-style:italic">Complément au-delà du salaire catégoriel</div></td>
+          <td style="padding:9px 12px;text-align:right"><input type="text" id="rem-sursalaire" placeholder="0" style="text-align:right;width:140px;font-family:var(--fb);font-size:13px;color:var(--noir);background:var(--fond);border:1px solid var(--gris3);border-radius:var(--r);padding:7px 10px;outline:none" oninput="calcBrut()"/></td>
+        </tr>
+        <tr style="background:#fafaf8;border-bottom:2px solid var(--or)">
+          <td style="padding:9px 12px"><label style="font-size:11px;font-weight:700;color:var(--noir);text-transform:uppercase;letter-spacing:.08em">= Salaire de Base</label>
+            <div style="font-size:11px;color:var(--gris);font-style:italic">Catégoriel + Sursalaire (calculé auto)</div></td>
+          <td style="padding:9px 12px;text-align:right"><input type="text" id="rem-base" placeholder="0" readonly style="text-align:right;width:140px;font-family:var(--fb);font-size:13px;font-weight:700;color:var(--bleu);background:#e8f0fb;border:1px solid #b3cef0;border-radius:var(--r);padding:7px 10px;outline:none;cursor:default"/></td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gris3)">
+          <td style="padding:9px 12px"><label style="font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">Prime d'ancienneté</label>
+            <div style="font-size:11px;color:var(--gris);font-style:italic">5% du salaire de base par tranche de 2 ans</div></td>
+          <td style="padding:9px 12px;text-align:right"><input type="text" id="rem-anciennete" placeholder="0" style="text-align:right;width:140px;font-family:var(--fb);font-size:13px;color:var(--noir);background:var(--fond);border:1px solid var(--gris3);border-radius:var(--r);padding:7px 10px;outline:none" oninput="calcBrut()"/></td>
+        </tr>
+        <tbody id="primes-rows-container"> </tbody>
+        <tr>
+          <td colspan="2" style="padding:6px 12px;border-bottom:1px solid var(--gris3)">
+            <button type="button" onclick="addPrime()" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:none;border:1px dashed var(--or);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--or);cursor:pointer;font-family:var(--fb);transition:all .15s" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='none'">
+              + Ajouter une prime
+            </button>
+          </td>
+        </tr>
+        <tr style="background:var(--noir)">
+          <td style="padding:11px 12px"><label style="font-size:12px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em">SALAIRE BRUT TOTAL</label></td>
+          <td style="padding:11px 12px;text-align:right"><input type="text" id="rem-salaire" readonly style="text-align:right;width:140px;font-family:var(--fb);font-size:15px;font-weight:700;color:var(--or);background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:var(--r);padding:7px 10px;outline:none;cursor:default"/></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="form-grid" style="margin-top:12px">
+    <div class="field"><label>Mode de paiement</label>
+      <select id="rem-mode" onchange="updatePreview()">
+        <option>Virement bancaire</option><option>Espèces</option><option>Mobile Money</option><option>Chèque</option>
+      </select>
+    </div>
+    <div class="field"><label>Avantages en nature (optionnel)</label>
+      <input type="text" id="rem-avantages" placeholder="Ex: Véhicule, logement de fonction..." oninput="updatePreview()"/>
+    </div>
+  </div>`;
+
+// ─────────────────────────────────────────────
+// FORMULAIRES PAR TYPE
+// ─────────────────────────────────────────────
+const forms = {
+
+  contrat: () => `
+    <div class="step-header">
+      <div class="step-tag">📄 Contrat de travail</div>
+      <h1 class="step-title">Contrat de Travail</h1>
+      <p class="step-desc">Contrat conforme au Code du Travail béninois (Loi n°98-004 du 27 janvier 1998), à la Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale, et aux textes réglementaires en vigueur. Choisissez le type ci-dessous.</p>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">⚖️</span>Type de contrat</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0.5rem">
+        <div id="type-cdi-card" onclick="selectContratType('cdi')" style="border:2px solid var(--or);border-radius:var(--rl);padding:1.2rem;cursor:pointer;background:rgba(201,168,76,0.06);transition:all .2s">
+          <div style="font-size:22px;margin-bottom:6px">📄</div>
+          <div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--noir)">CDI</div>
+          <div style="font-size:12px;color:var(--gris);margin-top:3px">Contrat à Durée Indéterminée</div>
+          <div style="margin-top:8px;font-size:11px;color:var(--bleu)">✓ Sélectionné</div>
+        </div>
+        <div id="type-cdd-card" onclick="selectContratType('cdd')" style="border:1px solid var(--gris3);border-radius:var(--rl);padding:1.2rem;cursor:pointer;background:white;transition:all .2s">
+          <div style="font-size:22px;margin-bottom:6px">📋</div>
+          <div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--noir)">CDD</div>
+          <div style="font-size:12px;color:var(--gris);margin-top:3px">Contrat à Durée Déterminée</div>
+          <div style="margin-top:8px;font-size:11px;color:transparent">·</div>
+        </div>
+      </div>
+      <input type="hidden" id="contrat-type-sel" value="cdi"/>
+    </div> <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>Informations sur l'employeur</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Informations sur le salarié</div>
+      ${fieldsEmploye}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💼</span>Poste & conditions de travail</div>
+      <div class="form-grid">
+        <div class="field"><label>Intitulé du poste *</label><input type="text" id="poste-titre" placeholder="Ex: Responsable Commercial" oninput="updatePreview()"/></div>
+        <div class="field"><label>Département / Service</label><input type="text" id="poste-dept" placeholder="Ex: Direction Commerciale" oninput="updatePreview()"/></div>
+        <div class="field"><label>Lieu de travail</label><input type="text" id="poste-lieu" placeholder="Ex: Cotonou, Bénin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Classification / Catégorie</label><input type="text" id="poste-cat" placeholder="Ex: Cadre, Agent de maîtrise..." oninput="updatePreview()"/></div>
+        <div class="field"><label>Durée hebdomadaire</label>
+          <select id="poste-duree" onchange="updatePreview()">
+            <option>40 heures</option><option>45 heures</option><option>48 heures (légal max)</option><option>Autre</option>
+          </select>
+        </div>
+        <div class="field"><label>Date de prise de fonction *</label><input type="date" id="poste-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Période d'essai</label>
+          <select id="poste-essai" onchange="updatePreview()">
+            <option>1 mois</option><option>2 mois</option><option>3 mois</option><option>6 mois (cadres)</option><option>15 jours</option><option>Sans période d'essai</option>
+          </select>
+        </div> <div id="cdd-only-fields" style="display:none;contents">
+          <div class="field"><label>Date de fin du contrat *</label><input type="date" id="cdd-fin" oninput="updatePreview()"/></div>
+          <div class="field"><label>Motif du CDD *</label>
+            <select id="cdd-motif" onchange="updatePreview()">
+              <option>Remplacement d'un salarié absent</option>
+              <option>Accroissement temporaire d'activité</option>
+              <option>Emploi saisonnier</option>
+              <option>Projet à durée déterminée</option>
+              <option>Autre motif</option>
+            </select>
+          </div>
+        </div> <div id="cdi-only-fields" style="display:contents">
+          <div class="field"><label>Renouvellement période d'essai</label>
+            <select id="poste-essai-renouv" onchange="updatePreview()">
+              <option>Renouvelable une fois</option><option>Non renouvelable</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💰</span>Structure salariale</div>
+      ${fieldsRemuneration()}
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">⚙️</span>Clauses & Signature</div>
+      <div class="form-grid">
+        <div class="field"><label>Clause de non-concurrence</label>
+          <select id="cl-nonconc" onchange="updatePreview()">
+            <option value="non">Non applicable</option>
+            <option value="oui">Oui — inclure la clause</option>
+          </select>
+        </div>
+        <div class="field"><label>Clause de confidentialité</label>
+          <select id="cl-conf" onchange="updatePreview()">
+            <option value="oui">Oui — inclure la clause</option>
+            <option value="non">Non</option>
+          </select>
+        </div>
+        <div class="field form-full"><label>Clauses spécifiques / remarques</label>
+          <textarea id="cl-autres" placeholder="Ajoutez ici toute clause particulière..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Ex: Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Droit applicable (personnalisable)</label><input type="text" id="droit" value="Code du Travail béninois (Loi n°98-004 du 27 janvier 1998) + Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N MTFP — Numéro</label><input type="text" id="sn-numero" placeholder="Ex: 0042" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N — Date (JJ/MM/AAAA)</label><input type="text" id="sn-date-full" placeholder="Ex: 15/03/2025" oninput="updatePreview()"/></div>
+        <div class="field form-full" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:12px;margin-top:4px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:10px">👤 3ᵉ Signataire — Direction Générale du Travail</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field"><label>Titre (La Directrice / Le Directeur...)</label><input type="text" id="dgt-titre" value="La Directrice Générale du Travail" oninput="updatePreview()"/></div>
+            <div class="field"><label>Nom complet</label><input type="text" id="dgt-nom" value="Mireille C. LEGBA ADANKON" oninput="updatePreview()"/></div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+
+  cdi: () => `
+    <div class="step-header">
+      <div class="step-tag">📄 Contrat de travail</div>
+      <h1 class="step-title">CDI — Contrat à Durée Indéterminée</h1>
+      <p class="step-desc">Contrat conforme au Code du Travail de la République du Bénin (Loi n°98-004 du 27 janvier 1998 et ses modifications).</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>Informations sur l'employeur</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Informations sur le salarié</div>
+      ${fieldsEmploye}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💼</span>Poste & conditions de travail</div>
+      ${fieldsPoste(`
+        <div class="field"><label>Durée hebdomadaire</label>
+          <select id="poste-duree" onchange="updatePreview()">
+            <option>40 heures</option><option>45 heures</option><option>48 heures (légal max)</option><option>Autre</option>
+          </select>
+        </div>
+        <div class="field"><label>Date de prise de fonction *</label><input type="date" id="poste-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Période d'essai</label>
+          <select id="poste-essai" onchange="updatePreview()">
+            <option>1 mois</option><option>2 mois</option><option>3 mois</option><option>6 mois (cadres)</option><option>Sans période d'essai</option>
+          </select>
+        </div>
+        <div class="field"><label>Renouvellement période d'essai</label>
+          <select id="poste-essai-renouv" onchange="updatePreview()">
+            <option>Renouvelable une fois</option><option>Non renouvelable</option>
+          </select>
+        </div>
+      `)}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💰</span>Rémunération</div>
+      ${fieldsRemuneration()}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">⚙️</span>Clauses complémentaires</div>
+      <div class="form-grid">
+        <div class="field"><label>Clause de non-concurrence</label>
+          <select id="cl-nonconc" onchange="updatePreview()">
+            <option value="non">Non applicable</option>
+            <option value="oui">Oui — inclure la clause</option>
+          </select>
+        </div>
+        <div class="field"><label>Clause de confidentialité</label>
+          <select id="cl-conf" onchange="updatePreview()">
+            <option value="oui">Oui — inclure la clause</option>
+            <option value="non">Non</option>
+          </select>
+        </div>
+        <div class="field form-full"><label>Clauses spécifiques / remarques</label>
+          <textarea id="cl-autres" placeholder="Ajoutez ici toute clause particulière..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Ex: Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Droit applicable (personnalisable)</label><input type="text" id="droit" value="Code du Travail béninois (Loi n°98-004 du 27 janvier 1998) + Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N MTFP — Numéro</label><input type="text" id="sn-numero" placeholder="Ex: 0042" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N — Date (JJ/MM/AAAA)</label><input type="text" id="sn-date-full" placeholder="Ex: 15/03/2025" oninput="updatePreview()"/></div>
+        <div class="field form-full" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:12px;margin-top:4px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:10px">👤 3ᵉ Signataire — Direction Générale du Travail</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field"><label>Titre (La Directrice / Le Directeur...)</label><input type="text" id="dgt-titre" value="La Directrice Générale du Travail" oninput="updatePreview()"/></div>
+            <div class="field"><label>Nom complet</label><input type="text" id="dgt-nom" value="Mireille C. LEGBA ADANKON" oninput="updatePreview()"/></div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+
+  cdd: () => `
+    <div class="step-header">
+      <div class="step-tag">📋 Contrat de travail</div>
+      <h1 class="step-title">CDD — Contrat à Durée Déterminée</h1>
+      <p class="step-desc">Contrat à durée déterminée conforme au Code du Travail béninois. Durée maximale de 2 ans, renouvelable une fois.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>Informations sur l'employeur</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Informations sur le salarié</div>
+      ${fieldsEmploye}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💼</span>Poste & durée du contrat</div>
+      ${fieldsPoste(`
+        <div class="field"><label>Date de début *</label><input type="date" id="cdd-debut" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de fin *</label><input type="date" id="cdd-fin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Motif du CDD *</label>
+          <select id="cdd-motif" onchange="updatePreview()">
+            <option>Remplacement d'un salarié absent</option>
+            <option>Accroissement temporaire d'activité</option>
+            <option>Emploi saisonnier</option>
+            <option>Projet à durée déterminée</option>
+            <option>Autre motif</option>
+          </select>
+        </div>
+        <div class="field"><label>Période d'essai</label>
+          <select id="cdd-essai" onchange="updatePreview()">
+            <option>15 jours</option><option>1 mois</option><option>Sans période d'essai</option>
+          </select>
+        </div>
+      `)}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💰</span>Rémunération</div>
+      ${fieldsRemuneration()}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">⚙️</span>Clauses & signature</div>
+      <div class="form-grid">
+        <div class="field"><label>Clause de confidentialité</label>
+          <select id="cl-conf" onchange="updatePreview()"><option value="oui">Oui</option><option value="non">Non</option></select>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Droit applicable</label><input type="text" id="droit" value="Code du Travail béninois (Loi n°98-004 du 27 janvier 1998) + Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N MTFP — Numéro</label><input type="text" id="sn-numero" placeholder="Ex: 0042" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N — Date (JJ/MM/AAAA)</label><input type="text" id="sn-date-full" placeholder="Ex: 15/03/2025" oninput="updatePreview()"/></div>
+        <div class="field form-full" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:12px;margin-top:4px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:10px">👤 3ᵉ Signataire — Direction Générale du Travail</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field"><label>Titre</label><input type="text" id="dgt-titre" value="La Directrice Générale du Travail" oninput="updatePreview()"/></div>
+            <div class="field"><label>Nom complet</label><input type="text" id="dgt-nom" value="Mireille C. LEGBA ADANKON" oninput="updatePreview()"/></div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+
+  stage: () => `
+    <div class="step-header">
+      <div class="step-tag">🎓 Convention</div>
+      <h1 class="step-title">Convention de Stage / Apprentissage</h1>
+      <p class="step-desc">Convention tripartite entre l'entreprise, l'établissement d'enseignement et le stagiaire.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>L'entreprise d'accueil</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏫</span>L'établissement d'enseignement</div>
+      <div class="form-grid">
+        <div class="field"><label>Nom de l'établissement</label><input type="text" id="etab-nom" placeholder="Ex: Université d'Abomey-Calavi" oninput="updatePreview()"/></div>
+        <div class="field"><label>Adresse</label><input type="text" id="etab-adresse" placeholder="Adresse de l'établissement" oninput="updatePreview()"/></div>
+        <div class="field"><label>Responsable pédagogique</label><input type="text" id="etab-resp" placeholder="Nom du responsable" oninput="updatePreview()"/></div>
+        <div class="field"><label>Filière / Spécialité</label><input type="text" id="etab-filiere" placeholder="Ex: Master RH, BTS Commerce" oninput="updatePreview()"/></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Le stagiaire</div>
+      ${fieldsEmploye}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">📅</span>Modalités du stage</div>
+      <div class="form-grid">
+        <div class="field"><label>Intitulé du stage</label><input type="text" id="stage-titre" placeholder="Ex: Stage en gestion RH" oninput="updatePreview()"/></div>
+        <div class="field"><label>Tuteur en entreprise</label><input type="text" id="stage-tuteur" placeholder="Nom du tuteur" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de début</label><input type="date" id="stage-debut" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de fin</label><input type="date" id="stage-fin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Horaires</label><input type="text" id="stage-horaires" placeholder="Ex: 8h00 – 17h00" oninput="updatePreview()"/></div>
+        <div class="field"><label>Gratification mensuelle (FCFA)</label><input type="text" id="stage-grat" placeholder="Ex: 50 000 (ou 0 si non rémunéré)" oninput="updatePreview()"/></div>
+        <div class="field form-full"><label>Objectifs / Missions du stage</label>
+          <textarea id="stage-missions" placeholder="Décrivez les missions confiées au stagiaire..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+      </div>
+    </div>`,
+
+  prestation: () => `
+    <div class="step-header">
+      <div class="step-tag">🤝 Contrat commercial</div>
+      <h1 class="step-title">Contrat de Prestation de Services</h1>
+      <p class="step-desc">Contrat entre une entreprise cliente et un prestataire ou consultant indépendant.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>Le client (donneur d'ordre)</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👔</span>Le prestataire / Consultant</div>
+      <div class="form-grid">
+        <div class="field"><label>Nom / Raison sociale</label><input type="text" id="prest-nom" placeholder="Nom ou société" oninput="updatePreview()"/></div>
+        <div class="field"><label>Statut juridique</label><input type="text" id="prest-statut" placeholder="Ex: Entrepreneur individuel, SARL..." oninput="updatePreview()"/></div>
+        <div class="field"><label>N° RCCM / IFU</label><input type="text" id="prest-rccm" placeholder="Numéro d'immatriculation" oninput="updatePreview()"/></div>
+        <div class="field"><label>Adresse</label><input type="text" id="prest-adresse" placeholder="Adresse complète" oninput="updatePreview()"/></div>
+        <div class="field"><label>Téléphone</label><input type="text" id="prest-tel" oninput="updatePreview()"/></div>
+        <div class="field"><label>Email</label><input type="email" id="prest-email" oninput="updatePreview()"/></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">📋</span>Objet & conditions de la mission</div>
+      <div class="form-grid">
+        <div class="field form-full"><label>Objet de la mission *</label>
+          <textarea id="prest-objet" placeholder="Décrivez précisément la mission confiée..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field"><label>Date de début</label><input type="date" id="prest-debut" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de fin</label><input type="date" id="prest-fin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Lieu d'exécution</label><input type="text" id="prest-lieu" placeholder="Ex: Cotonou / À distance" oninput="updatePreview()"/></div>
+        <div class="field"><label>Livrables attendus</label><input type="text" id="prest-livrables" placeholder="Ex: Rapport, présentation, code..." oninput="updatePreview()"/></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💰</span>Honoraires & paiement</div>
+      <div class="form-grid">
+        <div class="field"><label>Montant total HT (FCFA)</label><input type="text" id="prest-montant" placeholder="Ex: 500 000" oninput="updatePreview()"/></div>
+        <div class="field"><label>Modalité de paiement</label>
+          <select id="prest-paiement" onchange="updatePreview()">
+            <option>100% à la livraison</option>
+            <option>50% à la signature, 50% à la livraison</option>
+            <option>30% début, 70% livraison</option>
+            <option>Mensuel</option>
+          </select>
+        </div>
+        <div class="field"><label>Clause de confidentialité</label>
+          <select id="cl-conf" onchange="updatePreview()"><option value="oui">Oui</option><option value="non">Non</option></select>
+        </div>
+        <div class="field"><label>Propriété intellectuelle</label>
+          <select id="prest-pi" onchange="updatePreview()">
+            <option>Cédée au client à la livraison</option>
+            <option>Conservée par le prestataire</option>
+            <option>Licence d'utilisation accordée</option>
+          </select>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+      </div>
+    </div>`,
+
+  expatrie: () => `
+    <div class="step-header">
+      <div class="step-tag">✈️ Contrat international</div>
+      <h1 class="step-title">CDD Expatrié</h1>
+      <p class="step-desc">Contrat pour collaborateur expatrié basé au Bénin. Inclut les spécificités d'expatriation et les avantages liés.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>L'employeur</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">✈️</span>L'expatrié</div>
+      ${fieldsEmploye}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💼</span>Poste & durée de la mission</div>
+      ${fieldsPoste(`
+        <div class="field"><label>Date de début</label><input type="date" id="exp-debut" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de fin</label><input type="date" id="exp-fin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Pays d'expatriation</label><input type="text" id="exp-pays" value="Bénin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Ville</label><input type="text" id="exp-ville-trav" placeholder="Cotonou" oninput="updatePreview()"/></div>
+      `)}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💰</span>Package de rémunération expatrié</div>
+      <div class="form-grid">
+        <div class="field"><label>Salaire brut mensuel (FCFA)</label><input type="text" id="rem-salaire" placeholder="Ex: 800 000" oninput="updatePreview()"/></div>
+        <div class="field"><label>Devise de paiement</label>
+          <select id="exp-devise" onchange="updatePreview()">
+            <option>FCFA (XOF)</option><option>EUR (€)</option><option>USD ($)</option>
+          </select>
+        </div>
+        <div class="field"><label>Indemnité d'expatriation</label><input type="text" id="exp-indem" placeholder="Ex: 200 000 FCFA / mois" oninput="updatePreview()"/></div>
+        <div class="field"><label>Logement</label>
+          <select id="exp-logement" onchange="updatePreview()">
+            <option>Fourni par l'employeur</option><option>Indemnité de logement</option><option>Non pris en charge</option>
+          </select>
+        </div>
+        <div class="field"><label>Billet(s) d'avion A/R</label>
+          <select id="exp-billet" onchange="updatePreview()">
+            <option>1 A/R par an à la charge de l'employeur</option>
+            <option>2 A/R par an à la charge de l'employeur</option>
+            <option>Non prévu</option>
+          </select>
+        </div>
+        <div class="field"><label>Assurance maladie</label>
+          <select id="exp-assur" onchange="updatePreview()">
+            <option>Couverture internationale complète</option>
+            <option>Couverture locale</option>
+            <option>À la charge du salarié</option>
+          </select>
+        </div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de signature</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Droit applicable</label><input type="text" id="droit" value="Droit béninois + Convention d'expatriation" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N MTFP — Numéro</label><input type="text" id="sn-numero" placeholder="Ex: 0042" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence S/N — Date (JJ/MM/AAAA)</label><input type="text" id="sn-date-full" placeholder="Ex: 15/03/2025" oninput="updatePreview()"/></div>
+        <div class="field form-full" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:12px;margin-top:4px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:10px">👤 3ᵉ Signataire — Direction Générale du Travail</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field"><label>Titre</label><input type="text" id="dgt-titre" value="La Directrice Générale du Travail" oninput="updatePreview()"/></div>
+            <div class="field"><label>Nom complet</label><input type="text" id="dgt-nom" value="Mireille C. LEGBA ADANKON" oninput="updatePreview()"/></div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+
+  embauche: () => `
+    <div class="step-header">
+      <div class="step-tag">✉️ Courrier RH</div>
+      <h1 class="step-title">Lettre d'Embauche</h1>
+      <p class="step-desc">Lettre officielle informant le candidat retenu de son recrutement. Précède la signature du contrat.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>L'entreprise</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Le candidat retenu</div>
+      <div class="form-grid">
+        <div class="field"><label>Nom *</label><input type="text" id="sal-nom" placeholder="Nom de famille" oninput="updatePreview()"/></div>
+        <div class="field"><label>Prénom(s) *</label><input type="text" id="sal-prenom" placeholder="Prénom(s)" oninput="updatePreview()"/></div>
+        <div class="field"><label>Adresse</label><input type="text" id="sal-adresse" placeholder="Adresse complète" oninput="updatePreview()"/></div>
+        <div class="field"><label>Email</label><input type="email" id="sal-email" oninput="updatePreview()"/></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">💼</span>Conditions du poste proposé</div>
+      <div class="form-grid">
+        <div class="field"><label>Intitulé du poste *</label><input type="text" id="poste-titre" placeholder="Ex: Responsable RH" oninput="updatePreview()"/></div>
+        <div class="field"><label>Département</label><input type="text" id="poste-dept" placeholder="Ex: Direction des Ressources Humaines" oninput="updatePreview()"/></div>
+        <div class="field"><label>Type de contrat proposé</label>
+          <select id="emb-type" onchange="updatePreview()">
+            <option>CDI</option><option>CDD</option><option>Stage</option><option>Prestation</option>
+          </select>
+        </div>
+        <div class="field"><label>Date de prise de fonction</label><input type="date" id="poste-date" oninput="updatePreview()"/></div>
+        <div class="field"><label>Salaire brut proposé (FCFA)</label><input type="text" id="rem-salaire" placeholder="Ex: 300 000" oninput="updatePreview()"/></div>
+        <div class="field"><label>Période d'essai</label>
+          <select id="poste-essai" onchange="updatePreview()">
+            <option>1 mois</option><option>2 mois</option><option>3 mois</option><option>Sans période d'essai</option>
+          </select>
+        </div>
+        <div class="field"><label>Date limite de réponse</label><input type="date" id="emb-limite" oninput="updatePreview()"/></div>
+        <div class="field"><label>Référence du recrutement</label><input type="text" id="emb-ref" placeholder="Ex: Réf. RH-2025-001" oninput="updatePreview()"/></div>
+        <div class="field"><label>Ville de signature</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de la lettre</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+      </div>
+    </div>`,
+
+  renouvellement: () => `
+    <div class="step-header">
+      <div class="step-tag">🔄 Courrier RH</div>
+      <h1 class="step-title">Lettre de Renouvellement de Contrat</h1>
+      <p class="step-desc">Notification officielle de renouvellement d'un CDD ou d'une convention de stage.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">🏢</span>L'employeur</div>
+      ${fieldsEmployeur}
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👤</span>Le salarié</div>
+      <div class="form-grid">
+        <div class="field"><label>Nom *</label><input type="text" id="sal-nom" oninput="updatePreview()"/></div>
+        <div class="field"><label>Prénom(s) *</label><input type="text" id="sal-prenom" oninput="updatePreview()"/></div>
+        <div class="field"><label>Poste occupé</label><input type="text" id="poste-titre" placeholder="Ex: Assistant RH" oninput="updatePreview()"/></div>
+        <div class="field"><label>Département</label><input type="text" id="poste-dept" oninput="updatePreview()"/></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">📅</span>Modalités du renouvellement</div>
+      <div class="form-grid">
+        <div class="field"><label>Type de contrat renouvelé</label>
+          <select id="renouv-type" onchange="updatePreview()">
+            <option>CDD</option><option>Convention de stage</option><option>Contrat de prestation</option>
+          </select>
+        </div>
+        <div class="field"><label>Numéro / référence du contrat initial</label><input type="text" id="renouv-ref" placeholder="Ex: CDD-2024-012" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de fin du contrat initial</label><input type="date" id="renouv-fin-init" oninput="updatePreview()"/></div>
+        <div class="field"><label>Nouvelle date de début</label><input type="date" id="renouv-debut" oninput="updatePreview()"/></div>
+        <div class="field"><label>Nouvelle date de fin</label><input type="date" id="renouv-fin" oninput="updatePreview()"/></div>
+        <div class="field"><label>Nouveau salaire brut (FCFA)</label><input type="text" id="rem-salaire" placeholder="Laisser vide si inchangé" oninput="updatePreview()"/></div>
+        <div class="field"><label>Modification du poste ?</label>
+          <select id="renouv-modif" onchange="updatePreview()">
+            <option value="non">Aucune modification</option>
+            <option value="oui">Oui — poste ou conditions modifiés</option>
+          </select>
+        </div>
+        <div class="field"><label>Date limite d'acceptation</label><input type="date" id="renouv-limite" oninput="updatePreview()"/></div>
+        <div class="field"><label>Ville</label><input type="text" id="sign-ville" placeholder="Cotonou" oninput="updatePreview()"/></div>
+        <div class="field"><label>Date de la lettre</label><input type="date" id="sign-date" oninput="updatePreview()"/></div>
+      </div>
+    </div>`
+};
+
+// ─────────────────────────────────────────────
+// GÉNÉRATEURS DE CONTENU PREVIEW
+// ─────────────────────────────────────────────
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function fmtDate(d) {
+  if (!d) return '_______________';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function selectContratType(type) {
+  const el = document.getElementById('contrat-type-sel');
+  if (el) el.value = type;
+
+  // Visuels des cartes
+  const cdiCard = document.getElementById('type-cdi-card');
+  const cddCard = document.getElementById('type-cdd-card');
+  if (cdiCard && cddCard) {
+    if (type === 'cdi') {
+      cdiCard.style.border = '2px solid var(--or)';
+      cdiCard.style.background = 'rgba(201,168,76,0.06)';
+      cdiCard.querySelector('div:last-child').style.color = 'var(--bleu)';
+      cdiCard.querySelector('div:last-child').textContent = '✓ Sélectionné';
+      cddCard.style.border = '1px solid var(--gris3)';
+      cddCard.style.background = 'white';
+      cddCard.querySelector('div:last-child').style.color = 'transparent';
+      cddCard.querySelector('div:last-child').textContent = '·';
+    } else {
+      cddCard.style.border = '2px solid var(--or)';
+      cddCard.style.background = 'rgba(201,168,76,0.06)';
+      cddCard.querySelector('div:last-child').style.color = 'var(--bleu)';
+      cddCard.querySelector('div:last-child').textContent = '✓ Sélectionné';
+      cdiCard.style.border = '1px solid var(--gris3)';
+      cdiCard.style.background = 'white';
+      cdiCard.querySelector('div:last-child').style.color = 'transparent';
+      cdiCard.querySelector('div:last-child').textContent = '·';
+    }
+  }
+
+  // Afficher/masquer champs spécifiques
+  const cddOnly = document.getElementById('cdd-only-fields');
+  const cdiOnly = document.getElementById('cdi-only-fields');
+  if (cddOnly) cddOnly.style.display = type === 'cdd' ? 'contents' : 'none';
+  if (cdiOnly) cdiOnly.style.display = type === 'cdi' ? 'contents' : 'none';
+
+  updatePreview();
+}
+
+function dgtBlock() {
+  const snNum  = v('sn-numero')   || '______';
+  const snDate = v('sn-date-full')|| '__ / __ / ______';
+  const dgtTitre = v('dgt-titre') || 'La Directrice Générale du Travail';
+  const dgtNom   = v('dgt-nom')   || 'Mireille C. LEGBA ADANKON';
+  return `
+    <div style="margin-top:2.5rem"> <div class="sign-block">
+        <div class="sign-col" id="sign-emp-slot"></div>
+        <div class="sign-col" id="sign-sal-slot"></div>
+      </div> <div style="margin-top:2.5rem;text-align:center;max-width:420px;margin-left:auto;margin-right:auto">
+        <div style="font-size:12px;line-height:1.9;padding:18px 28px;background:#f8f8f8;border:1px solid #E5E3DC;border-top:3px solid #C9A84C;display:inline-block;min-width:360px;text-align:center">
+          <div style="font-family:monospace;font-size:11px;color:#666;margin-bottom:16px;text-align:center">S/N ${snNum} / MTFP/DC/DGT/DRPDS/SMO du ${snDate}</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:6px;text-align:center">Vu,</div>
+          <div style="font-size:12px;font-style:italic;margin-bottom:4px;text-align:center">${dgtTitre}</div>
+          <div style="font-weight:700;font-size:13px;text-decoration:underline;margin-bottom:32px;text-align:center">${dgtNom}</div>
+          <div style="border-top:1px solid #bbb;padding-top:8px;font-size:11px;color:#888;letter-spacing:.05em;text-align:center">Signature &amp; Cachet officiel</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+const generators = {
+
+  contrat: () => {
+    const type = v('contrat-type-sel') || 'cdi';
+    return generators[type]();
+  },
+
+  cdi: () => {
+    const emp = v('emp-raison')||'[EMPLOYEUR]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const empSiege = v('emp-siege')||'[Siège social]', empRCCM = v('emp-rccm');
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const salNat = v('sal-nat')||'[Nationalité]', salAdresse = v('sal-adresse')||'[Adresse]';
+    const salDdn = fmtDate(v('sal-ddn')), salLieu = v('sal-lieu-nais')||'[Lieu nais.]';
+    const poste = v('poste-titre')||'[Poste]', dept = v('poste-dept'), lieu = v('poste-lieu')||'Cotonou';
+    const cat = v('poste-cat'), duree = v('poste-duree')||'40 heures', essai = v('poste-essai')||'1 mois';
+    const essaiRenouv = v('poste-essai-renouv')||'Renouvelable une fois';
+    const dateDebut = fmtDate(v('poste-date')), salaire = v('rem-salaire')||'[Salaire]';
+    const mode = v('rem-mode')||'virement bancaire', prime = v('rem-prime'), avantages = v('rem-avantages');
+    const nonConc = v('cl-nonconc')==='oui', conf = v('cl-conf')!=='non';
+    const autres = v('cl-autres'), signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+    const droit = v('droit')||'Code du Travail béninois (Loi n°98-004 du 27 janvier 1998) + Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin';
+
+    return `
+      <h1>Contrat de Travail à Durée Indéterminée</h1>
+      <p style="text-align:center;font-size:11px;color:#888;margin-bottom:1rem">Droit applicable : ${droit}</p>
+
+      <p>Entre les soussignés :</p>
+      <div class="highlight">
+        <strong>${emp}</strong>${empRCCM?`, immatriculée sous le n° ${empRCCM},`:','} dont le siège social est situé à ${empSiege},
+        représentée par <strong>M./Mme ${empRep}</strong>, en qualité de ${empQual}, ci-après dénommée <em>« l'Employeur »</em>
+      </div>
+      <p style="text-align:center;font-size:13px;font-weight:600;margin:10px 0">— D'UNE PART —</p>
+      <div class="highlight">
+        <strong>M./Mme ${sal}</strong>, de nationalité ${salNat}, né(e) le ${salDdn} à ${salLieu},
+        demeurant à ${salAdresse}, ci-après dénommé(e) <em>« le Salarié »</em>
+      </div>
+      <p style="text-align:center;font-size:13px;font-weight:600;margin:10px 0">— D'AUTRE PART —</p>
+      <p>Il a été convenu et arrêté ce qui suit :</p>
+
+      <h2>Article 1 — Engagement</h2>
+      <div class="article">
+        <p>L'Employeur engage M./Mme <strong>${sal}</strong> en qualité de <strong>${poste}</strong>${dept?`, au sein du ${dept},`:','} à compter du <strong>${dateDebut}</strong>, dans le cadre d'un contrat à durée indéterminée régi par les dispositions du Code du Travail de la République du Bénin.${cat?` Le salarié est classé dans la catégorie : <strong>${cat}</strong>.`:''}</p>
+      </div>
+
+      <h2>Article 2 — Période d'essai</h2>
+      <div class="article">
+        <p>Le présent contrat est conclu sous réserve d'une période d'essai de <strong>${essai}</strong>, ${essaiRenouv.toLowerCase()}. Durant cette période, chacune des parties pourra mettre fin au contrat sans préavis ni indemnité.</p>
+      </div>
+
+      <h2>Article 3 — Lieu et durée du travail</h2>
+      <div class="article">
+        <p>Le salarié exercera ses fonctions à <strong>${lieu}</strong>. La durée hebdomadaire de travail est fixée à <strong>${duree}</strong>, conformément à la réglementation en vigueur.</p>
+      </div>
+
+      <h2>Article 4 — Rémunération</h2>
+      <div class="article">
+        <p>En contrepartie de son travail, le salarié percevra une rémunération mensuelle décomposée comme suit :</p>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;margin:10px 0">
+          <tbody>
+            ${v('rem-categoriel')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Salaire catégoriel</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-categoriel')} FCFA</td></tr>`:''}
+            ${v('rem-sursalaire')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Sursalaire</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-sursalaire')} FCFA</td></tr>`:''}
+            ${v('rem-base')?`<tr style="border-bottom:2px solid #999;background:#f8f8f8"><td style="padding:5px 8px;font-weight:700">Salaire de base</td><td style="padding:5px 8px;text-align:right;font-weight:700">${v('rem-base')} FCFA</td></tr>`:''}
+            ${v('rem-anciennete')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Prime d'ancienneté</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-anciennete')} FCFA</td></tr>`:''}
+            ${getPrimesPreview()}
+            <tr style="background:#0C0C0C;color:#C9A84C"><td style="padding:7px 8px;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.05em">SALAIRE BRUT TOTAL</td><td style="padding:7px 8px;text-align:right;font-weight:700;font-size:14px">${salaire||'[À compléter]'} FCFA</td></tr>
+          </tbody>
+        </table>
+        <p>Le salaire est payé par <strong>${mode.toLowerCase()}</strong>.${avantages?` Avantages en nature : ${avantages}.`:''}</p>
+      </div>
+
+      <h2>Article 5 — Congés payés</h2>
+      <div class="article">
+        <p>Le salarié bénéficiera de congés payés à raison de <strong>deux (2) jours ouvrables par mois</strong>, soit <strong>vingt-quatre (24) jours ouvrables par an</strong>, conformément aux dispositions de l'article 225 du Code du Travail béninois. Ces congés sont acquis après une année de service continu.</p>
+      </div>
+
+      <h2>Article 6 — Immatriculation à la CNSS</h2>
+      <div class="article">
+        <p>L'employeur s'engage à immatriculer le salarié à la <strong>Caisse Nationale de Sécurité Sociale (CNSS)</strong> dès la prise de fonction, conformément aux dispositions de la Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin. Les cotisations patronales et salariales seront versées mensuellement selon les taux en vigueur.</p>
+      </div>
+
+      <h2>Article 7 — Heures supplémentaires</h2>
+      <div class="article">
+        ${cat && cat.toLowerCase().includes('cadre') ? `<p>M./Mme <strong>${sal}</strong> est classé(e) en catégorie cadre. En cette qualité, les heures supplémentaires ne sont pas applicables conformément aux dispositions du Code du Travail béninois relatives au personnel d'encadrement.</p>` : `<p>Les heures supplémentaires sont comptabilisées et calculées selon les dispositions du Code du Travail béninois en la matière.</p>`}
+      </div>
+
+      <h2>Article 8 — Assurance maladie</h2>
+      <div class="article">
+        <p>L'employeur s'engage à prendre en charge les soins médicaux du salarié et de sa petite famille (conjoint(e) et enfants à charge) à hauteur de <strong>80 %</strong> des frais engagés, sur présentation de justificatifs, ou à inscrire le salarié à la <strong>police d'assurance collective</strong> souscrite au bénéfice du personnel de l'entreprise.</p>
+      </div>
+
+      <h2>Article 9 — Obligations du salarié</h2>
+      <div class="article">
+        <p>Le salarié s'engage à exécuter sa mission avec diligence et professionnalisme, à respecter le règlement intérieur et les instructions de sa hiérarchie, et à ne pas exercer d'activité concurrente pendant la durée du contrat.</p>
+      </div>
+
+      ${conf ? `<h2>Article 10 — Confidentialité</h2>
+      <div class="article">
+        <p>Le salarié s'engage à garder strictement confidentielles toutes les informations relatives à l'activité, aux clients, aux procédés et aux résultats de l'entreprise, pendant et après la durée du présent contrat.</p>
+      </div>` : ''}
+
+      ${nonConc ? `<h2>Article ${conf?11:10} — Non-concurrence</h2>
+      <div class="article">
+        <p>Pendant une durée de <strong>12 mois</strong> suivant la cessation du contrat, le salarié s'engage à ne pas exercer, directement ou indirectement, une activité professionnelle concurrente à celle de l'Employeur dans la même zone géographique. Cette clause est assortie d'une contrepartie financière versée mensuellement.</p>
+      </div>` : ''}
+
+      <h2>Article ${conf&&nonConc?12:conf||nonConc?11:10} — Résiliation du contrat</h2>
+      <div class="article">
+        <p>Le présent contrat à durée indéterminée peut être résilié par l'une ou l'autre des parties, sous réserve du respect d'un <strong>préavis d'une durée égale à la période d'essai</strong> (soit <strong>${essai}</strong>), sauf cas de faute grave ou lourde dûment constatée, qui autorise une rupture immédiate sans préavis ni indemnité.</p>
+      </div>
+
+      ${autres ? `<h2>Dispositions particulières</h2><div class="article"><p>${autres}</p></div>` : ''}
+
+      <h2>Article dernier — Litiges</h2>
+      <div class="article">
+        <p>En cas de litige, les parties s'engagent à rechercher une solution amiable. À défaut, le tribunal compétent de <strong>${signVille}</strong> sera saisi, conformément aux dispositions du ${droit}.</p>
+      </div>
+
+      <p>Fait à <strong>${signVille}</strong>, le <strong>${signDate}</strong>, en trois (3) exemplaires originaux.</p>
+      ${(()=>{
+        const blk = dgtBlock();
+        return blk
+          .replace('<div class="sign-col" id="sign-emp-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Pour l'Employeur</strong><br/>${empRep}<br/>${empQual}<br/><em>${emp}</em></div></div>`)
+          .replace('<div class="sign-col" id="sign-sal-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Le Salarié</strong><br/>${sal}<br/><em>(Lu et approuvé — Bon pour accord)</em></div></div>`);
+      })()}`;
+  },
+
+  cdd: () => {
+    const emp = v('emp-raison')||'[EMPLOYEUR]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const empSiege = v('emp-siege')||'[Siège social]';
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const salNat = v('sal-nat')||'[Nationalité]', salAdresse = v('sal-adresse')||'[Adresse]';
+    const poste = v('poste-titre')||'[Poste]', dept = v('poste-dept'), lieu = v('poste-lieu')||'Cotonou';
+    const cat = v('poste-cat')||'';
+    const debut = fmtDate(v('poste-date')||v('cdd-debut')), fin = fmtDate(v('cdd-fin'));
+    const motif = v('cdd-motif')||'[Motif]', essai = v('poste-essai')||'15 jours';
+    const salaire = v('rem-salaire')||'[Salaire]', mode = v('rem-mode')||'virement bancaire';
+    const conf = v('cl-conf')!=='non', signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+    const droit = v('droit')||'Code du Travail béninois (Loi n°98-004 du 27 janvier 1998) + Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin';
+
+    return `
+      <h1>Contrat de Travail à Durée Déterminée</h1>
+      <p style="text-align:center;font-size:11px;color:#888;margin-bottom:1rem">Droit applicable : ${droit}</p>
+
+      <p>Entre les soussignés :</p>
+      <div class="highlight">
+        <strong>${emp}</strong>, dont le siège est à ${empSiege}, représentée par <strong>M./Mme ${empRep}</strong>, ${empQual}, ci-après <em>« l'Employeur »</em>
+      </div>
+      <p style="text-align:center;font-weight:600;margin:8px 0">— D'UNE PART —</p>
+      <div class="highlight">
+        <strong>M./Mme ${sal}</strong>, de nationalité ${salNat}, demeurant à ${salAdresse}, ci-après <em>« le Salarié »</em>
+      </div>
+      <p style="text-align:center;font-weight:600;margin:8px 0">— D'AUTRE PART —</p>
+
+      <h2>Article 1 — Objet et motif du contrat</h2>
+      <div class="article">
+        <p>Le présent CDD est conclu pour le motif suivant : <strong>${motif}</strong>. M./Mme <strong>${sal}</strong> est engagé(e) en qualité de <strong>${poste}</strong>${dept?` au ${dept}`:''}, pour une durée déterminée.</p>
+      </div>
+
+      <h2>Article 2 — Durée</h2>
+      <div class="article">
+        <p>Le présent contrat prend effet le <strong>${debut}</strong> et prend fin le <strong>${fin}</strong>. Il ne pourra être renouvelé qu'une seule fois, dans la limite de la durée légale maximale de deux (2) ans.</p>
+      </div>
+
+      <h2>Article 3 — Période d'essai</h2>
+      <div class="article"><p>Une période d'essai de <strong>${essai}</strong> est prévue à compter de la prise de fonction.</p></div>
+
+      <h2>Article 4 — Lieu de travail</h2>
+      <div class="article"><p>Le salarié exercera ses fonctions à <strong>${lieu}</strong>.</p></div>
+
+      <h2>Article 5 — Rémunération</h2>
+      <div class="article">
+        <p>En contrepartie de son travail, le salarié percevra une rémunération mensuelle décomposée comme suit :</p>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;margin:10px 0">
+          <tbody>
+            ${v('rem-categoriel')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Salaire catégoriel</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-categoriel')} FCFA</td></tr>`:''}
+            ${v('rem-sursalaire')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Sursalaire</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-sursalaire')} FCFA</td></tr>`:''}
+            ${v('rem-base')?`<tr style="border-bottom:2px solid #999;background:#f8f8f8"><td style="padding:5px 8px;font-weight:700">Salaire de base</td><td style="padding:5px 8px;text-align:right;font-weight:700">${v('rem-base')} FCFA</td></tr>`:''}
+            ${v('rem-anciennete')?`<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">Prime d'ancienneté</td><td style="padding:5px 8px;text-align:right;font-weight:500">${v('rem-anciennete')} FCFA</td></tr>`:''}
+            ${getPrimesPreview()}
+            <tr style="background:#0C0C0C;color:#C9A84C"><td style="padding:7px 8px;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.05em">SALAIRE BRUT TOTAL</td><td style="padding:7px 8px;text-align:right;font-weight:700;font-size:14px">${salaire||'[À compléter]'} FCFA</td></tr>
+          </tbody>
+        </table>
+        <p>Le salaire est payé par <strong>${mode.toLowerCase()}</strong>.</p>
+      </div>
+
+      <h2>Article 6 — Congés payés</h2>
+      <div class="article">
+        <p>Le salarié bénéficiera de congés payés à raison de <strong>deux (2) jours ouvrables par mois</strong>, soit <strong>vingt-quatre (24) jours ouvrables par an</strong>, au prorata de la durée effective du contrat, conformément à l'article 225 du Code du Travail béninois.</p>
+      </div>
+
+      <h2>Article 7 — Immatriculation à la CNSS</h2>
+      <div class="article">
+        <p>L'employeur s'engage à immatriculer le salarié à la <strong>Caisse Nationale de Sécurité Sociale (CNSS)</strong> dès la prise de fonction, conformément à la Loi n°2017-05 du 29 août 2017 portant Code de Sécurité Sociale en République du Bénin. Les cotisations seront versées mensuellement selon les taux légaux en vigueur.</p>
+      </div>
+
+      <h2>Article 8 — Heures supplémentaires</h2>
+      <div class="article">
+        ${cat && cat.toLowerCase().includes('cadre') ? `<p>M./Mme <strong>${sal}</strong> est classé(e) en catégorie cadre. En cette qualité, les heures supplémentaires ne sont pas applicables conformément aux dispositions du Code du Travail béninois relatives au personnel d'encadrement.</p>` : `<p>Les heures supplémentaires sont comptabilisées et calculées selon les dispositions du Code du Travail béninois en la matière.</p>`}
+      </div>
+
+      <h2>Article 9 — Assurance maladie</h2>
+      <div class="article">
+        <p>L'employeur prendra en charge les soins médicaux du salarié et de sa petite famille à hauteur de <strong>80 %</strong> des frais engagés, sur justificatifs, ou inscrira le salarié à la <strong>police d'assurance collective</strong> du personnel de l'entreprise.</p>
+      </div>
+
+      ${conf ? `<h2>Article 10 — Confidentialité</h2>
+      <div class="article"><p>Le salarié s'engage à respecter une obligation stricte de confidentialité concernant toutes les informations de l'entreprise, pendant et après la durée du présent contrat.</p></div>` : ''}
+
+      <h2>Article ${conf?11:10} — Résiliation du contrat</h2>
+      <div class="article">
+        <p>Le présent contrat à durée déterminée prend fin de plein droit à son échéance le <strong>${fin}</strong>. Il peut être résilié avant terme uniquement dans les cas suivants :</p>
+        <p>• <strong>Cas de force majeure</strong> dûment constaté et reconnu par les deux parties ;<br/>
+        • <strong>Accord mutuel des parties</strong> formalisé par écrit ;<br/>
+        • <strong>Faute lourde</strong> de l'une ou l'autre des parties, constatée selon les procédures légales en vigueur ;<br/>
+        • <strong>Échéance du terme</strong> prévu au contrat.</p>
+        <p>Toute rupture anticipée en dehors de ces cas ouvre droit à des dommages et intérêts au profit de la partie lésée.</p>
+      </div>
+
+      <h2>Article dernier — Litiges</h2>
+      <div class="article"><p>Tout litige sera soumis au tribunal compétent de <strong>${signVille}</strong>, conformément au ${droit}.</p></div>
+
+      <p>Fait à <strong>${signVille}</strong>, le <strong>${signDate}</strong>, en trois (3) exemplaires originaux.</p>
+      ${(()=>{
+        const blk = dgtBlock();
+        return blk
+          .replace('<div class="sign-col" id="sign-emp-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Pour l'Employeur</strong><br/>${empRep}<br/>${empQual}</div></div>`)
+          .replace('<div class="sign-col" id="sign-sal-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Le Salarié</strong><br/>${sal}<br/><em>(Lu et approuvé)</em></div></div>`);
+      })()}`;
+  },
+
+  stage: () => {
+    const emp = v('emp-raison')||'[ENTREPRISE]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const etab = v('etab-nom')||'[ÉTABLISSEMENT]', etabResp = v('etab-resp')||'[Responsable]';
+    const filiere = v('etab-filiere'), tuteur = v('stage-tuteur')||'[Tuteur]';
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const titre = v('stage-titre')||'Stage en entreprise';
+    const debut = fmtDate(v('stage-debut')), fin = fmtDate(v('stage-fin'));
+    const horaires = v('stage-horaires')||'8h00 – 17h00';
+    const grat = v('stage-grat'), missions = v('stage-missions');
+    const signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+
+    return `
+      <h1>Convention de Stage</h1>
+      <p style="text-align:center;font-size:12px;color:#888;margin-bottom:1rem">Convention tripartite</p>
+
+      <div class="highlight">
+        <strong>L'entreprise d'accueil :</strong> ${emp}, représentée par <strong>M./Mme ${empRep}</strong>, ${empQual}<br/>
+        <strong>L'établissement :</strong> ${etab}${filiere?`, filière ${filiere}`:''},  représenté par <strong>M./Mme ${etabResp}</strong><br/>
+        <strong>Le stagiaire :</strong> M./Mme <strong>${sal}</strong>
+      </div>
+
+      <h2>Article 1 — Objet</h2>
+      <div class="article"><p>La présente convention a pour objet de définir les conditions dans lesquelles M./Mme <strong>${sal}</strong> effectuera un stage intitulé : <strong>${titre}</strong> au sein de l'entreprise <strong>${emp}</strong>.</p></div>
+
+      <h2>Article 2 — Durée et horaires</h2>
+      <div class="article"><p>Le stage se déroulera du <strong>${debut}</strong> au <strong>${fin}</strong>. Les horaires de présence sont : <strong>${horaires}</strong>.</p></div>
+
+      <h2>Article 3 — Tuteur en entreprise</h2>
+      <div class="article"><p>Le stagiaire sera encadré par <strong>M./Mme ${tuteur}</strong>, qui assurera son suivi et son évaluation.</p></div>
+
+      ${missions ? `<h2>Article 4 — Missions confiées</h2><div class="article"><p>${missions}</p></div>` : ''}
+
+      <h2>Article ${missions?5:4} — Gratification</h2>
+      <div class="article"><p>${grat && parseInt(grat)>0 ? `Le stagiaire percevra une gratification mensuelle de <strong>${grat} FCFA</strong>.` : `Le présent stage ne donne lieu à aucune rémunération.`}</p></div>
+
+      <h2>Article dernier — Obligations des parties</h2>
+      <div class="article"><p>L'entreprise s'engage à accueillir le stagiaire dans de bonnes conditions. L'établissement s'engage à assurer le suivi pédagogique. Le stagiaire s'engage à respecter le règlement intérieur.</p></div>
+
+      <p>Fait à <strong>${signVille}</strong>, le <strong>${signDate}</strong>, en trois (3) exemplaires originaux.</p>
+      <div class="sign-block">
+        <div class="sign-col"><div class="sign-line"><strong>L'entreprise</strong><br/>${empRep}</div></div>
+        <div class="sign-col"><div class="sign-line"><strong>L'établissement</strong><br/>${etabResp}</div></div>
+      </div>
+      <div style="margin-top:1.5rem;text-align:center">
+        <div class="sign-line" style="max-width:280px;margin:0 auto"><strong>Le stagiaire</strong><br/>${sal}</div>
+      </div>`;
+  },
+
+  prestation: () => {
+    const emp = v('emp-raison')||'[CLIENT]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const prest = v('prest-nom')||'[PRESTATAIRE]', prestStatut = v('prest-statut');
+    const objet = v('prest-objet')||'[Objet de la mission]';
+    const debut = fmtDate(v('prest-debut')), fin = fmtDate(v('prest-fin'));
+    const lieu = v('prest-lieu')||'Cotonou', livrables = v('prest-livrables');
+    const montant = v('prest-montant')||'[Montant]', paiement = v('prest-paiement')||'100% à la livraison';
+    const conf = v('cl-conf')!=='non', pi = v('prest-pi')||'Cédée au client à la livraison';
+    const signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+
+    return `
+      <h1>Contrat de Prestation de Services</h1>
+      <div class="highlight">
+        <strong>Le Client :</strong> ${emp}, représenté par <strong>M./Mme ${empRep}</strong>, ${empQual}, ci-après <em>« le Client »</em><br/>
+        <strong>Le Prestataire :</strong> <strong>${prest}</strong>${prestStatut?` (${prestStatut})`:''},  ci-après <em>« le Prestataire »</em>
+      </div>
+
+      <h2>Article 1 — Objet</h2>
+      <div class="article"><p>${objet}</p></div>
+
+      <h2>Article 2 — Durée de la mission</h2>
+      <div class="article"><p>La mission débutera le <strong>${debut}</strong> et prendra fin le <strong>${fin}</strong>. Elle s'exécutera à <strong>${lieu}</strong>.</p></div>
+
+      ${livrables ? `<h2>Article 3 — Livrables</h2><div class="article"><p>${livrables}</p></div>` : ''}
+
+      <h2>Article ${livrables?4:3} — Honoraires et paiement</h2>
+      <div class="article"><p>Les honoraires sont fixés à <strong>${montant} FCFA HT</strong>. Modalités de paiement : <strong>${paiement}</strong>.</p></div>
+
+      <h2>Article ${livrables?5:4} — Propriété intellectuelle</h2>
+      <div class="article"><p>${pi}</p></div>
+
+      ${conf ? `<h2>Article suivant — Confidentialité</h2>
+      <div class="article"><p>Les parties s'engagent mutuellement à garder confidentielles toutes les informations échangées dans le cadre de la présente mission.</p></div>` : ''}
+
+      <h2>Article dernier — Litiges</h2>
+      <div class="article"><p>Tout litige sera soumis au tribunal de commerce de <strong>${signVille}</strong>.</p></div>
+
+      <p>Fait à <strong>${signVille}</strong>, le <strong>${signDate}</strong>, en deux (2) exemplaires originaux.</p>
+      <div class="sign-block">
+        <div class="sign-col"><div class="sign-line"><strong>Le Client</strong><br/>${empRep}<br/>${empQual}</div></div>
+        <div class="sign-col"><div class="sign-line"><strong>Le Prestataire</strong><br/>${prest}</div></div>
+      </div>`;
+  },
+
+  expatrie: () => {
+    const emp = v('emp-raison')||'[EMPLOYEUR]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const salNat = v('sal-nat')||'[Nationalité]', salAdresse = v('sal-adresse')||'[Adresse]';
+    const poste = v('poste-titre')||'[Poste]', dept = v('poste-dept');
+    const debut = fmtDate(v('exp-debut')), fin = fmtDate(v('exp-fin'));
+    const pays = v('exp-pays')||'Bénin', ville = v('exp-ville-trav')||'Cotonou';
+    const salaire = v('rem-salaire')||'[Salaire]', devise = v('exp-devise')||'FCFA';
+    const indem = v('exp-indem'), logement = v('exp-logement'), billet = v('exp-billet');
+    const assur = v('exp-assur'), droit = v('droit')||'Droit béninois + Convention d\'expatriation';
+    const signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+
+    return `
+      <h1>Contrat de Travail CDD — Expatrié</h1>
+      <p style="text-align:center;font-size:11px;color:#888;margin-bottom:1rem">Droit applicable : ${droit}</p>
+
+      <div class="highlight">
+        <strong>${emp}</strong>, représentée par <strong>M./Mme ${empRep}</strong>, ${empQual}, ci-après <em>« l'Employeur »</em>
+      </div>
+      <p style="text-align:center;font-weight:600;margin:8px 0">— D'UNE PART —</p>
+      <div class="highlight">
+        <strong>M./Mme ${sal}</strong>, de nationalité ${salNat}, demeurant à ${salAdresse}, ci-après <em>« le Salarié Expatrié »</em>
+      </div>
+      <p style="text-align:center;font-weight:600;margin:8px 0">— D'AUTRE PART —</p>
+
+      <h2>Article 1 — Engagement et mission</h2>
+      <div class="article"><p>M./Mme <strong>${sal}</strong> est recruté(e) en qualité de <strong>${poste}</strong>${dept?` au ${dept}`:''}, pour une mission d'expatriation au <strong>${pays}</strong>, ville de <strong>${ville}</strong>.</p></div>
+
+      <h2>Article 2 — Durée</h2>
+      <div class="article"><p>La mission d'expatriation est fixée du <strong>${debut}</strong> au <strong>${fin}</strong>.</p></div>
+
+      <h2>Article 3 — Package de rémunération</h2>
+      <div class="article">
+        <p><strong>Salaire brut mensuel :</strong> ${salaire} ${devise}</p>
+        ${indem?`<p><strong>Indemnité d'expatriation :</strong> ${indem}</p>`:''}
+        <p><strong>Logement :</strong> ${logement||'Fourni par l\'employeur'}</p>
+        <p><strong>Billets d'avion :</strong> ${billet||'1 A/R par an à la charge de l\'employeur'}</p>
+        <p><strong>Assurance maladie :</strong> ${assur||'Couverture internationale complète'}</p>
+      </div>
+
+      <h2>Article 4 — Obligations et retour</h2>
+      <div class="article"><p>À l'issue de la mission, l'Employeur prendra en charge le rapatriement du salarié. En cas de rupture anticipée du contrat par le salarié, les frais de rapatriement resteront à sa charge.</p></div>
+
+      <h2>Article 5 — Confidentialité</h2>
+      <div class="article"><p>Le salarié s'engage à respecter une stricte obligation de confidentialité sur toutes les informations dont il aura connaissance dans le cadre de ses fonctions.</p></div>
+
+      <p>Fait à <strong>${signVille}</strong>, le <strong>${signDate}</strong>, en trois (3) exemplaires originaux.</p>
+      ${(()=>{
+        const blk = dgtBlock();
+        return blk
+          .replace('<div class="sign-col" id="sign-emp-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Pour l'Employeur</strong><br/>${empRep}<br/>${empQual}</div></div>`)
+          .replace('<div class="sign-col" id="sign-sal-slot"></div>',
+            `<div class="sign-col"><div class="sign-line"><strong>Le Salarié Expatrié</strong><br/>${sal}<br/><em>(Lu et approuvé)</em></div></div>`);
+      })()}`;
+  },
+
+  embauche: () => {
+    const emp = v('emp-raison')||'[ENTREPRISE]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const salAdresse = v('sal-adresse')||'[Adresse]';
+    const poste = v('poste-titre')||'[Poste]', dept = v('poste-dept');
+    const type = v('emb-type')||'CDI', dateDebut = fmtDate(v('poste-date'));
+    const salaire = v('rem-salaire')||'[Salaire]', essai = v('poste-essai')||'1 mois';
+    const limite = fmtDate(v('emb-limite')), ref = v('emb-ref');
+    const signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <strong style="font-size:15px">${emp}</strong><br/>
+          <span style="font-size:12px;color:#666">${v('emp-siege')||''}</span>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#666">
+          ${signVille}, le ${signDate}<br/>
+          ${ref?`Réf. : ${ref}`:''}
+        </div>
+      </div>
+      <div style="margin-bottom:1.5rem;font-size:13px">
+        <strong>À l'attention de :</strong><br/>
+        M./Mme <strong>${sal}</strong><br/>
+        ${salAdresse}
+      </div>
+
+      <h1 style="font-size:16px;text-align:left;margin-bottom:1rem">LETTRE D'EMBAUCHE</h1>
+      <p>Madame, Monsieur,</p>
+      <br/>
+      <p>Nous avons le plaisir de vous informer que votre candidature au poste de <strong>${poste}</strong>${dept?` au sein du ${dept}`:''} a retenu toute notre attention. À l'issue du processus de recrutement, nous sommes heureux de vous proposer de rejoindre notre équipe.</p>
+      <br/>
+      <div class="highlight">
+        <strong>Récapitulatif des conditions proposées :</strong><br/>
+        • Poste : <strong>${poste}</strong>${dept?` — ${dept}`:''}<br/>
+        • Type de contrat : <strong>${type}</strong><br/>
+        • Date de prise de fonction : <strong>${dateDebut}</strong><br/>
+        • Salaire brut mensuel : <strong>${salaire} FCFA</strong><br/>
+        • Période d'essai : <strong>${essai}</strong>
+      </div>
+      <br/>
+      <p>Afin de confirmer votre acceptation, nous vous prions de bien vouloir nous retourner la présente lettre signée, précédée de la mention <em>« Lu et approuvé »</em>, avant le <strong>${limite}</strong>.</p>
+      <br/>
+      <p>Nous vous demandons de vous munir, lors de votre prise de fonction, des documents suivants : pièce d'identité en cours de validité, diplômes et attestations d'expérience, relevé d'identité bancaire.</p>
+      <br/>
+      <p>Dans l'attente de vous compter parmi nous, nous vous adressons nos cordiales salutations.</p>
+      <br/>
+      <div class="sign-block">
+        <div class="sign-col">
+          <div class="sign-line"><strong>Pour ${emp}</strong><br/>${empRep}<br/>${empQual}</div>
+        </div>
+        <div class="sign-col">
+          <div class="sign-line"><strong>Le candidat(e)</strong><br/>${sal}<br/><em>Lu et approuvé</em></div>
+        </div>
+      </div>`;
+  },
+
+  renouvellement: () => {
+    const emp = v('emp-raison')||'[ENTREPRISE]', empRep = v('emp-rep')||'[Représentant]', empQual = v('emp-qual')||'[Qualité]';
+    const sal = `${v('sal-prenom')||'[Prénom]'} ${v('sal-nom')||'[Nom]'}`;
+    const poste = v('poste-titre')||'[Poste]', dept = v('poste-dept');
+    const type = v('renouv-type')||'CDD', ref = v('renouv-ref');
+    const finInit = fmtDate(v('renouv-fin-init'));
+    const debut = fmtDate(v('renouv-debut')), fin = fmtDate(v('renouv-fin'));
+    const salaire = v('rem-salaire'), modif = v('renouv-modif')==='oui';
+    const limite = fmtDate(v('renouv-limite'));
+    const signVille = v('sign-ville')||'Cotonou', signDate = fmtDate(v('sign-date'));
+
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <strong style="font-size:15px">${emp}</strong><br/>
+          <span style="font-size:12px;color:#666">${v('emp-siege')||''}</span>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#666">
+          ${signVille}, le ${signDate}
+        </div>
+      </div>
+      <div style="margin-bottom:1.5rem;font-size:13px">
+        <strong>À l'attention de :</strong><br/>
+        M./Mme <strong>${sal}</strong><br/>
+        ${poste}${dept?` — ${dept}`:''}
+      </div>
+
+      <h1 style="font-size:16px;text-align:left;margin-bottom:1rem">LETTRE DE RENOUVELLEMENT DE CONTRAT</h1>
+      <p>Madame, Monsieur,</p>
+      <br/>
+      <p>Nous avons le plaisir de vous informer que votre ${type}${ref?` (Réf. : ${ref})`:''},  dont l'échéance est prévue le <strong>${finInit}</strong>, fera l'objet d'un renouvellement.</p>
+      <br/>
+      <div class="highlight">
+        <strong>Conditions du renouvellement :</strong><br/>
+        • Poste : <strong>${poste}</strong>${dept?` — ${dept}`:''}<br/>
+        • Nouvelle période : du <strong>${debut}</strong> au <strong>${fin}</strong><br/>
+        ${salaire?`• Nouveau salaire brut mensuel : <strong>${salaire} FCFA</strong><br/>`:'• Rémunération : inchangée<br/>'}
+        ${modif?'• <strong>Des modifications ont été apportées aux conditions de travail.</strong> Un avenant vous sera soumis.<br/>':'• Toutes les autres conditions du contrat demeurent inchangées.'}
+      </div>
+      <br/>
+      <p>Nous vous prions de bien vouloir nous retourner la présente lettre signée, précédée de la mention <em>« Lu et approuvé — Bon pour renouvellement »</em>, avant le <strong>${limite}</strong>.</p>
+      <br/>
+      <p>En vous remerciant de votre confiance et de votre engagement, nous vous adressons nos cordiales salutations.</p>
+      <br/>
+      <div class="sign-block">
+        <div class="sign-col">
+          <div class="sign-line"><strong>Pour ${emp}</strong><br/>${empRep}<br/>${empQual}</div>
+        </div>
+        <div class="sign-col">
+          <div class="sign-line"><strong>M./Mme ${sal}</strong><br/><em>Lu et approuvé — Bon pour renouvellement</em></div>
+        </div>
+      </div>`;
+  }
+};
+
+// ─────────────────────────────────────────────
+// CALCUL SALAIRE BRUT
+// ─────────────────────────────────────────────
+function parseNum(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  const val = el.value.replace(/\s/g,'').replace(/[^\d.]/g,'');
+  return parseFloat(val) || 0;
+}
+function fmtNum(n) {
+  if (!n) return '';
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+}
+
+// ── Primes dynamiques
+let primeCount = 0;
+const primes = []; // [{id, label, montant}]
+
+function addPrime() {
+  primeCount++;
+  const id = primeCount;
+  primes.push({ id });
+  renderPrimes();
+}
+
+function removePrime(id) {
+  const idx = primes.findIndex(p => p.id === id);
+  if (idx > -1) primes.splice(idx, 1);
+  renderPrimes();
+  calcBrut();
+}
+
+function renderPrimes() {
+  const container = document.getElementById('primes-rows-container');
+  if (!container) return;
+  container.innerHTML = '';
+  primes.forEach(function(p, i) {
+    var tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid #ECEAE3';
+
+    var td1 = document.createElement('td');
+    td1.style.padding = '7px 12px';
+
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;align-items:center;gap:6px';
+
+    var badge = document.createElement('span');
+    badge.style.cssText = 'font-size:10px;font-weight:700;color:#C9A84C;min-width:20px';
+    badge.textContent = 'P' + (i + 1);
+
+    var inputLabel = document.createElement('input');
+    inputLabel.type = 'text';
+    inputLabel.placeholder = 'Libellé (ex: Prime de transport)';
+    inputLabel.value = p.label || '';
+    inputLabel.style.cssText = 'flex:1;font-family:Outfit,sans-serif;font-size:12px;color:#0C0C0C;background:#F2F0EA;border:1px solid #ECEAE3;border-radius:10px;padding:5px 8px;outline:none';
+    inputLabel.addEventListener('input', function() { primes[i].label = this.value; updatePreview(); });
+
+    var delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.title = 'Supprimer';
+    delBtn.style.cssText = 'width:22px;height:22px;border-radius:50%;border:none;background:#fceaea;color:#a32020;font-size:15px;cursor:pointer;line-height:1;flex-shrink:0;font-weight:700';
+    delBtn.textContent = '×';
+    delBtn.addEventListener('click', function() { removePrime(p.id); });
+
+    wrap.appendChild(badge);
+    wrap.appendChild(inputLabel);
+    wrap.appendChild(delBtn);
+    td1.appendChild(wrap);
+
+    var td2 = document.createElement('td');
+    td2.style.cssText = 'padding:7px 12px;text-align:right';
+
+    var inputMontant = document.createElement('input');
+    inputMontant.type = 'text';
+    inputMontant.placeholder = '0';
+    inputMontant.value = p.montant || '';
+    inputMontant.style.cssText = 'text-align:right;width:140px;font-family:Outfit,sans-serif;font-size:13px;color:#0C0C0C;background:#F2F0EA;border:1px solid #ECEAE3;border-radius:10px;padding:7px 10px;outline:none';
+    inputMontant.addEventListener('input', function() { primes[i].montant = this.value; calcBrut(); });
+
+    td2.appendChild(inputMontant);
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    container.appendChild(tr);
+  });
+}
+
+function getPrimesTotal() {
+  return primes.reduce((s, p) => {
+    const val = (p.montant||'').replace(/\s/g,'').replace(/[^\d.]/g,'');
+    return s + (parseFloat(val)||0);
+  }, 0);
+}
+
+function getPrimesPreview() {
+  return primes
+    .filter(function(p) { return p.label || p.montant; })
+    .map(function(p) {
+      var label = p.label || 'Prime';
+      var montant = p.montant || '0';
+      return '<tr style="border-bottom:1px solid #eee"><td style="padding:5px 8px;color:#555">' + label + '</td><td style="padding:5px 8px;text-align:right;font-weight:500">' + montant + ' FCFA</td></tr>';
+    }).join('');
+}
+
+function calcBrut() {
+  const cat = parseNum('rem-categoriel');
+  const sur = parseNum('rem-sursalaire');
+  const base = cat + sur;
+  const anc = parseNum('rem-anciennete');
+  const autresPrimes = getPrimesTotal();
+  const brut = base + anc + autresPrimes;
+  const baseEl = document.getElementById('rem-base');
+  const brutEl = document.getElementById('rem-salaire');
+  if (baseEl) baseEl.value = fmtNum(base);
+  if (brutEl) brutEl.value = fmtNum(brut);
+  updatePreview();
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+const docTitles = {
+  contrat:'Contrat de travail (CDI/CDD)', cdi:'CDI', cdd:'CDD', stage:'Convention de stage', prestation:'Prestation', expatrie:'CDD Expatrié',
+  embauche:'Lettre d\'embauche', renouvellement:'Lettre de renouvellement'
+};
+
+function renderForm(type) {
+  // Normalise : si on arrive sur cdi/cdd direct (anciens liens), redirige vers contrat
+  if (type === 'cdi' || type === 'cdd') {
+    currentDoc = 'contrat';
+    document.querySelectorAll('.doc-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('btn-contrat');
+    if (btn) btn.classList.add('active');
+    type = 'contrat';
+  }
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    ${forms[type]()}
+    <div class="form-card">
+      <div class="form-card-title"><span class="icon">👁️</span>Aperçu du document</div>
+      <div class="preview-wrap">
+        <div class="preview-toolbar">
+          <div class="preview-toolbar-title">Aperçu — <span>${docTitles[type]}</span></div>
+          <div style="font-size:11px;color:var(--gris2)">Se met à jour automatiquement</div>
+        </div>
+        <div class="preview-body" id="preview-body">
+          <p style="text-align:center;color:#aaa;padding:2rem;font-size:13px">Remplissez les champs ci-dessus pour voir l'aperçu du document...</p>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimer / PDF</button>
+        <button class="btn btn-blue" onclick="exportWord('${type}')">📝 Télécharger Word (.docx)</button>
+      </div>
+    </div>`;
+}
+
+function updatePreview() {
+  const pb = document.getElementById('preview-body');
+  if (!pb) return;
+  try { pb.innerHTML = generators[currentDoc](); } catch(e) { console.error(e); }
+}
+
+// ─────────────────────────────────────────────
+// EXPORT WORD
+// ─────────────────────────────────────────────
+async function exportWord(type) {
+  const btn = event.target;
+  btn.textContent = '⏳ Génération...'; btn.disabled = true;
+  try {
+    const { Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle } = docx;
+    const content = document.getElementById('preview-body').innerHTML;
+
+    // Extract text content cleanly
+    const tmp = document.createElement('div');
+    tmp.innerHTML = content;
+
+    const children = [];
+    const DARK = '1A1A1A', BLUE = '185FA5', GOLD = 'C9A84C', GRAY = '666666';
+
+    const addPara = (text, opts={}) => {
+      if (!text.trim()) return;
+      children.push(new Paragraph({
+        alignment: opts.center ? AlignmentType.CENTER : AlignmentType.JUSTIFIED,
+        spacing: { before: opts.before||60, after: opts.after||60, line: 276 },
+        border: opts.borderBottom ? { bottom: { style: BorderStyle.SINGLE, size: 6, color: BLUE, space: 4 } } : undefined,
+        children: [new TextRun({
+          text: text.replace(/\s+/g,' ').trim(),
+          font: 'Garamond', size: opts.size||22,
+          bold: opts.bold||false, color: opts.color||DARK,
+          italics: opts.italic||false
+        })]
+      }));
+    };
+
+    // Parse HTML nodes
+    const parseNode = (node) => {
+      if (node.nodeType === 3) { // text
+        const t = node.textContent.trim();
+        if (t) addPara(t);
+        return;
+      }
+      const tag = node.tagName?.toLowerCase();
+      if (tag === 'h1') {
+        children.push(new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 200, after: 120 },
+          border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: BLUE, space: 6 } },
+          children: [new TextRun({ text: node.textContent.trim(), font: 'Garamond', size: 32, bold: true, color: BLUE })]
+        }));
+      } else if (tag === 'h2') {
+        children.push(new Paragraph({
+          spacing: { before: 240, after: 100 },
+          border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: DARK, space: 3 } },
+          children: [new TextRun({ text: node.textContent.trim().toUpperCase(), font: 'Garamond', size: 22, bold: true, color: DARK, allCaps: true })]
+        }));
+      } else if (tag === 'div' && node.className.includes('highlight')) {
+        children.push(new Paragraph({
+          spacing: { before: 120, after: 120 },
+          indent: { left: 360, right: 360 },
+          border: { left: { style: BorderStyle.SINGLE, size: 8, color: GOLD, space: 8 } },
+          children: [new TextRun({ text: node.textContent.replace(/\s+/g,' ').trim(), font: 'Garamond', size: 21, color: DARK })]
+        }));
+      } else if (tag === 'p') {
+        const t = node.textContent.replace(/\s+/g,' ').trim();
+        if (t) addPara(t, { before: 60, after: 60 });
+      } else if (tag === 'strong' && node.parentNode.tagName?.toLowerCase() !== 'p') {
+        addPara(node.textContent.trim(), { bold: true });
+      } else {
+        node.childNodes.forEach(parseNode);
+      }
+    };
+
+    tmp.childNodes.forEach(parseNode);
+
+    const doc = new Document({
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } },
+        children: children.length ? children : [new Paragraph({ children: [new TextRun({ text: 'Document vide', font: 'Garamond', size: 22 })] })]
+      }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type}-${v('sal-nom')||v('prest-nom')||'document'}.docx`.toLowerCase().replace(/\s+/g,'-');
+    a.click(); URL.revokeObjectURL(url);
+    btn.textContent = '✓ Téléchargé !';
+    setTimeout(() => { btn.textContent = '📝 Télécharger Word (.docx)'; btn.disabled = false; }, 2500);
+  } catch(e) {
+    console.error(e);
+    btn.textContent = '❌ Erreur'; btn.disabled = false;
+    setTimeout(() => { btn.textContent = '📝 Télécharger Word (.docx)'; btn.disabled = false; }, 2500);
+  }
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderForm('contrat');
+</script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KAINOS RH — Admin Portail</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --m:#071428;--m2:#0A1F3D;--m3:#0F2A50;--m4:#163363;
+  --or:#C9A84C;--or2:#E2C47A;--ord:rgba(201,168,76,.1);--ors:rgba(201,168,76,.2);
+  --bl:#F5F2EA;--gr:#8A9AB8;--gr2:#4A5A78;--gr3:#1E2E48;
+  --vt:#22D48A;--rd:#F05A5A;--bleu:#4A9EFF;--vl:#A78BFA;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--m);color:var(--bl);min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* ══ LOGIN ══ */
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;background:var(--m);}
+.lc{background:var(--m2);border:1px solid var(--gr3);border-radius:20px;padding:2.5rem;width:100%;max-width:400px;box-shadow:0 32px 80px rgba(0,0,0,.5);}
+.lc-logo{font-family:var(--fd);font-size:18px;font-weight:800;margin-bottom:.2rem;}
+.lc-logo span{color:var(--or);}
+.lc-sub{font-size:10px;color:var(--or);letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;}
+.lf{margin-bottom:.875rem;}
+.lf label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gr);display:block;margin-bottom:.35rem;}
+.lf input{width:100%;background:var(--m3);border:1px solid var(--gr3);border-radius:var(--r);color:var(--bl);font-family:var(--fb);font-size:13px;padding:9px 13px;outline:none;transition:border-color .2s;}
+.lf input:focus{border-color:var(--or);}
+.login-btn{width:100%;padding:12px;background:var(--or);color:var(--m);border:none;border-radius:var(--r);font-family:var(--fd);font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.08em;transition:all .2s;margin-top:.5rem;}
+.login-btn:hover{background:var(--or2);}
+.login-err{display:none;color:var(--rd);font-size:11px;margin-top:.75rem;text-align:center;}
+
+/* ══ APP ══ */
+#app{display:none;min-height:100vh;}
+
+/* HEADER */
+.hdr{height:60px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--m2);border-bottom:1px solid var(--gr3);position:sticky;top:0;z-index:100;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;}
+.hdr-logo span{color:var(--or);}
+.hdr-badge{font-size:9px;font-weight:700;background:var(--ord);border:1px solid var(--ors);color:var(--or);padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:.75rem;}
+.hdr-link{font-size:11px;color:var(--gr);padding:6px 12px;border-radius:20px;border:1px solid var(--gr3);transition:all .2s;cursor:pointer;}
+.hdr-link:hover{color:var(--or);border-color:var(--ors);}
+.btn-deco{background:transparent;border:1px solid var(--gr3);color:var(--gr);padding:6px 14px;border-radius:20px;font-size:11px;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-deco:hover{border-color:var(--rd);color:var(--rd);}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--m2);border-right:1px solid var(--gr3);padding:1.5rem 0;}
+.sb-section{margin-bottom:2rem;}
+.sb-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gr2);padding:0 1.25rem;margin-bottom:.5rem;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:.6rem 1.25rem;font-size:12px;font-weight:500;color:var(--gr);cursor:pointer;transition:all .2s;border-left:2px solid transparent;}
+.sb-item:hover{color:var(--bl);background:rgba(255,255,255,.03);}
+.sb-item.active{color:var(--or);border-left-color:var(--or);background:var(--ord);}
+.sb-item-icon{font-size:14px;width:18px;text-align:center;}
+.sb-kpi{padding:.6rem 1.25rem;display:flex;flex-direction:column;gap:.6rem;}
+.sb-stat{background:var(--m3);border-radius:var(--r);padding:.75rem;text-align:center;}
+.sb-stat-val{font-family:var(--fd);font-size:1.4rem;font-weight:800;color:var(--or);}
+.sb-stat-lbl{font-size:9px;color:var(--gr);margin-top:.15rem;}
+
+/* MAIN */
+.main{padding:2rem;overflow-y:auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* PANNEAUX TITRES */
+.p-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.p-title{font-family:var(--fd);font-size:1.3rem;font-weight:800;}
+.p-sub{font-size:12px;color:var(--gr);margin-top:.2rem;}
+
+/* KPI CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.kpi{background:var(--m2);border:1px solid var(--gr3);border-radius:12px;padding:1.25rem;}
+.kpi-val{font-family:var(--fd);font-size:1.8rem;font-weight:800;color:var(--or);}
+.kpi-lbl{font-size:11px;color:var(--gr);margin-top:.2rem;}
+
+/* TABLEAU CLIENTS */
+.table-wrap{background:var(--m2);border:1px solid var(--gr3);border-radius:12px;overflow:hidden;}
+.tbl-toolbar{padding:.875rem 1.25rem;border-bottom:1px solid var(--gr3);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.tbl-search{background:var(--m3);border:1px solid var(--gr3);border-radius:var(--r);color:var(--bl);font-family:var(--fb);font-size:12px;padding:7px 12px;outline:none;width:240px;transition:border-color .2s;}
+.tbl-search:focus{border-color:var(--or);}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{padding:.75rem 1rem;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);text-align:left;border-bottom:1px solid var(--gr3);}
+.tbl td{padding:.875rem 1rem;font-size:12px;border-bottom:1px solid rgba(255,255,255,.04);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
+.badge{display:inline-block;font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.badge-on{background:rgba(34,212,138,.1);color:var(--vt);}
+.badge-off{background:rgba(240,90,90,.1);color:var(--rd);}
+.badge-plan{background:var(--ord);color:var(--or);}
+.tbl-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+
+/* BOUTONS */
+.btn{padding:7px 16px;border-radius:var(--r);font-family:var(--fd);font-size:10px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.05em;display:inline-flex;align-items:center;gap:5px;}
+.btn-or{background:var(--or);color:var(--m);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gr);border:1px solid var(--gr3);}
+.btn-ghost:hover{color:var(--bl);border-color:rgba(255,255,255,.2);}
+.btn-rd{background:rgba(240,90,90,.1);color:var(--rd);border:1px solid rgba(240,90,90,.2);}
+.btn-rd:hover{background:rgba(240,90,90,.2);}
+.btn-vt{background:rgba(34,212,138,.1);color:var(--vt);border:1px solid rgba(34,212,138,.2);}
+.btn-vt:hover{background:rgba(34,212,138,.2);}
+.btn-sm{padding:5px 11px;font-size:9px;}
+
+/* ══ MODAL ══ */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.5);}
+.mh{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gr3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--m2);z-index:10;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}
+.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gr);font-size:18px;cursor:pointer;transition:color .2s;line-height:1;}
+.mc:hover{color:var(--bl);}
+.mb{padding:1.5rem;}
+.mf{padding:1rem 1.5rem;border-top:1px solid var(--gr3);display:flex;gap:.75rem;justify-content:flex-end;position:sticky;bottom:0;background:var(--m2);}
+.ff{margin-bottom:.875rem;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);display:block;margin-bottom:.35rem;}
+.ffi{width:100%;background:var(--m3);border:1px solid var(--gr3);border-radius:var(--r);color:var(--bl);font-family:var(--fb);font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.ffi:focus{border-color:var(--or);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.ff-full{grid-column:1/-1;}
+.ff-row{display:flex;gap:.75rem;flex-wrap:wrap;}
+
+/* GRILLE OUTILS (dans modal) */
+.outils-check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-top:.5rem;}
+.outil-check{display:flex;align-items:flex-start;gap:.6rem;background:var(--m3);border:1px solid var(--gr3);border-radius:var(--r);padding:.625rem .75rem;cursor:pointer;transition:all .2s;}
+.outil-check:hover{border-color:var(--ors);}
+.outil-check.selected{border-color:var(--or);background:var(--ord);}
+.outil-check input[type=checkbox]{accent-color:var(--or);margin-top:2px;flex-shrink:0;}
+.outil-check-name{font-size:11px;font-weight:600;line-height:1.3;}
+.outil-check-cat{font-size:9px;color:var(--gr);margin-top:2px;}
+
+/* PACKS RAPIDES */
+.packs-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.875rem;}
+.pack-btn{padding:5px 14px;border-radius:20px;font-family:var(--fd);font-size:9px;font-weight:700;border:1px solid var(--gr3);background:transparent;color:var(--gr);cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.pack-btn:hover{border-color:var(--ors);color:var(--or);}
+
+/* SECTION SÉPARATEUR */
+.sect-sep{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin:.5rem 0;border-bottom:1px solid var(--gr3);padding-bottom:.5rem;}
+
+/* ACCÈS RAPIDE PORTAIL */
+.portail-card{background:var(--m2);border:1px solid var(--ors);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.portail-info .ptitle{font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:.3rem;}
+.portail-info .psub{font-size:12px;color:var(--gr);}
+.portail-url{background:var(--m3);border:1px solid var(--gr3);border-radius:var(--r);padding:7px 12px;font-size:11px;color:var(--or);font-family:monospace;display:inline-flex;align-items:center;gap:.5rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m3);border:1px solid var(--or);color:var(--bl);padding:10px 18px;border-radius:9px;font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* VIDE */
+.empty{text-align:center;padding:3rem;color:var(--gr);}
+.empty-ico{font-size:2.5rem;margin-bottom:.75rem;opacity:.4;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="lc">
+    <div class="lc-logo">KAINOS <span>RH</span></div>
+    <div class="lc-sub">Administration Portail</div>
+    <div class="lf"><label>Identifiant</label><input type="text" id="l-user" placeholder="admin" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"/></div>
+    <div class="lf"><label>Mot de passe</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"/></div>
+    <button class="login-btn" onclick="login()">Accéder au panneau →</button>
+    <div class="login-err" id="login-err">Identifiant ou mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- ══ APPLICATION ══ -->
+<div id="app">
+  <header class="hdr">
+    <div class="hdr-brand">
+      <div class="hdr-logo">KAINOS <span>RH</span></div>
+      <div class="hdr-badge">Admin Portail</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-link" onclick="window.open('portail-client.html','_blank')">👁 Voir le portail →</span>
+      <button class="btn-deco" onclick="deconnecter()">Déconnexion</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Navigation</div>
+        <div class="sb-item active" onclick="showPanel('p-dashboard',this)"><span class="sb-item-icon">📊</span>Tableau de bord</div>
+        <div class="sb-item" onclick="showPanel('p-clients',this)"><span class="sb-item-icon">🏢</span>Clients</div>
+        <div class="sb-item" onclick="showPanel('p-outils',this)"><span class="sb-item-icon">⚙️</span>Catalogue outils</div>
+        <div class="sb-item" onclick="showPanel('p-acces',this)"><span class="sb-item-icon">🔑</span>Accès & Identifiants</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Statistiques</div>
+        <div class="sb-kpi">
+          <div class="sb-stat"><div class="sb-stat-val" id="sb-nb-clients">0</div><div class="sb-stat-lbl">Clients actifs</div></div>
+          <div class="sb-stat"><div class="sb-stat-val" id="sb-nb-outils">22</div><div class="sb-stat-lbl">Outils disponibles</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="panel active" id="p-dashboard">
+        <div class="p-head">
+          <div><div class="p-title">Tableau de bord</div><div class="p-sub">Vue d'ensemble du portail KAINOS RH</div></div>
+          <button class="btn btn-or" onclick="showPanel('p-clients',document.querySelector('.sb-item:nth-child(2))'))">+ Nouveau client</button>
+        </div>
+
+        <div class="portail-card">
+          <div class="portail-info">
+            <div class="ptitle">🌐 URL du portail client</div>
+            <div class="psub">Partagez ce lien avec vos clients pour qu'ils accèdent à leur espace.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+            <div class="portail-url" id="portail-url-display">portail-client.html</div>
+            <button class="btn btn-ghost" onclick="copierLien()">📋 Copier</button>
+            <button class="btn btn-or" onclick="window.open('portail-client.html','_blank')">Ouvrir →</button>
+          </div>
+        </div>
+
+        <div class="kpi-row" id="kpi-row"></div>
+
+        <div class="table-wrap">
+          <div class="tbl-toolbar">
+            <div style="font-family:var(--fd);font-size:13px;font-weight:700;">Clients récents</div>
+            <button class="btn btn-or" onclick="openModalNouveauClient()">+ Nouveau client</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Entreprise</th><th>Contact</th><th>Formule</th><th>Outils</th><th>Statut</th><th>Actions</th></tr></thead>
+            <tbody id="tbl-clients-dashboard"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CLIENTS ── -->
+      <div class="panel" id="p-clients">
+        <div class="p-head">
+          <div><div class="p-title">Gestion des clients</div><div class="p-sub">Créez et gérez les espaces clients du portail.</div></div>
+          <button class="btn btn-or" onclick="openModalNouveauClient()">+ Nouveau client</button>
+        </div>
+        <div class="table-wrap">
+          <div class="tbl-toolbar">
+            <input class="tbl-search" type="text" id="search-clients" placeholder="🔍 Rechercher un client..." oninput="renderClients()"/>
+            <div style="font-size:11px;color:var(--gr);" id="count-clients">— clients</div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Entreprise</th><th>Login / Mot de passe</th><th>Contact</th><th>Formule</th><th>Outils actifs</th><th>Statut</th><th>Actions</th></tr></thead>
+            <tbody id="tbl-clients"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CATALOGUE OUTILS ── -->
+      <div class="panel" id="p-outils">
+        <div class="p-head">
+          <div><div class="p-title">Catalogue des 22 outils</div><div class="p-sub">Vue d'ensemble de tous les outils disponibles dans la suite RHFit.</div></div>
+        </div>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Outil</th><th>Catégorie</th><th>Fichier</th><th>Clients qui y ont accès</th></tr></thead>
+            <tbody id="tbl-outils"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ACCÈS ── -->
+      <div class="panel" id="p-acces">
+        <div class="p-head">
+          <div><div class="p-title">Accès & Identifiants</div><div class="p-sub">Récapitulatif des identifiants de connexion de tous vos clients.</div></div>
+        </div>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Entreprise</th><th>Login</th><th>Mot de passe</th><th>Email</th><th>Statut</th><th>Action</th></tr></thead>
+            <tbody id="tbl-acces"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══ MODAL NOUVEAU / ÉDITION CLIENT ══ -->
+<div class="modal-ov" id="modal-client">
+  <div class="modal">
+    <div class="mh">
+      <div class="mt" id="modal-client-title">Nouveau <span>client</span></div>
+      <button class="mc" onclick="closeModal('modal-client')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="sect-sep">Informations entreprise</div>
+      <div class="fg">
+        <div class="ff"><label>Nom de l'entreprise *</label><input class="ffi" type="text" id="f-entreprise" placeholder="Ex: ACME Sarl"/></div>
+        <div class="ff"><label>Formule / Plan *</label>
+          <select class="ffi" id="f-plan">
+            <option value="Starter">Starter</option>
+            <option value="Essentiel">Essentiel</option>
+            <option value="Pro">Pro</option>
+            <option value="Premium">Premium</option>
+            <option value="Sur mesure">Sur mesure</option>
+          </select>
+        </div>
+        <div class="ff"><label>Nom du contact *</label><input class="ffi" type="text" id="f-contact" placeholder="Ex: DOSSOU Marie"/></div>
+        <div class="ff"><label>Email</label><input class="ffi" type="email" id="f-email" placeholder="rh@acme.bj"/></div>
+      </div>
+
+      <div class="sect-sep" style="margin-top:1rem;">Identifiants de connexion</div>
+      <div class="fg">
+        <div class="ff"><label>Login client *</label><input class="ffi" type="text" id="f-login" placeholder="Ex: acme_sarl"/></div>
+        <div class="ff"><label>Mot de passe *</label><input class="ffi" type="text" id="f-pass" placeholder="Ex: acme2026"/></div>
+      </div>
+      <div style="font-size:10px;color:var(--gr);margin-top:-.5rem;margin-bottom:1rem;">💡 Ces identifiants seront donnés au client pour se connecter au portail.</div>
+
+      <div class="sect-sep">Outils à déverrouiller</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem;">
+        <div style="font-size:11px;color:var(--gr);">Sélectionnez les outils inclus dans la formule :</div>
+        <div class="packs-row">
+          <button class="pack-btn" onclick="appliquerPack('starter')">📦 Starter (5)</button>
+          <button class="pack-btn" onclick="appliquerPack('essentiel')">📦 Essentiel (10)</button>
+          <button class="pack-btn" onclick="appliquerPack('pro')">📦 Pro (16)</button>
+          <button class="pack-btn" onclick="appliquerPack('premium')">📦 Premium (22)</button>
+          <button class="pack-btn" onclick="appliquerPack('none')" style="color:var(--rd);border-color:rgba(240,90,90,.3);">✕ Tout vider</button>
+        </div>
+      </div>
+      <div class="outils-check-grid" id="outils-check-grid"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-client')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverClient()">✓ Enregistrer le client</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════
+// CONSTANTES
+// ══════════════════════════
+var ADMIN_CREDS = {login:'kainosrh', pass:'kainosrh2026'};
+var SK_CLIENTS  = 'kainosrh_clients_v1';
+
+var CATALOGUE = [
+  {id:'registre-personnel',cat:'personnel',icon:'👥',name:'Registre du Personnel',file:'registre-personnel.html'},
+  {id:'stagiaires',cat:'personnel',icon:'🎓',name:'Gestion des Stagiaires',file:'stagiaires.html'},
+  {id:'fiche-poste',cat:'personnel',icon:'📋',name:'Fiche de Poste',file:'fiche-poste.html'},
+  {id:'kpi-poste',cat:'personnel',icon:'🎯',name:'KPI du Poste',file:'kpi-poste.html'},
+  {id:'matrice-competences',cat:'personnel',icon:'🏆',name:'Matrice des Compétences',file:'matrice-competences.html'},
+  {id:'payroll',cat:'paie',icon:'💰',name:'Paie Multi-Compagnies',file:'payroll.html'},
+  {id:'prets',cat:'paie',icon:'💳',name:'Prêts & Avances',file:'prets.html'},
+  {id:'heures-sup',cat:'paie',icon:'⏱️',name:'Heures Supplémentaires',file:'heures-sup.html'},
+  {id:'indemnites-licenciement',cat:'paie',icon:'🚪',name:'Indemnités de Licenciement',file:'indemnites-licenciement.html'},
+  {id:'conges',cat:'temps',icon:'🏖️',name:'Congés & Absences',file:'conges.html'},
+  {id:'absenteisme',cat:'temps',icon:'📊',name:'Absentéisme',file:'absenteisme.html'},
+  {id:'visites-medicales',cat:'temps',icon:'🏥',name:'Visites Médicales',file:'visites-medicales.html'},
+  {id:'eval-performance',cat:'performance',icon:'⭐',name:'Évaluation & Formation',file:'eval-performance.html'},
+  {id:'aop',cat:'performance',icon:'📈',name:'Plan Opérationnel Annuel',file:'aop.html'},
+  {id:'formations',cat:'performance',icon:'🎓',name:'Catalogue Formations',file:'formations.html'},
+  {id:'dashboard-rh',cat:'performance',icon:'📊',name:'Dashboard RH',file:'dashboard-rh.html'},
+  {id:'contrats',cat:'juridique',icon:'📄',name:'Contrats & Lettres RH',file:'contrats.html'},
+  {id:'sanctions-disciplinaires',cat:'juridique',icon:'⚖️',name:'Sanctions Disciplinaires',file:'sanctions-disciplinaires.html'},
+  {id:'sante',cat:'juridique',icon:'🏥',name:'Assurance Santé',file:'sante.html'},
+  {id:'manuel-procedures-rh',cat:'juridique',icon:'💡',name:'Manuel de Procédures RH',file:'manuel-procedures-rh.html'},
+  {id:'reporting-rh',cat:'reporting',icon:'📊',name:'Reporting RH Automatique',file:'reporting-rh.html'},
+  {id:'tarifs',cat:'reporting',icon:'💰',name:'Tarifs & Simulateur',file:'tarifs.html'},
+];
+
+var PACKS = {
+  starter:  ['registre-personnel','fiche-poste','payroll','conges','contrats'],
+  essentiel:['registre-personnel','stagiaires','fiche-poste','payroll','prets','conges','absenteisme','eval-performance','contrats','reporting-rh'],
+  pro:      ['registre-personnel','stagiaires','fiche-poste','kpi-poste','matrice-competences','payroll','prets','heures-sup','conges','absenteisme','visites-medicales','eval-performance','aop','formations','contrats','sanctions-disciplinaires'],
+  premium:  CATALOGUE.map(function(o){return o.id;}),
+  none:     []
+};
+
+var CAT_LABELS  = {personnel:'Personnel',paie:'Paie',temps:'Temps & Présences',performance:'Performance',juridique:'Juridique',reporting:'Reporting'};
+var CAT_COLORS  = {personnel:'#C9A84C',paie:'#34C77B',temps:'#4A9EFF',performance:'#FBC724',juridique:'#A78BFA',reporting:'#22D3EE'};
+
+// ══ ÉTAT ══
+var CLIENTS = [];
+var editingId = null;
+
+// ══ PERSISTANCE ══
+function chargerClients(){
+  try{
+    var d = localStorage.getItem(SK_CLIENTS);
+    if(d){ CLIENTS = JSON.parse(d); }
+    else {
+      // Client demo par défaut
+      CLIENTS = [{
+        id:'demo001', login:'demo', pass:'demo2026',
+        entreprise:'Entreprise Démo', contact:'Responsable RH',
+        email:'rh@demo.bj', plan:'Starter', actif:true,
+        dateCreation:today(),
+        outils:['registre-personnel','stagiaires','fiche-poste','payroll','conges']
+      }];
+      sauverClients();
+    }
+  } catch(e){ CLIENTS=[]; }
+}
+function sauverClients(){
+  localStorage.setItem(SK_CLIENTS, JSON.stringify(CLIENTS));
+}
+function today(){ return new Date().toISOString().split('T')[0]; }
+function fmtDate(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function uid(){ return 'c'+ Date.now() + Math.random().toString(36).slice(2,6); }
+
+// ══ LOGIN ══
+function login(){
+  var u = document.getElementById('l-user').value.trim();
+  var p = document.getElementById('l-pass').value.trim();
+  if(u===ADMIN_CREDS.login && p===ADMIN_CREDS.pass){
+    chargerClients();
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    initApp();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function deconnecter(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+}
+
+// ══ INIT ══
+function initApp(){
+  renderKPI();
+  renderTableauDashboard();
+  renderClients();
+  renderCatalogue();
+  renderAcces();
+  updateSidebar();
+}
+
+function updateSidebar(){
+  var nb = CLIENTS.filter(function(c){return c.actif;}).length;
+  document.getElementById('sb-nb-clients').textContent = nb;
+}
+
+// ══ KPI ══
+function renderKPI(){
+  var total = CLIENTS.length;
+  var actifs = CLIENTS.filter(function(c){return c.actif;}).length;
+  var totalOutils = CLIENTS.reduce(function(acc,c){return acc+(c.outils?c.outils.length:0);},0);
+  var avgOutils = total ? Math.round(totalOutils/total) : 0;
+  var row = document.getElementById('kpi-row');
+  row.innerHTML =
+    kpiCard(total,'Clients total') +
+    kpiCard(actifs,'Clients actifs') +
+    kpiCard(CATALOGUE.length,'Outils disponibles') +
+    kpiCard(avgOutils,'Outils moy. / client');
+}
+function kpiCard(val,lbl){
+  return '<div class="kpi"><div class="kpi-val">'+val+'</div><div class="kpi-lbl">'+lbl+'</div></div>';
+}
+
+// ══ TABLEAU DASHBOARD ══
+function renderTableauDashboard(){
+  var tbody = document.getElementById('tbl-clients-dashboard');
+  tbody.innerHTML = '';
+  CLIENTS.slice(0,8).forEach(function(c){
+    tbody.innerHTML += ligneClient(c, true);
+  });
+  if(!CLIENTS.length) tbody.innerHTML='<tr><td colspan="6" class="empty"><div class="empty-ico">🏢</div>Aucun client. <span style="color:var(--or);cursor:pointer;" onclick="openModalNouveauClient()">Créer le premier →</span></td></tr>';
+}
+
+// ══ TABLEAU CLIENTS ══
+function renderClients(){
+  var q = (document.getElementById('search-clients')||{}).value||'';
+  q = q.toLowerCase();
+  var liste = CLIENTS.filter(function(c){
+    return !q || c.entreprise.toLowerCase().includes(q) || c.login.toLowerCase().includes(q) || (c.contact||'').toLowerCase().includes(q);
+  });
+  var tbody = document.getElementById('tbl-clients');
+  if(tbody){
+    tbody.innerHTML = '';
+    liste.forEach(function(c){ tbody.innerHTML += ligneClient(c, false); });
+    if(!liste.length) tbody.innerHTML='<tr><td colspan="7" class="empty"><div class="empty-ico">🔍</div>Aucun résultat</td></tr>';
+    document.getElementById('count-clients').textContent = liste.length + ' client(s)';
+  }
+}
+
+function ligneClient(c, compact){
+  var cols = compact
+    ? '<td>'+esc(c.entreprise)+'</td><td style="font-size:11px;color:var(--gr);">'+esc(c.contact)+'</td><td><span class="badge badge-plan">'+esc(c.plan)+'</span></td><td><span style="font-family:var(--fd);font-weight:700;color:var(--or);">'+c.outils.length+'</span>/22</td><td><span class="badge '+(c.actif?'badge-on':'badge-off')+'">'+( c.actif?'● Actif':'○ Inactif')+'</span></td><td><div class="tbl-actions"><button class="btn btn-ghost btn-sm" onclick="editerClient(\''+c.id+'\')">✏️ Éditer</button></div></td>'
+    : '<td><div style="font-weight:600;">'+esc(c.entreprise)+'</div><div style="font-size:10px;color:var(--gr);">Créé le '+fmtDate(c.dateCreation)+'</div></td><td><div style="font-family:monospace;font-size:11px;background:var(--m3);padding:4px 8px;border-radius:4px;display:inline-block;color:var(--or);">'+esc(c.login)+'</div><div style="font-size:10px;color:var(--gr);margin-top:3px;">••• '+esc(c.pass)+'</div></td><td style="font-size:11px;">'+esc(c.contact)+'<br><span style="color:var(--gr);font-size:10px;">'+esc(c.email)+'</span></td><td><span class="badge badge-plan">'+esc(c.plan)+'</span></td><td><span style="font-family:var(--fd);font-weight:700;color:var(--or);">'+c.outils.length+'</span><span style="color:var(--gr);font-size:10px;">/22 outils</span></td><td><span class="badge '+(c.actif?'badge-on':'badge-off')+'">'+( c.actif?'● Actif':'○ Inactif')+'</span></td><td><div class="tbl-actions"><button class="btn btn-ghost btn-sm" onclick="editerClient(\''+c.id+'\')">✏️</button><button class="btn '+(c.actif?'btn-rd':'btn-vt')+' btn-sm" onclick="toggleActif(\''+c.id+'\')">'+(c.actif?'Désactiver':'Activer')+'</button><button class="btn btn-rd btn-sm" onclick="supprimerClient(\''+c.id+'\')">🗑</button></div></td>';
+  return '<tr>'+cols+'</tr>';
+}
+
+// ══ CATALOGUE ══
+function renderCatalogue(){
+  var tbody = document.getElementById('tbl-outils');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  CATALOGUE.forEach(function(o,i){
+    var nbClients = CLIENTS.filter(function(c){return c.outils && c.outils.indexOf(o.id)!==-1;}).length;
+    tbody.innerHTML +=
+      '<tr><td style="color:var(--gr);font-size:11px;">'+(i+1)+'</td>'+
+      '<td><span style="font-size:14px;">'+o.icon+'</span> <span style="font-weight:600;">'+esc(o.name)+'</span></td>'+
+      '<td><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:'+CAT_COLORS[o.cat]+'">'+CAT_LABELS[o.cat]+'</span></td>'+
+      '<td><span style="font-family:monospace;font-size:10px;color:var(--gr);">'+o.file+'</span></td>'+
+      '<td><span style="font-family:var(--fd);font-weight:700;color:'+(nbClients>0?'var(--vt)':'var(--gr)')+'">'+nbClients+'</span><span style="font-size:10px;color:var(--gr);"> client(s)</span></td></tr>';
+  });
+}
+
+// ══ ACCÈS ══
+function renderAcces(){
+  var tbody = document.getElementById('tbl-acces');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  CLIENTS.forEach(function(c){
+    tbody.innerHTML +=
+      '<tr><td style="font-weight:600;">'+esc(c.entreprise)+'</td>'+
+      '<td><span style="font-family:monospace;font-size:12px;color:var(--or);">'+esc(c.login)+'</span></td>'+
+      '<td><span style="font-family:monospace;font-size:12px;">'+esc(c.pass)+'</span></td>'+
+      '<td style="font-size:11px;color:var(--gr);">'+esc(c.email)+'</td>'+
+      '<td><span class="badge '+(c.actif?'badge-on':'badge-off')+'">'+( c.actif?'● Actif':'○ Inactif')+'</span></td>'+
+      '<td><button class="btn btn-ghost btn-sm" onclick="copierCreds(\''+esc(c.login)+'\',\''+esc(c.pass)+'\')">📋 Copier</button></td></tr>';
+  });
+  if(!CLIENTS.length) tbody.innerHTML='<tr><td colspan="6" class="empty">Aucun client</td></tr>';
+}
+
+// ══ MODAL CLIENT ══
+function openModalNouveauClient(){
+  editingId = null;
+  document.getElementById('modal-client-title').innerHTML = 'Nouveau <span>client</span>';
+  document.getElementById('f-entreprise').value='';
+  document.getElementById('f-plan').value='Starter';
+  document.getElementById('f-contact').value='';
+  document.getElementById('f-email').value='';
+  document.getElementById('f-login').value='';
+  document.getElementById('f-pass').value='';
+  renderOutilsCheckGrid([]);
+  openModal('modal-client');
+  // Aller sur panel clients
+  showPanel('p-clients', document.querySelectorAll('.sb-item')[1]);
+}
+
+function editerClient(id){
+  var c = CLIENTS.find(function(x){return x.id===id;});
+  if(!c) return;
+  editingId = id;
+  document.getElementById('modal-client-title').innerHTML = 'Éditer <span>'+esc(c.entreprise)+'</span>';
+  document.getElementById('f-entreprise').value = c.entreprise;
+  document.getElementById('f-plan').value       = c.plan;
+  document.getElementById('f-contact').value    = c.contact;
+  document.getElementById('f-email').value      = c.email;
+  document.getElementById('f-login').value      = c.login;
+  document.getElementById('f-pass').value       = c.pass;
+  renderOutilsCheckGrid(c.outils);
+  openModal('modal-client');
+}
+
+function renderOutilsCheckGrid(selected){
+  var grid = document.getElementById('outils-check-grid');
+  grid.innerHTML = '';
+  CATALOGUE.forEach(function(o){
+    var checked = selected.indexOf(o.id) !== -1;
+    var div = document.createElement('div');
+    div.className = 'outil-check' + (checked?' selected':'');
+    div.dataset.id = o.id;
+    div.innerHTML =
+      '<input type="checkbox" id="chk-'+o.id+'"'+(checked?' checked':'')+'/>'+
+      '<div><div class="outil-check-name">'+o.icon+' '+esc(o.name)+'</div><div class="outil-check-cat">'+CAT_LABELS[o.cat]+'</div></div>';
+    div.querySelector('input').onchange = function(){
+      div.classList.toggle('selected', this.checked);
+    };
+    div.onclick = function(e){
+      if(e.target.tagName==='INPUT') return;
+      var chk = div.querySelector('input');
+      chk.checked = !chk.checked;
+      div.classList.toggle('selected', chk.checked);
+    };
+    grid.appendChild(div);
+  });
+}
+
+function appliquerPack(nom){
+  var ids = PACKS[nom] || [];
+  document.querySelectorAll('.outil-check').forEach(function(div){
+    var id = div.dataset.id;
+    var sel = ids.indexOf(id) !== -1;
+    div.classList.toggle('selected', sel);
+    div.querySelector('input').checked = sel;
+  });
+}
+
+function getOutilsSelectionnes(){
+  var ids = [];
+  document.querySelectorAll('.outil-check input:checked').forEach(function(chk){
+    ids.push(chk.closest('.outil-check').dataset.id);
+  });
+  return ids;
+}
+
+function sauverClient(){
+  var entreprise = document.getElementById('f-entreprise').value.trim();
+  var plan       = document.getElementById('f-plan').value;
+  var contact    = document.getElementById('f-contact').value.trim();
+  var email      = document.getElementById('f-email').value.trim();
+  var login      = document.getElementById('f-login').value.trim().toLowerCase();
+  var pass       = document.getElementById('f-pass').value.trim();
+  var outils     = getOutilsSelectionnes();
+
+  if(!entreprise||!login||!pass){ toast('⚠️ Entreprise, login et mot de passe sont obligatoires.'); return; }
+
+  // Vérif login unique
+  var doublon = CLIENTS.find(function(c){ return c.login===login && c.id!==editingId; });
+  if(doublon){ toast('⚠️ Ce login est déjà utilisé par : '+doublon.entreprise); return; }
+
+  if(editingId){
+    var idx = CLIENTS.findIndex(function(c){return c.id===editingId;});
+    if(idx!==-1){
+      CLIENTS[idx] = Object.assign(CLIENTS[idx],{entreprise,plan,contact,email,login,pass,outils});
+    }
+    toast('✅ Client mis à jour : '+entreprise);
+  } else {
+    CLIENTS.push({id:uid(),entreprise,plan,contact,email,login,pass,outils,actif:true,dateCreation:today()});
+    toast('✅ Client créé : '+entreprise+' ('+outils.length+' outils)');
+  }
+  sauverClients();
+  closeModal('modal-client');
+  initApp();
+}
+
+function toggleActif(id){
+  var c = CLIENTS.find(function(x){return x.id===id;});
+  if(!c) return;
+  c.actif = !c.actif;
+  sauverClients();
+  toast((c.actif?'✅ Activé':'⛔ Désactivé')+' : '+c.entreprise);
+  initApp();
+}
+
+function supprimerClient(id){
+  var c = CLIENTS.find(function(x){return x.id===id;});
+  if(!c) return;
+  if(!confirm('Supprimer le client "'+c.entreprise+'" ? Cette action est irréversible.')) return;
+  CLIENTS = CLIENTS.filter(function(x){return x.id!==id;});
+  sauverClients();
+  toast('🗑 Client supprimé.');
+  initApp();
+}
+
+// ══ NAVIGATION ══
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});
+  var p = document.getElementById(id);
+  if(p) p.classList.add('active');
+  if(btn && btn.classList) btn.classList.add('active');
+}
+
+// ══ MODALS ══
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click',function(e){
+  if(e.target.classList.contains('modal-ov')) e.target.classList.remove('open');
+});
+
+// ══ UTILITAIRES ══
+function copierLien(){
+  var url = window.location.href.replace('admin-portail.html','portail-client.html');
+  navigator.clipboard.writeText(url).then(function(){ toast('✅ Lien copié !'); });
+}
+function copierCreds(login, pass){
+  navigator.clipboard.writeText('Login : '+login+'\nMot de passe : '+pass).then(function(){ toast('✅ Identifiants copiés !'); });
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+var tt;
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(function(){ el.classList.remove('show'); },4000);
+}
+</script>
+</body>
+</html>

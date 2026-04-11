@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Générateur de Fiche de Poste – RH Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue-50: #E6F1FB; --blue-200: #85B7EB; --blue-500: #378ADD; --blue-700: #185FA5; --blue-900: #0C447C;
+    --green-50: #EAF3DE; --green-200: #97C459; --green-700: #3B6D11; --green-900: #27500A;
+    --amber-50: #FAEEDA; --amber-200: #EF9F27; --amber-700: #854F0B;
+    --gray-50: #F8F7F4; --gray-100: #F1EFE8; --gray-200: #D3D1C7; --gray-400: #888780; --gray-700: #444441; --gray-900: #2C2C2A;
+    --teal-50: #E1F5EE; --teal-700: #0F6E56;
+    --coral-50: #FAECE7; --coral-700: #993C1D;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--blue-900);
+    padding: 0 2rem;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    box-shadow: var(--shadow-md);
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 700;
+    color: white; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px; background: var(--blue-500);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .header-badge {
+    font-family: var(--font-body); font-size: 12px;
+    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    display: flex; gap: 0; margin-bottom: 2.5rem;
+    background: white; border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .progress-step {
+    flex: 1; padding: 14px 8px; text-align: center;
+    cursor: pointer; transition: all 0.2s;
+    border-right: 1px solid var(--gray-200);
+    position: relative;
+  }
+  .progress-step:last-child { border-right: none; }
+  .progress-step .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--gray-200); color: var(--gray-400);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 4px;
+    transition: all 0.2s;
+  }
+  .progress-step .step-label {
+    font-size: 11px; color: var(--gray-400);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .progress-step.active { background: var(--blue-50); }
+  .progress-step.active .step-num { background: var(--blue-700); color: white; }
+  .progress-step.active .step-label { color: var(--blue-700); }
+  .progress-step.done { background: var(--green-50); }
+  .progress-step.done .step-num { background: var(--green-700); color: white; }
+  .progress-step.done .step-label { color: var(--green-700); }
+
+  /* ── CARDS ── */
+  .card {
+    background: white; border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    padding: 1.75rem; margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .card-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .card-icon {
+    width: 38px; height: 38px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 17px; font-weight: 600; color: var(--gray-900);
+  }
+  .card-desc { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+  /* ── FORM ELEMENTS ── */
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    font-size: 12px; font-weight: 500;
+    color: var(--gray-700);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  label .req { color: var(--coral-700); margin-left: 2px; }
+  input[type=text], input[type=date], input[type=number], select, textarea {
+    width: 100%;
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 10px 13px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue-500);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(55,138,221,0.12);
+  }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888780' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+
+  /* ── TAGS ── */
+  .tag-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .tag-row input { flex: 1; }
+  .btn-add {
+    padding: 10px 16px; background: white;
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500; color: var(--gray-700);
+    cursor: pointer; white-space: nowrap; transition: all 0.15s;
+    font-family: var(--font-body);
+  }
+  .btn-add:hover { border-color: var(--blue-200); color: var(--blue-700); background: var(--blue-50); }
+  .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
+  .tag {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 10px 4px 12px;
+    background: var(--blue-50); color: var(--blue-900);
+    border: 1px solid var(--blue-200); border-radius: 20px;
+    font-size: 13px; font-weight: 400;
+  }
+  .tag.green { background: var(--green-50); color: var(--green-900); border-color: var(--green-200); }
+  .tag.amber { background: var(--amber-50); color: var(--amber-700); border-color: var(--amber-200); }
+  .tag button {
+    background: none; border: none; cursor: pointer;
+    color: inherit; opacity: 0.5; font-size: 15px;
+    line-height: 1; padding: 0; transition: opacity 0.1s;
+  }
+  .tag button:hover { opacity: 1; }
+
+  /* ── AI BUTTON ── */
+  .ai-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    background: linear-gradient(135deg, #EEEDFE 0%, #E6F1FB 100%);
+    color: #3C3489; border: 1px solid #AFA9EC;
+    border-radius: 20px; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s;
+    font-family: var(--font-body);
+  }
+  .ai-pill:hover { background: linear-gradient(135deg, #CECBF6 0%, #B5D4F4 100%); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .ai-row { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+
+  /* ── NAV BUTTONS ── */
+  .nav { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem; }
+  .btn-back {
+    padding: 11px 22px; background: white;
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; color: var(--gray-700);
+    cursor: pointer; transition: all 0.15s; font-family: var(--font-body);
+  }
+  .btn-back:hover { border-color: var(--gray-400); background: var(--gray-100); }
+  .btn-next {
+    padding: 11px 28px; background: var(--blue-700); color: white;
+    border: none; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s; font-family: var(--font-body);
+  }
+  .btn-next:hover { background: var(--blue-900); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-generate {
+    padding: 11px 28px; background: var(--green-700); color: white;
+    border: none; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s; font-family: var(--font-body);
+  }
+  .btn-generate:hover { background: var(--green-900); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  /* ── PREVIEW ── */
+  .preview-doc {
+    background: white; border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    overflow: hidden; box-shadow: var(--shadow-md);
+  }
+  .preview-top {
+    background: var(--blue-900); padding: 2rem 2rem 1.5rem;
+    color: white;
+  }
+  .preview-top-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+    padding: 3px 12px; border-radius: 20px; font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .preview-job-title {
+    font-family: var(--font-display);
+    font-size: 26px; font-weight: 700; color: white;
+    letter-spacing: -0.02em; line-height: 1.2;
+  }
+  .preview-org { font-size: 15px; color: rgba(255,255,255,0.75); margin-top: 6px; }
+  .preview-meta-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .meta-box {
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--gray-100);
+  }
+  .meta-box:last-child { border-right: none; }
+  .meta-lbl { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-val { font-size: 13px; font-weight: 500; color: var(--gray-900); margin-top: 3px; }
+  .preview-body { padding: 1.75rem 2rem; }
+  .preview-section { margin-bottom: 1.75rem; }
+  .preview-section-title {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 600;
+    color: var(--blue-700);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding-left: 10px;
+    border-left: 3px solid var(--blue-500);
+    margin-bottom: 12px;
+  }
+  .preview-section p { font-size: 14px; line-height: 1.7; color: var(--gray-900); }
+  .preview-section ul { padding-left: 1.5rem; }
+  .preview-section li { font-size: 14px; color: var(--gray-900); margin-bottom: 5px; line-height: 1.6; }
+  .preview-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ptag { padding: 4px 12px; border-radius: 20px; font-size: 13px; }
+  .ptag.blue { background: var(--blue-50); color: var(--blue-900); }
+  .ptag.green { background: var(--green-50); color: var(--green-900); }
+  .ptag.amber { background: var(--amber-50); color: var(--amber-700); }
+  .info-row {
+    display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px;
+    color: var(--gray-700); line-height: 1.8;
+  }
+  .info-row span { display: flex; gap: 4px; }
+  .info-row strong { color: var(--gray-900); }
+
+  .print-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 24px; background: white;
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; color: var(--gray-700);
+    cursor: pointer; transition: all 0.15s; font-family: var(--font-body);
+  }
+  .print-btn:hover { border-color: var(--blue-200); color: var(--blue-700); background: var(--blue-50); }
+
+  /* ── HIDDEN ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2rem;
+    font-size: 12px; color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    background: white;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .row-2, .row-3 { grid-template-columns: 1fr; }
+    .preview-meta-grid { grid-template-columns: 1fr 1fr; }
+    .progress-step .step-label { display: none; }
+    .container { padding: 1rem 1rem 3rem; }
+    header { padding: 0 1rem; }
+    .preview-top { padding: 1.5rem; }
+    .preview-body { padding: 1.25rem; }
+  }
+
+  @media print {
+    header, .progress-bar, .nav, .ai-row, footer { display: none !important; }
+    body { background: white; }
+    .container { padding: 0; max-width: 100%; }
+    .preview-doc { box-shadow: none; border: none; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📋</div>
+    RH Pro
+  </div>
+  <span class="header-badge">Générateur de fiche de poste</span>
+</header>
+
+<div class="container">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-step active" data-step="0"><div class="step-num">1</div><div class="step-label">Organisation</div></div>
+    <div class="progress-step" data-step="1"><div class="step-num">2</div><div class="step-label">Missions</div></div>
+    <div class="progress-step" data-step="2"><div class="step-num">3</div><div class="step-label">Compétences</div></div>
+    <div class="progress-step" data-step="3"><div class="step-num">4</div><div class="step-label">Conditions</div></div>
+    <div class="progress-step" data-step="4"><div class="step-num">5</div><div class="step-label">Rémunération</div></div>
+    <div class="progress-step" data-step="5"><div class="step-num">6</div><div class="step-label">Aperçu</div></div>
+  </div>
+
+  <!-- PAGE 1 : Organisation -->
+  <div class="page active" id="page-0">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--blue-50)">🏢</div>
+        <div>
+          <div class="card-title">Identification du poste</div>
+          <div class="card-desc">Informations générales sur la structure et le poste</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Direction <span class="req">*</span></label><input type="text" id="direction" placeholder="ex: Direction Commerciale" /></div>
+        <div class="field"><label>Département / Service</label><input type="text" id="departement" placeholder="ex: Service Clientèle" /></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Intitulé du poste <span class="req">*</span></label><input type="text" id="intitule" placeholder="ex: Responsable Commercial" /></div>
+        <div class="field"><label>Catégorie professionnelle <span class="req">*</span></label>
+          <select id="categorie">
+            <option value="">Sélectionner...</option>
+            <option>Employé(e)</option>
+            <option>Technicien(ne) / Agent de maîtrise</option>
+            <option>Cadre</option>
+            <option>Cadre dirigeant</option>
+            <option>Ouvrier(ère)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Supérieur hiérarchique</label><input type="text" id="superieur" placeholder="ex: Directeur Commercial" /></div>
+        <div class="field"><label>Lieu de travail</label><input type="text" id="lieu" placeholder="ex: Cotonou, Bénin" /></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Type de contrat</label>
+          <select id="contrat">
+            <option value="">Sélectionner...</option>
+            <option>CDI</option><option>CDD</option><option>Stage</option>
+            <option>Alternance</option><option>Freelance</option>
+          </select>
+        </div>
+        <div class="field"><label>Date de prise de poste</label><input type="date" id="date_prise" /></div>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-next" onclick="goTo(1)">Suivant →</button></div>
+  </div>
+
+  <!-- PAGE 2 : Missions -->
+  <div class="page" id="page-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--green-50)">🎯</div>
+        <div>
+          <div class="card-title">Missions & responsabilités</div>
+          <div class="card-desc">Définissez les missions principales du poste</div>
+        </div>
+      </div>
+      <div class="field"><label>Résumé du poste</label><textarea id="resume" placeholder="Décrivez brièvement le rôle, l'objectif et la valeur ajoutée du poste dans l'organisation..."></textarea></div>
+      <div class="field">
+        <label>Missions principales</label>
+        <div class="tag-row">
+          <input type="text" id="mission-input" placeholder="Ajouter une mission et appuyer sur Entrée..." onkeydown="if(event.key==='Enter'){addTag('missions','mission-input')}" />
+          <button class="btn-add" onclick="addTag('missions','mission-input')">+ Ajouter</button>
+        </div>
+        <div class="tags-wrap" id="missions-tags"></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(0)">← Retour</button>
+      <button class="btn-next" onclick="goTo(2)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 : Compétences -->
+  <div class="page" id="page-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--amber-50)">💡</div>
+        <div>
+          <div class="card-title">Compétences requises</div>
+          <div class="card-desc">Profil idéal pour occuper ce poste</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Niveau d'études minimum</label>
+          <select id="niveau_etudes">
+            <option value="">Sélectionner...</option>
+            <option>Bac</option><option>Bac+2</option><option>Bac+3 / Licence</option>
+            <option>Bac+4 / Master 1</option><option>Bac+5 / Master 2</option><option>Doctorat</option>
+          </select>
+        </div>
+        <div class="field"><label>Expérience requise</label>
+          <select id="experience">
+            <option value="">Sélectionner...</option>
+            <option>Débutant accepté</option><option>1 à 2 ans</option><option>3 à 5 ans</option>
+            <option>5 à 10 ans</option><option>Plus de 10 ans</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Compétences techniques</label>
+        <div class="tag-row">
+          <input type="text" id="tech-input" placeholder="ex: Excel, Salesforce, Comptabilité..." onkeydown="if(event.key==='Enter'){addTag('tech','tech-input')}" />
+          <button class="btn-add" onclick="addTag('tech','tech-input')">+ Ajouter</button>
+        </div>
+        <div class="tags-wrap" id="tech-tags"></div>
+      </div>
+      <div class="field">
+        <label>Soft skills</label>
+        <div class="tag-row">
+          <input type="text" id="soft-input" placeholder="ex: Leadership, Rigueur, Communication..." onkeydown="if(event.key==='Enter'){addTag('soft','soft-input')}" />
+          <button class="btn-add" onclick="addTag('soft','soft-input')">+ Ajouter</button>
+        </div>
+        <div class="tags-wrap" id="soft-tags"></div>
+      </div>
+      <div class="field"><label>Langues</label><input type="text" id="langues" placeholder="ex: Français (courant), Anglais (professionnel)" /></div>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(1)">← Retour</button>
+      <button class="btn-next" onclick="goTo(3)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 : Conditions -->
+  <div class="page" id="page-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--teal-50)">⚙️</div>
+        <div>
+          <div class="card-title">Conditions de travail</div>
+          <div class="card-desc">Organisation et environnement du poste</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Temps de travail</label>
+          <select id="temps_travail">
+            <option value="">Sélectionner...</option>
+            <option>Temps plein (40h/semaine)</option><option>Temps partiel</option>
+            <option>Forfait jours</option><option>Horaires décalés</option>
+          </select>
+        </div>
+        <div class="field"><label>Télétravail</label>
+          <select id="teletravail">
+            <option value="">Non applicable</option>
+            <option>Non</option>
+            <option>Partiel (1-2 jours/semaine)</option>
+            <option>Partiel (3-4 jours/semaine)</option>
+            <option>Télétravail complet</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Déplacements</label>
+          <select id="deplacements">
+            <option value="">Sélectionner...</option>
+            <option>Aucun</option><option>Occasionnels</option>
+            <option>Fréquents (région)</option><option>Fréquents (national)</option>
+            <option>Fréquents (international)</option>
+          </select>
+        </div>
+        <div class="field"><label>Équipements fournis</label><input type="text" id="equipements" placeholder="ex: PC portable, téléphone professionnel..." /></div>
+      </div>
+      <div class="field"><label>Contraintes spécifiques</label><textarea id="contraintes" placeholder="Port de charge, horaires atypiques, conditions physiques particulières..." style="min-height:70px;"></textarea></div>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(2)">← Retour</button>
+      <button class="btn-next" onclick="goTo(4)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 : Rémunération -->
+  <div class="page" id="page-4">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--teal-50)">💰</div>
+        <div>
+          <div class="card-title">Rémunération & avantages</div>
+          <div class="card-desc">Package et bénéfices proposés</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Salaire brut mensuel (min)</label><input type="text" id="salaire_min" placeholder="ex: 350 000 FCFA" /></div>
+        <div class="field"><label>Salaire brut mensuel (max)</label><input type="text" id="salaire_max" placeholder="ex: 500 000 FCFA" /></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Variable / Prime</label><input type="text" id="variable" placeholder="ex: Prime sur objectifs 10-20%" /></div>
+        <div class="field"><label>Période d'essai</label>
+          <select id="essai">
+            <option value="">Sélectionner...</option>
+            <option>1 mois</option><option>2 mois</option><option>3 mois</option>
+            <option>6 mois</option><option>Non applicable</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Avantages & bénéfices</label>
+        <div class="tag-row">
+          <input type="text" id="avantage-input" placeholder="ex: Mutuelle, tickets repas, véhicule de fonction..." onkeydown="if(event.key==='Enter'){addTag('avantages','avantage-input')}" />
+          <button class="btn-add" onclick="addTag('avantages','avantage-input')">+ Ajouter</button>
+        </div>
+        <div class="tags-wrap" id="avantages-tags"></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(3)">← Retour</button>
+      <button class="btn-generate" onclick="generatePreview()">Générer la fiche ✓</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 : Aperçu -->
+  <div class="page" id="page-5">
+    <div class="preview-doc" id="preview-content"></div>
+    <div class="nav" style="margin-top:1.5rem; flex-wrap:wrap; gap:10px;">
+      <button class="btn-back" onclick="goTo(4)">← Modifier</button>
+      <button class="print-btn" onclick="telechargerPDF()">📄 Télécharger PDF</button>
+      <button class="btn-next" onclick="telechargerWord()" style="display:flex;align-items:center;gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Télécharger Word (.docx)
+      </button>
+      <a href="kpi-poste.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--blue-900);color:white;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;font-family:var(--font-body);transition:all 0.15s;">
+        📊 Définir les KPI du poste →
+      </a>
+      <a href="matrice-competences.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#1E8449;color:white;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;font-family:var(--font-body);transition:all 0.15s;">
+        🎯 Matrice de compétences →
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<style id="print-css">
+@media print {
+  header, .progress-bar, .container > .page:not(#page-5), footer { display: none !important; }
+  #page-5 { display: block !important; }
+  .nav { display: none !important; }
+  body { background: white; }
+  .preview-doc { box-shadow: none; border: none; }
+  .preview-top { background: #0C447C !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+<footer>
+  RH Pro &nbsp;·&nbsp; Générateur de fiche de poste &nbsp;·&nbsp; Tous droits réservés
+</footer>
+
+<script>
+const tags = { missions: [], tech: [], soft: [], avantages: [] };
+const tagColors = { missions: '', tech: '', soft: 'green', avantages: 'amber' };
+
+function goTo(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  document.querySelectorAll('.progress-step').forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i < n) s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addTag(type, inputId) {
+  const inp = document.getElementById(inputId);
+  const val = inp.value.trim();
+  if (!val || tags[type].includes(val)) return;
+  tags[type].push(val);
+  renderTags(type);
+  inp.value = '';
+  inp.focus();
+}
+
+function removeTag(type, idx) {
+  tags[type].splice(idx, 1);
+  renderTags(type);
+}
+
+function renderTags(type) {
+  const containers = { missions: 'missions-tags', tech: 'tech-tags', soft: 'soft-tags', avantages: 'avantages-tags' };
+  const el = document.getElementById(containers[type]);
+  const color = tagColors[type];
+  el.innerHTML = tags[type].map((t, i) =>
+    `<span class="tag ${color}">${t}<button onclick="removeTag('${type}',${i})" title="Supprimer">×</button></span>`
+  ).join('');
+}
+
+function v(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+function generatePreview() {
+  const intitule = v('intitule') || 'Intitulé du poste';
+  const direction = v('direction'); const dept = v('departement');
+  const cat = v('categorie'); const contrat = v('contrat');
+  const lieu = v('lieu'); const superieur = v('superieur');
+  const date = v('date_prise') ? new Date(v('date_prise')).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) : '';
+  const resume = v('resume');
+  const niveau = v('niveau_etudes'); const exp = v('experience'); const langues = v('langues');
+  const tps = v('temps_travail'); const tel = v('teletravail');
+  const dep = v('deplacements'); const equip = v('equipements'); const contraintes = v('contraintes');
+  const salMin = v('salaire_min'); const salMax = v('salaire_max');
+  const variable = v('variable'); const essai = v('essai');
+
+  const missionsList = tags.missions.length
+    ? tags.missions.map(m => `<li>${m}</li>`).join('')
+    : '<li style="color:#888">Aucune mission renseignée</li>';
+  const techTags = tags.tech.map(t => `<span class="ptag blue">${t}</span>`).join('');
+  const softTags = tags.soft.map(s => `<span class="ptag green">${s}</span>`).join('');
+  const avantagesTags = tags.avantages.map(a => `<span class="ptag amber">${a}</span>`).join('');
+
+  const conditions = [
+    tps && `<span><strong>Temps de travail :</strong> ${tps}</span>`,
+    tel && tel !== 'Non applicable' && `<span><strong>Télétravail :</strong> ${tel}</span>`,
+    dep && `<span><strong>Déplacements :</strong> ${dep}</span>`,
+    equip && `<span><strong>Équipements :</strong> ${equip}</span>`,
+    contraintes && `<span><strong>Contraintes :</strong> ${contraintes}</span>`,
+  ].filter(Boolean).join('');
+
+  const remun = [
+    (salMin || salMax) && `<span><strong>Salaire brut :</strong> ${[salMin, salMax].filter(Boolean).join(' – ')}</span>`,
+    variable && `<span><strong>Variable :</strong> ${variable}</span>`,
+    essai && `<span><strong>Période d'essai :</strong> ${essai}</span>`,
+  ].filter(Boolean).join('');
+
+  document.getElementById('preview-content').innerHTML = `
+    <div class="preview-top">
+      ${contrat ? `<div class="preview-top-tag">${contrat}</div>` : ''}
+      <div class="preview-job-title">${intitule}</div>
+      <div class="preview-org">${[direction, dept].filter(Boolean).join(' — ')}</div>
+    </div>
+    <div class="preview-meta-grid">
+      <div class="meta-box"><div class="meta-lbl">Catégorie</div><div class="meta-val">${cat || '—'}</div></div>
+      <div class="meta-box"><div class="meta-lbl">Lieu</div><div class="meta-val">${lieu || '—'}</div></div>
+      <div class="meta-box"><div class="meta-lbl">Rattachement</div><div class="meta-val">${superieur || '—'}</div></div>
+      <div class="meta-box"><div class="meta-lbl">Prise de poste</div><div class="meta-val">${date || '—'}</div></div>
+      <div class="meta-box"><div class="meta-lbl">Expérience</div><div class="meta-val">${exp || '—'}</div></div>
+      <div class="meta-box"><div class="meta-lbl">Niveau d'études</div><div class="meta-val">${niveau || '—'}</div></div>
+    </div>
+    <div class="preview-body">
+      ${resume ? `<div class="preview-section"><div class="preview-section-title">Résumé du poste</div><p>${resume}</p></div>` : ''}
+      <div class="preview-section"><div class="preview-section-title">Missions & responsabilités</div><ul>${missionsList}</ul></div>
+      <div class="preview-section">
+        <div class="preview-section-title">Profil recherché</div>
+        ${langues ? `<p style="font-size:13px;margin-bottom:10px;color:#444"><strong>Langues :</strong> ${langues}</p>` : ''}
+        ${techTags ? `<p style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Compétences techniques</p><div class="preview-tags" style="margin-bottom:12px">${techTags}</div>` : ''}
+        ${softTags ? `<p style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Soft skills</p><div class="preview-tags">${softTags}</div>` : ''}
+        ${!techTags && !softTags ? '<p style="font-size:13px;color:#888">Aucune compétence renseignée</p>' : ''}
+      </div>
+      ${conditions ? `<div class="preview-section"><div class="preview-section-title">Conditions de travail</div><div class="info-row">${conditions}</div></div>` : ''}
+      ${remun || avantagesTags ? `<div class="preview-section"><div class="preview-section-title">Rémunération & avantages</div>${remun ? `<div class="info-row" style="margin-bottom:${avantagesTags ? '10px' : '0'}">${remun}</div>` : ''}${avantagesTags ? `<div class="preview-tags" style="margin-top:6px">${avantagesTags}</div>` : ''}</div>` : ''}
+    </div>`;
+
+  goTo(5);
+}
+
+function telechargerPDF() {
+  window.print();
+}
+
+async function telechargerWord() {
+  const btn = event.target.closest('button');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⏳ Génération...';
+  btn.disabled = true;
+
+  try {
+    const intitule = v('intitule') || 'Fiche de poste';
+    const direction = v('direction'); const dept = v('departement');
+    const cat = v('categorie'); const contrat = v('contrat');
+    const lieu = v('lieu'); const superieur = v('superieur');
+    const date = v('date_prise'); const resume = v('resume');
+    const niveau = v('niveau_etudes'); const exp = v('experience'); const langues = v('langues');
+    const tps = v('temps_travail'); const tel = v('teletravail');
+    const dep = v('deplacements'); const equip = v('equipements'); const contraintes = v('contraintes');
+    const salMin = v('salaire_min'); const salMax = v('salaire_max');
+    const variable = v('variable'); const essai = v('essai');
+
+    const {
+      Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+      AlignmentType, BorderStyle, WidthType, ShadingType, HeadingLevel,
+      VerticalAlign, UnderlineType
+    } = docx;
+
+    const BLUE = '185FA5'; const BLUE_LIGHT = 'E6F1FB'; const GOLD = 'C9A84C';
+    const GRAY = 'F8F7F4'; const DARK = '2C2C2A';
+    const border0 = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    const borders0 = { top: border0, bottom: border0, left: border0, right: border0 };
+    const borderB = { style: BorderStyle.SINGLE, size: 4, color: BLUE };
+
+    const makeTitle = (text) => new Paragraph({
+      children: [new TextRun({ text, font: 'Arial', size: 36, bold: true, color: BLUE })],
+      spacing: { before: 300, after: 100 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: BLUE, space: 4 } }
+    });
+
+    const makeLabel = (text) => new Paragraph({
+      children: [new TextRun({ text: text.toUpperCase(), font: 'Arial', size: 18, bold: true, color: BLUE })],
+      spacing: { before: 160, after: 60 }
+    });
+
+    const makeText = (text) => new Paragraph({
+      children: [new TextRun({ text: text || '—', font: 'Arial', size: 22, color: DARK })],
+      spacing: { before: 40, after: 40 }
+    });
+
+    const makeBullet = (text) => new Paragraph({
+      children: [new TextRun({ text, font: 'Arial', size: 22, color: DARK })],
+      bullet: { level: 0 },
+      spacing: { before: 40, after: 40 }
+    });
+
+    const makeMetaRow = (label, value) => new TableRow({
+      children: [
+        new TableCell({
+          borders: borders0,
+          width: { size: 3000, type: WidthType.DXA },
+          shading: { fill: BLUE_LIGHT, type: ShadingType.CLEAR },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          children: [new Paragraph({ children: [new TextRun({ text: label, font: 'Arial', size: 20, bold: true, color: BLUE })] })]
+        }),
+        new TableCell({
+          borders: borders0,
+          width: { size: 6360, type: WidthType.DXA },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          children: [new Paragraph({ children: [new TextRun({ text: value || '—', font: 'Arial', size: 20, color: DARK })] })]
+        })
+      ]
+    });
+
+    const children = [];
+
+    // En-tête
+    children.push(new Paragraph({
+      children: [new TextRun({ text: intitule, font: 'Arial', size: 52, bold: true, color: BLUE })],
+      spacing: { before: 0, after: 80 }
+    }));
+    if (direction || dept) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: [direction, dept].filter(Boolean).join(' — '), font: 'Arial', size: 26, color: '666660' })],
+        spacing: { after: 200 },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: BLUE, space: 6 } }
+      }));
+    }
+
+    // Tableau infos générales
+    children.push(new Paragraph({ children: [new TextRun({ text: '' })], spacing: { before: 160, after: 80 } }));
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [3000, 6360],
+      rows: [
+        makeMetaRow('Catégorie', cat),
+        makeMetaRow('Type de contrat', contrat),
+        makeMetaRow('Lieu de travail', lieu),
+        makeMetaRow('Rattachement', superieur),
+        makeMetaRow('Prise de poste', date),
+        makeMetaRow('Niveau d'études', niveau),
+        makeMetaRow('Expérience', exp),
+        makeMetaRow('Période d'essai', essai),
+      ].filter(Boolean)
+    }));
+
+    // Résumé
+    if (resume) {
+      children.push(makeTitle('Résumé du poste'));
+      children.push(makeText(resume));
+    }
+
+    // Missions
+    children.push(makeTitle('Missions & responsabilités'));
+    if (tags.missions.length) {
+      tags.missions.forEach(m => children.push(makeBullet(m)));
+    } else {
+      children.push(makeText('Aucune mission renseignée'));
+    }
+
+    // Compétences
+    children.push(makeTitle('Profil recherché'));
+    if (langues) { children.push(makeLabel('Langues')); children.push(makeText(langues)); }
+    if (tags.tech.length) { children.push(makeLabel('Compétences techniques')); tags.tech.forEach(t => children.push(makeBullet(t))); }
+    if (tags.soft.length) { children.push(makeLabel('Soft skills')); tags.soft.forEach(s => children.push(makeBullet(s))); }
+
+    // Conditions
+    const condItems = [
+      tps && ['Temps de travail', tps],
+      tel && tel !== 'Non applicable' && ['Télétravail', tel],
+      dep && ['Déplacements', dep],
+      equip && ['Équipements', equip],
+      contraintes && ['Contraintes', contraintes],
+    ].filter(Boolean);
+    if (condItems.length) {
+      children.push(makeTitle('Conditions de travail'));
+      condItems.forEach(([k, val]) => { children.push(makeLabel(k)); children.push(makeText(val)); });
+    }
+
+    // Rémunération
+    const remunItems = [
+      (salMin || salMax) && ['Salaire brut mensuel', [salMin, salMax].filter(Boolean).join(' – ')],
+      variable && ['Variable / Prime', variable],
+    ].filter(Boolean);
+    if (remunItems.length || tags.avantages.length) {
+      children.push(makeTitle('Rémunération & avantages'));
+      remunItems.forEach(([k, val]) => { children.push(makeLabel(k)); children.push(makeText(val)); });
+      if (tags.avantages.length) { children.push(makeLabel('Avantages')); tags.avantages.forEach(a => children.push(makeBullet(a))); }
+    }
+
+    const doc = new Document({
+      sections: [{
+        properties: {
+          page: { size: { width: 11906, height: 16838 }, margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 } }
+        },
+        children
+      }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (intitule || 'fiche-poste').replace(/\s+/g, '-').toLowerCase() + '.docx';
+    a.click();
+    URL.revokeObjectURL(url);
+    btn.innerHTML = '✓ Téléchargé !';
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2500);
+  } catch(e) {
+    console.error(e);
+    btn.innerHTML = '❌ Erreur — réessayer';
+    btn.disabled = false;
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 3000);
+  }
+}
+</script>
+</body>
+</html>

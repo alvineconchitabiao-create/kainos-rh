@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Évaluation de la Performance — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;--or-g:rgba(201,168,76,.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --ep:#34C77B;--sp:#4A9EFF;--ap:#FBC724;--np:#F05A5A;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem;}
+.login-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;text-align:center;}
+.login-logo{font-family:var(--fd);font-size:22px;font-weight:800;margin-bottom:.35rem;}
+.login-logo span{color:var(--or);}
+.login-subtitle{font-size:12px;color:var(--gris);margin-bottom:2rem;letter-spacing:.06em;}
+.login-title{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--blanc);margin-bottom:1.5rem;}
+.login-field{text-align:left;margin-bottom:1rem;}
+.login-field label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);display:block;margin-bottom:5px;}
+.login-field input{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;}
+.login-field input:focus{border-color:var(--or);}
+.login-btn{width:100%;padding:12px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:.5rem;}
+.login-btn:hover{background:var(--or2);}
+.login-err{color:var(--rouge);font-size:12px;margin-top:.75rem;display:none;}
+.login-admin-link{font-size:11px;color:var(--gris);margin-top:1.25rem;cursor:pointer;text-decoration:underline;}
+.login-admin-link:hover{color:var(--or);}
+
+/* APP */
+.app{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:.75rem;flex-wrap:wrap;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{font-family:var(--fd);font-size:14px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.user-badge{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;font-size:11px;display:flex;align-items:center;gap:7px;}
+.user-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);}
+.btn{display:flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;text-decoration:none;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;} .panel.active{display:block;}
+
+/* FICHE ÉVALUATION */
+.eval-header{background:linear-gradient(135deg,var(--bg2),rgba(201,168,76,.04));border:1px solid var(--gris3);border-radius:var(--rl);padding:1.5rem;margin-bottom:1.25rem;}
+.eval-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;}
+.eval-type-badge{display:flex;gap:6px;}
+.type-btn{padding:6px 16px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--gris3);background:transparent;color:var(--gris);transition:all .2s;}
+.type-btn.active{background:var(--or);color:var(--bg);border-color:var(--or);}
+.eval-annee{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gris);}
+.eval-annee input{background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:13px;font-weight:700;outline:none;width:50px;text-align:center;}
+
+.emp-search-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+.mat-input{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:14px;padding:9px 14px;outline:none;transition:border-color .2s;width:200px;}
+.mat-input:focus{border-color:var(--or);}
+.emp-info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;}
+.emp-field{background:var(--bg3);border-radius:var(--r);padding:.6rem .875rem;}
+.emp-field-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);opacity:.8;margin-bottom:3px;}
+.emp-field-val{font-size:12px;font-weight:600;color:var(--blanc);}
+.emp-field input,.emp-field select{background:transparent;border:none;color:var(--blanc);font-family:var(--fb);font-size:12px;font-weight:600;outline:none;width:100%;border-bottom:1px dashed var(--gris3);padding:2px 0;transition:border-color .2s;}
+.emp-field input:focus,.emp-field select:focus{border-bottom-color:var(--or);}
+
+/* SECTION CARD */
+.section-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.section-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.section-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.section-body{padding:1.25rem;}
+
+/* KPI TABLE */
+.kpi-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.kpi-tbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);}
+.kpi-tbl th.c{text-align:center;}
+.kpi-tbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.kpi-tbl tr:last-child td{border-bottom:none;}
+.kpi-inp{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:5px 8px;outline:none;transition:border-color .2s;width:100%;}
+.kpi-inp:focus{border-color:var(--or);}
+.kpi-inp.num{width:70px;text-align:center;font-family:var(--fd);font-weight:700;}
+.kpi-inp.result{width:70px;text-align:center;font-family:var(--fd);font-weight:700;background:var(--bg4);}
+.poids-total{font-family:var(--fd);font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:var(--r);display:inline-flex;align-items:center;gap:6px;}
+.poids-ok{background:rgba(52,199,123,.1);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.poids-err{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.2);}
+
+/* NOTATION BADGE */
+.note-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.06em;}
+.note-ep{background:rgba(52,199,123,.15);color:var(--ep);border:1px solid rgba(52,199,123,.25);}
+.note-sp{background:rgba(74,158,255,.12);color:var(--sp);border:1px solid rgba(74,158,255,.2);}
+.note-ap{background:rgba(251,199,36,.1);color:var(--ap);border:1px solid rgba(251,199,36,.2);}
+.note-np{background:rgba(240,90,90,.12);color:var(--np);border:1px solid rgba(240,90,90,.2);}
+
+/* RÉSULTAT GLOBAL */
+.result-global{background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.2);border-radius:var(--rl);padding:1.5rem;margin-bottom:1.25rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;align-items:center;}
+.rg-box{text-align:center;padding:.875rem;background:var(--bg2);border-radius:var(--r);}
+.rg-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.5rem;}
+.rg-val{font-family:var(--fd);font-size:32px;font-weight:700;line-height:1;}
+.rg-sub{font-size:10px;color:var(--gris);margin-top:.35rem;}
+.rg-main{text-align:center;}
+.rg-main-val{font-family:var(--fd);font-size:52px;font-weight:800;line-height:1;}
+.rg-main-badge{margin-top:.5rem;}
+
+/* COMPORTEMENT */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.comp-item{background:var(--bg3);border-radius:var(--r);padding:1rem;}
+.comp-title{font-size:12px;font-weight:700;color:var(--blanc);margin-bottom:.75rem;display:flex;align-items:center;gap:7px;}
+.comp-score-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;}
+.comp-who{font-size:10px;color:var(--gris);min-width:80px;}
+.score-btns{display:flex;gap:4px;}
+.score-btn{width:32px;height:28px;border-radius:var(--r);border:1px solid var(--gris3);background:transparent;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--gris);}
+.score-btn:hover{border-color:var(--or);}
+.score-btn.sel-1{background:rgba(240,90,90,.15);color:var(--rouge);border-color:var(--rouge);}
+.score-btn.sel-2{background:rgba(251,199,36,.12);color:var(--jaune);border-color:var(--jaune);}
+.score-btn.sel-3{background:rgba(74,158,255,.12);color:var(--bleu);border-color:var(--bleu);}
+.score-btn.sel-4{background:rgba(167,139,250,.1);color:var(--violet);border-color:var(--violet);}
+.score-btn.sel-5{background:rgba(52,199,123,.12);color:var(--vert);border-color:var(--vert);}
+.score-btn.sel-6,.score-btn.sel-7,.score-btn.sel-8{background:rgba(52,199,123,.18);color:var(--vert);border-color:var(--vert);}
+.score-btn.sel-9,.score-btn.sel-10{background:rgba(52,199,123,.25);color:var(--ep);border-color:var(--ep);}
+.comp-comment{width:100%;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:11px;padding:6px 8px;outline:none;resize:vertical;min-height:44px;transition:border-color .2s;margin-top:.5rem;}
+.comp-comment:focus{border-color:var(--or);}
+.comp-moy{font-family:var(--fd);font-size:15px;font-weight:700;margin-top:.5rem;display:flex;align-items:center;gap:6px;}
+
+/* FORMATION */
+.formation-item{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;margin-bottom:.75rem;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.75rem;align-items:center;}
+.formation-inp{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:6px 8px;outline:none;transition:border-color .2s;width:100%;}
+.formation-inp:focus{border-color:var(--or);}
+.del-btn{background:none;border:none;color:var(--gris2);cursor:pointer;font-size:18px;transition:color .2s;}
+.del-btn:hover{color:var(--rouge);}
+
+/* AVIS / OBSERVATIONS */
+.avis-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.avis-block{background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;}
+.avis-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);opacity:.8;margin-bottom:.5rem;}
+.avis-ta{width:100%;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:8px;outline:none;resize:vertical;min-height:80px;transition:border-color .2s;line-height:1.6;}
+.avis-ta:focus{border-color:var(--or);}
+
+/* TABLEAU RÉCAP */
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;position:sticky;top:0;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);color:var(--blanc);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.bv{background:rgba(52,199,123,.12);color:var(--vert);}
+.br{background:rgba(240,90,90,.12);color:var(--rouge);}
+.bo{background:rgba(201,168,76,.12);color:var(--or);}
+.by{background:rgba(251,199,36,.1);color:var(--jaune);}
+.bb{background:rgba(74,158,255,.12);color:var(--bleu);}
+.bvl{background:rgba(167,139,250,.1);color:var(--violet);}
+
+/* ADMIN */
+.admin-section{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;margin-bottom:1rem;}
+.admin-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);margin-bottom:.875rem;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;margin:auto;animation:popIn .22s ease;}
+.modal-sm{max-width:460px;} .modal-md{max-width:640px;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.03));}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--blanc);}
+.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+.ff{display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  .emp-info-grid{grid-template-columns:1fr 1fr;}
+  .comp-grid,.avis-grid{grid-template-columns:1fr;}
+  .result-global{grid-template-columns:1fr;}
+  .formation-item{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Elite <span>RH</span></div>
+    <div class="login-subtitle">GESTION DE LA PERFORMANCE</div>
+    <div class="login-title">Connexion Manager</div>
+    <div class="login-field">
+      <label>Identifiant</label>
+      <input type="text" id="l-user" placeholder="Votre identifiant" autocomplete="username"/>
+    </div>
+    <div class="login-field">
+      <label>Mot de passe</label>
+      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')connecter()"/>
+    </div>
+    <button class="login-btn" onclick="connecter()">Se connecter →</button>
+    <div class="login-err" id="login-err">Identifiant ou mot de passe incorrect.</div>
+    <div class="login-admin-link" onclick="openModal('modal-admin-login')">Accès Administrateur RH</div>
+  </div>
+</div>
+<div class="app" id="app">
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Évaluation de la Performance</div>
+  </div>
+  <div class="hdr-right">
+    <div class="user-badge"><div class="user-dot"></div><span id="user-label">—</span></div>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export</button>
+    <button class="btn btn-or" id="btn-valider-eval" onclick="validerEvaluation()" style="display:none">✓ Valider l'évaluation</button>
+    <button class="btn btn-ghost" onclick="deconnecter()">Déconnexion</button>
+  </div>
+</header>
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('fiche',this)"><span class="tdot" style="background:#C9A84C"></span>📝 Fiche d'Évaluation</button>
+  <button class="tab" onclick="showTab('recap',this)"><span class="tdot" style="background:#4A9EFF"></span>📋 Récapitulatif <span id="badge-recap" style="display:none;background:var(--vert);color:var(--bg);border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" onclick="showTab('plan-formation',this)"><span class="tdot" style="background:#34C77B"></span>📋 Formations Demandées <span id="badge-formation" style="display:none;background:var(--bleu);color:var(--bg);border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" onclick="showTab('plan-annuel',this)"><span class="tdot" style="background:#FB923C"></span>🗓️ Plan de Formation <span id="badge-plan-annuel" style="display:none;background:var(--orange);color:var(--bg);border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px"></span></button>
+  <button class="tab" id="tab-admin" onclick="showTab('admin',this)" style="display:none"><span class="tdot" style="background:#A78BFA"></span>⚙️ Administration</button>
+</nav>
+<div class="main">
+
+<!-- ════ FICHE ÉVALUATION ════ -->
+<div class="panel active" id="panel-fiche">
+
+  <!-- En-tête type + année -->
+  <div class="eval-header">
+    <div class="eval-header-top">
+      <div>
+        <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.35rem">Fiche d'Évaluation de la Performance</div>
+        <div style="font-size:12px;color:var(--gris)">Remplissez toutes les sections puis validez l'évaluation.</div>
+      </div>
+      <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+        <div class="eval-type-badge">
+          <button class="type-btn active" id="btn-mi" onclick="setTypeEval('mi',this)">Mi-annuelle</button>
+          <button class="type-btn" id="btn-an" onclick="setTypeEval('annuelle',this)">Annuelle</button>
+        </div>
+        <div class="eval-annee">Année : <input type="number" id="eval-annee" value="2026" min="2020" max="2035"/></div>
+      </div>
+    </div>
+
+    <!-- Recherche employé par matricule -->
+    <div class="emp-search-bar">
+      <input class="mat-input" type="text" id="inp-matricule" placeholder="Matricule employé..." oninput="rechercherEmploye(this.value)"/>
+      <button class="btn btn-ghost" onclick="openModal('modal-add-emp')" style="font-size:10px">+ Ajouter employé</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('file-import-emp').click()" style="font-size:10px">⬆ Importer</button>
+      <input type="file" id="file-import-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerEmployes(this)"/>
+      <button class="btn btn-ghost" onclick="chargerDemo()" style="font-size:10px">🎲 Démo</button>
+      <span id="emp-status" style="font-size:11px;color:var(--gris)"></span>
+    </div>
+
+    <!-- Infos employé -->
+    <div class="emp-info-grid" id="emp-info-grid">
+      <div class="emp-field"><div class="emp-field-label">Nom</div><input id="ef-nom" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Prénoms</div><input id="ef-prenom" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Poste</div><input id="ef-poste" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Direction / Département</div><input id="ef-dept" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Service</div><input id="ef-service" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Nom du Manager</div><input id="ef-manager-nom" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Poste du Manager</div><input id="ef-manager-poste" class="emp-field-val" type="text" placeholder="—"/></div>
+      <div class="emp-field"><div class="emp-field-label">Période d'évaluation</div><input id="ef-periode" class="emp-field-val" type="text" placeholder="Ex: Janvier—Juin 2026"/></div>
+    </div>
+  </div>
+
+  <!-- PARTIE KPI -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-title">🎯 KPI Individuels & Notation</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div id="poids-total-badge" class="poids-total poids-err">Total poids : <span id="poids-total-val">0</span>%</div>
+        <button class="btn btn-ghost" onclick="ajouterKPI()" style="font-size:10px">+ Ajouter un KPI</button>
+      </div>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <div style="overflow-x:auto;">
+        <table class="kpi-tbl" id="kpi-table">
+          <thead>
+            <tr>
+              <th style="min-width:200px">KPI / Domaine AOP</th>
+              <th style="min-width:140px">Indicateur</th>
+              <th style="min-width:120px">Résultat attendu</th>
+              <th style="min-width:80px">Résultat atteint</th>
+              <th class="c" style="min-width:70px">Poids %</th>
+              <th class="c" style="min-width:80px">Note Employé %</th>
+              <th class="c" style="min-width:80px">Note Manager %</th>
+              <th class="c" style="min-width:80px">Moy. pondérée</th>
+              <th class="c" style="min-width:70px">Notation</th>
+              <th style="min-width:40px"></th>
+            </tr>
+          </thead>
+          <tbody id="kpi-tbody"></tbody>
+          <tfoot>
+            <tr style="background:var(--bg3);">
+              <td colspan="4" style="font-family:var(--fd);font-size:12px;font-weight:700;padding:8px 10px;color:var(--blanc)">TOTAL / SCORE GLOBAL KPI</td>
+              <td class="c" id="tfoot-poids" style="font-family:var(--fd);font-weight:700;color:var(--or)">0%</td>
+              <td class="c" id="tfoot-emp" style="font-family:var(--fd);font-weight:700;color:var(--bleu)">—</td>
+              <td class="c" id="tfoot-mgr" style="font-family:var(--fd);font-weight:700;color:var(--violet)">—</td>
+              <td class="c" id="tfoot-moy" style="font-family:var(--fd);font-weight:700;color:var(--or)">—</td>
+              <td class="c" id="tfoot-note"></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- Légende notations -->
+      <div style="padding:.75rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:1rem;flex-wrap:wrap;">
+        <span class="note-badge note-ep">EP : 90–100%</span>
+        <span class="note-badge note-sp">SP : 70–89%</span>
+        <span class="note-badge note-ap">AP : 50–69%</span>
+        <span class="note-badge note-np">NP : 0–49%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉSULTAT GLOBAL KPI -->
+  <div class="result-global" id="result-global">
+    <div class="rg-box"><div class="rg-label">Score Employé</div><div class="rg-val" id="rg-emp" style="color:var(--bleu)">—</div><div class="rg-sub">Auto-évaluation</div></div>
+    <div class="rg-main">
+      <div class="rg-label" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris)">RÉSULTAT FINAL KPI</div>
+      <div class="rg-main-val" id="rg-final" style="color:var(--or)">—</div>
+      <div class="rg-main-badge" id="rg-note-badge"></div>
+    </div>
+    <div class="rg-box"><div class="rg-label">Score Manager</div><div class="rg-val" id="rg-mgr" style="color:var(--violet)">—</div><div class="rg-sub">Évaluation manager</div></div>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-title">🤝 Évaluation Comportementale <span style="font-size:10px;color:var(--gris);font-weight:400">— Note sur 10 par critère</span></div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:11px;color:var(--gris)">
+        Moyenne comportement : <strong id="comp-moy-global" style="color:var(--or);font-family:var(--fd)">—</strong>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="comp-grid" id="comp-grid"></div>
+    </div>
+  </div>
+
+  <!-- DEMANDES DE FORMATION -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-title">🎓 Besoins de Formation</div>
+      <button class="btn btn-ghost" onclick="ajouterFormation()" style="font-size:10px">+ Ajouter un besoin</button>
+    </div>
+    <div class="section-body">
+      <div id="formations-list"></div>
+      <div id="no-formation" style="text-align:center;padding:1rem;color:var(--gris);font-size:12px">Aucun besoin de formation enregistré. Cliquez sur "+ Ajouter" pour en saisir un.</div>
+    </div>
+  </div>
+
+  <!-- AVIS & OBSERVATIONS -->
+  <div class="section-card">
+    <div class="section-head"><div class="section-title">💬 Avis & Observations</div></div>
+    <div class="section-body">
+      <div class="avis-grid">
+        <div class="avis-block">
+          <div class="avis-label">Observations du Manager</div>
+          <textarea class="avis-ta" id="obs-manager" placeholder="Commentaires généraux du manager sur la performance, le comportement et les perspectives de l'évalué(e)..."></textarea>
+        </div>
+        <div class="avis-block">
+          <div class="avis-label">Avis de l\'Evalue(e) au sujet du Manager</div>
+          <textarea class="avis-ta" id="avis-evalue" placeholder="L'évalué(e) peut exprimer son ressenti sur l'encadrement reçu, la communication avec le manager, le soutien dans sa mission..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOUTON VALIDER -->
+  <div style="display:flex;justify-content:center;gap:1rem;padding:1rem 0;">
+    <button class="btn btn-ghost" onclick="reinitFiche()">🔄 Nouvelle évaluation</button>
+    <button class="btn btn-or" style="padding:12px 32px;font-size:13px;" onclick="validerEvaluation()">✓ Valider et enregistrer l'évaluation</button>
+  </div>
+</div>
+
+<!-- ════ RÉCAPITULATIF ════ -->
+<div class="panel" id="panel-recap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">Tableau de Suivi des Évaluations</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Toutes les évaluations validées — base de données consolidée</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <select id="f-recap-type" class="kpi-inp" onchange="renderRecap()" style="width:160px">
+        <option value="">Tous les types</option>
+        <option value="mi">Mi-annuelle</option>
+        <option value="annuelle">Annuelle</option>
+      </select>
+      <select id="f-recap-annee" class="kpi-inp" onchange="renderRecap()" style="width:100px">
+        <option value="">Toutes années</option>
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+      </select>
+      <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    </div>
+  </div>
+
+  <!-- ── TABLEAU DE SYNTHÈSE + GRAPHIQUE ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;" id="recap-synthese-wrap">
+
+    <!-- Tableau résumé -->
+    <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+      <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;">📊 Synthèse des Évaluations</div>
+      </div>
+      <div style="padding:1rem;" id="recap-synthese-body">
+        <!-- rempli dynamiquement -->
+      </div>
+    </div>
+
+    <!-- Graphique répartition -->
+    <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+      <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;">🎯 Répartition des Notations</div>
+      </div>
+      <div style="padding:1rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;" id="recap-chart-wrap">
+        <canvas id="recap-donut" width="180" height="180" style="max-width:180px;max-height:180px;"></canvas>
+        <div id="recap-chart-legend" style="display:flex;flex-direction:column;gap:.5rem;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl" id="recap-table">
+        <thead><tr>
+          <th>Matricule</th><th>Nom</th><th>Prénoms</th><th>Poste</th>
+          <th>Direction</th><th>Service</th><th>Manager</th>
+          <th class="c">Type</th><th class="c">Année</th>
+          <th class="c">Score KPI Employé</th><th class="c">Score KPI Manager</th>
+          <th class="c">Score KPI Final</th><th class="c">Notation KPI</th>
+          <th class="c">Moy. Comportement</th>
+          <th class="c">Éval. Mi-annuelle</th><th class="c">Éval. Annuelle</th>
+          <th>Besoins Formation</th><th>Obs. Manager</th><th>Avis Évalué</th>
+          <th class="c">Statut</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="recap-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PLAN DE FORMATION ════ -->
+<div class="panel" id="panel-plan-formation">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">Formations Demandées</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Consolidation de tous les besoins exprimés lors des évaluations</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <select id="f-pf-annee" class="kpi-inp" onchange="renderPlanFormation()" style="width:110px">
+        <option value="">Toutes années</option>
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+      </select>
+      <select id="f-pf-demandeur" class="kpi-inp" onchange="renderPlanFormation()" style="width:130px">
+        <option value="">Tous demandeurs</option>
+        <option value="Employé">Employé</option>
+        <option value="Manager">Manager</option>
+        <option value="Les deux">Les deux</option>
+      </select>
+      <button class="btn btn-ghost" onclick="exporterPlanFormation()">📊 Export Excel</button>
+    </div>
+  </div>
+
+  <!-- KPI résumé plan formation -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.875rem;margin-bottom:1.25rem;" id="pf-kpi-grid"></div>
+
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl" id="pf-table">
+        <thead><tr>
+          <th>Bénéficiaire</th>
+          <th>Matricule</th>
+          <th>Poste</th>
+          <th>Direction</th>
+          <th>Service</th>
+          <th>Manager</th>
+          <th>Formation demandée</th>
+          <th class="c">Demandé par</th>
+          <th>Période idéale</th>
+          <th>Compétence acquise</th>
+          <th>Justification (Score KPI)</th>
+          <th class="c">Type éval.</th>
+          <th class="c">Année</th>
+          <th class="c">Date valid.</th>
+          <th class="c">Statut</th>
+          <th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="pf-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PLAN DE FORMATION ANNUEL ════ -->
+<div class="panel" id="panel-plan-annuel">
+
+  <!-- En-tête + budget -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">Plan de Formation Annuel</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Planification, suivi des coûts et des participations</div>
+    </div>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;">
+      <select id="pa-annee" class="kpi-inp" onchange="renderPlanAnnuel()" style="width:100px">
+        <option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option>
+      </select>
+      <div style="background:var(--bg2);border:1px solid rgba(201,168,76,.3);border-radius:var(--r);padding:.5rem .875rem;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:10px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;">Budget alloué</span>
+        <input id="pa-budget" type="number" min="0" step="1000" placeholder="Ex: 5000000" oninput="savePABudget()" style="background:transparent;border:none;border-bottom:1px dashed var(--or);color:var(--or);font-family:var(--fd);font-size:15px;font-weight:700;width:140px;outline:none;text-align:right;padding:2px 4px;"/>
+        <span style="font-size:11px;color:var(--gris)">FCFA</span>
+      </div>
+      <button class="btn btn-ghost" onclick="importerDepuisBesoins()">⬇ Importer depuis Besoins</button>
+      <button class="btn btn-or" onclick="PA_CURRENT_THEME_ID=null;document.getElementById('theme-modal-title').textContent='Ajouter un Thème de Formation';viderFormulaireTheme();openModal('modal-add-theme')">+ Ajouter un thème</button>
+      <button class="btn btn-ghost" onclick="exporterPlanAnnuel()">📊 Export Excel</button>
+    </div>
+  </div>
+
+  <!-- KPI budget + stats -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.875rem;margin-bottom:1.25rem;" id="pa-kpi-grid"></div>
+
+  <!-- Tableau des thèmes -->
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.5rem;">
+    <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:var(--fd);font-size:13px;font-weight:700;">📚 Thèmes de Formation</div>
+    </div>
+    <div style="overflow-x:auto;max-height:520px;overflow-y:auto;">
+      <table class="dtbl" id="pa-themes-table">
+        <thead><tr>
+          <th>Domaine</th>
+          <th style="min-width:180px">Thème / Formation</th>
+          <th>Participants <span style="color:var(--gris);font-weight:400">(noms)</span></th>
+          <th class="c">Nb personnes</th>
+          <th>Département(s)</th>
+          <th class="c">1er Trim.</th>
+          <th class="c">2e Trim.</th>
+          <th class="c">3e Trim.</th>
+          <th class="c">4e Trim.</th>
+          <th>Organisme</th>
+          <th class="c" style="min-width:130px">Coût (FCFA)</th>
+          <th>Compétences à acquérir</th>
+          <th class="c">Statut</th>
+          <th class="c">Participation</th>
+          <th></th>
+        </tr></thead>
+        <tbody id="pa-themes-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tableau de synthèse -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;" id="pa-synthese-grid">
+    <!-- Répartition par département -->
+    <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;">🏢 Répartition par Département</div>
+      </div>
+      <div style="padding:1rem;" id="pa-dept-repartition"></div>
+    </div>
+    <!-- Nouvelles compétences disponibles -->
+    <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;">⭐ Nouvelles Compétences Disponibles</div>
+      </div>
+      <div style="padding:1rem;" id="pa-competences-list"></div>
+    </div>
+  </div>
+
+  <!-- Formations restantes -->
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.5rem;">
+    <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:var(--fd);font-size:13px;font-weight:700;">⏳ Formations Restantes à Effectuer</div>
+      <span id="pa-restantes-count" style="font-size:11px;color:var(--jaune)"></span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl" id="pa-restantes-table">
+        <thead><tr><th>Thème</th><th>Domaine</th><th>Participants</th><th class="c">Nb</th><th>Organisme</th><th class="c">Coût</th><th>Période prévue</th></tr></thead>
+        <tbody id="pa-restantes-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL AJOUTER THÈME FORMATION -->
+<div class="modal-ov" id="modal-add-theme">
+  <div class="modal" style="max-width:780px;">
+    <div class="mh"><div class="mt">🗓️ <span id="theme-modal-title">Ajouter un Thème de Formation</span></div><button class="mc" onclick="closeModal('modal-add-theme')">✕</button></div>
+    <div class="mb" style="max-height:70vh;overflow-y:auto;">
+      <div class="fg" style="grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+        <div class="ff"><label>Domaine de formation *</label>
+          <input type="text" id="th-domaine" placeholder="Ex: Management, RH, Informatique, Finance..."/>
+          <div class="hint">Regroupement logique de plusieurs thèmes</div>
+        </div>
+        <div class="ff"><label>Thème / Intitulé formation *</label>
+          <input type="text" id="th-intitule" placeholder="Ex: Leadership et gestion d équipe"/>
+        </div>
+        <div class="ff" style="grid-column:1/-1"><label>Participants (noms séparés par virgule)</label>
+          <input type="text" id="th-participants" placeholder="Ex: DOSSOU Aline, KPOSSOU Jean, ZANNOU Sylvie"/>
+          <div class="hint">Les noms seront comptés automatiquement</div>
+        </div>
+        <div class="ff"><label>Département(s)</label>
+          <input type="text" id="th-dept" placeholder="Ex: RH, Commercial"/>
+        </div>
+        <div class="ff"><label>Organisme de formation</label>
+          <input type="text" id="th-organisme" placeholder="Ex: CESAG, IFOAD, Consultant interne..."/>
+        </div>
+        <div class="ff"><label>Coût total (FCFA)</label>
+          <input type="number" id="th-cout" min="0" step="1000" placeholder="Ex: 500000"/>
+        </div>
+        <div class="ff" style="grid-column:1/-1"><label>Compétences à acquérir</label>
+          <input type="text" id="th-competences" placeholder="Ex: Gérer une équipe de 15 personnes, conduire des entretiens..."/>
+        </div>
+        <div class="ff"><label>Justification</label>
+          <input type="text" id="th-justification" placeholder="Ex: Résultat KPI faible, demande de l équipe..."/>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r);padding:.875rem;margin-top:.5rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--or);margin-bottom:.75rem;">Trimestres prévus</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;"><input type="checkbox" id="th-t1" style="accent-color:var(--or)"/> 1er Trimestre</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;"><input type="checkbox" id="th-t2" style="accent-color:var(--or)"/> 2e Trimestre</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;"><input type="checkbox" id="th-t3" style="accent-color:var(--or)"/> 3e Trimestre</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;"><input type="checkbox" id="th-t4" style="accent-color:var(--or)"/> 4e Trimestre</label>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-theme')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverTheme()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARTICIPATION -->
+<div class="modal-ov" id="modal-participation">
+  <div class="modal" style="max-width:580px;">
+    <div class="mh"><div class="mt">✅ Participation — <span id="part-theme-title" style="color:var(--or)"></span></div><button class="mc" onclick="closeModal('modal-participation')">✕</button></div>
+    <div class="mb" id="part-modal-body" style="max-height:50vh;overflow-y:auto;"></div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-participation')">Fermer</button>
+      <button class="btn btn-or" onclick="sauverParticipation()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ADMINISTRATION ════ -->
+<div class="panel" id="panel-admin">
+  <div class="admin-section">
+    <div class="admin-title">👥 Gestion des Managers</div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;">
+      <button class="btn btn-or" onclick="openModal('modal-add-manager')">+ Ajouter un manager</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl" id="managers-table">
+        <thead><tr><th>Identifiant</th><th>Nom complet</th><th>Poste</th><th>Département</th><th>Email</th><th>Rôle</th><th>Actions</th></tr></thead>
+        <tbody id="managers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="admin-section">
+    <div class="admin-title">👤 Base de données Personnel</div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;">
+      <button class="btn btn-ghost" onclick="openModal('modal-add-emp')">+ Ajouter un employé</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('file-import-emp').click()">⬆ Importer Excel/CSV</button>
+    </div>
+    <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Matricule</th><th>Nom</th><th>Prénoms</th><th>Poste</th><th>Direction</th><th>Service</th><th>Manager</th><th>Actions</th></tr></thead>
+        <tbody id="personnel-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+<!-- MODAL ADMIN LOGIN -->
+<div class="modal-ov" id="modal-admin-login">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mt">🔐 Accès <span>Administrateur</span></div><button class="mc" onclick="closeModal('modal-admin-login')">✕</button></div>
+    <div class="mb">
+      <div class="ff"><label>Code admin</label><input type="password" id="admin-code" placeholder="Code administrateur" onkeydown="if(event.key==='Enter')connecterAdmin()"/></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-admin-login')">Annuler</button>
+      <button class="btn btn-or" onclick="connecterAdmin()">Accéder →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AJOUTER MANAGER -->
+<div class="modal-ov" id="modal-add-manager">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">👥 <span id="mgr-modal-title">Ajouter un Manager</span></div><button class="mc" onclick="closeModal('modal-add-manager')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Identifiant de connexion *</label><input type="text" id="mgr-id" placeholder="Ex: kainosrh"/><div class="hint">Utilisé pour se connecter</div></div>
+        <div class="ff"><label>Mot de passe *</label><input type="password" id="mgr-pass" placeholder="Minimum 6 caractères"/></div>
+        <div class="ff"><label>Nom complet *</label><input type="text" id="mgr-nom" placeholder="Ex: DOSSOU Aline"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="mgr-poste" placeholder="Ex: Directrice RH"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="mgr-dept" placeholder="Ex: RH"/></div>
+        <div class="ff"><label>Email</label><input type="email" id="mgr-email" placeholder="Ex: a.dossou@entreprise.com"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-manager')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverManager()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AJOUTER EMPLOYÉ -->
+<div class="modal-ov" id="modal-add-emp">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">👤 Ajouter un <span>Employé</span></div><button class="mc" onclick="closeModal('modal-add-emp')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Matricule *</label><input type="text" id="e-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="e-nom" placeholder="Ex: SAMBA"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="e-prenom" placeholder="Ex: David"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="e-poste" placeholder="Ex: PLOMBIER"/></div>
+        <div class="ff"><label>Direction / Département</label><input type="text" id="e-dept" placeholder="Ex: MAINTENANCE"/></div>
+        <div class="ff"><label>Service</label><input type="text" id="e-service" placeholder="Ex: ATELIER"/></div>
+        <div class="ff"><label>Nom du Manager</label><input type="text" id="e-mgr-nom" placeholder="Ex: HOUNSOU Rémi"/></div>
+        <div class="ff"><label>Poste du Manager</label><input type="text" id="e-mgr-poste" placeholder="Ex: Directeur Production"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-emp')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEmploye()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+var SK = 'eliteeval_v1';
+var ADMIN_CODE = 'kainosrh2026';
+var ST = {
+  managers: [],
+  personnel: [],
+  evaluations: [],
+  planAnnuel: {},
+  nextId: 100
+};
+var SESSION = { logged: false, user: null, isAdmin: false };
+var currentEval = { kpis:[], formations:[], comportement:{}, typeEval:'mi', annee:'2026' };
+var nextId = 100;
+function uid(){ return ++nextId; }
+
+var COMP_CRITERES = [
+  { id:'leadership',  label:'Leadership',          icon:'🎯' },
+  { id:'service',     label:'Service aux Clients', icon:'🤝' },
+  { id:'autonomie',   label:'Autonomie',           icon:'⚡' },
+  { id:'business',    label:'Business Partner',    icon:'💼' }
+];
+
+// ── PERSISTANCE ──
+function chargerST(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; if(!ST.planAnnuel) ST.planAnnuel={}; }
+    else { ST={ managers:[], personnel:[], evaluations:[], planAnnuel:{}, nextId:100 }; initDefaultManagers(); }
+  }catch(e){ ST={ managers:[], personnel:[], evaluations:[], planAnnuel:{}, nextId:100 }; initDefaultManagers(); }
+}
+function sauverST(){
+  try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }
+  catch(e){ toast('Erreur sauvegarde: '+e.message); }
+}
+function initDefaultManagers(){
+  // Managers par défaut pour démo
+  ST.managers=[
+    {id:uid(),login:'admin',pass:'kainosrh2026',nom:'Administrateur RH',poste:'DRH',dept:'RH',email:'rh@entreprise.com',role:'admin'},
+    {id:uid(),login:'kainosrh',pass:'kainosrh2026',nom:'DOSSOU Aline',poste:'Directrice RH',dept:'RH',email:'a.dossou@entreprise.com',role:'manager'},
+    {id:uid(),login:'mgr.kpossou',pass:'kpossou123',nom:'KPOSSOU Jean',poste:'Directeur Commercial',dept:'Commercial',email:'j.kpossou@entreprise.com',role:'manager'},
+  ];
+  sauverST();
+}
+
+// ── CONNEXION ──
+function connecter(){
+  var login=document.getElementById('l-user').value.trim();
+  var pass=document.getElementById('l-pass').value.trim();
+  var mgr=ST.managers.find(function(m){return m.login===login&&m.pass===pass;});
+  if(!mgr){ document.getElementById('login-err').style.display='block'; return; }
+  SESSION={ logged:true, user:mgr, isAdmin: mgr.role==='admin' };
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-label').textContent=mgr.nom+(mgr.role==='admin'?' (Admin)':'');
+  if(SESSION.isAdmin) document.getElementById('tab-admin').style.display='flex';
+  document.getElementById('login-err').style.display='none';
+  initFiche();
+  renderRecap();
+  if(SESSION.isAdmin) renderAdmin();
+  // Pré-remplir nom manager
+  document.getElementById('ef-manager-nom').value=mgr.nom;
+  document.getElementById('ef-manager-poste').value=mgr.poste||'';
+}
+function connecterAdmin(){
+  var code=document.getElementById('admin-code').value.trim();
+  if(code!==ADMIN_CODE){ toast('Code incorrect'); return; }
+  closeModal('modal-admin-login');
+  var adminMgr=ST.managers.find(function(m){return m.role==='admin';});
+  if(!adminMgr){ adminMgr={id:0,login:'admin',nom:'Administrateur RH',poste:'DRH',dept:'RH',email:'',role:'admin'}; }
+  SESSION={ logged:true, user:adminMgr, isAdmin:true };
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-label').textContent=adminMgr.nom+' (Admin)';
+  document.getElementById('tab-admin').style.display='flex';
+  document.getElementById('login-err').style.display='none';
+  initFiche();
+  renderRecap();
+  renderAdmin();
+}
+function deconnecter(){
+  SESSION={ logged:false, user:null, isAdmin:false };
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.getElementById('tab-admin').style.display='none';
+}
+
+// ── FICHE ÉVALUATION ──
+function setTypeEval(type, btn){
+  currentEval.typeEval=type;
+  document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+}
+
+function rechercherEmploye(mat){
+  var emp=ST.personnel.find(function(e){return e.mat.toLowerCase()===mat.toLowerCase();});
+  if(emp){
+    document.getElementById('ef-nom').value=emp.nom||'';
+    document.getElementById('ef-prenom').value=emp.prenom||'';
+    document.getElementById('ef-poste').value=emp.poste||'';
+    document.getElementById('ef-dept').value=emp.dept||'';
+    document.getElementById('ef-service').value=emp.service||'';
+    if(!SESSION.isAdmin){
+      document.getElementById('ef-manager-nom').value=SESSION.user.nom;
+      document.getElementById('ef-manager-poste').value=SESSION.user.poste||'';
+    } else {
+      document.getElementById('ef-manager-nom').value=emp.mgr_nom||'';
+      document.getElementById('ef-manager-poste').value=emp.mgr_poste||'';
+    }
+    document.getElementById('emp-status').textContent='✓ Employé trouvé';
+    document.getElementById('emp-status').style.color='var(--vert)';
+  } else if(mat.length>=3){
+    document.getElementById('emp-status').textContent='Matricule non trouvé';
+    document.getElementById('emp-status').style.color='var(--rouge)';
+  }
+}
+
+function initFiche(){
+  currentEval={ kpis:[], formations:[], comportement:{}, typeEval:'mi', annee:'2026' };
+  // KPI par défaut
+  var kpisDefaut=[
+    {id:uid(),domaine:'Gestion RH',indicateur:'Taux de conformité',resultat_attendu:'100%',resultat_atteint:'',poids:25,note_emp:'',note_mgr:''},
+    {id:uid(),domaine:'Recrutement & Intégration',indicateur:'Délai moyen recrutement',resultat_attendu:'< 25 jours',resultat_atteint:'',poids:20,note_emp:'',note_mgr:''},
+    {id:uid(),domaine:'Formation & Développement',indicateur:'Taux réalisation formations',resultat_attendu:'80%',resultat_atteint:'',poids:20,note_emp:'',note_mgr:''},
+    {id:uid(),domaine:'Performance & Évaluation',indicateur:'Taux évaluations réalisées',resultat_attendu:'100%',resultat_atteint:'',poids:20,note_emp:'',note_mgr:''},
+    {id:uid(),domaine:'Communication interne',indicateur:'Nb sessions réalisées',resultat_attendu:'16',resultat_atteint:'',poids:15,note_emp:'',note_mgr:''},
+  ];
+  currentEval.kpis=kpisDefaut;
+  COMP_CRITERES.forEach(function(c){ currentEval.comportement[c.id]={emp:0,mgr:0,comment_emp:'',comment_mgr:''}; });
+  renderKPITable();
+  renderComportement();
+  renderFormations();
+  document.getElementById('ef-manager-nom').value=SESSION.user?SESSION.user.nom:'';
+  document.getElementById('ef-manager-poste').value=SESSION.user?SESSION.user.poste||'':'';
+}
+
+// ── KPI TABLE ──
+function ajouterKPI(){
+  currentEval.kpis.push({id:uid(),domaine:'',indicateur:'',resultat_attendu:'',resultat_atteint:'',poids:0,note_emp:'',note_mgr:''});
+  renderKPITable();
+}
+function supprimerKPI(id){
+  currentEval.kpis=currentEval.kpis.filter(function(k){return k.id!==id;});
+  renderKPITable();
+}
+
+function renderKPITable(){
+  var tbody=document.getElementById('kpi-tbody');
+  tbody.innerHTML='';
+  currentEval.kpis.forEach(function(kpi){
+    var moy=calcMoyKPI(kpi);
+    var note=getNote(moy);
+    var noteCls=getNoteClass(note);
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td><input class="kpi-inp" value="'+esc(kpi.domaine)+'" placeholder="Ex: Gestion RH / AOP Digitalisation..." oninput="updateKPI('+kpi.id+',\'domaine\',this.value)"/></td>'+
+      '<td><input class="kpi-inp" value="'+esc(kpi.indicateur)+'" placeholder="Ex: Taux adoption outils digitaux" oninput="updateKPI('+kpi.id+',\'indicateur\',this.value)"/></td>'+
+      '<td><input class="kpi-inp" value="'+esc(kpi.resultat_attendu)+'" placeholder="Ex: 100%" oninput="updateKPI('+kpi.id+',\'resultat_attendu\',this.value)"/></td>'+
+      '<td><input class="kpi-inp" value="'+esc(kpi.resultat_atteint)+'" placeholder="Ex: 87%" oninput="updateKPI('+kpi.id+',\'resultat_atteint\',this.value)"/></td>'+
+      '<td style="text-align:center"><input class="kpi-inp num" type="number" min="0" max="100" value="'+kpi.poids+'" oninput="updateKPI('+kpi.id+',\'poids\',this.value)"/></td>'+
+      '<td style="text-align:center"><input class="kpi-inp num" type="number" min="0" max="100" value="'+kpi.note_emp+'" placeholder="0-100" oninput="updateKPI('+kpi.id+',\'note_emp\',this.value)" style="color:var(--bleu)"/></td>'+
+      '<td style="text-align:center"><input class="kpi-inp num" type="number" min="0" max="100" value="'+kpi.note_mgr+'" placeholder="0-100" oninput="updateKPI('+kpi.id+',\'note_mgr\',this.value)" style="color:var(--violet)"/></td>'+
+      '<td style="text-align:center"><span style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(moy!==null?moy.toFixed(1)+'%':'—')+'</span></td>'+
+      '<td style="text-align:center">'+(note?'<span class="note-badge '+noteCls+'">'+note+'</span>':'—')+'</td>'+
+      '<td><button onclick="supprimerKPI('+kpi.id+')" class="del-btn" title="Supprimer">×</button></td>';
+    tbody.appendChild(tr);
+  });
+  updateScoresGlobaux();
+}
+
+function updateKPI(id,field,val){
+  var kpi=currentEval.kpis.find(function(k){return k.id===id;});
+  if(!kpi) return;
+  kpi[field]=field==='poids'||field==='note_emp'||field==='note_mgr'?(parseFloat(val)||0):val;
+  updateScoresGlobaux();
+  // Mise à jour dynamique de la ligne sans re-render complet
+  var moy=calcMoyKPI(kpi);
+  var note=getNote(moy);
+  var noteCls=getNoteClass(note);
+  var tds=document.querySelectorAll('#kpi-tbody tr');
+  var idx=currentEval.kpis.findIndex(function(k){return k.id===id;});
+  if(tds[idx]){
+    var cells=tds[idx].querySelectorAll('td');
+    if(cells[7]) cells[7].innerHTML='<span style="font-family:var(--fd);font-weight:700;color:var(--or)">'+(moy!==null?moy.toFixed(1)+'%':'—')+'</span>';
+    if(cells[8]) cells[8].innerHTML=(note?'<span class="note-badge '+noteCls+'">'+note+'</span>':'—');
+  }
+}
+
+function calcMoyKPI(kpi){
+  var ne=parseFloat(kpi.note_emp); var nm=parseFloat(kpi.note_mgr);
+  var hasBoth=!isNaN(ne)&&ne!==''&&!isNaN(nm)&&nm!=='';
+  var hasEmp=!isNaN(ne)&&ne!=='';
+  var hasMgr=!isNaN(nm)&&nm!=='';
+  if(hasBoth) return (ne+nm)/2;
+  if(hasEmp) return ne;
+  if(hasMgr) return nm;
+  return null;
+}
+
+function updateScoresGlobaux(){
+  var totalPoids=currentEval.kpis.reduce(function(s,k){return s+(parseFloat(k.poids)||0);},0);
+  document.getElementById('poids-total-val').textContent=totalPoids;
+  document.getElementById('tfoot-poids').textContent=totalPoids+'%';
+  var badge=document.getElementById('poids-total-badge');
+  badge.className='poids-total '+(Math.abs(totalPoids-100)<0.01?'poids-ok':'poids-err');
+
+  // Scores pondérés
+  var scoreEmp=0,scoreMgr=0,scoreFinal=0,hasEmp=false,hasMgr=false,hasFinal=false;
+  currentEval.kpis.forEach(function(k){
+    var p=parseFloat(k.poids)||0;
+    var ne=parseFloat(k.note_emp); var nm=parseFloat(k.note_mgr);
+    if(!isNaN(ne)&&k.note_emp!==''){scoreEmp+=ne*p/100; hasEmp=true;}
+    if(!isNaN(nm)&&k.note_mgr!==''){scoreMgr+=nm*p/100; hasMgr=true;}
+    var moy=calcMoyKPI(k);
+    if(moy!==null){scoreFinal+=moy*p/100; hasFinal=true;}
+  });
+  var seStr=hasEmp?scoreEmp.toFixed(1)+'%':'—';
+  var smStr=hasMgr?scoreMgr.toFixed(1)+'%':'—';
+  var sfStr=hasFinal?scoreFinal.toFixed(1)+'%':'—';
+
+  document.getElementById('tfoot-emp').textContent=seStr;
+  document.getElementById('tfoot-emp').style.color='var(--bleu)';
+  document.getElementById('tfoot-mgr').textContent=smStr;
+  document.getElementById('tfoot-mgr').style.color='var(--violet)';
+  document.getElementById('tfoot-moy').textContent=sfStr;
+  document.getElementById('tfoot-moy').style.color='var(--or)';
+
+  var note=hasFinal?getNote(scoreFinal):null;
+  var noteCls=getNoteClass(note);
+  document.getElementById('tfoot-note').innerHTML=note?'<span class="note-badge '+noteCls+'">'+note+'</span>':'—';
+
+  document.getElementById('rg-emp').textContent=seStr;
+  document.getElementById('rg-mgr').textContent=smStr;
+  document.getElementById('rg-final').textContent=sfStr;
+  document.getElementById('rg-final').style.color=hasFinal?getNoteColor(note):'var(--or)';
+  document.getElementById('rg-note-badge').innerHTML=note?'<span class="note-badge '+noteCls+'" style="font-size:14px;padding:6px 16px">'+note+'</span>':'';
+
+  currentEval._scoreEmp=hasEmp?parseFloat(scoreEmp.toFixed(1)):null;
+  currentEval._scoreMgr=hasMgr?parseFloat(scoreMgr.toFixed(1)):null;
+  currentEval._scoreFinal=hasFinal?parseFloat(scoreFinal.toFixed(1)):null;
+  currentEval._noteFinale=note;
+}
+
+function getNote(score){
+  if(score===null||score===undefined) return null;
+  if(score>=90) return 'EP';
+  if(score>=70) return 'SP';
+  if(score>=50) return 'AP';
+  return 'NP';
+}
+function getNoteClass(note){
+  return {EP:'note-ep',SP:'note-sp',AP:'note-ap',NP:'note-np'}[note]||'';
+}
+function getNoteColor(note){
+  return {EP:'var(--ep)',SP:'var(--sp)',AP:'var(--ap)',NP:'var(--np)'}[note]||'var(--or)';
+}
+
+// ── COMPORTEMENT ──
+function renderComportement(){
+  var grid=document.getElementById('comp-grid');
+  grid.innerHTML='';
+  COMP_CRITERES.forEach(function(c){
+    var cv=currentEval.comportement[c.id]||{emp:0,mgr:0,comment_emp:'',comment_mgr:''};
+    var div=document.createElement('div');
+    div.className='comp-item';
+    var html='<div class="comp-title">'+c.icon+' '+c.label+'</div>';
+    // Employé note sur 10
+    html+='<div class="comp-score-row"><span class="comp-who">Employé :</span><div class="score-btns" id="score-emp-'+c.id+'">';
+    for(var i=1;i<=10;i++) html+='<button class="score-btn'+(cv.emp===i?' sel-'+i:'')+'" onclick="setScore(\'' +c.id+ '\',\'emp\','+i+')">'+i+'</button>';
+    html+='</div></div>';
+    html+='<textarea class="comp-comment" placeholder="Commentaire employé (optionnel)..." oninput="updateCompComment(\'' +c.id+ '\',\'emp\',this.value)">'+esc(cv.comment_emp||'')+'</textarea>';
+    // Manager note sur 10
+    html+='<div class="comp-score-row" style="margin-top:.5rem"><span class="comp-who">Manager :</span><div class="score-btns" id="score-mgr-'+c.id+'">';
+    for(var j=1;j<=10;j++) html+='<button class="score-btn'+(cv.mgr===j?' sel-'+j:'')+'" onclick="setScore(\'' +c.id+ '\',\'mgr\','+j+')">'+j+'</button>';
+    html+='</div></div>';
+    html+='<textarea class="comp-comment" placeholder="Commentaire manager (optionnel)..." oninput="updateCompComment(\'' +c.id+ '\',\'mgr\',this.value)">'+esc(cv.comment_mgr||'')+'</textarea>';
+    // Moyenne
+    var moy=calcMoyComp(cv);
+    html+='<div class="comp-moy" style="color:var(--or)">Moy : <span id="comp-moy-'+c.id+'">'+(moy!==null?moy.toFixed(1)+'/10':'—')+'</span></div>';
+    div.innerHTML=html;
+    grid.appendChild(div);
+  });
+  updateMoyComportement();
+}
+
+function setScore(critId,who,val){
+  if(!currentEval.comportement[critId]) currentEval.comportement[critId]={emp:0,mgr:0,comment_emp:'',comment_mgr:''};
+  currentEval.comportement[critId][who]=val;
+  // Mettre à jour les boutons
+  var btns=document.querySelectorAll('#score-'+who+'-'+critId+' .score-btn');
+  btns.forEach(function(b,i){b.className='score-btn'+(i+1===val?' sel-'+(i+1):'');});
+  // Màj moyenne
+  var cv=currentEval.comportement[critId];
+  var moy=calcMoyComp(cv);
+  var el=document.getElementById('comp-moy-'+critId);
+  if(el) el.textContent=moy!==null?moy.toFixed(1)+'/10':'—';
+  updateMoyComportement();
+}
+function updateCompComment(critId,who,val){
+  if(!currentEval.comportement[critId]) currentEval.comportement[critId]={emp:0,mgr:0,comment_emp:'',comment_mgr:''};
+  currentEval.comportement[critId]['comment_'+who]=val;
+}
+function calcMoyComp(cv){
+  var hasE=cv.emp>0; var hasM=cv.mgr>0;
+  if(hasE&&hasM) return (cv.emp+cv.mgr)/2;
+  if(hasE) return cv.emp;
+  if(hasM) return cv.mgr;
+  return null;
+}
+function updateMoyComportement(){
+  var moyes=[]; var hasVal=false;
+  COMP_CRITERES.forEach(function(c){
+    var cv=currentEval.comportement[c.id]||{emp:0,mgr:0};
+    var m=calcMoyComp(cv);
+    if(m!==null){moyes.push(m);hasVal=true;}
+  });
+  var global=hasVal?moyes.reduce(function(a,b){return a+b;},0)/moyes.length:null;
+  var el=document.getElementById('comp-moy-global');
+  if(el) el.textContent=global!==null?global.toFixed(1)+'/10':'—';
+  currentEval._moyComp=global;
+}
+
+// ── FORMATIONS ──
+function ajouterFormation(){
+  currentEval.formations.push({id:uid(),intitule:'',demandeur:'',date_valid:'',obs:'',periode_ideale:'',competence:'',justification:''});
+  renderFormations();
+}
+function renderFormations(){
+  var list=document.getElementById('formations-list');
+  var noF=document.getElementById('no-formation');
+  if(!currentEval.formations.length){list.innerHTML='';noF.style.display='block';return;}
+  noF.style.display='none';
+  list.innerHTML='';
+  currentEval.formations.forEach(function(f){
+    var div=document.createElement('div');
+    div.className='formation-item';
+    div.style.cssText='grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;display:grid;gap:.75rem;align-items:start;background:var(--bg3);border-radius:var(--r);padding:.875rem 1rem;margin-bottom:.75rem;';
+    div.innerHTML=
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Intitulé formation *</div>'+
+        '<input class="formation-inp" value="'+esc(f.intitule)+'" placeholder="Ex: Management equipe..." oninput="updateFormation('+f.id+',\'intitule\',this.value)"/></div>'+
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Demandé par</div>'+
+        '<select class="formation-inp" onchange="updateFormation('+f.id+',\'demandeur\',this.value)">'+
+          '<option value="">—</option>'+
+          '<option value="Employé"'+(f.demandeur==='Employé'?' selected':'')+'>Employé</option>'+
+          '<option value="Manager"'+(f.demandeur==='Manager'?' selected':'')+'>Manager</option>'+
+          '<option value="Les deux"'+(f.demandeur==='Les deux'?' selected':'')+'>Les deux</option>'+
+        '</select></div>'+
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Justification</div>'+
+        '<input class="formation-inp" value="'+esc(f.justification||'')+'" placeholder="Pourquoi cette formation ?" oninput="updateFormation('+f.id+',\'justification\',this.value)"/></div>'+
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Période idéale</div>'+
+        '<input class="formation-inp" value="'+esc(f.periode_ideale||'')+'" placeholder="Ex: Q1 2026, Trim. 3..." oninput="updateFormation('+f.id+',\'periode_ideale\',this.value)"/></div>'+
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Compétence acquise</div>'+
+        '<input class="formation-inp" value="'+esc(f.competence||'')+'" placeholder="Ex: Gestion equipe de 10 pers..." oninput="updateFormation('+f.id+',\'competence\',this.value)"/></div>'+
+      '<div><div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Date validation</div>'+
+        '<input class="formation-inp" type="date" value="'+esc(f.date_valid)+'" onchange="updateFormation('+f.id+',\'date_valid\',this.value)"/></div>'+
+      '<button class="del-btn" onclick="supprimerFormation('+f.id+')" title="Supprimer" style="margin-top:18px">×</button>';
+    list.appendChild(div);
+  });
+}
+function updateFormation(id,field,val){
+  var f=currentEval.formations.find(function(x){return x.id===id;}); if(f) f[field]=val;
+}
+function supprimerFormation(id){
+  currentEval.formations=currentEval.formations.filter(function(x){return x.id!==id;});
+  renderFormations();
+}
+
+// ── VALIDATION ──
+function validerEvaluation(){
+  var mat=document.getElementById('inp-matricule').value.trim();
+  var nom=document.getElementById('ef-nom').value.trim();
+  if(!nom){ toast('Saisissez le matricule ou le nom de l\'employe'); return; }
+  if(!currentEval.kpis.length){ toast('Ajoutez au moins un KPI avant de valider'); return; }
+  if(!SESSION.logged){ toast('Vous devez être connecté'); return; }
+
+  // ── VÉRIFICATION DOUBLON ──
+  var annee=document.getElementById('eval-annee').value;
+  var typeEval=currentEval.typeEval;
+  var doublon=ST.evaluations.find(function(e){
+    return e.mat===mat && e.typeEval===typeEval && e.annee===annee;
+  });
+  if(doublon){
+    var typeLabel=typeEval==='mi'?'mi-annuelle':'annuelle';
+    if(!confirm('ATTENTION : '+nom+' a deja ete evalue(e) en '+typeLabel+' '+annee+'.\nVoulez-vous tout de meme enregistrer une nouvelle evaluation ?')){
+      return;
+    }
+  }
+
+  // Construire la formation résumée
+  var formationsResume=currentEval.formations.map(function(f){return f.intitule+(f.demandeur?' ('+f.demandeur+')':'');}).join(' | ')||'—';
+
+  var evaluation={
+    id:uid(),
+    mat:mat, nom:nom, prenom:document.getElementById('ef-prenom').value.trim(),
+    poste:document.getElementById('ef-poste').value.trim(),
+    dept:document.getElementById('ef-dept').value.trim(),
+    service:document.getElementById('ef-service').value.trim(),
+    manager_nom:document.getElementById('ef-manager-nom').value.trim(),
+    manager_id:SESSION.user?SESSION.user.id:null,
+    periode:document.getElementById('ef-periode').value.trim(),
+    typeEval:currentEval.typeEval,
+    annee:document.getElementById('eval-annee').value,
+    kpis:JSON.parse(JSON.stringify(currentEval.kpis)),
+    score_emp:currentEval._scoreEmp,
+    score_mgr:currentEval._scoreMgr,
+    score_final:currentEval._scoreFinal,
+    note_finale:currentEval._noteFinale,
+    comportement:JSON.parse(JSON.stringify(currentEval.comportement)),
+    moy_comp:currentEval._moyComp,
+    formations:JSON.parse(JSON.stringify(currentEval.formations)),
+    formations_resume:formationsResume,
+    obs_manager:document.getElementById('obs-manager').value.trim(),
+    avis_evalue:document.getElementById('avis-evalue').value.trim(),
+    statut:'validée',
+    date_valid:new Date().toISOString().split('T')[0],
+    validee_par:SESSION.user?SESSION.user.nom:''
+  };
+  ST.evaluations.push(evaluation);
+  sauverST();
+  updateBadgeRecap();
+  toast('Evaluation validee et enregistree — '+nom);
+  // Proposer de voir le récapitulatif
+  if(confirm('Évaluation enregistrée ! Aller au tableau récapitulatif ?')){
+    showTab('recap', document.querySelector('.tab:nth-child(2)'));
+    renderRecap();
+  }
+}
+
+function reinitFiche(){
+  if(!confirm('Reinitialiser la fiche pour une nouvelle evaluation ?')) return;
+  document.getElementById('inp-matricule').value='';
+  ['ef-nom','ef-prenom','ef-poste','ef-dept','ef-service','ef-periode'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('obs-manager').value='';
+  document.getElementById('avis-evalue').value='';
+  document.getElementById('emp-status').textContent='';
+  // Réinitialiser les boutons type éval
+  document.getElementById('btn-mi').classList.add('active');
+  document.getElementById('btn-an').classList.remove('active');
+  document.getElementById('eval-annee').value=new Date().getFullYear();
+  initFiche();
+  // Remettre le nom du manager connecté
+  document.getElementById('ef-manager-nom').value=SESSION.user?SESSION.user.nom:'';
+  document.getElementById('ef-manager-poste').value=SESSION.user?SESSION.user.poste||'':'';
+  showTab('fiche', document.querySelector('.tab:nth-child(1)'));
+  toast('Nouvelle fiche prete');
+}
+
+// ── RÉCAPITULATIF ──
+function updateBadgeRecap(){
+  var n=ST.evaluations.length;
+  var b=document.getElementById('badge-recap');
+  b.textContent=n; b.style.display=n>0?'inline':'none';
+}
+function renderRecap(){
+  updateBadgeRecap();
+  var fType=document.getElementById('f-recap-type').value;
+  var fAnnee=document.getElementById('f-recap-annee').value;
+  var evals=ST.evaluations.filter(function(e){
+    if(fType&&e.typeEval!==fType) return false;
+    if(fAnnee&&e.annee!==fAnnee) return false;
+    if(!SESSION.isAdmin) return e.manager_id===SESSION.user.id;
+    return true;
+  });
+
+  // ── CALCUL SYNTHÈSE ──
+  var totalEffectif = SESSION.isAdmin ? ST.personnel.length : ST.personnel.filter(function(p){
+    return ST.evaluations.some(function(e){ return e.mat===p.mat && e.manager_id===SESSION.user.id; }) ||
+           ST.evaluations.filter(function(e){ return e.manager_id===SESSION.user.id; }).map(function(e){ return e.mat; }).indexOf(p.mat)===-1
+           ? true : false;
+  }).length;
+  // Effectif distinct évalué dans le filtre courant
+  var matsEvalues = [];
+  evals.forEach(function(e){ if(e.mat && matsEvalues.indexOf(e.mat)===-1) matsEvalues.push(e.mat); });
+  var nbEvalues = matsEvalues.length;
+  var nbEvals = evals.length;
+  var notes = {EP:0, SP:0, AP:0, NP:0, nd:0};
+  evals.forEach(function(e){
+    if(e.note_finale && notes[e.note_finale]!==undefined) notes[e.note_finale]++;
+    else notes.nd++;
+  });
+  var totalNoted = notes.EP+notes.SP+notes.AP+notes.NP;
+  var pct = function(n){ return totalNoted>0?Math.round(n/totalNoted*100):0; };
+
+  // ── RENDU SYNTHÈSE ──
+  var synth = document.getElementById('recap-synthese-body');
+  function srow(label,val,color,sub){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .75rem;background:var(--bg3);border-radius:var(--r);margin-bottom:.5rem;">'+
+      '<span style="font-size:12px;color:var(--gris)">'+label+'</span>'+
+      '<div style="text-align:right;">'+
+        '<span style="font-family:var(--fd);font-size:18px;font-weight:800;color:'+color+'">'+val+'</span>'+
+        (sub?'<div style="font-size:9px;color:var(--gris2);margin-top:1px">'+sub+'</div>':'')+
+      '</div>'+
+    '</div>';
+  }
+  var tauxEval = ST.personnel.length>0 ? Math.round(nbEvalues/ST.personnel.length*100) : 0;
+
+  synth.innerHTML =
+    srow('👥 Effectif total (base)', ST.personnel.length, 'var(--blanc)', 'Employés enregistrés') +
+    srow('✅ Évaluations effectuées', nbEvals, 'var(--or)', nbEvalues+' collaborateur'+(nbEvalues>1?'s':'')) +
+    srow('📈 Taux d\'évaluation', tauxEval+'%', tauxEval>=80?'var(--vert)':tauxEval>=50?'var(--jaune)':'var(--rouge)', nbEvalues+' / '+ST.personnel.length+' personnes') +
+    '<div style="height:1px;background:var(--gris3);margin:.5rem 0;"></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">'+
+      '<div style="background:rgba(52,199,123,.08);border:1px solid rgba(52,199,123,.15);border-radius:var(--r);padding:.6rem .75rem;text-align:center;">'+
+        '<div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--ep)">'+notes.EP+'</div>'+
+        '<div style="font-size:10px;color:var(--ep);font-weight:700;margin-top:2px">EP</div>'+
+        '<div style="font-size:9px;color:var(--gris)">Excellente Perf.</div>'+
+        '<div style="font-size:10px;color:var(--gris2);margin-top:2px">'+pct(notes.EP)+'%</div>'+
+      '</div>'+
+      '<div style="background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.15);border-radius:var(--r);padding:.6rem .75rem;text-align:center;">'+
+        '<div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--sp)">'+notes.SP+'</div>'+
+        '<div style="font-size:10px;color:var(--sp);font-weight:700;margin-top:2px">SP</div>'+
+        '<div style="font-size:9px;color:var(--gris)">Successful Perf.</div>'+
+        '<div style="font-size:10px;color:var(--gris2);margin-top:2px">'+pct(notes.SP)+'%</div>'+
+      '</div>'+
+      '<div style="background:rgba(251,199,36,.08);border:1px solid rgba(251,199,36,.15);border-radius:var(--r);padding:.6rem .75rem;text-align:center;">'+
+        '<div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--ap)">'+notes.AP+'</div>'+
+        '<div style="font-size:10px;color:var(--ap);font-weight:700;margin-top:2px">AP</div>'+
+        '<div style="font-size:9px;color:var(--gris)">Average Perf.</div>'+
+        '<div style="font-size:10px;color:var(--gris2);margin-top:2px">'+pct(notes.AP)+'%</div>'+
+      '</div>'+
+      '<div style="background:rgba(240,90,90,.08);border:1px solid rgba(240,90,90,.15);border-radius:var(--r);padding:.6rem .75rem;text-align:center;">'+
+        '<div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--np)">'+notes.NP+'</div>'+
+        '<div style="font-size:10px;color:var(--np);font-weight:700;margin-top:2px">NP</div>'+
+        '<div style="font-size:9px;color:var(--gris)">Non Performance</div>'+
+        '<div style="font-size:10px;color:var(--gris2);margin-top:2px">'+pct(notes.NP)+'%</div>'+
+      '</div>'+
+    '</div>';
+
+  // ── GRAPHIQUE DONUT ──
+  var canvas = document.getElementById('recap-donut');
+  var legend = document.getElementById('recap-chart-legend');
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  var segments = [
+    {label:'EP — Excellente', val:notes.EP, color:'#34C77B'},
+    {label:'SP — Successful', val:notes.SP, color:'#4A9EFF'},
+    {label:'AP — Average',    val:notes.AP, color:'#FBC724'},
+    {label:'NP — Non Perf.', val:notes.NP, color:'#F05A5A'}
+  ].filter(function(s){return s.val>0;});
+
+  var total = segments.reduce(function(a,s){return a+s.val;},0);
+
+  if(!total){
+    // Cercle vide
+    ctx.beginPath();
+    ctx.arc(90,90,70,0,Math.PI*2);
+    ctx.strokeStyle='#1E1E2E'; ctx.lineWidth=20; ctx.stroke();
+    ctx.fillStyle='#9896A4'; ctx.font='12px DM Sans'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('Aucune donnée',90,90);
+    legend.innerHTML='';
+  } else {
+    var cx=90, cy=90, r=68, innerR=44, gap=0.04;
+    var start=-Math.PI/2;
+    segments.forEach(function(s){
+      var slice = (s.val/total)*Math.PI*2 - gap;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,start+slice);
+      ctx.closePath();
+      ctx.fillStyle=s.color;
+      ctx.fill();
+      start+=slice+gap;
+    });
+    // Centre
+    ctx.beginPath();
+    ctx.arc(cx,cy,innerR,0,Math.PI*2);
+    ctx.fillStyle='#0D0D18'; ctx.fill();
+    // Texte centre
+    ctx.fillStyle='#E2C47A';
+    ctx.font='bold 20px Syne, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(total,cx,cy-8);
+    ctx.fillStyle='#9896A4';
+    ctx.font='10px DM Sans, sans-serif';
+    ctx.fillText('évaluations',cx,cy+10);
+
+    // Légende
+    legend.innerHTML = segments.map(function(s){
+      var p = Math.round(s.val/total*100);
+      return '<div style="display:flex;align-items:center;gap:8px;">'+
+        '<div style="width:12px;height:12px;border-radius:3px;background:'+s.color+';flex-shrink:0;"></div>'+
+        '<div>'+
+          '<span style="font-family:var(--fd);font-size:13px;font-weight:700;color:'+s.color+'">'+s.val+'</span>'+
+          '<span style="font-size:11px;color:var(--gris);margin-left:4px">'+s.label+'</span>'+
+          '<span style="font-size:10px;color:var(--gris2);margin-left:6px">'+p+'%</span>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  // ── TABLEAU ──
+  var tbody=document.getElementById('recap-tbody');
+  tbody.innerHTML='';
+  if(!evals.length){
+    tbody.innerHTML='<tr><td colspan="21" style="text-align:center;color:var(--gris);padding:2rem">Aucune évaluation validée.</td></tr>';
+    return;
+  }
+  evals.forEach(function(e){
+    var noteCls=getNoteClass(e.note_finale);
+    var typeLabel=e.typeEval==='mi'?'Mi-annuelle':'Annuelle';
+    var typeBadgeCls=e.typeEval==='mi'?'bb':'bvl';
+    tbody.innerHTML+=
+      '<tr>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(e.mat||'—')+'</td>'+
+      '<td><strong>'+esc(e.nom)+'</strong></td>'+
+      '<td>'+esc(e.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.service||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.manager_nom||'—')+'</td>'+
+      '<td style="text-align:center"><span class="badge '+typeBadgeCls+'">'+typeLabel+'</span></td>'+
+      '<td style="text-align:center;font-family:var(--fd);font-weight:700">'+esc(e.annee)+'</td>'+
+      '<td style="text-align:center;color:var(--bleu);font-family:var(--fd);font-weight:700">'+(e.score_emp!==null&&e.score_emp!==undefined?e.score_emp+'%':'—')+'</td>'+
+      '<td style="text-align:center;color:var(--violet);font-family:var(--fd);font-weight:700">'+(e.score_mgr!==null&&e.score_mgr!==undefined?e.score_mgr+'%':'—')+'</td>'+
+      '<td style="text-align:center;color:var(--or);font-family:var(--fd);font-weight:700">'+(e.score_final!==null&&e.score_final!==undefined?e.score_final+'%':'—')+'</td>'+
+      '<td style="text-align:center">'+(e.note_finale?'<span class="note-badge '+noteCls+'">'+e.note_finale+'</span>':'—')+'</td>'+
+      '<td style="text-align:center;font-family:var(--fd);font-weight:700;color:var(--cyan)">'+(e.moy_comp!==null&&e.moy_comp!==undefined?e.moy_comp.toFixed(1)+'/10':'—')+'</td>'+
+      '<td style="text-align:center">'+(e.typeEval==='mi'?'<span class="badge bb">'+esc(e.annee)+'</span>':'—')+'</td>'+
+      '<td style="text-align:center">'+(e.typeEval==='annuelle'?'<span class="badge bvl">'+esc(e.annee)+'</span>':'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:180px;white-space:normal">'+esc(e.formations_resume||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:180px;white-space:normal">'+esc(e.obs_manager||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:180px;white-space:normal">'+esc(e.avis_evalue||'—')+'</td>'+
+      '<td style="text-align:center"><span class="badge bv">Validée</span></td>'+
+      '<td style="white-space:nowrap">'+
+        '<button onclick="voirDetailEval('+e.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px" title="Voir détail">👁</button>'+
+        (SESSION.isAdmin?'<button onclick="supprimerEval('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;margin-left:3px">×</button>':'')+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+function supprimerEval(id){
+  if(!confirm('Supprimer cette evaluation ?')) return;
+  ST.evaluations=ST.evaluations.filter(function(e){return e.id!==id;});
+  sauverST(); renderRecap(); toast('Evaluation supprimee');
+}
+function voirDetailEval(id){
+  var e=ST.evaluations.find(function(x){return x.id===id;}); if(!e) return;
+  var nl='\n';
+  var msg='Evaluation de '+e.nom+' '+e.prenom+nl+
+    'Score KPI: '+e.score_final+'% ('+e.note_finale+')'+nl+
+    'Comportement: '+e.moy_comp+'/10'+nl+
+    'Validee par: '+e.validee_par+' le '+e.date_valid;
+  alert(msg);
+}
+
+// ── ADMINISTRATION ──
+function renderAdmin(){
+  renderManagersTable();
+  renderPersonnelTable();
+}
+function renderManagersTable(){
+  var tbody=document.getElementById('managers-tbody');
+  tbody.innerHTML='';
+  ST.managers.forEach(function(m){
+    tbody.innerHTML+=
+      '<tr><td style="font-family:var(--fd);font-size:11px">'+esc(m.login)+'</td>'+
+      '<td><strong>'+esc(m.nom)+'</strong></td><td style="font-size:11px">'+esc(m.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(m.dept||'—')+'</td><td style="font-size:11px;color:var(--gris)">'+esc(m.email||'—')+'</td>'+
+      '<td><span class="badge '+(m.role==='admin'?'bvl':'bb')+'">'+esc(m.role||'manager')+'</span></td>'+
+      '<td><button onclick="supprimerManager('+m.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+function renderPersonnelTable(){
+  var tbody=document.getElementById('personnel-tbody');
+  tbody.innerHTML='';
+  ST.personnel.forEach(function(e){
+    tbody.innerHTML+=
+      '<tr><td style="font-family:var(--fd);font-size:11px">'+esc(e.mat)+'</td>'+
+      '<td><strong>'+esc(e.nom)+'</strong></td><td>'+esc(e.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.poste||'—')+'</td><td style="font-size:11px">'+esc(e.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(e.service||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.mgr_nom||'—')+'</td>'+
+      '<td><button onclick="supprimerEmp('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px">×</button></td>'+
+    '</tr>';
+  });
+}
+function sauverManager(){
+  var login=document.getElementById('mgr-id').value.trim();
+  var pass=document.getElementById('mgr-pass').value.trim();
+  var nom=document.getElementById('mgr-nom').value.trim();
+  if(!login||!pass||!nom){ toast('Identifiant, mot de passe et nom obligatoires'); return; }
+  if(ST.managers.find(function(m){return m.login===login;})){ toast('Identifiant deja utilise'); return; }
+  ST.managers.push({id:uid(),login:login,pass:pass,nom:nom,poste:document.getElementById('mgr-poste').value.trim(),dept:document.getElementById('mgr-dept').value.trim(),email:document.getElementById('mgr-email').value.trim(),role:'manager'});
+  sauverST(); closeModal('modal-add-manager'); renderManagersTable(); toast('Manager ajoute');
+  ['mgr-id','mgr-pass','mgr-nom','mgr-poste','mgr-dept','mgr-email'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerManager(id){
+  if(!confirm('Supprimer ce manager ?')) return;
+  ST.managers=ST.managers.filter(function(m){return m.id!==id;});
+  sauverST(); renderManagersTable(); toast('Manager supprime');
+}
+function sauverEmploye(){
+  var mat=document.getElementById('e-mat').value.trim();
+  var nom=document.getElementById('e-nom').value.trim();
+  if(!mat||!nom){ toast('Matricule et nom obligatoires'); return; }
+  if(ST.personnel.find(function(e){return e.mat===mat;})){ toast('Matricule deja existant'); return; }
+  ST.personnel.push({id:uid(),mat:mat,nom:nom.toUpperCase(),prenom:document.getElementById('e-prenom').value.trim(),poste:document.getElementById('e-poste').value.trim(),dept:document.getElementById('e-dept').value.trim(),service:document.getElementById('e-service').value.trim(),mgr_nom:document.getElementById('e-mgr-nom').value.trim(),mgr_poste:document.getElementById('e-mgr-poste').value.trim()});
+  sauverST(); closeModal('modal-add-emp'); renderPersonnelTable(); toast('Employe ajoute');
+  ['e-mat','e-nom','e-prenom','e-poste','e-dept','e-service','e-mgr-nom','e-mgr-poste'].forEach(function(id){document.getElementById(id).value='';});
+}
+function supprimerEmp(id){
+  ST.personnel=ST.personnel.filter(function(e){return e.id!==id;});
+  sauverST(); renderPersonnelTable(); toast('Employe supprime');
+}
+
+// ── IMPORT PERSONNEL ──
+function importerEmployes(input){
+  if(!input.files[0]) return;
+  var file=input.files[0]; var ext=file.name.split('.').pop().toLowerCase();
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var rows=[];
+      if(ext==='csv'){
+        var lines=ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var hdrs=lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows=lines.slice(1).map(function(line){
+          var vals=line.split(/[,;]/); var obj={};
+          hdrs.forEach(function(h,i){obj[h.trim()]=(vals[i]||'').trim().replace(/"/g,'');});
+          return obj;
+        });
+      } else {
+        var wb=XLSX.read(ev.target.result,{type:'binary'});
+        rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      }
+      var g=function(r){ var keys=Array.prototype.slice.call(arguments,1);
+        for(var i=0;i<keys.length;i++){var k=keys[i];var f=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(k.toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(f&&r[f]!==undefined&&r[f]!=='')return String(r[f]).trim();}return '';};
+      var added=0;
+      rows.forEach(function(r){
+        var mat=g(r,'matricule','mat','id'); var nom=g(r,'nom','lastname','name'); if(!nom) return;
+        if(ST.personnel.find(function(e){return e.mat===mat&&mat!=='';})) return;
+        ST.personnel.push({id:uid(),mat:mat||'MAT'+uid(),nom:nom.toUpperCase(),prenom:g(r,'prenom','firstname'),poste:g(r,'poste','fonction','jobtitle'),dept:g(r,'departement','dept','direction'),service:g(r,'service'),mgr_nom:g(r,'manager','managername','nommanager'),mgr_poste:g(r,'postemanager','managerposte')});
+        added++;
+      });
+      sauverST(); if(SESSION.isAdmin) renderPersonnelTable(); toast(added+' employés importés');
+    }catch(e){ toast('Erreur: '+e.message); }
+  };
+  ext==='csv'?reader.readAsText(file):reader.readAsBinaryString(file);
+  input.value='';
+}
+
+// ── DÉMO ──
+function chargerDemo(){
+  if(!ST.personnel.length){
+    ST.personnel=[
+      {id:uid(),mat:'MAT001',nom:'DOSSOU',prenom:'Aline',poste:'Chargée RH',dept:'RH',service:'Gestion RH',mgr_nom:'ADJOBI Kossi',mgr_poste:'DG'},
+      {id:uid(),mat:'MAT002',nom:'HOUENOU',prenom:'Patrick',poste:'Chargé Recrutement',dept:'RH',service:'Recrutement',mgr_nom:'DOSSOU Aline',mgr_poste:'Directrice RH'},
+      {id:uid(),mat:'MAT003',nom:'KPOSSOU',prenom:'Jean',poste:'Directeur Commercial',dept:'Commercial',service:'Ventes',mgr_nom:'ADJOBI Kossi',mgr_poste:'DG'},
+      {id:uid(),mat:'MAT004',nom:'ZANNOU',prenom:'Sylvie',poste:'Responsable Grands Comptes',dept:'Commercial',service:'Ventes',mgr_nom:'KPOSSOU Jean',mgr_poste:'Directeur Commercial'},
+    ];
+    sauverST();
+    if(SESSION.isAdmin) renderPersonnelTable();
+  }
+  // Charger MAT001 dans la fiche
+  document.getElementById('inp-matricule').value='MAT001';
+  rechercherEmploye('MAT001');
+  document.getElementById('ef-periode').value='Janvier — Juin 2026';
+  toast('Donnees demo chargees — 4 employes');
+}
+
+// ── EXPORT ──
+function exporterExcel(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var wb=XLSX.utils.book_new();
+  var data=[['Matricule','Nom','Prénoms','Poste','Direction','Service','Manager','Type','Année','Score Employé %','Score Manager %','Score Final %','Notation KPI','Moy Comportement /10','Formation 1','Formation 2','Observations Manager','Avis Evalué','Statut','Date validation']];
+  ST.evaluations.forEach(function(e){
+    var f1=e.formations&&e.formations[0]?e.formations[0].intitule:'';
+    var f2=e.formations&&e.formations[1]?e.formations[1].intitule:'';
+    data.push([e.mat||'',e.nom,e.prenom||'',e.poste||'',e.dept||'',e.service||'',e.manager_nom||'',e.typeEval==='mi'?'Mi-annuelle':'Annuelle',e.annee,e.score_emp!==null?e.score_emp:'',e.score_mgr!==null?e.score_mgr:'',e.score_final!==null?e.score_final:'',e.note_finale||'',e.moy_comp!==null?e.moy_comp.toFixed(1):'',f1,f2,e.obs_manager||'',e.avis_evalue||'',e.statut||'',e.date_valid||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Evaluations');
+  XLSX.writeFile(wb,'Evaluations-Performance.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='recap') renderRecap();
+  if(tab==='admin') renderAdmin();
+  if(tab==='plan-formation') renderPlanFormation();
+  if(tab==='plan-annuel') renderPlanAnnuel();
+}
+
+// ── PLAN DE FORMATION ──
+function getBadgePF(demandeur){
+  if(demandeur==='Employé') return '<span class="badge bb">Employé</span>';
+  if(demandeur==='Manager') return '<span class="badge bvl">Manager</span>';
+  if(demandeur==='Les deux') return '<span class="badge bo">Les deux</span>';
+  return '<span class="badge" style="background:var(--bg4);color:var(--gris)">—</span>';
+}
+function renderPlanFormation(){
+  var fAnnee=document.getElementById('f-pf-annee').value;
+  var fDemandeur=document.getElementById('f-pf-demandeur').value;
+  // Construire la liste des besoins depuis toutes les évaluations
+  var items=[];
+  ST.evaluations.forEach(function(ev){
+    if(fAnnee&&ev.annee!==fAnnee) return;
+    if(!SESSION.isAdmin&&ev.manager_id!==SESSION.user.id) return;
+    (ev.formations||[]).forEach(function(f){
+      if(!f.intitule) return;
+      if(fDemandeur&&f.demandeur!==fDemandeur) return;
+      items.push({
+        eval_id:ev.id,
+        f_id:f.id,
+        nom:ev.nom,
+        prenom:ev.prenom||'',
+        mat:ev.mat||'',
+        poste:ev.poste||'',
+        dept:ev.dept||'',
+        service:ev.service||'',
+        manager_nom:ev.manager_nom||'',
+        intitule:f.intitule,
+        demandeur:f.demandeur||'',
+        periode_ideale:f.periode_ideale||'',
+        competence:f.competence||'',
+        date_valid:f.date_valid||'',
+        justif:(ev.score_final!==null&&ev.score_final!==undefined?ev.score_final+'% — '+( ev.note_finale||''):'—'),
+        typeEval:ev.typeEval,
+        annee:ev.annee,
+        pf_statut:f.pf_statut||'En attente'
+      });
+    });
+  });
+
+  // KPI cards
+  var total=items.length;
+  var parDemandeur={emp:0,mgr:0,les2:0};
+  var parStatut={att:0,planif:0,realise:0};
+  items.forEach(function(it){
+    if(it.demandeur==='Employé') parDemandeur.emp++;
+    else if(it.demandeur==='Manager') parDemandeur.mgr++;
+    else if(it.demandeur==='Les deux') parDemandeur.les2++;
+    if(it.pf_statut==='Planifiée') parStatut.planif++;
+    else if(it.pf_statut==='Réalisée') parStatut.realise++;
+    else parStatut.att++;
+  });
+  var kg=document.getElementById('pf-kpi-grid');
+  function kcard(icon,val,label,color){
+    return '<div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.875rem 1rem;text-align:center;">'+
+      '<div style="font-size:24px;margin-bottom:4px">'+icon+'</div>'+
+      '<div style="font-family:var(--fd);font-size:24px;font-weight:800;color:'+color+'">'+val+'</div>'+
+      '<div style="font-size:10px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">'+label+'</div></div>';
+  }
+  kg.innerHTML=
+    kcard('🎓',total,'Total besoins','var(--or)')+
+    kcard('👤',parDemandeur.emp,'Demande employé','var(--bleu)')+
+    kcard('👔',parDemandeur.mgr,'Demande manager','var(--violet)')+
+    kcard('⏳',parStatut.att,'En attente','var(--jaune)')+
+    kcard('📅',parStatut.planif,'Planifiées','var(--cyan)')+
+    kcard('✅',parStatut.realise,'Réalisées','var(--vert)');
+
+  // Badge onglet
+  var bpf=document.getElementById('badge-formation');
+  bpf.textContent=total; bpf.style.display=total>0?'inline':'none';
+
+  var tbody=document.getElementById('pf-tbody');
+  tbody.innerHTML='';
+  if(!items.length){
+    tbody.innerHTML='<tr><td colspan="16" style="text-align:center;color:var(--gris);padding:2rem">Aucun besoin de formation enregistré.</td></tr>';
+    return;
+  }
+  items.forEach(function(it,idx){
+    var statutCls=it.pf_statut==='Réalisée'?'bv':it.pf_statut==='Planifiée'?'bb':'by';
+    tbody.innerHTML+=
+      '<tr>'+
+      '<td><strong>'+esc(it.nom)+'</strong> '+esc(it.prenom)+'</td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(it.mat)+'</td>'+
+      '<td style="font-size:11px">'+esc(it.poste)+'</td>'+
+      '<td style="font-size:11px">'+esc(it.dept)+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(it.service)+'</td>'+
+      '<td style="font-size:11px">'+esc(it.manager_nom)+'</td>'+
+      '<td style="font-weight:600;color:var(--blanc)">'+esc(it.intitule)+'</td>'+
+      '<td style="text-align:center">'+getBadgePF(it.demandeur)+'</td>'+
+      '<td style="font-size:11px;color:var(--cyan)">'+esc(it.periode_ideale||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris);max-width:200px;white-space:normal">'+esc(it.competence||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(it.justif)+'</td>'+
+      '<td style="text-align:center"><span class="badge '+(it.typeEval==='mi'?'bb':'bvl')+'">'+(it.typeEval==='mi'?'Mi-ann.':'Ann.')+'</span></td>'+
+      '<td style="text-align:center;font-family:var(--fd);font-weight:700">'+esc(it.annee)+'</td>'+
+      '<td style="text-align:center;font-size:11px">'+esc(it.date_valid||'—')+'</td>'+
+      '<td style="text-align:center">'+
+        '<select class="kpi-inp" style="width:110px;font-size:10px;padding:3px 5px" onchange="changerStatutFormation('+it.eval_id+',\''+it.f_id+'\',this.value)">'+
+          '<option value="En attente"'+(it.pf_statut==='En attente'?' selected':'')+'>En attente</option>'+
+          '<option value="Planifiée"'+(it.pf_statut==='Planifiée'?' selected':'')+'>Planifiée</option>'+
+          '<option value="Réalisée"'+(it.pf_statut==='Réalisée'?' selected':'')+'>Réalisée</option>'+
+        '</select>'+
+      '</td>'+
+      '<td style="text-align:center">'+
+        '<button onclick="voirEvalDepuisPF('+it.eval_id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px" title="Voir fiche evaluation">👁</button>'+
+      '</td>'+
+      '</tr>';
+  });
+}
+
+function changerStatutFormation(evalId, fId, newStatut){
+  var ev=ST.evaluations.find(function(e){return e.id===evalId;});
+  if(!ev) return;
+  var f=ev.formations.find(function(x){return x.id==fId;});
+  if(!f) return;
+  f.pf_statut=newStatut;
+  sauverST();
+  toast('Statut mis a jour : '+newStatut);
+}
+
+function voirEvalDepuisPF(evalId){
+  var e=ST.evaluations.find(function(x){return x.id===evalId;}); if(!e) return;
+  var msg='Evaluation de '+e.nom+' '+e.prenom+'\nScore KPI: '+e.score_final+'% ('+e.note_finale+')\nComportement: '+e.moy_comp+'/10\nValidee par: '+e.validee_par+' le '+e.date_valid;
+  alert(msg);
+}
+
+function exporterPlanFormation(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var fAnnee=document.getElementById('f-pf-annee').value;
+  var items=[];
+  ST.evaluations.forEach(function(ev){
+    if(fAnnee&&ev.annee!==fAnnee) return;
+    (ev.formations||[]).forEach(function(f){
+      if(!f.intitule) return;
+      items.push([ev.nom+' '+ev.prenom,ev.mat||'',ev.poste||'',ev.dept||'',ev.service||'',ev.manager_nom||'',f.intitule,f.demandeur||'',f.periode_ideale||'',f.competence||'',ev.score_final!==null?ev.score_final+'%':'',ev.note_finale||'',ev.typeEval==='mi'?'Mi-annuelle':'Annuelle',ev.annee,f.date_valid||'',f.pf_statut||'En attente']);
+    });
+  });
+  var wb=XLSX.utils.book_new();
+  var data=[['Bénéficiaire','Matricule','Poste','Direction','Service','Manager','Formation demandée','Demandé par','Période idéale','Compétence acquise','Score KPI','Notation','Type éval.','Année','Date validation','Statut']].concat(items);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Plan de Formation');
+  XLSX.writeFile(wb,'Plan-Formation-'+new Date().getFullYear()+'.xlsx');
+  toast('Plan de formation exporté');
+}
+
+// ══════════════════════════════════════════════════════
+// ── PLAN DE FORMATION ANNUEL ──────────────────────────
+// ══════════════════════════════════════════════════════
+
+var PA_CURRENT_THEME_ID = null; // Pour l'édition
+
+function getPlanAnnuelData(){
+  var annee = document.getElementById('pa-annee') ? document.getElementById('pa-annee').value : '2026';
+  if(!ST.planAnnuel) ST.planAnnuel = {};
+  if(!ST.planAnnuel[annee]) ST.planAnnuel[annee] = { budget:0, themes:[] };
+  return ST.planAnnuel[annee];
+}
+
+function savePABudget(){
+  var annee = document.getElementById('pa-annee').value;
+  var val = parseFloat(document.getElementById('pa-budget').value) || 0;
+  if(!ST.planAnnuel) ST.planAnnuel = {};
+  if(!ST.planAnnuel[annee]) ST.planAnnuel[annee] = { budget:0, themes:[] };
+  ST.planAnnuel[annee].budget = val;
+  sauverST();
+  renderPAKPIGrid();
+}
+
+function renderPlanAnnuel(){
+  var pa = getPlanAnnuelData();
+  document.getElementById('pa-budget').value = pa.budget || '';
+  renderPAKPIGrid();
+  renderPAThemesTable();
+  renderPASynthese();
+  // Badge onglet
+  var nb = pa.themes ? pa.themes.length : 0;
+  var bpa = document.getElementById('badge-plan-annuel');
+  if(bpa){ bpa.textContent = nb; bpa.style.display = nb > 0 ? 'inline' : 'none'; }
+}
+
+function renderPAKPIGrid(){
+  var pa = getPlanAnnuelData();
+  var budget = pa.budget || 0;
+  var themes = pa.themes || [];
+  var totalCout = themes.reduce(function(s,t){ return s + (parseFloat(t.cout)||0); }, 0);
+  var solde = budget - totalCout;
+  var totalPart = themes.reduce(function(s,t){ return s + (t.participants_liste ? t.participants_liste.filter(function(p){return p.present;}).length : 0); }, 0);
+  var totalNb = themes.reduce(function(s,t){ return s + (t.nb||0); }, 0);
+  var realises = themes.filter(function(t){ return t.statut === 'Réalisée'; }).length;
+  var restantes = themes.filter(function(t){ return t.statut !== 'Réalisée'; }).length;
+  var pct = budget > 0 ? Math.round(totalCout/budget*100) : 0;
+  var soldeColor = solde >= 0 ? 'var(--vert)' : 'var(--rouge)';
+
+  function kcard(icon,val,label,color,sub){
+    return '<div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.875rem 1rem;text-align:center;">'+
+      '<div style="font-size:22px;margin-bottom:4px">'+icon+'</div>'+
+      '<div style="font-family:var(--fd);font-size:20px;font-weight:800;color:'+color+'">'+val+'</div>'+
+      '<div style="font-size:10px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">'+label+'</div>'+
+      (sub?'<div style="font-size:9px;color:var(--gris2);margin-top:2px">'+sub+'</div>':'')+
+    '</div>';
+  }
+
+  var fg = fmtFCFA(budget);
+  var fc = fmtFCFA(totalCout);
+  var fs = fmtFCFA(Math.abs(solde));
+
+  document.getElementById('pa-kpi-grid').innerHTML =
+    kcard('💰', fg, 'Budget alloué', 'var(--or)') +
+    kcard('💸', fc + ' ('+pct+'%)', 'Budget engagé', pct > 100 ? 'var(--rouge)' : 'var(--bleu)') +
+    kcard('🏦', (solde>=0?'+ ':'-')+fs, 'Solde restant', soldeColor) +
+    kcard('📚', themes.length, 'Thèmes planifiés', 'var(--cyan)') +
+    kcard('✅', realises, 'Réalisées', 'var(--vert)', 'formations') +
+    kcard('⏳', restantes, 'Restantes', 'var(--jaune)', 'formations') +
+    kcard('👥', totalPart+'/'+totalNb, 'Présents / Inscrits', 'var(--violet)');
+}
+
+function fmtFCFA(v){
+  if(isNaN(v)) return '0';
+  return Number(v).toLocaleString('fr-FR');
+}
+
+function renderPAThemesTable(){
+  var pa = getPlanAnnuelData();
+  var tbody = document.getElementById('pa-themes-tbody');
+  tbody.innerHTML = '';
+  if(!pa.themes || !pa.themes.length){
+    tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;color:var(--gris);padding:2rem">Aucun thème. Cliquez sur "+ Ajouter un thème" ou "Importer depuis Besoins".</td></tr>';
+    return;
+  }
+  pa.themes.forEach(function(t){
+    var trims = (t.t1?'<span class="badge bb" style="margin:1px">T1</span>':'') +
+                (t.t2?'<span class="badge bv" style="margin:1px">T2</span>':'') +
+                (t.t3?'<span class="badge by" style="margin:1px">T3</span>':'') +
+                (t.t4?'<span class="badge bvl" style="margin:1px">T4</span>':'');
+    var statutCls = t.statut==='Réalisée'?'bv':t.statut==='En cours'?'bb':t.statut==='Annulée'?'br':'by';
+    var nbPresents = t.participants_liste ? t.participants_liste.filter(function(p){return p.present;}).length : 0;
+    var nbTotal = t.nb || 0;
+    var partColor = nbTotal>0 && nbPresents===nbTotal ? 'var(--vert)' : nbPresents>0 ? 'var(--jaune)' : 'var(--gris)';
+    tbody.innerHTML +=
+      '<tr>'+
+      '<td style="font-weight:700;color:var(--or);font-size:11px">'+esc(t.domaine||'—')+'</td>'+
+      '<td style="font-weight:600">'+esc(t.intitule||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:160px;white-space:normal">'+esc(t.participants||'—')+'</td>'+
+      '<td style="text-align:center;font-family:var(--fd);font-weight:700;color:var(--cyan)">'+nbTotal+'</td>'+
+      '<td style="font-size:11px">'+esc(t.dept||'—')+'</td>'+
+      '<td style="text-align:center">'+(t.t1?'✓':'')+'</td>'+
+      '<td style="text-align:center">'+(t.t2?'✓':'')+'</td>'+
+      '<td style="text-align:center">'+(t.t3?'✓':'')+'</td>'+
+      '<td style="text-align:center">'+(t.t4?'✓':'')+'</td>'+
+      '<td style="font-size:11px">'+esc(t.organisme||'—')+'</td>'+
+      '<td style="text-align:right;font-family:var(--fd);font-weight:700;color:var(--or2)">'+fmtFCFA(t.cout||0)+' FCFA</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:180px;white-space:normal">'+esc(t.competences||'—')+'</td>'+
+      '<td style="text-align:center">'+
+        '<select class="kpi-inp" style="width:110px;font-size:10px;padding:3px 5px" onchange="changerStatutTheme('+t.id+',this.value)">'+
+          '<option value="Planifiée"'+(t.statut==='Planifiée'?' selected':'')+'>Planifiée</option>'+
+          '<option value="En cours"'+(t.statut==='En cours'?' selected':'')+'>En cours</option>'+
+          '<option value="Réalisée"'+(t.statut==='Réalisée'?' selected':'')+'>Réalisée</option>'+
+          '<option value="Annulée"'+(t.statut==='Annulée'?' selected':'')+'>Annulée</option>'+
+        '</select>'+
+      '</td>'+
+      '<td style="text-align:center">'+
+        '<span style="font-family:var(--fd);font-weight:700;color:'+partColor+';font-size:12px">'+nbPresents+'/'+nbTotal+'</span><br/>'+
+        '<button onclick="openParticipation('+t.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;margin-top:3px">✅ Saisir</button>'+
+      '</td>'+
+      '<td style="white-space:nowrap;">'+
+        '<button onclick="editerTheme('+t.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px">✏️</button> '+
+        '<button onclick="supprimerTheme('+t.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:16px">×</button>'+
+      '</td>'+
+      '</tr>';
+  });
+}
+
+function renderPASynthese(){
+  var pa = getPlanAnnuelData();
+  var themes = pa.themes || [];
+
+  // Répartition par département
+  var depts = {};
+  themes.forEach(function(t){
+    var dList = (t.dept||'Non défini').split(/[,;]/).map(function(d){return d.trim();}).filter(Boolean);
+    dList.forEach(function(d){
+      if(!depts[d]) depts[d] = {nb:0,cout:0,realises:0,personnes:[]};
+      depts[d].nb++;
+      depts[d].cout += parseFloat(t.cout)||0;
+      if(t.statut==='Réalisée') depts[d].realises++;
+      (t.participants||'').split(',').forEach(function(p){
+        p = p.trim(); if(p && depts[d].personnes.indexOf(p)===-1) depts[d].personnes.push(p);
+      });
+    });
+  });
+  var deptHTML = '';
+  Object.keys(depts).sort().forEach(function(d){
+    var info = depts[d];
+    var pct = info.nb > 0 ? Math.round(info.realises/info.nb*100) : 0;
+    deptHTML += '<div style="margin-bottom:.875rem;padding:.75rem;background:var(--bg3);border-radius:var(--r);">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">'+
+        '<span style="font-weight:700;font-size:12px">'+esc(d)+'</span>'+
+        '<span style="font-size:10px;color:var(--gris)">'+info.nb+' formation'+(info.nb>1?'s':'')+' · '+fmtFCFA(info.cout)+' FCFA</span>'+
+      '</div>'+
+      '<div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+( pct>=100?'var(--vert)':pct>=50?'var(--bleu)':'var(--jaune)')+';border-radius:3px;transition:width .4s;"></div>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:10px;color:var(--gris)">'+
+        '<span>'+info.realises+' réalisée'+(info.realises>1?'s':'')+' / '+info.nb+'</span>'+
+        '<span>'+pct+'%</span>'+
+      '</div>'+
+      '<div style="font-size:10px;color:var(--gris2);margin-top:.3rem">'+esc(info.personnes.slice(0,4).join(', '))+(info.personnes.length>4?' + '+(info.personnes.length-4)+' autres':'')+'</div>'+
+    '</div>';
+  });
+  if(!deptHTML) deptHTML = '<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucune donnée</div>';
+  document.getElementById('pa-dept-repartition').innerHTML = deptHTML;
+
+  // Nouvelles compétences disponibles (réalisées uniquement)
+  var compMap = {};
+  themes.forEach(function(t){
+    if(t.statut !== 'Réalisée') return;
+    if(!t.competences) return;
+    t.competences.split(',').forEach(function(c){
+      c = c.trim(); if(!c) return;
+      if(!compMap[c]) compMap[c] = [];
+      (t.participants||'').split(',').forEach(function(p){
+        p = p.trim(); if(p && compMap[c].indexOf(p)===-1) compMap[c].push(p);
+      });
+    });
+  });
+  var compHTML = '';
+  Object.keys(compMap).sort().forEach(function(c){
+    compHTML += '<div style="padding:.6rem .875rem;background:var(--bg3);border-radius:var(--r);margin-bottom:.5rem;border-left:3px solid var(--vert);">'+
+      '<div style="font-size:12px;font-weight:600;color:var(--vert);margin-bottom:.25rem">'+esc(c)+'</div>'+
+      '<div style="font-size:10px;color:var(--gris)">'+esc(compMap[c].slice(0,3).join(', '))+(compMap[c].length>3?' + '+(compMap[c].length-3)+' autres':'')+'</div>'+
+    '</div>';
+  });
+  if(!compHTML) compHTML = '<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucune formation réalisée</div>';
+  document.getElementById('pa-competences-list').innerHTML = compHTML;
+
+  // Formations restantes
+  var restantes = themes.filter(function(t){ return t.statut !== 'Réalisée' && t.statut !== 'Annulée'; });
+  var rtbody = document.getElementById('pa-restantes-tbody');
+  var rcount = document.getElementById('pa-restantes-count');
+  rcount.textContent = restantes.length + ' formation(s) restante(s)';
+  rtbody.innerHTML = '';
+  if(!restantes.length){
+    rtbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--vert);padding:1rem">🎉 Toutes les formations ont été réalisées !</td></tr>';
+  } else {
+    restantes.forEach(function(t){
+      var trims = [t.t1?'T1':'',t.t2?'T2':'',t.t3?'T3':'',t.t4?'T4':''].filter(Boolean).join(', ');
+      var statutCls = t.statut==='En cours'?'bb':'by';
+      rtbody.innerHTML +=
+        '<tr>'+
+        '<td style="font-weight:600">'+esc(t.intitule||'—')+'</td>'+
+        '<td style="color:var(--or);font-size:11px">'+esc(t.domaine||'—')+'</td>'+
+        '<td style="font-size:10px;color:var(--gris)">'+esc(t.participants||'—')+'</td>'+
+        '<td style="text-align:center;font-family:var(--fd);font-weight:700">'+t.nb+'</td>'+
+        '<td style="font-size:11px">'+esc(t.organisme||'—')+'</td>'+
+        '<td style="text-align:right;font-family:var(--fd);color:var(--or2)">'+fmtFCFA(t.cout)+'</td>'+
+        '<td style="text-align:center"><span class="badge '+statutCls+'">'+esc(trims||t.statut)+'</span></td>'+
+        '</tr>';
+    });
+  }
+}
+
+function changerStatutTheme(id, statut){
+  var pa = getPlanAnnuelData();
+  var t = pa.themes.find(function(x){return x.id===id;});
+  if(!t) return;
+  t.statut = statut;
+  sauverST();
+  renderPAKPIGrid();
+  renderPASynthese();
+  toast('Statut mis à jour : ' + statut);
+}
+
+function sauverTheme(){
+  var domaine = document.getElementById('th-domaine').value.trim();
+  var intitule = document.getElementById('th-intitule').value.trim();
+  if(!domaine || !intitule){ toast('Domaine et intitulé obligatoires'); return; }
+  var participants = document.getElementById('th-participants').value.trim();
+  var nbCalc = participants ? participants.split(',').filter(function(p){return p.trim();}).length : 0;
+  var pa = getPlanAnnuelData();
+
+  if(PA_CURRENT_THEME_ID !== null){
+    // Édition
+    var t = pa.themes.find(function(x){return x.id===PA_CURRENT_THEME_ID;});
+    if(t){
+      t.domaine = domaine; t.intitule = intitule;
+      t.participants = participants;
+      t.nb = nbCalc || parseInt(participants)||0;
+      t.dept = document.getElementById('th-dept').value.trim();
+      t.organisme = document.getElementById('th-organisme').value.trim();
+      t.cout = parseFloat(document.getElementById('th-cout').value)||0;
+      t.competences = document.getElementById('th-competences').value.trim();
+      t.justification = document.getElementById('th-justification').value.trim();
+      t.t1 = document.getElementById('th-t1').checked;
+      t.t2 = document.getElementById('th-t2').checked;
+      t.t3 = document.getElementById('th-t3').checked;
+      t.t4 = document.getElementById('th-t4').checked;
+      // Mettre à jour participants_liste si besoin
+      var pList = participants.split(',').map(function(p){return p.trim();}).filter(Boolean);
+      t.participants_liste = pList.map(function(pn){
+        var existing = (t.participants_liste||[]).find(function(x){return x.nom===pn;});
+        return existing || {nom:pn, present:false};
+      });
+    }
+    toast('Thème modifié');
+  } else {
+    // Nouveau
+    var pList = participants.split(',').map(function(p){return p.trim();}).filter(Boolean);
+    pa.themes.push({
+      id: uid(),
+      domaine: domaine,
+      intitule: intitule,
+      participants: participants,
+      participants_liste: pList.map(function(pn){return {nom:pn, present:false};}),
+      nb: nbCalc,
+      dept: document.getElementById('th-dept').value.trim(),
+      organisme: document.getElementById('th-organisme').value.trim(),
+      cout: parseFloat(document.getElementById('th-cout').value)||0,
+      competences: document.getElementById('th-competences').value.trim(),
+      justification: document.getElementById('th-justification').value.trim(),
+      t1: document.getElementById('th-t1').checked,
+      t2: document.getElementById('th-t2').checked,
+      t3: document.getElementById('th-t3').checked,
+      t4: document.getElementById('th-t4').checked,
+      statut: 'Planifiée'
+    });
+    toast('Thème ajouté');
+  }
+  sauverST();
+  closeModal('modal-add-theme');
+  PA_CURRENT_THEME_ID = null;
+  viderFormulaireTheme();
+  renderPlanAnnuel();
+}
+
+function viderFormulaireTheme(){
+  ['th-domaine','th-intitule','th-participants','th-dept','th-organisme','th-cout','th-competences','th-justification'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value='';
+  });
+  ['th-t1','th-t2','th-t3','th-t4'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.checked = false;
+  });
+}
+
+function editerTheme(id){
+  var pa = getPlanAnnuelData();
+  var t = pa.themes.find(function(x){return x.id===id;});
+  if(!t) return;
+  PA_CURRENT_THEME_ID = id;
+  document.getElementById('theme-modal-title').textContent = 'Modifier le Thème';
+  document.getElementById('th-domaine').value = t.domaine||'';
+  document.getElementById('th-intitule').value = t.intitule||'';
+  document.getElementById('th-participants').value = t.participants||'';
+  document.getElementById('th-dept').value = t.dept||'';
+  document.getElementById('th-organisme').value = t.organisme||'';
+  document.getElementById('th-cout').value = t.cout||'';
+  document.getElementById('th-competences').value = t.competences||'';
+  document.getElementById('th-justification').value = t.justification||'';
+  document.getElementById('th-t1').checked = !!t.t1;
+  document.getElementById('th-t2').checked = !!t.t2;
+  document.getElementById('th-t3').checked = !!t.t3;
+  document.getElementById('th-t4').checked = !!t.t4;
+  openModal('modal-add-theme');
+}
+
+function supprimerTheme(id){
+  if(!confirm('Supprimer ce thème de formation ?')) return;
+  var pa = getPlanAnnuelData();
+  pa.themes = pa.themes.filter(function(t){return t.id!==id;});
+  sauverST(); renderPlanAnnuel(); toast('Thème supprimé');
+}
+
+function openParticipation(id){
+  var pa = getPlanAnnuelData();
+  var t = pa.themes.find(function(x){return x.id===id;});
+  if(!t) return;
+  document.getElementById('part-theme-title').textContent = t.intitule;
+  var body = document.getElementById('part-modal-body');
+  if(!t.participants_liste || !t.participants_liste.length){
+    body.innerHTML = '<p style="color:var(--gris);text-align:center;padding:1rem;">Aucun participant renseigné. Modifiez le thème pour ajouter des noms.</p>';
+    openModal('modal-participation');
+    return;
+  }
+  body.innerHTML = '<div style="margin-bottom:.75rem;font-size:12px;color:var(--gris)">Cochez les participants ayant effectivement suivi la formation :</div>';
+  body.innerHTML += '<div id="part-list">' + t.participants_liste.map(function(p,i){
+    return '<label style="display:flex;align-items:center;gap:10px;padding:.6rem .875rem;background:var(--bg3);border-radius:var(--r);margin-bottom:.5rem;cursor:pointer;">'+
+      '<input type="checkbox" data-idx="'+i+'" '+(p.present?'checked':'')+' style="accent-color:var(--vert);width:16px;height:16px;"/>'+
+      '<span style="font-size:13px;font-weight:500">'+esc(p.nom)+'</span>'+
+      (p.present?'<span style="margin-left:auto;font-size:10px;color:var(--vert)">✓ Présent</span>':'<span style="margin-left:auto;font-size:10px;color:var(--gris2)">Absent</span>')+
+    '</label>';
+  }).join('') + '</div>';
+  // Bouton tout cocher
+  body.innerHTML += '<div style="display:flex;gap:.5rem;margin-top:.75rem;">'+
+    '<button class="btn btn-ghost" onclick="toutCocher(true)" style="font-size:10px;">✅ Tous présents</button>'+
+    '<button class="btn btn-ghost" onclick="toutCocher(false)" style="font-size:10px;">☐ Aucun</button>'+
+  '</div>';
+  body.setAttribute('data-theme-id', id);
+  openModal('modal-participation');
+}
+
+function toutCocher(val){
+  document.querySelectorAll('#part-list input[type="checkbox"]').forEach(function(cb){
+    cb.checked = val;
+    var label = cb.closest('label');
+    if(label){
+      var span = label.querySelector('span:last-child');
+      if(span) { span.textContent = val ? '✓ Présent' : 'Absent'; span.style.color = val ? 'var(--vert)' : 'var(--gris2)'; }
+    }
+  });
+}
+
+function sauverParticipation(){
+  var body = document.getElementById('part-modal-body');
+  var themeId = parseInt(body.getAttribute('data-theme-id'));
+  var pa = getPlanAnnuelData();
+  var t = pa.themes.find(function(x){return x.id===themeId;});
+  if(!t) return;
+  document.querySelectorAll('#part-list input[type="checkbox"]').forEach(function(cb){
+    var idx = parseInt(cb.getAttribute('data-idx'));
+    if(t.participants_liste[idx]) t.participants_liste[idx].present = cb.checked;
+  });
+  sauverST();
+  closeModal('modal-participation');
+  renderPlanAnnuel();
+  toast('Participation enregistrée');
+}
+
+function importerDepuisBesoins(){
+  var annee = document.getElementById('pa-annee').value;
+  var pa = getPlanAnnuelData();
+  var imported = 0;
+  ST.evaluations.forEach(function(ev){
+    if(ev.annee !== annee) return;
+    (ev.formations||[]).forEach(function(f){
+      if(!f.intitule) return;
+      // Vérifier si déjà importé (même intitulé)
+      var existe = pa.themes.find(function(t){return t.intitule === f.intitule;});
+      if(existe){
+        // Ajouter le participant si pas déjà là
+        var nom = ev.nom + (ev.prenom ? ' ' + ev.prenom : '');
+        var inList = (existe.participants||'').split(',').map(function(p){return p.trim();}).indexOf(nom) !== -1;
+        if(!inList && nom.trim()){
+          existe.participants = (existe.participants ? existe.participants + ', ' : '') + nom;
+          existe.nb = existe.participants.split(',').filter(function(p){return p.trim();}).length;
+          existe.participants_liste = existe.participants.split(',').map(function(pn){
+            pn = pn.trim();
+            var ex2 = (existe.participants_liste||[]).find(function(x){return x.nom===pn;});
+            return ex2 || {nom:pn, present:false};
+          });
+        }
+        return;
+      }
+      var nom = ev.nom + (ev.prenom ? ' ' + ev.prenom : '');
+      pa.themes.push({
+        id: uid(),
+        domaine: ev.dept || 'Formation',
+        intitule: f.intitule,
+        participants: nom,
+        participants_liste: [{nom:nom, present:false}],
+        nb: 1,
+        dept: ev.dept||'',
+        organisme: '',
+        cout: 0,
+        competences: f.competence||'',
+        justification: f.justification||'Score KPI: '+(ev.score_final!==null&&ev.score_final!==undefined?ev.score_final+'%':'N/A'),
+        t1: f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('q1')!==-1,
+        t2: f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('q2')!==-1||f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('trim. 2')!==-1,
+        t3: f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('q3')!==-1||f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('trim. 3')!==-1,
+        t4: f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('q4')!==-1||f.periode_ideale&&f.periode_ideale.toLowerCase().indexOf('trim. 4')!==-1,
+        statut: 'Planifiée'
+      });
+      imported++;
+    });
+  });
+  sauverST();
+  renderPlanAnnuel();
+  toast(imported + ' thème(s) importé(s) depuis les besoins de formation ('+annee+')');
+}
+
+function exporterPlanAnnuel(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var pa = getPlanAnnuelData();
+  var annee = document.getElementById('pa-annee').value;
+  var wb = XLSX.utils.book_new();
+
+  // Feuille 1 : Plan
+  var data = [['Domaine','Thème / Formation','Participants','Nb personnes','Département(s)','1er Trim.','2e Trim.','3e Trim.','4e Trim.','Organisme','Coût (FCFA)','Compétences à acquérir','Justification','Statut','Présents']];
+  (pa.themes||[]).forEach(function(t){
+    var nbP = t.participants_liste ? t.participants_liste.filter(function(p){return p.present;}).length : 0;
+    data.push([t.domaine||'',t.intitule||'',t.participants||'',t.nb||0,t.dept||'',t.t1?'Oui':'',t.t2?'Oui':'',t.t3?'Oui':'',t.t4?'Oui':'',t.organisme||'',t.cout||0,t.competences||'',t.justification||'',t.statut||'',nbP+'/'+t.nb]);
+  });
+  var totalCout = (pa.themes||[]).reduce(function(s,t){return s+(parseFloat(t.cout)||0);},0);
+  data.push(['','','','','','','','','','','','','','TOTAL COÛT',fmtFCFA(totalCout)+' FCFA']);
+  data.push(['','','','','','','','','','','','','','BUDGET ALLOUÉ',fmtFCFA(pa.budget||0)+' FCFA']);
+  data.push(['','','','','','','','','','','','','','SOLDE RESTANT',fmtFCFA((pa.budget||0)-totalCout)+' FCFA']);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Plan Formation '+annee);
+
+  // Feuille 2 : Participants par thème
+  var data2 = [['Thème','Domaine','Participant','Présent']];
+  (pa.themes||[]).forEach(function(t){
+    (t.participants_liste||[]).forEach(function(p){
+      data2.push([t.intitule||'', t.domaine||'', p.nom, p.present?'Oui':'Non']);
+    });
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data2), 'Participants');
+
+  XLSX.writeFile(wb, 'Plan-Formation-Annuel-'+annee+'.xlsx');
+  toast('Plan annuel exporté');
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var toastTmr;
+function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastTmr); toastTmr=setTimeout(function(){el.classList.remove('show');},3500); }
+
+chargerST();
+updateBadgeRecap();
+</script>
+</body>
+</html>

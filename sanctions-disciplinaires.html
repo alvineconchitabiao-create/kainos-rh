@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sanctions Disciplinaires — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;border-top:2px solid transparent;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;text-align:left;}
+.dtbl th.c{text-align:center;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}
+.dtbl td.c{text-align:center;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+.sec-title{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em;margin:1rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid rgba(201,168,76,.15);}
+/* ÉTAPES PROCÉDURE */
+.stepper{display:flex;align-items:center;gap:0;margin-bottom:1.5rem;flex-wrap:wrap;}
+.step{display:flex;align-items:center;gap:.5rem;padding:.5rem .875rem;border-radius:var(--r);font-size:11px;font-weight:600;background:var(--bg3);border:1px solid var(--gris3);color:var(--gris);transition:all .3s;white-space:nowrap;}
+.step.active{background:rgba(201,168,76,.12);border-color:var(--or);color:var(--or);}
+.step.done{background:rgba(52,199,123,.08);border-color:rgba(52,199,123,.25);color:var(--vert);}
+.step-arrow{color:var(--gris3);font-size:16px;margin:0 4px;}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;}
+.b-avert{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-blame{background:rgba(251,146,60,.1);color:var(--orange);}
+.b-mad{background:rgba(167,139,250,.1);color:var(--violet);}
+.b-map{background:rgba(240,90,90,.12);color:var(--rouge);}
+.b-mut{background:rgba(74,158,255,.12);color:var(--bleu);}
+.b-retro{background:rgba(34,211,238,.1);color:var(--cyan);}
+.b-licenc{background:rgba(240,90,90,.2);color:var(--rouge);border:1px solid rgba(240,90,90,.3);}
+.b-exp{background:rgba(251,199,36,.08);color:var(--jaune);}
+.b-entretien{background:rgba(74,158,255,.1);color:var(--bleu);}
+.b-decision{background:rgba(167,139,250,.1);color:var(--violet);}
+.b-notif{background:rgba(52,199,123,.1);color:var(--vert);}
+.b-clos{background:rgba(90,88,102,.1);color:var(--gris);}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:820px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:75vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:768px){.fg,.fg3{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}.stepper{flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Sanctions Disciplinaires</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-rouge" onclick="openModal('modal-dossier');modeEdit=false;viderForm()">+ Nouveau dossier disciplinaire</button>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="importerDepuisRegistre()">🔗 Sync. Personnel</button>
+  </div>
+</header>
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--or)"></span>📊 Dashboard</button>
+  <button class="tab" onclick="showTab('dossiers',this)"><span class="tdot" style="background:var(--rouge)"></span>📋 Dossiers <span id="badge-encours" style="display:none;background:var(--rouge);color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:3px;"></span></button>
+  <button class="tab" onclick="showTab('registre',this)"><span class="tdot" style="background:var(--violet)"></span>📒 Registre des Sanctions</button>
+  <button class="tab" onclick="showTab('personnel',this)"><span class="tdot" style="background:var(--bleu)"></span>👥 Personnel</button>
+</nav>
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="panel-dashboard">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📊 Répartition par Type de Sanction</div></div>
+      <div class="sc-body" id="type-bars"></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏢 Répartition par Département</div></div>
+      <div class="sc-body" id="dept-bars"></div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">⏳ Dossiers en cours</div></div>
+    <div style="overflow-x:auto;"><table class="dtbl">
+      <thead><tr><th>Employé</th><th>Département</th><th>Type de sanction</th><th class="c">Faute</th><th class="c">Date ouverture</th><th class="c">Étape actuelle</th><th class="c">Actions</th></tr></thead>
+      <tbody id="dash-encours-tbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- DOSSIERS -->
+<div class="panel" id="panel-dossiers">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="d-search" placeholder="🔍 Rechercher nom, matricule..." oninput="renderDossiers()" style="flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 12px;outline:none;"/>
+    <select id="d-f-etape" onchange="renderDossiers()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Toutes étapes</option>
+      <option value="explication">Demande d'explication</option>
+      <option value="entretien">Entretien préalable</option>
+      <option value="decision">Décision</option>
+      <option value="notification">Notification</option>
+      <option value="clos">Clôturé</option>
+    </select>
+    <select id="d-f-type" onchange="renderDossiers()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous types</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📋 Tous les Dossiers <span id="dossiers-count" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div></div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Réf.</th><th>Employé</th><th>Mat.</th><th>Département</th>
+          <th class="c">Type sanction</th><th>Faute reprochée</th>
+          <th class="c">Ouvert le</th><th class="c">Étape</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="dossiers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTRE -->
+<div class="panel" id="panel-registre">
+  <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <select id="r-f-annee" onchange="renderRegistre()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Toutes années</option>
+    </select>
+    <select id="r-f-dept" onchange="renderRegistre()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;min-width:150px;">
+      <option value="">Tous départements</option>
+    </select>
+    <select id="r-f-type" onchange="renderRegistre()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous types</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">📒 Registre Officiel des Sanctions <span id="reg-count" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div>
+      <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    </div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th class="c">#</th><th>Réf. dossier</th><th>Matricule</th><th>Nom & Prénom</th>
+          <th>Poste</th><th>Département</th><th class="c">Type sanction</th>
+          <th>Faute reprochée</th><th class="c">Date faute</th>
+          <th class="c">Date notification</th><th class="c">Durée (MAP)</th>
+          <th>Observation</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="registre-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONNEL -->
+<div class="panel" id="panel-personnel">
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">👥 Base Personnel</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="openModal('modal-emp')">+ Ajouter</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('fi-emp').click()">⬆ Importer</button>
+        <input type="file" id="fi-emp" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerPersonnelExcel(this)"/>
+      </div>
+    </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr><th>Matricule</th><th>Nom</th><th>Prénom</th><th>Poste</th><th>Département</th><th class="c">Nb sanctions</th><th class="c">Dernière sanction</th><th class="c">Actions</th></tr></thead>
+        <tbody id="pers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- MODAL DOSSIER DISCIPLINAIRE -->
+<div class="modal-ov" id="modal-dossier">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="md-title">⚖️ <span>Nouveau Dossier Disciplinaire</span></div><button class="mc" onclick="closeModal('modal-dossier')">✕</button></div>
+    <div class="mb">
+
+      <!-- Étapes procédure -->
+      <div class="stepper" id="stepper"></div>
+
+      <!-- ÉTAPE 1 : Identification + Faute -->
+      <div id="step-explication">
+        <div class="sec-title">👤 Identification de l'Employé</div>
+        <div class="fg" style="margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Employé (matricule) *</label>
+            <input type="text" id="d-mat" placeholder="Ex: MAT001" oninput="rechercherEmpDossier(this.value)"/>
+            <div class="hint" id="d-emp-info" style="color:var(--vert);"></div>
+          </div>
+          <div class="ff">
+            <label>Type de sanction envisagée *</label>
+            <select id="d-type" onchange="onTypeChange()">
+              <option value="avertissement">⚠️ Avertissement écrit</option>
+              <option value="blame">📋 Blâme</option>
+              <option value="mise_en_demeure">📬 Mise en demeure</option>
+              <option value="map_conservatoire">🔒 Mise à pied conservatoire</option>
+              <option value="map_disciplinaire">🔴 Mise à pied disciplinaire</option>
+              <option value="mutation">🔄 Mutation disciplinaire</option>
+              <option value="retrogradation">⬇️ Rétrogradation</option>
+              <option value="licenciement_faute">❌ Licenciement pour faute</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label>Date de la faute / incident *</label>
+            <input type="date" id="d-date-faute"/>
+          </div>
+          <div class="ff">
+            <label>Date d'ouverture du dossier</label>
+            <input type="date" id="d-date-ouverture"/>
+          </div>
+          <div class="ff ff-full">
+            <label>Faute reprochée *</label>
+            <textarea id="d-faute" rows="3" placeholder="Décrivez précisément les faits reprochés à l'employé : date, lieu, nature des faits, témoins éventuels..."></textarea>
+          </div>
+          <div class="ff ff-full">
+            <label>Pièces justificatives / Références</label>
+            <input type="text" id="d-pieces" placeholder="Ex: Rapport N°12, PV réunion du 15/01, témoignage de M. KPOSSOU..."/>
+          </div>
+        </div>
+
+        <div class="sec-title" id="map-section" style="display:none;">⏱️ Durée de la Mise à Pied</div>
+        <div class="fg" id="map-fields" style="display:none;margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Durée (jours)</label>
+            <input type="number" id="d-map-duree" min="1" max="30" placeholder="Ex: 3"/>
+          </div>
+          <div class="ff">
+            <label>Avec ou sans salaire</label>
+            <select id="d-map-salaire">
+              <option value="sans">Sans salaire</option>
+              <option value="avec">Avec salaire (conservatoire)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sec-title">📨 Demande d'Explication</div>
+        <div class="fg" style="margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Date demande d'explication</label>
+            <input type="date" id="d-date-explication"/>
+          </div>
+          <div class="ff">
+            <label>Délai de réponse accordé (jours)</label>
+            <input type="number" id="d-delai-reponse" min="1" max="30" value="5" placeholder="Ex: 5"/>
+          </div>
+          <div class="ff ff-full">
+            <label>Réponse de l'employé</label>
+            <textarea id="d-reponse-emp" rows="2" placeholder="Résumé des explications fournies par l'employé..."></textarea>
+          </div>
+        </div>
+
+        <div class="sec-title">🤝 Entretien Préalable</div>
+        <div class="fg" style="margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Date de convocation</label>
+            <input type="date" id="d-date-convocation"/>
+          </div>
+          <div class="ff">
+            <label>Date de l'entretien</label>
+            <input type="date" id="d-date-entretien"/>
+          </div>
+          <div class="ff">
+            <label>Heure de l'entretien</label>
+            <input type="time" id="d-heure-entretien"/>
+          </div>
+          <div class="ff">
+            <label>Lieu de l'entretien</label>
+            <input type="text" id="d-lieu-entretien" placeholder="Ex: Bureau de la Direction RH"/>
+          </div>
+          <div class="ff ff-full">
+            <label>Compte-rendu de l'entretien</label>
+            <textarea id="d-cr-entretien" rows="2" placeholder="Résumé des échanges lors de l'entretien préalable..."></textarea>
+          </div>
+        </div>
+
+        <div class="sec-title">⚖️ Décision & Notification</div>
+        <div class="fg" style="margin-bottom:.875rem;">
+          <div class="ff">
+            <label>Date de la décision</label>
+            <input type="date" id="d-date-decision"/>
+          </div>
+          <div class="ff">
+            <label>Date de notification</label>
+            <input type="date" id="d-date-notification"/>
+          </div>
+          <div class="ff">
+            <label>Sanction définitive retenue</label>
+            <select id="d-sanction-finale">
+              <option value="">— même que prévue —</option>
+              <option value="avertissement">Avertissement écrit</option>
+              <option value="blame">Blâme</option>
+              <option value="mise_en_demeure">Mise en demeure</option>
+              <option value="map_conservatoire">Mise à pied conservatoire</option>
+              <option value="map_disciplinaire">Mise à pied disciplinaire</option>
+              <option value="mutation">Mutation disciplinaire</option>
+              <option value="retrogradation">Rétrogradation</option>
+              <option value="licenciement_faute">Licenciement pour faute</option>
+              <option value="classement">Classement sans suite</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label>Étape actuelle du dossier</label>
+            <select id="d-etape">
+              <option value="explication">Demande d'explication</option>
+              <option value="entretien">Entretien préalable</option>
+              <option value="decision">Décision</option>
+              <option value="notification">Notification</option>
+              <option value="clos">Clôturé</option>
+            </select>
+          </div>
+          <div class="ff ff-full">
+            <label>Observations finales / Motivations de la décision</label>
+            <textarea id="d-obs-decision" rows="2" placeholder="Motivations ayant conduit à la décision disciplinaire..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="d-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-dossier')">Annuler</button>
+      <button class="btn btn-violet" id="btn-lettre-conv" onclick="genererLettreConvocation()" style="display:none;">📄 Lettre convocation</button>
+      <button class="btn btn-violet" id="btn-lettre-notif" onclick="genererLettreNotification()" style="display:none;">📄 Lettre notification</button>
+      <button class="btn btn-ghost" id="btn-fiche" onclick="imprimerFiche()" style="display:none;">🖨️ Fiche</button>
+      <button class="btn btn-or" onclick="sauverDossier()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADD EMP -->
+<div class="modal-ov" id="modal-emp">
+  <div class="modal" style="max-width:540px;">
+    <div class="mh"><div class="mt">👤 <span>Ajouter un Employé</span></div><button class="mc" onclick="closeModal('modal-emp')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Matricule *</label><input type="text" id="e-mat"/></div>
+        <div class="ff"><label>Nom *</label><input type="text" id="e-nom"/></div>
+        <div class="ff"><label>Prénoms</label><input type="text" id="e-prenom"/></div>
+        <div class="ff"><label>Poste</label><input type="text" id="e-poste"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="e-dept"/></div>
+        <div class="ff"><label>Manager</label><input type="text" id="e-manager"/></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-emp')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEmp()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitesanctions_v1';
+var ST = { personnel:[], dossiers:[], nextId:100 };
+var nextId = 100;
+var modeEdit = false;
+function uid(){ return ++nextId; }
+
+var TYPES = {
+  avertissement:    { label:'Avertissement',    cls:'b-avert',  color:'var(--jaune)', icon:'⚠️' },
+  blame:            { label:'Blâme',             cls:'b-blame',  color:'var(--orange)',icon:'📋' },
+  mise_en_demeure:  { label:'Mise en demeure',  cls:'b-mad',    color:'var(--violet)',icon:'📬' },
+  map_conservatoire:{ label:'MAP conservatoire',cls:'b-map',    color:'var(--rouge)', icon:'🔒' },
+  map_disciplinaire:{ label:'MAP disciplinaire',cls:'b-map',    color:'var(--rouge)', icon:'🔴' },
+  mutation:         { label:'Mutation discipl.', cls:'b-mut',    color:'var(--bleu)',  icon:'🔄' },
+  retrogradation:   { label:'Rétrogradation',   cls:'b-retro',  color:'var(--cyan)',  icon:'⬇️' },
+  licenciement_faute:{ label:'Licenciement faute',cls:'b-licenc',color:'var(--rouge)',icon:'❌' },
+  classement:       { label:'Classement s/suite',cls:'b-clos',  color:'var(--gris)', icon:'📁' }
+};
+var ETAPES = {
+  explication:  { label:"Demande d'explication", cls:'b-exp',      num:1 },
+  entretien:    { label:'Entretien préalable',    cls:'b-entretien',num:2 },
+  decision:     { label:'Décision',               cls:'b-decision', num:3 },
+  notification: { label:'Notification',           cls:'b-notif',    num:4 },
+  clos:         { label:'Clôturé',                cls:'b-clos',     num:5 }
+};
+
+function charger(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; }
+    else{ ST={personnel:[],dossiers:[],nextId:100}; }
+  }catch(e){ ST={personnel:[],dossiers:[],nextId:100}; }
+}
+function sauver(){ try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }catch(e){ toast('Erreur'); } }
+
+function fmtDate(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function today(){ return new Date().toISOString().split('T')[0]; }
+function genRef(){ return 'DISC-'+new Date().getFullYear()+'-'+String(uid()).padStart(3,'0'); }
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var doss = ST.dossiers;
+  var enCours = doss.filter(function(d){return d.etape!=='clos';});
+  var clos = doss.filter(function(d){return d.etape==='clos';});
+  var typeMap={}, deptMap={};
+  doss.forEach(function(d){
+    var t=d.sanction_finale||d.type;
+    typeMap[t]=(typeMap[t]||0)+1;
+    deptMap[d.dept]=(deptMap[d.dept]||0)+1;
+  });
+
+  var b=document.getElementById('badge-encours');
+  b.textContent=enCours.length; b.style.display=enCours.length>0?'inline':'none';
+
+  function kc(label,val,sub,color,bc){
+    return '<div class="kpi-card" style="border-top-color:'+bc+'">'+
+      '<div class="kpi-label">'+label+'</div>'+
+      '<div class="kpi-val" style="color:'+color+'">'+val+'</div>'+
+      '<div class="kpi-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('kpi-grid').innerHTML=
+    kc('Total dossiers',doss.length,'depuis l\'ouverture','var(--blanc)','var(--or)')+
+    kc('En cours',enCours.length,'procédures actives',enCours.length>0?'var(--rouge)':'var(--gris)','var(--rouge)')+
+    kc('Clôturés',clos.length,'dossiers terminés','var(--vert)','var(--vert)')+
+    kc('Avertissements',typeMap['avertissement']||0,'+ blâmes : '+(typeMap['blame']||0),'var(--jaune)','var(--jaune)')+
+    kc('Mises à pied',(typeMap['map_conservatoire']||0)+(typeMap['map_disciplinaire']||0),'conserv. + discipl.','var(--rouge)','var(--rouge)')+
+    kc('Licenciements',typeMap['licenciement_faute']||0,'pour faute','var(--rouge)','var(--rouge)');
+
+  // Barres types
+  var maxT=Math.max(1,...Object.values(typeMap));
+  var tbHTML='<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(TYPES).filter(function(k){return typeMap[k];}).sort(function(a,b){return typeMap[b]-typeMap[a];}).forEach(function(k){
+    var pct=Math.round(typeMap[k]/maxT*100);
+    var t=TYPES[k];
+    tbHTML+='<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:150px;color:var(--gris)">'+t.icon+' '+t.label+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+t.color+';border-radius:5px;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:25px;text-align:right;color:'+t.color+'">'+typeMap[k]+'</div></div>';
+  });
+  document.getElementById('type-bars').innerHTML=tbHTML+'</div>'||'<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucune sanction enregistrée</div>';
+
+  // Barres dept
+  var maxD=Math.max(1,...Object.values(deptMap));
+  var dbHTML='<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(deptMap).sort(function(a,b){return deptMap[b]-deptMap[a];}).forEach(function(k){
+    var pct=Math.round(deptMap[k]/maxD*100);
+    dbHTML+='<div style="display:flex;align-items:center;gap:.75rem;">'+
+      '<div style="font-size:11px;min-width:130px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(k||'N/A')+'</div>'+
+      '<div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--rouge);border-radius:5px;opacity:.7;"></div></div>'+
+      '<div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:25px;text-align:right;color:var(--rouge)">'+deptMap[k]+'</div></div>';
+  });
+  document.getElementById('dept-bars').innerHTML=dbHTML+'</div>'||'<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucun département</div>';
+
+  // Dossiers en cours
+  var tbody=document.getElementById('dash-encours-tbody');
+  tbody.innerHTML='';
+  if(!enCours.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--vert);padding:1.25rem">✅ Aucun dossier en cours</td></tr>'; return; }
+  enCours.forEach(function(d){
+    var t=TYPES[d.type]||{label:d.type,cls:'b-avert',icon:'?'};
+    var e=ETAPES[d.etape]||{label:d.etape,cls:'b-exp'};
+    tbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong><br><span style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</span></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(d.dept||'—')+'</td>'+
+      '<td><span class="badge '+t.cls+'">'+t.icon+' '+t.label+'</span></td>'+
+      '<td class="c" style="font-size:10px;color:var(--gris);max-width:120px;white-space:normal">'+esc(d.faute||'—').substring(0,60)+'...</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(d.date_ouverture)+'</td>'+
+      '<td class="c"><span class="badge '+e.cls+'">'+e.label+'</span></td>'+
+      '<td class="c"><button onclick="editerDossier('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">✏️ Traiter</button></td>'+
+    '</tr>';
+  });
+}
+
+// ── DOSSIERS ──
+function renderDossiers(){
+  var search=(document.getElementById('d-search').value||'').toLowerCase();
+  var fEtape=document.getElementById('d-f-etape').value;
+  var fType=document.getElementById('d-f-type').value;
+
+  // Remplir filtre types
+  var sel=document.getElementById('d-f-type');
+  var cur=sel.value;
+  sel.innerHTML='<option value="">Tous types</option>';
+  Object.keys(TYPES).forEach(function(k){ sel.innerHTML+='<option value="'+k+'"'+(k===cur?' selected':'')+'>'+TYPES[k].icon+' '+TYPES[k].label+'</option>'; });
+
+  var list=ST.dossiers.filter(function(d){
+    if(fEtape&&d.etape!==fEtape) return false;
+    if(fType&&d.type!==fType) return false;
+    if(search&&(d.mat+d.nom+(d.dept||'')).toLowerCase().indexOf(search)===-1) return false;
+    return true;
+  }).slice().reverse();
+
+  document.getElementById('dossiers-count').textContent='— '+list.length+' dossier(s)';
+  var tbody=document.getElementById('dossiers-tbody');
+  tbody.innerHTML='';
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--gris);padding:2rem">Aucun dossier trouvé.</td></tr>'; return; }
+  list.forEach(function(d){
+    var t=TYPES[d.sanction_finale||d.type]||{label:d.type,cls:'b-avert',icon:'?'};
+    var e=ETAPES[d.etape]||{label:d.etape,cls:'b-exp'};
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:10px;color:var(--or)">'+esc(d.ref||'—')+'</td>'+
+      '<td><strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong></td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(d.dept||'—')+'</td>'+
+      '<td class="c"><span class="badge '+t.cls+'">'+t.icon+' '+t.label+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:180px;white-space:normal">'+esc((d.faute||'—').substring(0,80))+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(d.date_ouverture)+'</td>'+
+      '<td class="c"><span class="badge '+e.cls+'">'+e.label+'</span></td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="editerDossier('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">✏️</button> '+
+        '<button onclick="genererLettreConvocationId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Lettre convocation">📨</button> '+
+        '<button onclick="genererLettreNotificationId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Lettre notification">📄</button> '+
+        '<button onclick="imprimerFicheId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Fiche">🖨️</button> '+
+        '<button onclick="supprimerDossier('+d.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── REGISTRE ──
+function renderRegistre(){
+  var fAnnee=document.getElementById('r-f-annee').value;
+  var fDept=document.getElementById('r-f-dept').value;
+  var fType=document.getElementById('r-f-type').value;
+
+  // Remplir filtres
+  var anneesSet={}, deptSet={};
+  ST.dossiers.forEach(function(d){
+    if(d.date_notification||d.date_ouverture) anneesSet[(d.date_notification||d.date_ouverture).substring(0,4)]=true;
+    if(d.dept) deptSet[d.dept]=true;
+  });
+  ['r-f-annee'].forEach(function(id){
+    var sel=document.getElementById(id); var cur=sel.value;
+    sel.innerHTML='<option value="">Toutes années</option>';
+    Object.keys(anneesSet).sort().reverse().forEach(function(a){ sel.innerHTML+='<option value="'+a+'"'+(a===cur?' selected':'')+'>'+a+'</option>'; });
+  });
+  ['r-f-dept'].forEach(function(id){
+    var sel=document.getElementById(id); var cur=sel.value;
+    sel.innerHTML='<option value="">Tous départements</option>';
+    Object.keys(deptSet).sort().forEach(function(d){ sel.innerHTML+='<option value="'+d+'"'+(d===cur?' selected':'')+'>'+esc(d)+'</option>'; });
+  });
+  var selT=document.getElementById('r-f-type'); var curT=selT.value;
+  selT.innerHTML='<option value="">Tous types</option>';
+  Object.keys(TYPES).forEach(function(k){ selT.innerHTML+='<option value="'+k+'"'+(k===curT?' selected':'')+'>'+TYPES[k].icon+' '+TYPES[k].label+'</option>'; });
+
+  var list=ST.dossiers.filter(function(d){
+    if(fAnnee){var an=(d.date_notification||d.date_ouverture||'').substring(0,4);if(an!==fAnnee)return false;}
+    if(fDept&&d.dept!==fDept) return false;
+    if(fType&&(d.sanction_finale||d.type)!==fType) return false;
+    return true;
+  }).slice().reverse();
+
+  document.getElementById('reg-count').textContent='— '+list.length+' sanction(s)';
+  var tbody=document.getElementById('registre-tbody');
+  tbody.innerHTML='';
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--gris);padding:2rem">Aucune sanction.</td></tr>'; return; }
+  list.forEach(function(d,i){
+    var t=TYPES[d.sanction_finale||d.type]||{label:d.type,cls:'b-avert',icon:'?'};
+    tbody.innerHTML+='<tr>'+
+      '<td class="c" style="color:var(--gris);font-size:10px">'+(i+1)+'</td>'+
+      '<td style="font-family:var(--fd);font-size:10px;color:var(--or)">'+esc(d.ref||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(d.mat||'—')+'</td>'+
+      '<td><strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px">'+esc(d.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(d.dept||'—')+'</td>'+
+      '<td class="c"><span class="badge '+t.cls+'">'+t.icon+' '+t.label+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:160px;white-space:normal">'+esc((d.faute||'—').substring(0,70))+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(d.date_faute)+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(d.date_notification)+'</td>'+
+      '<td class="c" style="font-size:11px">'+(d.map_duree?d.map_duree+' j.':'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris);max-width:120px;white-space:normal">'+esc(d.obs_decision||'—')+'</td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="genererLettreNotificationId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">📄</button> '+
+        '<button onclick="imprimerFicheId('+d.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;">🖨️</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── PERSONNEL ──
+function renderPersonnel(){
+  var tbody=document.getElementById('pers-tbody');
+  tbody.innerHTML='';
+  ST.personnel.slice().sort(function(a,b){return (a.nom||'').localeCompare(b.nom||'');}).forEach(function(p){
+    var sanctions=ST.dossiers.filter(function(d){return d.mat===p.mat;});
+    var derniere=sanctions.length?sanctions.slice().sort(function(a,b){return b.date_ouverture>a.date_ouverture?1:-1;})[0]:null;
+    tbody.innerHTML+='<tr>'+
+      '<td style="font-family:var(--fd);font-size:11px;color:var(--or)">'+esc(p.mat||'—')+'</td>'+
+      '<td><strong>'+esc(p.nom)+'</strong></td>'+
+      '<td>'+esc(p.prenom||'')+'</td>'+
+      '<td style="font-size:11px">'+esc(p.poste||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(p.dept||'—')+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:'+(sanctions.length>2?'var(--rouge)':sanctions.length>0?'var(--jaune)':'var(--gris)')+'">'+sanctions.length+'</td>'+
+      '<td class="c" style="font-size:11px">'+(derniere?fmtDate(derniere.date_ouverture):'—')+'</td>'+
+      '<td class="c"><button onclick="supprimerEmp(\''+esc(p.mat)+'\')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button></td>'+
+    '</tr>';
+  });
+  if(!ST.personnel.length) tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gris);padding:2rem">Aucun employé. Ajoutez du personnel ou synchronisez depuis le Registre.</td></tr>';
+}
+
+// ── STEPPER ──
+function renderStepper(etapeActive){
+  var steps=['explication','entretien','decision','notification','clos'];
+  var idx=steps.indexOf(etapeActive);
+  var html='';
+  steps.forEach(function(s,i){
+    var e=ETAPES[s];
+    var cls=i<idx?'done':i===idx?'active':'';
+    var icon=i<idx?'✓ ':i===idx?'▶ ':'';
+    html+='<div class="step '+cls+'">'+icon+e.label+'</div>';
+    if(i<steps.length-1) html+='<div class="step-arrow">›</div>';
+  });
+  document.getElementById('stepper').innerHTML=html;
+}
+
+// ── FORM DOSSIER ──
+function viderForm(){
+  var ids=['d-mat','d-date-faute','d-date-ouverture','d-faute','d-pieces','d-date-explication',
+    'd-delai-reponse','d-reponse-emp','d-date-convocation','d-date-entretien','d-heure-entretien',
+    'd-lieu-entretien','d-cr-entretien','d-date-decision','d-date-notification','d-obs-decision',
+    'd-map-duree','d-id'];
+  ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('d-delai-reponse').value='5';
+  document.getElementById('d-date-ouverture').value=today();
+  document.getElementById('d-type').value='avertissement';
+  document.getElementById('d-etape').value='explication';
+  document.getElementById('d-sanction-finale').value='';
+  document.getElementById('d-emp-info').textContent='';
+  document.getElementById('md-title').innerHTML='⚖️ <span>Nouveau Dossier Disciplinaire</span>';
+  document.getElementById('btn-lettre-conv').style.display='none';
+  document.getElementById('btn-lettre-notif').style.display='none';
+  document.getElementById('btn-fiche').style.display='none';
+  onTypeChange();
+  renderStepper('explication');
+}
+function onTypeChange(){
+  var type=document.getElementById('d-type').value;
+  var isMAP=type==='map_conservatoire'||type==='map_disciplinaire';
+  document.getElementById('map-section').style.display=isMAP?'block':'none';
+  document.getElementById('map-fields').style.display=isMAP?'grid':'none';
+}
+function rechercherEmpDossier(mat){
+  var emp=ST.personnel.find(function(p){return p.mat&&p.mat.toLowerCase()===mat.toLowerCase();});
+  var info=document.getElementById('d-emp-info');
+  if(emp){ info.textContent='✓ '+emp.nom+' '+(emp.prenom||'')+' — '+esc(emp.poste||'—')+' — '+esc(emp.dept||'—'); info.style.color='var(--vert)'; }
+  else if(mat.length>=3){ info.textContent='Matricule non trouvé'; info.style.color='var(--rouge)'; }
+  else info.textContent='';
+}
+function sauverDossier(){
+  var mat=document.getElementById('d-mat').value.trim();
+  var faute=document.getElementById('d-faute').value.trim();
+  if(!faute){ toast('La description de la faute est obligatoire'); return; }
+  var emp=ST.personnel.find(function(p){return p.mat&&p.mat.toLowerCase()===mat.toLowerCase();});
+  var etape=document.getElementById('d-etape').value;
+  var data={
+    mat:mat,
+    nom:emp?emp.nom:'—', prenom:emp?emp.prenom||'':'',
+    poste:emp?emp.poste||'':'', dept:emp?emp.dept||'':'',
+    manager:emp?emp.manager||'':'',
+    type:document.getElementById('d-type').value,
+    sanction_finale:document.getElementById('d-sanction-finale').value||null,
+    date_faute:document.getElementById('d-date-faute').value,
+    date_ouverture:document.getElementById('d-date-ouverture').value||today(),
+    faute:faute,
+    pieces:document.getElementById('d-pieces').value.trim(),
+    date_explication:document.getElementById('d-date-explication').value,
+    delai_reponse:document.getElementById('d-delai-reponse').value,
+    reponse_emp:document.getElementById('d-reponse-emp').value.trim(),
+    date_convocation:document.getElementById('d-date-convocation').value,
+    date_entretien:document.getElementById('d-date-entretien').value,
+    heure_entretien:document.getElementById('d-heure-entretien').value,
+    lieu_entretien:document.getElementById('d-lieu-entretien').value.trim(),
+    cr_entretien:document.getElementById('d-cr-entretien').value.trim(),
+    date_decision:document.getElementById('d-date-decision').value,
+    date_notification:document.getElementById('d-date-notification').value,
+    obs_decision:document.getElementById('d-obs-decision').value.trim(),
+    map_duree:document.getElementById('d-map-duree').value||null,
+    map_salaire:document.getElementById('d-map-salaire').value||null,
+    etape:etape
+  };
+  var idVal=document.getElementById('d-id').value;
+  if(modeEdit&&idVal){
+    var d=ST.dossiers.find(function(x){return x.id===parseInt(idVal);});
+    if(d){ Object.assign(d,data); toast('Dossier mis à jour'); }
+  } else {
+    data.id=uid();
+    data.ref=genRef();
+    ST.dossiers.push(data);
+    toast('Dossier créé — Réf: '+data.ref);
+  }
+  sauver(); closeModal('modal-dossier'); renderAll();
+}
+function editerDossier(id){
+  var d=ST.dossiers.find(function(x){return x.id===id;}); if(!d) return;
+  modeEdit=true;
+  document.getElementById('md-title').innerHTML='✏️ <span>Modifier — Réf. '+esc(d.ref||'')+'</span>';
+  document.getElementById('btn-lettre-conv').style.display='flex';
+  document.getElementById('btn-lettre-notif').style.display='flex';
+  document.getElementById('btn-fiche').style.display='flex';
+  var fields={
+    'd-mat':d.mat||'','d-date-faute':d.date_faute||'','d-date-ouverture':d.date_ouverture||'',
+    'd-faute':d.faute||'','d-pieces':d.pieces||'',
+    'd-date-explication':d.date_explication||'','d-delai-reponse':d.delai_reponse||'5',
+    'd-reponse-emp':d.reponse_emp||'','d-date-convocation':d.date_convocation||'',
+    'd-date-entretien':d.date_entretien||'','d-heure-entretien':d.heure_entretien||'',
+    'd-lieu-entretien':d.lieu_entretien||'','d-cr-entretien':d.cr_entretien||'',
+    'd-date-decision':d.date_decision||'','d-date-notification':d.date_notification||'',
+    'd-obs-decision':d.obs_decision||'','d-map-duree':d.map_duree||'','d-id':d.id
+  };
+  Object.keys(fields).forEach(function(k){var el=document.getElementById(k);if(el)el.value=fields[k];});
+  document.getElementById('d-type').value=d.type||'avertissement';
+  document.getElementById('d-etape').value=d.etape||'explication';
+  document.getElementById('d-sanction-finale').value=d.sanction_finale||'';
+  document.getElementById('d-map-salaire').value=d.map_salaire||'sans';
+  rechercherEmpDossier(d.mat||'');
+  onTypeChange();
+  renderStepper(d.etape||'explication');
+  openModal('modal-dossier');
+}
+function supprimerDossier(id){
+  if(!confirm('Supprimer ce dossier disciplinaire ?')) return;
+  ST.dossiers=ST.dossiers.filter(function(d){return d.id!==id;});
+  sauver(); renderAll(); toast('Dossier supprimé');
+}
+
+// ── LETTRES ──
+var _currentDossierForDoc=null;
+function getDossierCourant(){
+  var idVal=document.getElementById('d-id').value;
+  if(idVal) return ST.dossiers.find(function(x){return x.id===parseInt(idVal);});
+  return null;
+}
+function genererLettreConvocation(){
+  var d=getDossierCourant()||_currentDossierForDoc; if(!d){toast('Enregistrez d\'abord le dossier');return;}
+  imprimerLettre(buildLettreConvocation(d));
+}
+function genererLettreConvocationId(id){
+  var d=ST.dossiers.find(function(x){return x.id===id;}); if(!d) return;
+  imprimerLettre(buildLettreConvocation(d));
+}
+function genererLettreNotification(){
+  var d=getDossierCourant()||_currentDossierForDoc; if(!d){toast('Enregistrez d\'abord le dossier');return;}
+  imprimerLettre(buildLettreNotification(d));
+}
+function genererLettreNotificationId(id){
+  var d=ST.dossiers.find(function(x){return x.id===id;}); if(!d) return;
+  imprimerLettre(buildLettreNotification(d));
+}
+function imprimerFiche(){ var d=getDossierCourant(); if(!d){toast('Enregistrez d\'abord');return;} imprimerLettre(buildFicheSanction(d)); }
+function imprimerFicheId(id){ var d=ST.dossiers.find(function(x){return x.id===id;}); if(!d) return; imprimerLettre(buildFicheSanction(d)); }
+function imprimerLettre(html){
+  var win=window.open('','_blank','width=900,height=700');
+  win.document.write(html); win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+function styleLettre(){
+  return '<style>body{font-family:"Times New Roman",serif;padding:3rem;color:#111;max-width:800px;margin:0 auto;font-size:13px;line-height:1.7;}'+
+    '.entete{display:flex;justify-content:space-between;margin-bottom:2rem;font-size:12px;}'+
+    '.titre{font-size:16px;font-weight:700;text-align:center;text-decoration:underline;margin:1.5rem 0;text-transform:uppercase;letter-spacing:.08em;}'+
+    'p{margin-bottom:.875rem;text-align:justify;}'+
+    '.signature{margin-top:3rem;display:flex;justify-content:space-between;}'+
+    '.sig-block{text-align:center;min-width:200px;}'+
+    '.sig-line{border-top:1px solid #333;margin-top:3rem;font-size:11px;color:#555;}'+
+    '.footer{margin-top:2rem;padding-top:.75rem;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center;}'+
+    'h1{font-size:18px;color:#C9A84C;}'+
+    '@media print{button{display:none}}</style>';
+}
+function headerLettre(){
+  return '<div class="entete">'+
+    '<div><strong style="color:#C9A84C;font-size:15px;">Elite RH Consulting</strong><br>Cotonou, Bénin<br>+229 01 99 34 47 39<br>contact@eliterhconsulting.com</div>'+
+    '<div style="text-align:right;">Cotonou, le '+new Date().toLocaleDateString('fr-FR')+'<br>Réf. : '+'{REF}'+'</div>'+
+  '</div>';
+}
+
+function buildLettreConvocation(d){
+  var t=TYPES[d.type]||{label:d.type};
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Convocation — '+d.nom+'</title>'+styleLettre()+'</head><body>'+
+  headerLettre().replace('{REF}', esc(d.ref||'—'))+
+  '<div><strong>À :</strong> M./Mme '+esc(d.nom)+' '+esc(d.prenom||'')+'<br>'+
+  '<strong>Poste :</strong> '+esc(d.poste||'—')+' — '+esc(d.dept||'—')+'<br>'+
+  '<strong>Matricule :</strong> '+esc(d.mat||'—')+'</div>'+
+  '<div class="titre">Convocation à un Entretien Préalable</div>'+
+  '<p>Monsieur/Madame <strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong>,</p>'+
+  '<p>Nous avons été informés de faits susceptibles de constituer une faute disciplinaire et qui vous sont reprochés dans le cadre de votre activité professionnelle au sein de notre organisation.</p>'+
+  '<p>Les faits en cause sont les suivants : <em>'+esc(d.faute||'—')+'</em></p>'+
+  '<p>Conformément aux dispositions du Code du Travail de la République du Bénin, et préalablement à toute décision disciplinaire, nous vous convoquons à un entretien préalable :</p>'+
+  '<p style="margin:1rem 2rem;border-left:3px solid #C9A84C;padding-left:1rem;">'+
+    '<strong>Date :</strong> '+(d.date_entretien?fmtDate(d.date_entretien):'À définir')+'<br>'+
+    '<strong>Heure :</strong> '+(d.heure_entretien||'À définir')+'<br>'+
+    '<strong>Lieu :</strong> '+(d.lieu_entretien||'Siège de la Direction')+'</p>'+
+  '<p>Lors de cet entretien, vous pourrez vous faire assister par une personne de votre choix appartenant à l\'effectif de l\'entreprise.</p>'+
+  '<p>Nous vous prions de bien vouloir accuser réception de la présente convocation.</p>'+
+  '<div class="signature">'+
+    '<div class="sig-block"><div class="sig-line">Le Responsable RH<br>Signature & cachet</div></div>'+
+    '<div class="sig-block"><div class="sig-line">L\'intéressé(e)<br>Lu et approuvé — Date :</div></div>'+
+  '</div>'+
+  '<div class="footer">Elite RH Consulting — Document confidentiel — Procédure disciplinaire</div>'+
+  '</body></html>';
+}
+
+function buildLettreNotification(d){
+  var sf=d.sanction_finale||d.type;
+  var t=TYPES[sf]||{label:sf};
+  var isMAP=sf==='map_conservatoire'||sf==='map_disciplinaire';
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Notification sanction — '+d.nom+'</title>'+styleLettre()+'</head><body>'+
+  headerLettre().replace('{REF}', esc(d.ref||'—'))+
+  '<div><strong>À :</strong> M./Mme '+esc(d.nom)+' '+esc(d.prenom||'')+'<br>'+
+  '<strong>Poste :</strong> '+esc(d.poste||'—')+' — '+esc(d.dept||'—')+'<br>'+
+  '<strong>Matricule :</strong> '+esc(d.mat||'—')+'</div>'+
+  '<div class="titre">Lettre de Notification de Sanction Disciplinaire</div>'+
+  '<p>Monsieur/Madame <strong>'+esc(d.nom)+' '+esc(d.prenom||'')+'</strong>,</p>'+
+  '<p>Suite à l\'entretien préalable qui s\'est tenu le '+(d.date_entretien?fmtDate(d.date_entretien):'___________')+', au cours duquel vous avez pu présenter vos explications concernant les faits qui vous étaient reprochés, et après examen approfondi de votre dossier, nous avons décidé de vous notifier la sanction disciplinaire suivante :</p>'+
+  '<p style="font-size:16px;font-weight:700;text-align:center;color:#C9A84C;border:2px solid #C9A84C;padding:.75rem;border-radius:4px;">'+t.label.toUpperCase()+'</p>'+
+  (isMAP&&d.map_duree?'<p>Cette mise à pied est d\'une durée de <strong>'+d.map_duree+' jour(s)</strong>, '+(d.map_salaire==='avec'?'avec maintien de salaire.':'sans salaire.')+'</p>':'')+
+  '<p><strong>Faits reprochés :</strong> '+esc(d.faute||'—')+'</p>'+
+  (d.obs_decision?'<p><strong>Motivations :</strong> '+esc(d.obs_decision)+'</p>':'')+
+  '<p>Cette sanction prend effet à compter de la date de notification de la présente lettre. Nous vous informons que vous disposez du droit de contester cette décision devant l\'inspection du Travail dans un délai de 15 jours à compter de la présente notification.</p>'+
+  '<p>Veuillez agréer, Monsieur/Madame, l\'expression de nos salutations distinguées.</p>'+
+  '<div class="signature">'+
+    '<div class="sig-block"><div class="sig-line">Le Responsable RH<br>Signature & cachet</div></div>'+
+    '<div class="sig-block"><div class="sig-line">L\'intéressé(e)<br>Lu et approuvé — Date :</div></div>'+
+  '</div>'+
+  '<div class="footer">Elite RH Consulting — Document confidentiel — Original à remettre à l\'employé / Copie au dossier</div>'+
+  '</body></html>';
+}
+
+function buildFicheSanction(d){
+  var t=TYPES[d.sanction_finale||d.type]||{label:d.type,icon:'?'};
+  var e=ETAPES[d.etape]||{label:d.etape};
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiche sanction — '+d.nom+'</title>'+
+  '<style>body{font-family:Arial,sans-serif;padding:2rem;color:#222;max-width:900px;margin:0 auto;font-size:12px;}'+
+  '.header{display:flex;justify-content:space-between;border-bottom:2px solid #C9A84C;padding-bottom:.75rem;margin-bottom:1.25rem;}'+
+  'h2{font-size:13px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #eee;padding-bottom:.3rem;margin:1rem 0 .6rem;}'+
+  '.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem .75rem;margin-bottom:.75rem;}'+
+  '.field{background:#f9f9f9;border-radius:4px;padding:.4rem .6rem;}'+
+  '.fl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:2px;}'+
+  '.fv{font-weight:600;color:#222;}'+
+  '.sanction-box{background:#fff8e1;border:2px solid #C9A84C;border-radius:6px;padding:.75rem 1rem;text-align:center;font-size:16px;font-weight:700;color:#C9A84C;margin:1rem 0;}'+
+  'table{width:100%;border-collapse:collapse;margin-top:.5rem;}'+
+  'th{text-align:left;padding:5px 8px;font-size:9px;text-transform:uppercase;background:#f5f5f5;color:#666;border-bottom:1px solid #ddd;}'+
+  'td{padding:5px 8px;border-bottom:1px solid #eee;}'+
+  '@media print{button{display:none}}</style></head><body>'+
+  '<div class="header">'+
+    '<div><strong style="font-size:18px;color:#C9A84C">Elite RH</strong> Consulting<br><span style="font-size:10px;color:#888;letter-spacing:.1em">FICHE DE DOSSIER DISCIPLINAIRE</span></div>'+
+    '<div style="text-align:right;font-size:10px;color:#888">Réf. : <strong>'+esc(d.ref||'—')+'</strong><br>Édité le '+new Date().toLocaleDateString('fr-FR')+'<br>Étape : <strong>'+e.label+'</strong></div>'+
+  '</div>'+
+  '<h2>Identification</h2>'+
+  '<div class="grid">'+
+    fld('Nom complet',d.nom+' '+(d.prenom||''))+fld('Matricule',d.mat||'—')+fld('Poste',d.poste||'—')+
+    fld('Département',d.dept||'—')+fld('Manager',d.manager||'—')+fld('Date faute',fmtDate(d.date_faute))+
+  '</div>'+
+  '<div class="sanction-box">'+t.icon+' Sanction : '+(TYPES[d.sanction_finale||d.type]||{label:'—'}).label+(d.map_duree?' — '+d.map_duree+' jour(s)':'')+'</div>'+
+  '<h2>Faits Reprochés</h2>'+
+  '<div style="background:#f9f9f9;border-radius:4px;padding:.75rem;margin-bottom:.75rem;">'+esc(d.faute||'—')+'</div>'+
+  (d.pieces?'<div style="font-size:11px;color:#555;margin-bottom:.75rem;"><strong>Pièces :</strong> '+esc(d.pieces)+'</div>':'')+
+  '<h2>Procédure Disciplinaire</h2>'+
+  '<table><thead><tr><th>Étape</th><th>Date</th><th>Détail</th></tr></thead><tbody>'+
+  (d.date_explication?'<tr><td>Demande d\'explication</td><td>'+fmtDate(d.date_explication)+'</td><td>Délai réponse : '+(d.delai_reponse||5)+' j.</td></tr>':'')+
+  (d.reponse_emp?'<tr><td>Réponse employé</td><td>—</td><td>'+esc(d.reponse_emp)+'</td></tr>':'')+
+  (d.date_convocation?'<tr><td>Convocation entretien</td><td>'+fmtDate(d.date_convocation)+'</td><td>—</td></tr>':'')+
+  (d.date_entretien?'<tr><td>Entretien préalable</td><td>'+fmtDate(d.date_entretien)+' '+(d.heure_entretien||'')+'</td><td>'+(d.lieu_entretien||'—')+'</td></tr>':'')+
+  (d.cr_entretien?'<tr><td>Compte-rendu</td><td>—</td><td>'+esc(d.cr_entretien)+'</td></tr>':'')+
+  (d.date_decision?'<tr><td>Décision</td><td>'+fmtDate(d.date_decision)+'</td><td>'+(d.obs_decision||'—')+'</td></tr>':'')+
+  (d.date_notification?'<tr><td>Notification</td><td>'+fmtDate(d.date_notification)+'</td><td>Sanction notifiée à l\'employé</td></tr>':'')+
+  '</tbody></table>'+
+  '<div style="margin-top:3rem;display:flex;justify-content:space-between;padding-top:1rem;border-top:1px solid #ddd;font-size:10px;color:#aaa;">'+
+    '<div>Elite RH Consulting — Document confidentiel</div><div>Réf. '+esc(d.ref||'—')+'</div>'+
+  '</div></body></html>';
+}
+function fld(label,val){ return '<div class="field"><div class="fl">'+label+'</div><div class="fv">'+esc(String(val||'—'))+'</div></div>'; }
+
+// ── PERSONNEL ──
+function sauverEmp(){
+  var mat=document.getElementById('e-mat').value.trim();
+  var nom=document.getElementById('e-nom').value.trim();
+  if(!nom){toast('Nom obligatoire');return;}
+  if(mat&&ST.personnel.find(function(p){return p.mat===mat;})){toast('Matricule déjà existant');return;}
+  ST.personnel.push({mat:mat||'EMP'+uid(),nom:nom.toUpperCase(),prenom:document.getElementById('e-prenom').value.trim(),poste:document.getElementById('e-poste').value.trim(),dept:document.getElementById('e-dept').value.trim(),manager:document.getElementById('e-manager').value.trim()});
+  sauver(); closeModal('modal-emp');
+  ['e-mat','e-nom','e-prenom','e-poste','e-dept','e-manager'].forEach(function(id){document.getElementById(id).value='';});
+  renderAll(); toast('Employé ajouté');
+}
+function supprimerEmp(mat){
+  if(!confirm('Supprimer cet employé ?')) return;
+  ST.personnel=ST.personnel.filter(function(p){return p.mat!==mat;});
+  sauver(); renderAll(); toast('Supprimé');
+}
+function importerPersonnelExcel(input){
+  if(!input.files[0]||!window.XLSX){toast('XLSX non disponible');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      var g=function(r){var keys=Array.prototype.slice.call(arguments,1);for(var i=0;i<keys.length;i++){var k=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(keys[i].toLowerCase().replace(/[^a-z]/g,''))!==-1;});if(k&&r[k]!==undefined&&r[k]!=='')return String(r[k]).trim();}return '';};
+      var added=0;
+      rows.forEach(function(r){
+        var nom=g(r,'nom','name'); if(!nom) return;
+        var mat=g(r,'matricule','mat')||'EMP'+uid();
+        if(ST.personnel.find(function(p){return p.mat===mat;})) return;
+        ST.personnel.push({mat:mat,nom:nom.toUpperCase(),prenom:g(r,'prenom'),poste:g(r,'poste','fonction'),dept:g(r,'departement','dept'),manager:g(r,'manager','responsable')});
+        added++;
+      });
+      sauver(); renderAll(); toast(added+' employé(s) importé(s)');
+    }catch(e){toast('Erreur: '+e.message);}
+  };
+  reader.readAsBinaryString(input.files[0]); input.value='';
+}
+function importerDepuisRegistre(){
+  var stReg={};
+  try{ stReg=JSON.parse(localStorage.getItem('elitereg_v1')||'{}'); }catch(e){}
+  var emps=stReg.employes||[];
+  var added=0;
+  emps.forEach(function(e){
+    var mat=(e.mat||'').trim();
+    if(!mat||ST.personnel.find(function(p){return p.mat===mat;})) return;
+    ST.personnel.push({mat:mat,nom:e.nom||'',prenom:e.prenom||'',poste:e.poste||'',dept:e.dept||'',manager:e.manager||''});
+    added++;
+  });
+  sauver(); renderAll(); toast(added+' employé(s) synchronisé(s) depuis le Registre');
+}
+
+// ── EXPORT ──
+function exporterExcel(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var wb=XLSX.utils.book_new();
+  var data=[['Réf.','Matricule','Nom','Prénom','Poste','Département','Type prévu','Sanction finale','Faute','Date faute','Date ouverture','Date convocation','Date entretien','Date décision','Date notification','Durée MAP','Étape','Observations']];
+  ST.dossiers.forEach(function(d){
+    var tp=TYPES[d.type]||{label:d.type};
+    var ts=TYPES[d.sanction_finale||d.type]||{label:d.sanction_finale||d.type};
+    data.push([d.ref||'',d.mat||'',d.nom,d.prenom||'',d.poste||'',d.dept||'',tp.label,ts.label,d.faute||'',d.date_faute||'',d.date_ouverture||'',d.date_convocation||'',d.date_entretien||'',d.date_decision||'',d.date_notification||'',d.map_duree||'',d.etape,d.obs_decision||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Registre Sanctions');
+  XLSX.writeFile(wb,'Sanctions-Disciplinaires-'+today()+'.xlsx');
+  toast('Export généré');
+}
+
+// ── UTILS ──
+function renderAll(){
+  renderDashboard();
+  renderDossiers();
+  renderRegistre();
+  renderPersonnel();
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+charger();
+renderAll();
+</script>
+</body>
+</html>

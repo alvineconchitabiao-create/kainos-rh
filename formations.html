@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nos Formations — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --noir: #0a0a0a; --noir2: #111111; --noir3: #1a1a1a; --noir4: #222;
+  --or: #C9A84C; --or2: #E2C47A; --or-pale: rgba(201,168,76,0.08);
+  --blanc: #FAFAF8; --blanc2: #F0EDE6;
+  --gris: #D4D2CB; --gris2: #8a8880; --gris3: #2E2E2A;
+  --vert: #1E8449; --bleu: #1A5FA8; --rouge: #C0392B;
+  --fd: 'Cormorant Garamond', serif;
+  --fb: 'Montserrat', sans-serif;
+  --r: 12px; --rl: 20px;
+  --shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--fb); background: var(--noir); color: var(--blanc); min-height: 100vh; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--or); border-radius: 2px; }
+
+/* ── HEADER ── */
+.header {
+  background: rgba(10,10,10,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  padding: 1rem 4rem; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 200;
+}
+.logo { font-family: var(--fd); font-size: 22px; font-weight: 600; letter-spacing: .12em; color: var(--blanc); }
+.logo span { color: var(--or); }
+.logo-sub { font-size: 9px; font-weight: 500; letter-spacing: .35em; color: var(--gris2); text-transform: uppercase; margin-top: 2px; }
+.header-nav { display: flex; align-items: center; gap: 1.5rem; }
+.header-nav a { font-size: 12px; font-weight: 500; color: var(--gris); text-decoration: none; letter-spacing: .08em; transition: color .2s; }
+.header-nav a:hover { color: var(--or); }
+.btn-admin {
+  padding: 8px 18px; border: 1px solid var(--gris3); border-radius: var(--r);
+  font-size: 11px; font-weight: 600; color: var(--gris2); background: transparent;
+  cursor: pointer; font-family: var(--fb); letter-spacing: .06em; transition: all .2s;
+}
+.btn-admin:hover { border-color: var(--or); color: var(--or); }
+.btn-admin.active { background: var(--or); color: var(--noir); border-color: var(--or); }
+
+/* ── HERO FORMATIONS ── */
+.hero-form {
+  background: var(--noir2);
+  padding: 5rem 4rem 3rem;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--gris3);
+}
+.hero-form::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.06) 0%, transparent 60%);
+}
+.hero-form-tag { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.hero-form-tag-line { width: 40px; height: 1px; background: var(--or); }
+.hero-form-tag-text { font-size: 11px; font-weight: 500; letter-spacing: .3em; text-transform: uppercase; color: var(--or); }
+.hero-form-title { font-family: var(--fd); font-size: clamp(36px,5vw,68px); font-weight: 300; line-height: 1.08; color: var(--blanc); margin-bottom: 1rem; }
+.hero-form-title em { font-style: italic; color: var(--or); }
+.hero-form-desc { font-size: 14px; font-weight: 300; color: var(--gris); max-width: 520px; line-height: 1.9; }
+.hero-form-stats { display: flex; gap: 3rem; margin-top: 2.5rem; }
+.hero-stat-val { font-family: var(--fd); font-size: 32px; font-weight: 600; color: var(--or); line-height: 1; }
+.hero-stat-label { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--gris2); margin-top: 4px; }
+
+/* ── FILTRES ── */
+.filtres-bar {
+  background: var(--noir2); border-bottom: 1px solid var(--gris3);
+  padding: .75rem 4rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  position: sticky; top: 64px; z-index: 100;
+}
+.filtre-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .15em; color: var(--gris2); margin-right: 4px; }
+.filtre-btn {
+  padding: 6px 14px; border: 1px solid var(--gris3); border-radius: 20px;
+  background: transparent; color: var(--gris2); font-family: var(--fb);
+  font-size: 11px; font-weight: 500; cursor: pointer; transition: all .2s; letter-spacing: .04em;
+}
+.filtre-btn:hover { border-color: var(--or); color: var(--or); }
+.filtre-btn.active { background: var(--or); color: var(--noir); border-color: var(--or); font-weight: 600; }
+.search-wrap { margin-left: auto; position: relative; }
+.search-wrap input {
+  background: var(--noir3); border: 1px solid var(--gris3); border-radius: var(--r);
+  color: var(--blanc); font-family: var(--fb); font-size: 12px; padding: 7px 12px 7px 32px;
+  outline: none; width: 220px; transition: border-color .2s;
+}
+.search-wrap input:focus { border-color: var(--or); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--gris2); font-size: 13px; }
+
+/* ── GRILLE FORMATIONS ── */
+.formations-page { padding: 3rem 4rem; }
+.formations-count { font-size: 12px; color: var(--gris2); margin-bottom: 2rem; }
+.formations-count span { color: var(--or); font-weight: 600; }
+.formations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+.empty-state { text-align: center; padding: 5rem 2rem; color: var(--gris2); }
+.empty-icon { font-size: 48px; margin-bottom: 1rem; opacity: .4; }
+.empty-text { font-family: var(--fd); font-size: 22px; font-weight: 300; color: var(--gris); }
+.empty-sub { font-size: 13px; margin-top: .5rem; }
+
+/* ── CARTE FORMATION ── */
+.form-card {
+  background: var(--noir2); border: 1px solid var(--gris3);
+  border-radius: var(--rl); overflow: hidden;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+  display: flex; flex-direction: column;
+}
+.form-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.35); box-shadow: var(--shadow); }
+.form-card-top {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--gris3);
+  position: relative;
+}
+.form-card-theme {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: .75rem;
+}
+.form-card-title { font-family: var(--fd); font-size: 20px; font-weight: 600; color: var(--blanc); line-height: 1.2; margin-bottom: .5rem; }
+.form-card-desc { font-size: 12px; font-weight: 300; color: var(--gris); line-height: 1.7; }
+.form-card-meta {
+  padding: .75rem 1.5rem; display: flex; flex-wrap: wrap; gap: 8px;
+  border-bottom: 1px solid var(--gris3); background: rgba(255,255,255,0.02);
+}
+.meta-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3);
+}
+.meta-pill .icon { font-size: 12px; }
+.form-card-competences { padding: 1rem 1.5rem; flex: 1; }
+.comp-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--or); margin-bottom: .6rem; }
+.comp-list { display: flex; flex-direction: column; gap: 5px; }
+.comp-item { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: var(--gris); line-height: 1.4; }
+.comp-item::before { content: '✓'; color: var(--or); font-weight: 700; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.form-card-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gris3); }
+.btn-contact {
+  width: 100%; padding: 11px; background: var(--or); color: var(--noir);
+  border: none; border-radius: var(--r); font-family: var(--fb); font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: all .2s; letter-spacing: .04em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-contact:hover { background: var(--or2); transform: scale(1.02); }
+.btn-contact-edit {
+  display: flex; gap: 8px; margin-top: 6px;
+}
+.btn-edit, .btn-del {
+  flex: 1; padding: 7px; border-radius: 8px; font-family: var(--fb); font-size: 11px;
+  font-weight: 600; cursor: pointer; transition: all .2s; border: none;
+}
+.btn-edit { background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3); }
+.btn-edit:hover { border-color: var(--bleu); color: #5DADE2; }
+.btn-del { background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3); }
+.btn-del:hover { border-color: var(--rouge); color: #E74C3C; }
+
+/* Couleurs thèmes */
+.theme-rh       { background: rgba(201,168,76,.12);  color: #C9A84C; }
+.theme-mgmt     { background: rgba(26,95,168,.12);   color: #5DADE2; }
+.theme-droit    { background: rgba(192,57,43,.12);   color: #E74C3C; }
+.theme-finance  { background: rgba(30,132,73,.12);   color: #2ECC71; }
+.theme-digital  { background: rgba(142,68,173,.12);  color: #BB8FCE; }
+.theme-autre    { background: rgba(255,255,255,.06);  color: var(--gris); }
+
+/* ── PANNEAU ADMIN ── */
+.admin-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 300;
+  display: none; align-items: flex-start; justify-content: flex-end;
+  padding-top: 64px;
+}
+.admin-overlay.open { display: flex; }
+.admin-panel {
+  width: 560px; height: calc(100vh - 64px); background: var(--noir2);
+  border-left: 1px solid var(--gris3); overflow-y: auto;
+  display: flex; flex-direction: column;
+  animation: slideIn .3s ease;
+}
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.admin-header {
+  padding: 1.5rem; border-bottom: 1px solid var(--gris3);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--noir2); z-index: 10;
+}
+.admin-header-title { font-family: var(--fd); font-size: 20px; font-weight: 600; color: var(--blanc); }
+.admin-header-title span { color: var(--or); }
+.admin-close { background: none; border: none; color: var(--gris2); font-size: 22px; cursor: pointer; padding: 4px; transition: color .2s; }
+.admin-close:hover { color: var(--blanc); }
+.admin-body { padding: 1.5rem; flex: 1; }
+.admin-section-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--or); opacity: .7; margin-bottom: 1rem; margin-top: 1.5rem; }
+.admin-section-title:first-child { margin-top: 0; }
+.field { margin-bottom: 1rem; }
+.field label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--gris2); display: block; margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%; background: var(--noir3); border: 1px solid var(--gris3);
+  border-radius: var(--r); color: var(--blanc); font-family: var(--fb);
+  font-size: 13px; padding: 10px 12px; outline: none; transition: border-color .2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--or); }
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.field select option { background: var(--noir2); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Tags compétences dans admin */
+.comp-tags-wrap { min-height: 44px; background: var(--noir3); border: 1px solid var(--gris3); border-radius: var(--r); padding: 8px; display: flex; flex-wrap: wrap; gap: 6px; cursor: text; transition: border-color .2s; }
+.comp-tags-wrap:focus-within { border-color: var(--or); }
+.comp-tag { display: inline-flex; align-items: center; gap: 5px; background: rgba(201,168,76,.12); color: var(--or); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.comp-tag-del { background: none; border: none; color: var(--or); cursor: pointer; font-size: 14px; line-height: 1; padding: 0; opacity: .7; }
+.comp-tag-del:hover { opacity: 1; }
+.comp-tag-input { background: transparent; border: none; color: var(--blanc); font-family: var(--fb); font-size: 12px; outline: none; min-width: 140px; flex: 1; padding: 2px 4px; }
+.comp-hint { font-size: 10px; color: var(--gris2); margin-top: 4px; font-style: italic; }
+
+.admin-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gris3); display: flex; gap: 10px; position: sticky; bottom: 0; background: var(--noir2); }
+.btn-save { flex: 1; padding: 12px; background: var(--or); color: var(--noir); border: none; border-radius: var(--r); font-family: var(--fb); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.btn-save:hover { background: var(--or2); }
+.btn-cancel { padding: 12px 20px; background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3); border-radius: var(--r); font-family: var(--fb); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; }
+.btn-cancel:hover { border-color: var(--rouge); color: #E74C3C; }
+
+/* ── MODAL CONTACT ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 400; display: none; align-items: center; justify-content: center; padding: 2rem; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--noir2); border: 1px solid var(--gris3); border-radius: var(--rl); max-width: 480px; width: 100%; padding: 2rem; animation: popIn .25s ease; }
+@keyframes popIn { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-title { font-family: var(--fd); font-size: 22px; font-weight: 600; color: var(--blanc); margin-bottom: .25rem; }
+.modal-subtitle { font-size: 12px; color: var(--gris2); margin-bottom: 1.5rem; }
+.modal-form { display: flex; flex-direction: column; gap: 12px; }
+.modal-form input, .modal-form textarea, .modal-form select {
+  width: 100%; background: var(--noir3); border: 1px solid var(--gris3); border-radius: var(--r);
+  color: var(--blanc); font-family: var(--fb); font-size: 13px; padding: 10px 12px; outline: none; transition: border-color .2s;
+}
+.modal-form input:focus, .modal-form textarea:focus { border-color: var(--or); }
+.modal-form textarea { resize: vertical; min-height: 80px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+.btn-send { flex: 1; padding: 12px; background: var(--or); color: var(--noir); border: none; border-radius: var(--r); font-family: var(--fb); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.btn-send:hover { background: var(--or2); }
+.btn-modal-close { padding: 12px 18px; background: var(--noir3); color: var(--gris); border: 1px solid var(--gris3); border-radius: var(--r); font-family: var(--fb); font-size: 13px; cursor: pointer; transition: all .2s; }
+.modal-success { text-align: center; padding: 1.5rem 0; }
+.modal-success-icon { font-size: 48px; margin-bottom: 1rem; }
+.modal-success-text { font-family: var(--fd); font-size: 20px; color: var(--or); margin-bottom: .5rem; }
+.modal-success-sub { font-size: 12px; color: var(--gris2); }
+
+/* ── FOOTER ── */
+.footer { background: var(--noir2); border-top: 1px solid var(--gris3); padding: 2rem 4rem; display: flex; align-items: center; justify-content: space-between; }
+.footer-copy { font-size: 11px; color: var(--gris2); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header { padding: 1rem 1.5rem; }
+  .hero-form { padding: 4rem 1.5rem 2rem; }
+  .filtres-bar { padding: .75rem 1.5rem; }
+  .formations-page { padding: 2rem 1.5rem; }
+  .admin-panel { width: 100%; }
+  .footer { padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div>
+    <div class="logo">Elite <span>RH</span> Consulting</div>
+    <div class="logo-sub">Cabinet RH · Bénin</div>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html">← Accueil</a>
+    <a href="index.html#services">Services</a>
+    <a href="tarifs.html">Tarifs</a>
+    <a href="index.html#contact">Contact</a>
+    <button class="btn-admin" id="btn-toggle-admin" onclick="toggleAdmin()">⚙️ Administration</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero-form">
+  <div class="hero-form-tag">
+    <div class="hero-form-tag-line"></div>
+    <div class="hero-form-tag-text">Développez vos talents</div>
+  </div>
+  <h1 class="hero-form-title">Nos <em>formations</em><br>professionnelles</h1>
+  <p class="hero-form-desc">Des programmes conçus par des experts RH pour renforcer les compétences de vos équipes et accélérer la performance de votre organisation.</p>
+  <div class="hero-form-stats">
+    <div>
+      <div class="hero-stat-val" id="stat-count">0</div>
+      <div class="hero-stat-label">Formations disponibles</div>
+    </div>
+    <div>
+      <div class="hero-stat-val" id="stat-themes">0</div>
+      <div class="hero-stat-label">Thématiques couvertes</div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTRES -->
+<div class="filtres-bar">
+  <span class="filtre-label">Filtrer :</span>
+  <button class="filtre-btn active" onclick="filtrer('tous', this)">Toutes</button>
+  <button class="filtre-btn" onclick="filtrer('rh', this)">🎯 RH</button>
+  <button class="filtre-btn" onclick="filtrer('mgmt', this)">👥 Management</button>
+  <button class="filtre-btn" onclick="filtrer('droit', this)">⚖️ Droit social</button>
+  <button class="filtre-btn" onclick="filtrer('finance', this)">💰 Finance & Paie</button>
+  <button class="filtre-btn" onclick="filtrer('digital', this)">💻 Digital RH</button>
+  <button class="filtre-btn" onclick="filtrer('autre', this)">📦 Autres</button>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Rechercher une formation..." oninput="rechercher(this.value)"/>
+  </div>
+</div>
+
+<!-- GRILLE -->
+<div class="formations-page">
+  <div class="formations-count" id="formations-count"></div>
+  <div class="formations-grid" id="formations-grid"></div>
+  <div class="empty-state" id="empty-state" style="display:none">
+    <div class="empty-icon">🎓</div>
+    <div class="empty-text">Aucune formation trouvée</div>
+    <div class="empty-sub">Essayez un autre filtre ou ajoutez des formations via l'administration.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-copy">© 2025 Elite RH Consulting · Tous droits réservés · Cotonou, Bénin</div>
+  <div style="font-size:11px;color:var(--gris2)">+229 01 99 34 47 39 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="21424e4f5540425561444d4855445349424e4f52544d55484f460f424e4c">[email&#160;protected]</a></div>
+</footer>
+
+<!-- ══ PANNEAU ADMIN ══ -->
+<div class="admin-overlay" id="admin-overlay" onclick="closeAdminOnOverlay(event)">
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-header">
+      <div>
+        <div class="admin-header-title">Espace <span>Administration</span></div>
+        <div style="font-size:10px;color:var(--gris2);margin-top:2px" id="admin-mode-label">Ajouter une nouvelle formation</div>
+      </div>
+      <button class="admin-close" onclick="toggleAdmin()">✕</button>
+    </div>
+    <div class="admin-body">
+      <div class="admin-section-title">Informations principales</div>
+      <div class="field">
+        <label>Titre de la formation *</label>
+        <input type="text" id="f-titre" placeholder="Ex: Management et Leadership"/>
+      </div>
+      <div class="field">
+        <label>Description *</label>
+        <textarea id="f-desc" placeholder="Présentez la formation, ses objectifs, son contenu..."></textarea>
+      </div>
+      <div class="field">
+        <label>Thématique *</label>
+        <select id="f-theme">
+          <option value="rh">🎯 Ressources Humaines</option>
+          <option value="mgmt">👥 Management & Leadership</option>
+          <option value="droit">⚖️ Droit Social & Travail</option>
+          <option value="finance">💰 Finance, Paie & Fiscalité</option>
+          <option value="digital">💻 Digital RH & Outils</option>
+          <option value="autre">📦 Autre / Transversal</option>
+        </select>
+      </div>
+
+      <div class="admin-section-title">Modalités</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Durée *</label>
+          <input type="text" id="f-duree" placeholder="Ex: 2 jours / 14h"/>
+        </div>
+        <div class="field">
+          <label>Format *</label>
+          <select id="f-format">
+            <option value="Présentiel">🏢 Présentiel</option>
+            <option value="Distanciel">💻 Distanciel</option>
+            <option value="Hybride">🔀 Hybride</option>
+            <option value="Intra-entreprise">🏭 Intra-entreprise</option>
+            <option value="Inter-entreprises">👥 Inter-entreprises</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Public cible *</label>
+        <input type="text" id="f-cible" placeholder="Ex: Managers, RH, Toute l'équipe..."/>
+      </div>
+
+      <div class="admin-section-title">Compétences développées</div>
+      <div class="field">
+        <label>Compétences (appuyez Entrée pour ajouter)</label>
+        <div class="comp-tags-wrap" id="comp-tags-wrap" onclick="document.getElementById('comp-input').focus()">
+          <input type="text" class="comp-tag-input" id="comp-input" placeholder="Tapez une compétence et appuyez sur Entrée..."/>
+        </div>
+        <div class="comp-hint">Ex: Leadership situationnel → Entrée · Gestion des conflits → Entrée</div>
+      </div>
+    </div>
+    <div class="admin-footer">
+      <button class="btn-save" id="btn-save" onclick="sauvegarder()">✓ Publier la formation</button>
+      <button class="btn-cancel" onclick="annulerEdit()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CONTACT ══ -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <div id="modal-form-content">
+      <div class="modal-title">Je suis intéressé(e)</div>
+      <div class="modal-subtitle" id="modal-formation-name">par cette formation</div>
+      <div class="modal-form">
+        <input type="text" id="contact-nom" placeholder="Votre nom complet *"/>
+        <input type="text" id="contact-entreprise" placeholder="Entreprise / Organisation"/>
+        <input type="tel" id="contact-tel" placeholder="Téléphone *"/>
+        <input type="email" id="contact-email" placeholder="Email *"/>
+        <textarea id="contact-message" placeholder="Votre message ou question (optionnel)..." rows="3"></textarea>
+        <div class="modal-actions">
+          <button class="btn-send" onclick="envoyerContact()">📩 Envoyer ma demande</button>
+          <button class="btn-modal-close" onclick="fermerModal()">Annuler</button>
+        </div>
+      </div>
+    </div>
+    <div id="modal-success-content" style="display:none">
+      <div class="modal-success">
+        <div class="modal-success-icon">✅</div>
+        <div class="modal-success-text">Demande envoyée !</div>
+        <div class="modal-success-sub">Notre équipe vous contactera dans les 24h.<br>Merci de votre intérêt pour Elite RH Consulting.</div>
+        <button class="btn-send" style="margin-top:1.5rem;max-width:200px" onclick="fermerModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ─────────────────────────────────────────────
+// DONNÉES (stockées dans localStorage)
+// ─────────────────────────────────────────────
+const STORAGE_KEY = 'eliterhformations_v1';
+
+function chargerFormations() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY);
+    return d ? JSON.parse(d) : getFormationsDefaut();
+  } catch(e) { return getFormationsDefaut(); }
+}
+
+function sauvegarderFormations(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function getFormationsDefaut() {
+  return [
+    {
+      id: 1, titre: 'Management & Leadership Opérationnel',
+      desc: 'Former vos managers à conduire leurs équipes avec efficacité, mobiliser les talents et piloter la performance au quotidien dans un contexte africain.',
+      theme: 'mgmt', duree: '3 jours / 21h', format: 'Présentiel & En ligne',
+      cible: "Managers, Chefs d'équipe, Responsables de département",
+      competences: ['Leadership situationnel', 'Gestion des conflits', 'Communication managériale', 'Délégation et motivation', 'Pilotage de la performance'],
+      createdAt: 1700000001000
+    },
+    {
+      id: 2, titre: 'Droit du Travail Béninois — Pratique',
+      desc: 'Maîtriser le Code du Travail béninois, la gestion des contrats, des procédures disciplinaires et des litiges pour sécuriser vos pratiques RH.',
+      theme: 'droit', duree: '2 jours / 14h', format: 'Présentiel & En ligne',
+      cible: "DRH, RRH, Juristes, Directeurs d'entreprise",
+      competences: ['Rédaction de contrats conformes', 'Procédures disciplinaires', 'Gestion des ruptures de contrat', 'Obligations CNSS et MTFP'],
+      createdAt: 1700000002000
+    },
+    {
+      id: 3, titre: 'Recrutement & Sélection des Talents',
+      desc: 'Acquérir les techniques modernes de recrutement : définition du besoin, sourcing, entretien structuré et intégration des nouveaux collaborateurs.',
+      theme: 'rh', duree: '2 jours / 14h', format: 'Présentiel & En ligne',
+      cible: 'RRH, Managers recruteurs, Chargés de recrutement',
+      competences: ["Analyse du besoin et rédaction d'offre", "Techniques d'entretien structuré", 'Évaluation des compétences', 'Onboarding et intégration'],
+      createdAt: 1700000003000
+    },
+    {
+      id: 4, titre: 'Gestion de la Paie & Charges Sociales',
+      desc: 'Comprendre les mécanismes de la paie au Bénin, calculer les cotisations sociales, établir les bulletins et gérer les déclarations CNSS.',
+      theme: 'finance', duree: '3 jours / 21h', format: 'Présentiel & En ligne',
+      cible: 'Gestionnaires de paie, Comptables, DRH',
+      competences: ['Calcul du salaire brut et net', 'Cotisations CNSS et ITS', 'Établissement du bulletin de paie', 'Déclarations sociales légales'],
+      createdAt: 1700000004000
+    },
+    {
+      id: 5, titre: "Concevoir un Plan d'Évolution de Carrière Interne",
+      desc: "Accompagner la montée en compétences ne s'improvise pas. Cette formation permet aux professionnels RH et aux managers de construire des parcours d'évolution structurés, adaptés aux ambitions des collaborateurs et aux besoins stratégiques de l'entreprise. De l'entretien de carrière à la cartographie des compétences, vous repartirez avec des outils concrets et immédiatement opérationnels.",
+      theme: 'rh', duree: '2 jours / 14h', format: 'Présentiel & En ligne',
+      cible: 'DRH, RRH, Managers',
+      competences: ["Mener un entretien de carrière", 'Cartographier les compétences internes', 'Construire un plan de succession', 'Aligner évolution individuelle et stratégie RH', 'Fidéliser les talents clés'],
+      createdAt: 1700000005000
+    },
+    {
+      id: 6, titre: 'Faire de Toutes les Fonctions des Business Partner',
+      desc: "Les fonctions support ne sont plus de simples prestataires internes — elles sont des partenaires stratégiques de la performance. Cette formation transforme la posture des équipes RH, finance, juridique et IT : passer du mode exécutant au mode Business Partner, créer de la valeur mesurable et parler le langage des opérationnels.",
+      theme: 'mgmt', duree: '2 jours / 14h', format: 'Présentiel & En ligne',
+      cible: 'Fonctions support : RH, Finance, Juridique, IT',
+      competences: ["Comprendre les enjeux business de l'entreprise", 'Développer une posture conseil', 'Piloter par la valeur', 'Communiquer avec les directions opérationnelles', "Mesurer l'impact de sa fonction"],
+      createdAt: 1700000006000
+    },
+    {
+      id: 7, titre: 'Définir les KPI pour son Équipe',
+      desc: "Un manager qui ne pilote pas par les chiffres pilote à l'aveugle. Cette formation pratique donne les clés pour construire un tableau de bord pertinent, choisir les bons indicateurs de performance pour chaque fonction, et créer une culture de la mesure au sein de l'équipe. Applicable dès le lendemain.",
+      theme: 'mgmt', duree: '1 jour / 7h', format: 'Présentiel & En ligne',
+      cible: "Managers, Chefs d'équipe, DRH",
+      competences: ['Distinguer indicateurs de résultat et de pilotage', 'Construire un tableau de bord équipe', 'Fixer des objectifs SMART', 'Animer des points de performance', 'Ajuster les KPI selon les contextes'],
+      createdAt: 1700000007000
+    },
+    {
+      id: 8, titre: 'Augmenter sa Productivité avec les Outils IA',
+      desc: "L'intelligence artificielle n'est plus réservée aux experts tech — elle est désormais un levier quotidien de productivité pour tous. Cette formation pratique et accessible forme vos équipes à utiliser les outils IA (ChatGPT, Copilot, Gemini…) pour rédiger plus vite, mieux analyser, automatiser les tâches répétitives et gagner du temps chaque jour.",
+      theme: 'digital', duree: '1 jour / 7h', format: 'Présentiel & En ligne',
+      cible: 'Tous collaborateurs, Managers, Fonctions RH',
+      competences: ['Maîtriser les outils IA du quotidien', 'Rédiger des prompts efficaces', 'Automatiser les tâches répétitives', 'Synthétiser et analyser des documents', "Intégrer l'IA dans ses processus RH"],
+      createdAt: 1700000008000
+    },
+  ];
+}
+
+// ─────────────────────────────────────────────
+// ÉTAT
+// ─────────────────────────────────────────────
+let formations = chargerFormations();
+let filtreActif = 'tous';
+let rechercheActuelle = '';
+let editId = null;
+let competencesCourantes = [];
+let formationContactee = '';
+
+const themeConfig = {
+  rh:      { label: '🎯 RH',           cls: 'theme-rh' },
+  mgmt:    { label: '👥 Management',   cls: 'theme-mgmt' },
+  droit:   { label: '⚖️ Droit Social', cls: 'theme-droit' },
+  finance: { label: '💰 Finance & Paie',cls: 'theme-finance' },
+  digital: { label: '💻 Digital RH',   cls: 'theme-digital' },
+  autre:   { label: '📦 Autre',        cls: 'theme-autre' },
+};
+
+// ─────────────────────────────────────────────
+// RENDU
+// ─────────────────────────────────────────────
+function getFormationsFiltrees() {
+  return formations.filter(f => {
+    const matchTheme = filtreActif === 'tous' || f.theme === filtreActif;
+    const q = rechercheActuelle.toLowerCase();
+    const matchSearch = !q ||
+      f.titre.toLowerCase().includes(q) ||
+      f.desc.toLowerCase().includes(q) ||
+      f.cible.toLowerCase().includes(q) ||
+      (f.competences || []).some(c => c.toLowerCase().includes(q));
+    return matchTheme && matchSearch;
+  });
+}
+
+function render() {
+  const grid = document.getElementById('formations-grid');
+  const empty = document.getElementById('empty-state');
+  const countEl = document.getElementById('formations-count');
+  const filtered = getFormationsFiltrees();
+
+  // Stats hero
+  document.getElementById('stat-count').textContent = formations.length;
+  const themes = new Set(formations.map(f => f.theme));
+  document.getElementById('stat-themes').textContent = themes.size;
+
+  countEl.innerHTML = filtered.length + ' formation(s) <span>' +
+    (filtreActif !== 'tous' ? '· filtre : ' + themeConfig[filtreActif].label : '') + '</span>';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = '';
+
+  filtered.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'form-card';
+    const th = themeConfig[f.theme] || themeConfig.autre;
+    const comps = (f.competences || []).slice(0, 5);
+
+    const isAdminOpen = document.getElementById('admin-overlay').classList.contains('open');
+
+    card.innerHTML =
+      '<div class="form-card-top">' +
+        '<div class="form-card-theme ' + th.cls + '">' + th.label + '</div>' +
+        '<div class="form-card-title">' + esc(f.titre) + '</div>' +
+        '<div class="form-card-desc">' + esc(f.desc) + '</div>' +
+      '</div>' +
+      '<div class="form-card-meta">' +
+        '<span class="meta-pill"><span class="icon">⏱</span>' + esc(f.duree) + '</span>' +
+        '<span class="meta-pill"><span class="icon">📍</span>' + esc(f.format) + '</span>' +
+        '<span class="meta-pill"><span class="icon">🎯</span>' + esc(f.cible) + '</span>' +
+      '</div>' +
+      (comps.length > 0 ?
+        '<div class="form-card-competences">' +
+          '<div class="comp-title">Compétences développées</div>' +
+          '<div class="comp-list">' +
+            comps.map(c => '<div class="comp-item">' + esc(c) + '</div>').join('') +
+          '</div>' +
+        '</div>' : '<div class="form-card-competences"></div>') +
+      '<div class="form-card-footer">' +
+        '<button class="btn-contact" onclick="ouvrirContact(\'' + esc(f.titre) + '\')">' +
+          '📩 Je suis intéressé(e) →' +
+        '</button>' +
+        '<div class="btn-contact-edit" id="admin-btns-' + f.id + '" style="display:none">' +
+          '<button class="btn-edit" onclick="editerFormation(' + f.id + ')">✏️ Modifier</button>' +
+          '<button class="btn-del" onclick="supprimerFormation(' + f.id + ')">🗑 Supprimer</button>' +
+        '</div>' +
+      '</div>';
+
+    grid.appendChild(card);
+  });
+
+  // Afficher boutons admin si panneau ouvert
+  if (document.getElementById('admin-overlay').classList.contains('open')) {
+    showAdminBtns(true);
+  }
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─────────────────────────────────────────────
+// FILTRES & RECHERCHE
+// ─────────────────────────────────────────────
+function filtrer(theme, btn) {
+  filtreActif = theme;
+  document.querySelectorAll('.filtre-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function rechercher(val) {
+  rechercheActuelle = val;
+  render();
+}
+
+// ─────────────────────────────────────────────
+// ADMIN
+// ─────────────────────────────────────────────
+function toggleAdmin() {
+  const overlay = document.getElementById('admin-overlay');
+  const btn = document.getElementById('btn-toggle-admin');
+  const isOpen = overlay.classList.contains('open');
+  if (isOpen) {
+    overlay.classList.remove('open');
+    btn.classList.remove('active');
+    showAdminBtns(false);
+  } else {
+    overlay.classList.add('open');
+    btn.classList.add('active');
+    resetForm();
+    showAdminBtns(true);
+  }
+}
+
+function closeAdminOnOverlay(e) {
+  if (e.target === document.getElementById('admin-overlay')) toggleAdmin();
+}
+
+function showAdminBtns(show) {
+  document.querySelectorAll('[id^="admin-btns-"]').forEach(el => {
+    el.style.display = show ? 'flex' : 'none';
+  });
+}
+
+function resetForm() {
+  editId = null;
+  competencesCourantes = [];
+  document.getElementById('f-titre').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-theme').value = 'rh';
+  document.getElementById('f-duree').value = '';
+  document.getElementById('f-format').value = 'Présentiel';
+  document.getElementById('f-cible').value = '';
+  document.getElementById('btn-save').textContent = '✓ Publier la formation';
+  document.getElementById('admin-mode-label').textContent = 'Ajouter une nouvelle formation';
+  renderTags();
+}
+
+function annulerEdit() {
+  resetForm();
+}
+
+function editerFormation(id) {
+  const f = formations.find(x => x.id === id);
+  if (!f) return;
+  editId = id;
+  competencesCourantes = [...(f.competences || [])];
+  document.getElementById('f-titre').value = f.titre;
+  document.getElementById('f-desc').value = f.desc;
+  document.getElementById('f-theme').value = f.theme;
+  document.getElementById('f-duree').value = f.duree;
+  document.getElementById('f-format').value = f.format;
+  document.getElementById('f-cible').value = f.cible;
+  document.getElementById('btn-save').textContent = '✓ Mettre à jour';
+  document.getElementById('admin-mode-label').textContent = 'Modifier : ' + f.titre;
+  renderTags();
+  document.getElementById('admin-panel').scrollTop = 0;
+}
+
+function supprimerFormation(id) {
+  if (!confirm('Supprimer cette formation ?')) return;
+  formations = formations.filter(f => f.id !== id);
+  sauvegarderFormations(formations);
+  render();
+}
+
+function sauvegarder() {
+  const titre = document.getElementById('f-titre').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  const theme = document.getElementById('f-theme').value;
+  const duree = document.getElementById('f-duree').value.trim();
+  const format= document.getElementById('f-format').value;
+  const cible = document.getElementById('f-cible').value.trim();
+
+  if (!titre || !desc || !duree || !cible) {
+    alert('Veuillez remplir tous les champs obligatoires (*).');
+    return;
+  }
+
+  const btn = document.getElementById('btn-save');
+  btn.textContent = '⏳ Enregistrement...'; btn.disabled = true;
+
+  setTimeout(() => {
+    if (editId) {
+      const idx = formations.findIndex(f => f.id === editId);
+      if (idx !== -1) {
+        formations[idx] = { ...formations[idx], titre, desc, theme, duree, format, cible, competences: [...competencesCourantes] };
+      }
+    } else {
+      const newId = Date.now();
+      formations.push({ id: newId, titre, desc, theme, duree, format, cible, competences: [...competencesCourantes], createdAt: Date.now() });
+    }
+
+    sauvegarderFormations(formations);
+    render();
+    resetForm();
+    btn.textContent = '✓ Publier la formation'; btn.disabled = false;
+
+    // Feedback visuel
+    btn.textContent = '✅ Enregistré !';
+    setTimeout(() => { btn.textContent = '✓ Publier la formation'; }, 2000);
+  }, 400);
+}
+
+// ─────────────────────────────────────────────
+// TAGS COMPÉTENCES
+// ─────────────────────────────────────────────
+function renderTags() {
+  const wrap = document.getElementById('comp-tags-wrap');
+  wrap.innerHTML = '';
+  competencesCourantes.forEach((c, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'comp-tag';
+    tag.innerHTML = esc(c) + '<button class="comp-tag-del" onclick="removeTag(' + i + ')" title="Supprimer">×</button>';
+    wrap.appendChild(tag);
+  });
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'comp-tag-input';
+  input.id = 'comp-input';
+  input.placeholder = competencesCourantes.length === 0 ? 'Tapez une compétence et appuyez sur Entrée...' : 'Ajouter...';
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const val = this.value.trim().replace(/,$/, '');
+      if (val) { competencesCourantes.push(val); renderTags(); }
+    } else if (e.key === 'Backspace' && !this.value && competencesCourantes.length > 0) {
+      competencesCourantes.pop(); renderTags();
+    }
+  });
+  wrap.appendChild(input);
+}
+
+function removeTag(i) {
+  competencesCourantes.splice(i, 1);
+  renderTags();
+}
+
+// ─────────────────────────────────────────────
+// MODAL CONTACT
+// ─────────────────────────────────────────────
+function ouvrirContact(titreFormation) {
+  formationContactee = titreFormation;
+  document.getElementById('modal-formation-name').textContent = '— ' + titreFormation;
+  document.getElementById('modal-form-content').style.display = 'block';
+  document.getElementById('modal-success-content').style.display = 'none';
+  document.getElementById('contact-nom').value = '';
+  document.getElementById('contact-entreprise').value = '';
+  document.getElementById('contact-tel').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-message').value = '';
+  document.getElementById('modal-contact').classList.add('open');
+}
+
+function fermerModal() {
+  document.getElementById('modal-contact').classList.remove('open');
+}
+
+function envoyerContact() {
+  const nom = document.getElementById('contact-nom').value.trim();
+  const tel = document.getElementById('contact-tel').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  if (!nom || !tel || !email) { alert('Veuillez remplir votre nom, téléphone et email.'); return; }
+
+  const sujet = encodeURIComponent('Intérêt formation : ' + formationContactee);
+  const entreprise = document.getElementById('contact-entreprise').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+  const corps = encodeURIComponent(
+    'Bonjour,\n\nJe suis intéressé(e) par la formation : ' + formationContactee +
+    '\n\nNom : ' + nom +
+    (entreprise ? '\nEntreprise : ' + entreprise : '') +
+    '\nTéléphone : ' + tel +
+    '\nEmail : ' + email +
+    (message ? '\n\nMessage : ' + message : '') +
+    '\n\nCordialement'
+  );
+
+  window.location.href = 'mailto:contact@eliterhconsulting.com?subject=' + sujet + '&body=' + corps;
+
+  document.getElementById('modal-form-content').style.display = 'none';
+  document.getElementById('modal-success-content').style.display = 'block';
+}
+
+document.getElementById('modal-contact').addEventListener('click', function(e) {
+  if (e.target === this) fermerModal();
+});
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderTags();
+render();
+</script>
+</body>
+</html>

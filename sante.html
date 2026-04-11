@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Assurance Santé Personnel — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;--or-g:rgba(201,168,76,.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.7rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:.75rem;flex-wrap:wrap;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:20px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.period-badge{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gris);}
+.period-badge select,.period-badge input{background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:12px;font-weight:700;outline:none;cursor:pointer;}
+.period-badge input{width:50px;text-align:center;}
+.btn{display:flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;text-decoration:none;}
+.btn-or{background:var(--or);color:var(--bg);}
+.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-rouge{background:rgba(240,90,90,.1);color:var(--rouge);border:1px solid rgba(240,90,90,.18);}
+.btn-jaune{background:rgba(251,199,36,.1);color:var(--jaune);border:1px solid rgba(251,199,36,.2);}
+
+/* TABS */
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;gap:0;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+
+/* MAIN */
+.main{padding:1.25rem 1.75rem;}
+.panel{display:none;} .panel.active{display:block;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:1.25rem;}
+.kpi{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.kpi:hover{border-color:rgba(201,168,76,.2);}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ac,var(--or)),transparent);}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.5rem;}
+.kpi-val{font-family:var(--fd);font-size:26px;font-weight:700;color:var(--blanc);line-height:1;}
+.kpi-u{font-size:11px;color:var(--gris);margin-left:3px;}
+.kpi-sub{font-size:10px;margin-top:.35rem;}
+
+/* TABLE */
+.tbl-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1rem;}
+.tbl-bar{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.tbl-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);}
+.tbl-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.search{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:6px 10px;outline:none;width:190px;transition:border-color .2s;}
+.search:focus{border-color:var(--or);}
+.fsel{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--gris);font-family:var(--fd);font-size:11px;padding:5px 10px;outline:none;cursor:pointer;}
+.fsel option{background:var(--bg2);}
+.scroll-x{overflow-x:auto;max-height:560px;overflow-y:auto;}
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;position:sticky;top:0;cursor:pointer;transition:color .2s;user-select:none;}
+.dtbl th:hover{color:var(--or);}
+.dtbl th.sort-asc::after{content:" ↑";color:var(--or);}
+.dtbl th.sort-desc::after{content:" ↓";color:var(--or);}
+.dtbl th.r,.dtbl td.r{text-align:right;}
+.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);color:var(--blanc);vertical-align:middle;white-space:nowrap;}
+.dtbl tr:hover td{background:var(--bg3);}
+
+/* PROGRESS BAR INLINE */
+.prog-wrap{display:flex;align-items:center;gap:8px;min-width:120px;}
+.prog-track{flex:1;height:6px;background:var(--gris3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.prog-pct{font-family:var(--fd);font-size:11px;font-weight:700;min-width:30px;text-align:right;}
+
+/* INDICATEURS */
+.ind{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.05em;white-space:nowrap;}
+.ind-ok    {background:rgba(52,199,123,.12); color:var(--vert); border:1px solid rgba(52,199,123,.25);}
+.ind-alerte{background:rgba(251,199,36,.1);  color:var(--jaune);border:1px solid rgba(251,199,36,.22);}
+.ind-limite{background:rgba(240,90,90,.12);  color:var(--rouge);border:1px solid rgba(240,90,90,.25);}
+.ind-depasse{background:rgba(167,139,250,.12);color:var(--violet);border:1px solid rgba(167,139,250,.25);}
+
+/* CONSEIL */
+.conseil{font-size:10px;color:var(--gris);max-width:220px;white-space:normal;line-height:1.5;}
+.conseil.ok{color:var(--vert);}
+.conseil.alerte{color:var(--jaune);}
+.conseil.limite{color:var(--rouge);}
+
+/* EXTRA */
+.extra-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.2);cursor:pointer;}
+.extra-badge:hover{background:rgba(167,139,250,.2);}
+
+/* IMPORT ZONE */
+.import-zone{border:2px dashed var(--gris3);border-radius:var(--rl);padding:2.5rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);}
+.import-zone:hover{border-color:var(--or);background:var(--or-g);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;margin:auto;animation:popIn .22s ease;}
+.modal-sm{max-width:480px;} .modal-md{max-width:640px;} .modal-lg{max-width:860px;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.03));}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--blanc);}
+.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;transition:color .2s;}
+.mc:hover{color:var(--rouge);}
+.mb{padding:1.25rem;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff textarea{resize:vertical;min-height:56px;line-height:1.5;}
+.ff select option{background:var(--bg2);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.fsec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);opacity:.8;margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--gris3);margin-top:.25rem;}
+.full{grid-column:1/-1;}
+
+/* CHARTS (barres SVG simples) */
+.chart-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;}
+.chart-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:.875rem;}
+.chart-bar-row{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.chart-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--blanc);}
+.chart-bar-track{height:8px;background:var(--gris3);border-radius:4px;overflow:hidden;}
+.chart-bar-fill{height:100%;border-radius:4px;transition:width .7s ease;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* BADGE NOMBRE */
+.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+.bv{background:rgba(52,199,123,.12);color:var(--vert);}
+.br{background:rgba(240,90,90,.12);color:var(--rouge);}
+.bo{background:rgba(201,168,76,.12);color:var(--or);}
+.by{background:rgba(251,199,36,.1);color:var(--jaune);}
+.bvl{background:rgba(167,139,250,.1);color:var(--violet);}
+
+/* SECTION TITLE */
+.sect-title{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.35rem;}
+.sect-sub{font-size:12px;color:var(--gris);margin-bottom:1rem;}
+
+@media(max-width:900px){.fg,.fg3{grid-template-columns:1fr;} .kpi-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Gestion Assurance Santé Personnel</div>
+  </div>
+  <div class="hdr-right">
+    <div class="period-badge">
+      Mois :
+      <select id="sel-mois" onchange="changePeriode()">
+        <option value="01">Janvier</option><option value="02">Février</option>
+        <option value="03">Mars</option><option value="04">Avril</option>
+        <option value="05">Mai</option><option value="06">Juin</option>
+        <option value="07">Juillet</option><option value="08">Août</option>
+        <option value="09">Septembre</option><option value="10">Octobre</option>
+        <option value="11">Novembre</option><option value="12">Décembre</option>
+      </select>
+      <input type="number" id="inp-annee" value="2026" min="2020" max="2035" onchange="changePeriode()"/>
+    </div>
+    <!-- Sélecteur mois mémorisés -->
+    <div id="mois-memoire-wrap" style="display:none;background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:4px 8px;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--gris);">
+      <span>📚</span>
+      <select id="sel-mois-memoire" onchange="naviguerMois(this.value)" style="background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:11px;font-weight:700;outline:none;cursor:pointer;">
+        <option value="">Mois mémorisés</option>
+      </select>
+    </div>
+    <button class="btn btn-ghost" onclick="document.getElementById('file-import').click()">⬆ Importer Excel/CSV</button>
+    <input type="file" id="file-import" accept=".xlsx,.xls,.csv" style="display:none" onchange="importerFichier(this)"/>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="chargerDemo()">🎲 Démo</button>
+    <button class="btn btn-or" onclick="openModal('modal-add')">+ Ajouter un assuré</button>
+    <button class="btn btn-ghost" onclick="cloturerMois()" style="border-color:rgba(52,199,123,.3);color:var(--vert)" title="Clôturer ce mois et passer au suivant">✅ Clôturer le mois</button>
+    <a href="index.html" class="btn btn-ghost">← Site</a>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('suivi',this)"><span class="tdot" style="background:#C9A84C"></span>📋 Suivi des Consommations</button>
+  <button class="tab" onclick="showTab('topcons',this)"><span class="tdot" style="background:#F05A5A"></span>🔝 Top Consommateurs</button>
+  <button class="tab" onclick="showTab('extra',this)"><span class="tdot" style="background:#A78BFA"></span>📌 Demandes Extra-Limite <span id="badge-extra" style="background:var(--rouge);color:white;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;display:none"></span></button>
+  <button class="tab" onclick="showTab('graphiques',this)"><span class="tdot" style="background:#34C77B"></span>📊 Graphiques</button>
+  <button class="tab" onclick="showTab('historique',this)"><span class="tdot" style="background:#4A9EFF"></span>📜 Historique</button>
+</nav>
+
+<div class="main">
+<!-- ════ SUIVI DES CONSOMMATIONS ════ -->
+<div class="panel active" id="panel-suivi">
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <!-- Barre d'alerte globale -->
+  <div id="alert-banner" style="display:none;background:rgba(240,90,90,.07);border:1px solid rgba(240,90,90,.2);border-radius:var(--rl);padding:.75rem 1rem;margin-bottom:1rem;display:none;align-items:center;gap:10px;font-size:12px;color:var(--rouge);">
+    <span style="font-size:18px">⚠️</span>
+    <span id="alert-banner-txt"></span>
+  </div>
+
+  <!-- TABLE PRINCIPALE -->
+  <div class="tbl-wrap">
+    <div class="tbl-bar">
+      <div class="tbl-title">Suivi individuel — <span id="lbl-period" style="color:var(--or)"></span></div>
+      <div class="tbl-tools">
+        <input class="search" type="text" placeholder="Rechercher nom, matricule..." id="srch-main" oninput="filtrerTable()"/>
+        <select class="fsel" id="f-dept" onchange="filtrerTable()"><option value="">Tous les départements</option></select>
+        <select class="fsel" id="f-service" onchange="filtrerTable()"><option value="">Tous les services</option></select>
+        <select class="fsel" id="f-section" onchange="filtrerTable()"><option value="">Toutes les sections</option></select>
+        <select class="fsel" id="f-ind" onchange="filtrerTable()">
+          <option value="">Tous les indicateurs</option>
+          <option value="OK">✅ OK</option>
+          <option value="Alerte">⚠️ Alerte</option>
+          <option value="Limite atteinte">🔴 Limite atteinte</option>
+          <option value="Dépassé">🟣 Dépassé</option>
+        </select>
+        <select class="fsel" id="f-sort" onchange="filtrerTable()">
+          <option value="">Trier par...</option>
+          <option value="consomme_desc">Consommation ↓</option>
+          <option value="consomme_asc">Consommation ↑</option>
+          <option value="restant_asc">Restant ↑ (critiques)</option>
+          <option value="pct_desc">% consommé ↓</option>
+          <option value="nom_asc">Nom A→Z</option>
+        </select>
+        <button class="btn btn-ghost" onclick="resetFiltres()" style="padding:5px 10px;font-size:10px">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="empty-state" style="padding:3rem;text-align:center;">
+      <div style="font-size:42px;margin-bottom:.75rem">🏥</div>
+      <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);margin-bottom:.5rem">Aucune donnée chargée</div>
+      <div style="font-size:12px;color:var(--gris);margin-bottom:1.25rem;line-height:1.8">Importez votre fichier Excel ou chargez les données de démonstration.<br>Colonnes attendues : <strong style="color:var(--blanc)">Nom · Prenom · Matricule · Département · Service · Section · NbFamille · MontantAlloué · MontantConsommé</strong></div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="btn btn-or" onclick="document.getElementById('file-import').click()">⬆ Importer Excel/CSV</button>
+        <button class="btn btn-ghost" onclick="chargerDemo()">🎲 Charger la démo</button>
+      </div>
+    </div>
+
+    <div class="scroll-x" id="table-wrap" style="display:none">
+      <table class="dtbl" id="main-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('nom')">#</th>
+            <th onclick="sortTable('nom')">Assuré Principal</th>
+            <th onclick="sortTable('matricule')">Matricule</th>
+            <th onclick="sortTable('dept')">Département</th>
+            <th onclick="sortTable('service')">Service</th>
+            <th onclick="sortTable('section')">Section</th>
+            <th onclick="sortTable('nb_famille')" class="r">Nb Famille</th>
+            <th onclick="sortTable('alloue')" class="r">Montant Alloué</th>
+            <th onclick="sortTable('consomme')" class="r">Consommé ce mois</th>
+            <th onclick="sortTable('consomme_cumul')" class="r">Consommé Cumulé</th>
+            <th>Progression</th>
+            <th onclick="sortTable('restant')" class="r">Restant</th>
+            <th onclick="sortTable('indicateur')">Indicateur</th>
+            <th>Conseil</th>
+            <th onclick="sortTable('extra_nb')" class="r">Demandes Extra</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="main-tbody"></tbody>
+      </table>
+    </div>
+    <div id="tbl-footer" style="display:none;padding:.5rem 1rem;border-top:1px solid var(--gris3);font-size:10px;color:var(--gris);display:flex;justify-content:space-between;"></div>
+  </div>
+</div>
+
+<!-- ════ TOP CONSOMMATEURS ════ -->
+<div class="panel" id="panel-topcons">
+  <div class="sect-title">🔝 Top Consommateurs</div>
+  <div class="sect-sub">Classement par montant consommé cumulé — identification des profils à suivre</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--rouge);margin-bottom:.5rem">🥇 Top 10 individus</div>
+      <div id="top-individus" class="tbl-wrap"></div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:.5rem">🏢 Par Département</div>
+      <div id="top-depts" class="tbl-wrap"></div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--jaune);margin-bottom:.5rem">⚙️ Par Service</div>
+      <div id="top-services" class="tbl-wrap"></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--bleu);margin-bottom:.5rem">📂 Par Section</div>
+      <div id="top-sections" class="tbl-wrap"></div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--violet);margin-bottom:.5rem">👨‍👩‍👧 Par Taille de Famille</div>
+      <div id="top-famille" class="tbl-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ DEMANDES EXTRA ════ -->
+<div class="panel" id="panel-extra">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div class="sect-title">📌 Demandes Extra-Limite</div>
+      <div class="sect-sub">Suivi des demandes de remboursement au-delà du plafond alloué</div>
+    </div>
+    <button class="btn btn-or" onclick="openModal('modal-extra')">+ Enregistrer une demande extra</button>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi" style="--ac:var(--violet)"><div class="kpi-lbl">Demandes en cours</div><div><span class="kpi-val" id="ex-nb">0</span></div><div class="kpi-sub" style="color:var(--gris)">Dossiers actifs</div></div>
+    <div class="kpi" style="--ac:var(--rouge)"><div class="kpi-lbl">Montant demandé</div><div><span class="kpi-val" id="ex-montant">0</span><span class="kpi-u">FCFA</span></div><div class="kpi-sub" style="color:var(--gris)">Total en attente</div></div>
+    <div class="kpi" style="--ac:var(--vert)"><div class="kpi-lbl">Demandes acceptées</div><div><span class="kpi-val" id="ex-accept">0</span></div><div class="kpi-sub" style="color:var(--vert)">Approuvées</div></div>
+    <div class="kpi" style="--ac:var(--jaune)"><div class="kpi-lbl">En attente décision</div><div><span class="kpi-val" id="ex-attente">0</span></div><div class="kpi-sub" style="color:var(--jaune)">À traiter</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-bar"><div class="tbl-title">Registre des demandes extra</div>
+      <div class="tbl-tools">
+        <select class="fsel" id="ex-f-statut" onchange="filtrerExtra()"><option value="">Tous les statuts</option><option>En attente</option><option>Acceptée</option><option>Refusée</option></select>
+      </div>
+    </div>
+    <div class="scroll-x">
+      <table class="dtbl">
+        <thead><tr><th>Date</th><th>Assuré</th><th>Département</th><th>Motif</th><th class="r">Montant demandé</th><th class="r">Plafond dépassé</th><th>Statut</th><th>Décision / Commentaire</th><th>Actions</th></tr></thead>
+        <tbody id="extra-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ GRAPHIQUES ════ -->
+<div class="panel" id="panel-graphiques">
+  <div class="sect-title">📊 Analyse Visuelle</div>
+  <div class="sect-sub">Répartition des consommations et état du budget santé</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+    <div class="chart-card">
+      <div class="chart-title">Consommation par Département</div>
+      <div id="chart-dept"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Consommation par Service</div>
+      <div id="chart-service"></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+    <div class="chart-card">
+      <div class="chart-title">Répartition des indicateurs</div>
+      <div id="chart-indicateurs" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Budget global Alloué vs Consommé</div>
+      <div id="chart-budget" style="padding:.5rem 0;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Consommation par Section</div>
+      <div id="chart-section"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ HISTORIQUE ════ -->
+<div class="panel" id="panel-historique">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div class="sect-title">📜 Historique des Consommations</div>
+      <div class="sect-sub">Suivi mensuel de tous les mouvements enregistrés</div>
+    </div>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export</button>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-bar">
+      <div class="tbl-title">Tous les enregistrements</div>
+      <input class="search" type="text" placeholder="Filtrer par nom..." oninput="filtrerHistorique(this.value)" style="width:180px"/>
+    </div>
+    <div class="scroll-x">
+      <table class="dtbl">
+        <thead><tr><th>Période</th><th>Assuré</th><th>Matricule</th><th>Département</th><th>Nb Famille</th><th class="r">Alloué</th><th class="r">Consommé Mois</th><th class="r">Consommé Cumulé</th><th class="r">Restant</th><th>Indicateur</th></tr></thead>
+        <tbody id="hist-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<!-- MODAL AJOUTER ASSURÉ -->
+<div class="modal-ov" id="modal-add">
+  <div class="modal modal-lg">
+    <div class="mh"><div class="mt">👤 <span id="modal-add-title">Ajouter un assuré</span></div><button class="mc" onclick="closeModal('modal-add')">✕</button></div>
+    <div class="mb">
+      <div class="fsec" style="margin-top:0">Identification</div>
+      <div class="fg">
+        <div class="ff"><label>Nom *</label><input type="text" id="a-nom" placeholder="Ex: SAMBA"/></div>
+        <div class="ff"><label>Prénom</label><input type="text" id="a-prenom" placeholder="Ex: David"/></div>
+        <div class="ff"><label>Matricule</label><input type="text" id="a-mat" placeholder="Ex: MAT001"/></div>
+        <div class="ff"><label>Département</label><input type="text" id="a-dept" placeholder="Ex: MAINTENANCE"/></div>
+        <div class="ff"><label>Service</label><input type="text" id="a-service" placeholder="Ex: ATELIER"/></div>
+        <div class="ff"><label>Section</label><input type="text" id="a-section" placeholder="Ex: Génie Civil"/></div>
+      </div>
+      <div class="fsec">Données Assurance</div>
+      <div class="fg3">
+        <div class="ff"><label>Nb personnes famille (incl. assuré) *</label><input type="number" id="a-famille" min="1" max="20" value="1" placeholder="Ex: 4"/><div class="hint">Assuré principal + conjoints + enfants</div></div>
+        <div class="ff"><label>Montant alloué (FCFA) *</label><input type="number" id="a-alloue" placeholder="Ex: 500000" oninput="recalcModal()"/></div>
+        <div class="ff"><label>Consommé ce mois (FCFA)</label><input type="number" id="a-consomme-mois" placeholder="0" oninput="recalcModal()"/></div>
+        <div class="ff"><label>Consommé cumulé (FCFA)</label><input type="number" id="a-consomme-cumul" placeholder="0" oninput="recalcModal()"/></div>
+        <div class="ff"><label>Commentaire / Observations</label><input type="text" id="a-obs" placeholder="Optionnel"/></div>
+      </div>
+      <!-- Prévisualisation indicateur -->
+      <div id="modal-preview" style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.875rem 1rem;margin-top:.75rem;display:none;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.5rem">Prévisualisation</div>
+        <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+          <div><div style="font-size:9px;color:var(--gris);margin-bottom:2px">Restant</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)" id="prev-restant">—</div></div>
+          <div><div style="font-size:9px;color:var(--gris);margin-bottom:2px">% consommé</div><div style="font-family:var(--fd);font-size:18px;font-weight:700" id="prev-pct">—</div></div>
+          <div id="prev-ind"></div>
+          <div style="font-size:11px;font-style:italic" id="prev-conseil"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add')">Annuler</button>
+      <button class="btn btn-or" onclick="sauvegarderAssure()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MISE À JOUR CONSOMMATION -->
+<div class="modal-ov" id="modal-update">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">💊 Mise à jour <span>consommation</span></div><button class="mc" onclick="closeModal('modal-update')">✕</button></div>
+    <div class="mb">
+      <div style="background:var(--bg3);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:.875rem;">
+        <div style="font-size:12px;font-weight:600;color:var(--blanc)" id="upd-name"></div>
+        <div style="font-size:10px;color:var(--gris)" id="upd-meta"></div>
+      </div>
+      <div class="fg">
+        <div class="ff"><label>Montant consommé ce mois (FCFA)</label><input type="number" id="upd-mois" placeholder="0" oninput="recalcUpd()"/></div>
+        <div class="ff"><label>Montant consommé cumulé (FCFA)</label><input type="number" id="upd-cumul" placeholder="0" oninput="recalcUpd()"/></div>
+        <div class="ff full"><label>Observation / Note</label><input type="text" id="upd-obs" placeholder="Optionnel — raison de la consommation..."/></div>
+      </div>
+      <div id="upd-preview" style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem 1rem;margin-top:.5rem;">
+        <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+          <div><div style="font-size:9px;color:var(--gris);margin-bottom:2px">Restant</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)" id="upd-prev-restant">—</div></div>
+          <div><div style="font-size:9px;color:var(--gris);margin-bottom:2px">% utilisé</div><div style="font-family:var(--fd);font-size:18px;font-weight:700" id="upd-prev-pct">—</div></div>
+          <div id="upd-prev-ind"></div>
+          <div style="font-size:11px;color:var(--gris)" id="upd-prev-conseil"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-update')">Annuler</button>
+      <button class="btn btn-or" onclick="confirmerUpdate()">✓ Mettre à jour</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DEMANDE EXTRA -->
+<div class="modal-ov" id="modal-extra">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">📌 Demande <span>Extra-Limite</span></div><button class="mc" onclick="closeModal('modal-extra')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Assuré *</label>
+          <select id="ex-assure"><option value="">— Sélectionner —</option></select>
+        </div>
+        <div class="ff"><label>Date de la demande</label><input type="date" id="ex-date"/></div>
+        <div class="ff"><label>Motif / Nature du soin *</label><input type="text" id="ex-motif" placeholder="Ex: Hospitalisation urgence, chirurgie..."/></div>
+        <div class="ff"><label>Montant demandé (FCFA) *</label><input type="number" id="ex-montant-inp" placeholder="Ex: 150000"/></div>
+        <div class="ff"><label>Statut</label>
+          <select id="ex-statut"><option>En attente</option><option>Acceptée</option><option>Refusée</option></select>
+        </div>
+        <div class="ff"><label>Décision / Commentaire</label><input type="text" id="ex-decision" placeholder="Ex: Validé par DRH le 15/03/2026"/></div>
+        <div class="ff full"><label>Justificatifs / Notes</label><textarea id="ex-notes" placeholder="Pièces justificatives fournies, contexte médical..."></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-extra')">Annuler</button>
+      <button class="btn btn-or" onclick="sauvegarderExtra()">✓ Enregistrer la demande</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MAIL -->
+<div class="modal-ov" id="modal-mail">
+  <div class="modal modal-md">
+    <div class="mh"><div class="mt">✉️ Envoyer une <span>notification</span></div><button class="mc" onclick="closeModal('modal-mail')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="ff"><label>Destinataire</label><input type="text" id="mail-to" readonly style="color:var(--or)"/></div>
+        <div class="ff"><label>Objet</label><input type="text" id="mail-subject"/></div>
+        <div class="ff full"><label>Message</label><textarea id="mail-body" rows="6"></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-mail')">Annuler</button>
+      <button class="btn btn-or" onclick="envoyerMail()">✉️ Envoyer (Mailto)</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// ════════════════════════════════════════
+// ÉTAT — MÉMOIRE MENSUELLE
+// ════════════════════════════════════════
+var SK = 'elitesante_v2';
+// Structure : { mois: { 'AAAA-MM': {assures,extras}, ... }, nextId, referentiel: [...] }
+// - referentiel : liste de base des assurés (nom, prénom, famille, alloué)
+// - mois/'AAAA-MM' : snapshot mensuel avec les consommations du mois
+var STORE = { mois: {}, referentiel: [], nextId: 100 };
+var DB = { assures: [], extras: [] }; // données du mois actif
+var nextId = 100;
+function uid(){ return ++nextId; }
+var editId = null;
+var sortCol = 'nom'; var sortDir = 1;
+var MOIS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+// ── PERSISTANCE ──
+function chargerStore(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ STORE=JSON.parse(d); nextId=STORE.nextId||100; }
+    else { STORE={mois:{},referentiel:[],nextId:100}; }
+  }catch(e){ STORE={mois:{},referentiel:[],nextId:100}; }
+}
+
+function sauverStore(){
+  try{
+    STORE.nextId=nextId;
+    // Sauvegarder le mois actif
+    var p=getPeriode();
+    STORE.mois[p]={ assures: DB.assures, extras: DB.extras };
+    // Mettre à jour le référentiel (liste des assurés sans données de conso)
+    STORE.referentiel=DB.assures.map(function(a){
+      return {id:a.id,nom:a.nom,prenom:a.prenom,mat:a.mat,dept:a.dept,service:a.service,section:a.section,nb_famille:a.nb_famille,alloue:a.alloue,obs:a.obs};
+    });
+    localStorage.setItem(SK,JSON.stringify(STORE));
+  }catch(e){ toast('Erreur sauvegarde: '+e.message); }
+}
+// Alias pour compatibilité
+function sauver(){ sauverStore(); }
+
+function chargerMois(periode){
+  // Charger les données d'un mois donné
+  // Si le mois existe → charger son snapshot
+  // Sinon → créer depuis le référentiel avec conso à 0
+  if(STORE.mois[periode]){
+    var snap=STORE.mois[periode];
+    DB.assures=snap.assures.map(function(a){return Object.assign({},a);});
+    DB.extras=(snap.extras||[]).map(function(e){return Object.assign({},e);});
+  } else {
+    // Nouveau mois : créer depuis le référentiel
+    DB.assures=STORE.referentiel.map(function(a){
+      return Object.assign({},a,{consomme_mois:0,consomme_cumul:calCumulPrecedent(a.id,periode)});
+    });
+    DB.extras=[];
+  }
+}
+
+function calCumulPrecedent(assureId, periodeActuelle){
+  // Chercher le cumul du mois précédent pour pré-remplir
+  var parts=periodeActuelle.split('-');
+  var annee=parseInt(parts[0]); var mois=parseInt(parts[1]);
+  var moisPrec=mois===1?(annee-1)+'-12':(annee)+'-'+String(mois-1).padStart(2,'0');
+  if(STORE.mois[moisPrec]){
+    var snap=STORE.mois[moisPrec];
+    var a=snap.assures.find(function(x){return x.id===assureId;});
+    if(a) return parseFloat(a.consomme_cumul)||0;
+  }
+  return 0;
+}
+
+function getMoisDisponibles(){
+  return Object.keys(STORE.mois).sort().reverse();
+}
+
+// ── PÉRIODE ──
+function getPeriode(){
+  return document.getElementById('inp-annee').value+'-'+document.getElementById('sel-mois').value;
+}
+function getPeriodeLabel(){
+  var m=parseInt(document.getElementById('sel-mois').value);
+  return MOIS_FR[m-1]+' '+document.getElementById('inp-annee').value;
+}
+function changePeriode(){
+  var p=getPeriode();
+  chargerMois(p);
+  renderAll();
+}
+
+// ────────────────────────────────────────
+// LOGIQUE INDICATEURS
+// ────────────────────────────────────────
+function getIndicateur(alloue, cumul){
+  if(!alloue||alloue<=0) return 'OK';
+  var pct = cumul/alloue*100;
+  if(pct>=100) return 'Dépassé';
+  if(pct>=90)  return 'Limite atteinte';
+  if(pct>=70)  return 'Alerte';
+  return 'OK';
+}
+function getConseil(ind, assure){
+  if(ind==='OK')             return 'Aucune action requise.';
+  if(ind==='Alerte')         return 'Prevenir l\'assure principal '+(assure?'('+assure+')':'')+' — budget a 70% consomme.';
+  if(ind==='Limite atteinte')return 'Envoyer un mail a l\'assure — plafond proche d\'etre atteint (>90%).';
+  if(ind==='Dépassé')        return 'Plafond depasse — traiter comme demande extra-limite.';
+  return '';
+}
+function getRestant(alloue, cumul){
+  return Math.max(0, (parseFloat(alloue)||0)-(parseFloat(cumul)||0));
+}
+
+// ────────────────────────────────────────
+// DÉMO
+// ────────────────────────────────────────
+function chargerDemo(){
+  DB.assures = [
+    {id:uid(),nom:'ADJOBI',prenom:'Kossi',mat:'MAT001',dept:'Direction',service:'DG',section:'Direction',nb_famille:5,alloue:800000,consomme_mois:45000,consomme_cumul:320000,obs:''},
+    {id:uid(),nom:'DOSSOU',prenom:'Aline',mat:'MAT002',dept:'RH',service:'Gestion RH',section:'Admin',nb_famille:4,alloue:600000,consomme_mois:85000,consomme_cumul:558000,obs:''},
+    {id:uid(),nom:'HOUENOU',prenom:'Patrick',mat:'MAT003',dept:'RH',service:'Recrutement',section:'Admin',nb_famille:2,alloue:400000,consomme_mois:12000,consomme_cumul:95000,obs:''},
+    {id:uid(),nom:'KPOSSOU',prenom:'Jean',mat:'MAT004',dept:'Commercial',service:'Ventes',section:'Grand Compte',nb_famille:6,alloue:900000,consomme_mois:210000,consomme_cumul:875000,obs:'Hospitalisation enfant'},
+    {id:uid(),nom:'ZANNOU',prenom:'Sylvie',mat:'MAT005',dept:'Commercial',service:'Ventes',section:'PME',nb_famille:3,alloue:500000,consomme_mois:32000,consomme_cumul:188000,obs:''},
+    {id:uid(),nom:'GBENOU',prenom:'Abel',mat:'MAT006',dept:'Commercial',service:'Terrain',section:'PME',nb_famille:2,alloue:400000,consomme_mois:18000,consomme_cumul:92000,obs:''},
+    {id:uid(),nom:'SOGLO',prenom:'Nadège',mat:'MAT007',dept:'Finance',service:'Comptabilité',section:'Trésorerie',nb_famille:4,alloue:600000,consomme_mois:55000,consomme_cumul:412000,obs:''},
+    {id:uid(),nom:'LOKO',prenom:'Théodore',mat:'MAT008',dept:'Finance',service:'Comptabilité',section:'Contrôle',nb_famille:3,alloue:500000,consomme_mois:8000,consomme_cumul:67000,obs:''},
+    {id:uid(),nom:'HOUNSOU',prenom:'Rémi',mat:'MAT009',dept:'Production',service:'Opérations',section:'Equipe A',nb_famille:5,alloue:700000,consomme_mois:145000,consomme_cumul:650000,obs:'Chirurgie programmée'},
+    {id:uid(),nom:'TOSSOU',prenom:'Barnabé',mat:'MAT010',dept:'Production',service:'Opérations',section:'Equipe A',nb_famille:3,alloue:500000,consomme_mois:22000,consomme_cumul:178000,obs:''},
+    {id:uid(),nom:'AKPO',prenom:'Fatima',mat:'MAT011',dept:'Production',service:'Opérations',section:'Equipe B',nb_famille:2,alloue:400000,consomme_mois:9000,consomme_cumul:44000,obs:''},
+    {id:uid(),nom:'GBESSI',prenom:'Romuald',mat:'MAT012',dept:'IT',service:'Infrastructure',section:'Dev',nb_famille:4,alloue:600000,consomme_mois:105000,consomme_cumul:540000,obs:'Lunettes + dentiste'},
+  ];
+  DB.extras = [
+    {id:uid(),assure_id:DB.assures[3].id,date:'2026-03-01',motif:'Hospitalisation urgence appendicite',montant:250000,statut:'Acceptée',decision:'Validé par DRH — cas exceptionnel',notes:'Factures hôpital fournies'},
+    {id:uid(),assure_id:DB.assures[8].id,date:'2026-03-08',motif:'Chirurgie genou',montant:380000,statut:'En attente',decision:'',notes:'Devis chirurgien transmis'},
+    {id:uid(),assure_id:DB.assures[1].id,date:'2026-03-12',motif:'Traitement oncologique enfant',montant:420000,statut:'En attente',decision:'',notes:'Ordonnance spécialiste jointe'},
+  ];
+  // Snapshot mois actif
+  var p=getPeriode(); var parts=p.split('-'); var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+  STORE.mois[p]={assures:DB.assures.map(function(x){return Object.assign({},x);}),extras:DB.extras.map(function(x){return Object.assign({},x);})};
+  // Mois precedent: 60% de consommation
+  var mo1=mo===1?12:mo-1; var an1=mo===1?an-1:an;
+  var p1=an1+'-'+String(mo1).padStart(2,'0');
+  STORE.mois[p1]={assures:DB.assures.map(function(x){return Object.assign({},x,{consomme_mois:Math.round((x.consomme_cumul||0)*0.4),consomme_cumul:Math.round((x.consomme_cumul||0)*0.6)});}),extras:[]};
+  // Mois -2: 30% de consommation
+  var mo2=mo1===1?12:mo1-1; var an2=mo1===1?an1-1:an1;
+  var p2=an2+'-'+String(mo2).padStart(2,'0');
+  STORE.mois[p2]={assures:DB.assures.map(function(x){return Object.assign({},x,{consomme_mois:Math.round((x.consomme_cumul||0)*0.3),consomme_cumul:Math.round((x.consomme_cumul||0)*0.3)});}),extras:[]};
+  // Referentiel
+  STORE.referentiel=DB.assures.map(function(a){return {id:a.id,nom:a.nom,prenom:a.prenom,mat:a.mat,dept:a.dept,service:a.service,section:a.section,nb_famille:a.nb_famille,alloue:a.alloue,obs:a.obs||''};});
+  STORE.nextId=nextId;
+  localStorage.setItem(SK,JSON.stringify(STORE));
+  renderAll();
+  renderSelecteurMois();
+  toast('Demo chargee — 12 assures · 3 mois memorises');
+}
+
+// ────────────────────────────────────────
+// IMPORT EXCEL/CSV
+// ────────────────────────────────────────
+function importerFichier(input){
+  if(!input.files[0]) return;
+  var file=input.files[0]; var ext=file.name.split('.').pop().toLowerCase();
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var rows=[];
+      if(ext==='csv'){
+        var lines=ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var hdrs=lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows=lines.slice(1).map(function(line){
+          var vals=line.split(/[,;]/); var obj={};
+          hdrs.forEach(function(h,i){obj[h.trim()]=(vals[i]||'').trim().replace(/"/g,'');});
+          return obj;
+        });
+      } else {
+        var wb=XLSX.read(ev.target.result,{type:'binary'});
+        rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      }
+      var added=0, updated=0;
+      rows.forEach(function(r){
+        var g=function(){
+          for(var i=0;i<arguments.length;i++){
+            var k=arguments[i];
+            var found=Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').indexOf(k.toLowerCase().replace(/[^a-z]/g,''))!==-1;});
+            if(found&&r[found]!==undefined&&r[found]!=='') return String(r[found]).trim();
+          }
+          return '';
+        };
+        var nom=g('nom','lastname','name'); if(!nom) return;
+        var mat=g('matricule','mat','id');
+        var existing=null;
+        if(mat) existing=DB.assures.find(function(a){return a.mat===mat;});
+        if(!existing) existing=DB.assures.find(function(a){return a.nom.toLowerCase()===nom.toLowerCase();});
+        var data={
+          nom:nom, prenom:g('prenom','firstname'),
+          mat:mat||'',
+          dept:g('departement','dept','department','service','direction'),
+          service:g('service','division'),
+          section:g('section'),
+          nb_famille:parseInt(g('nbfamille','famille','nbpers','personnes','nbfam','members'))||1,
+          alloue:parseFloat(g('montantalloue','alloue','budget','plafond','allocation'))||0,
+          consomme_mois:parseFloat(g('consommemois','mois','consommation','montantmois'))||0,
+          consomme_cumul:parseFloat(g('consommecumul','cumul','total','consommetotal'))||0,
+          obs:g('observation','obs','note','commentaire')
+        };
+        if(existing){ Object.assign(existing,data); updated++; }
+        else{ data.id=uid(); DB.assures.push(data); added++; }
+      });
+      sauverStore(); renderAll(); renderSelecteurMois();
+      toast(added+' ajouté(s), '+updated+' mis à jour');
+    }catch(e){ toast('Erreur import: '+e.message); }
+  };
+  ext==='csv'?reader.readAsText(file):reader.readAsBinaryString(file);
+  input.value='';
+}
+
+// ────────────────────────────────────────
+// RENDER ALL
+// ────────────────────────────────────────
+function renderAll(){
+  document.getElementById('lbl-period').textContent = getPeriodeLabel();
+  updateKPIs();
+  filtrerTable();
+  renderTopCons();
+  renderExtras();
+  renderGraphiques();
+  renderHistorique();
+  populateFilters();
+  updateBadgeExtra();
+}
+
+function updateBadgeExtra(){
+  var n=DB.extras.filter(function(e){return e.statut==='En attente';}).length;
+  var b=document.getElementById('badge-extra');
+  b.textContent=n; b.style.display=n>0?'inline':'none';
+  document.getElementById('ex-nb').textContent=DB.extras.length;
+  document.getElementById('ex-montant').textContent=fmt(DB.extras.reduce(function(s,e){return s+parseFloat(e.montant||0);},0));
+  document.getElementById('ex-accept').textContent=DB.extras.filter(function(e){return e.statut==='Acceptée';}).length;
+  document.getElementById('ex-attente').textContent=n;
+}
+
+// ── KPIs ──
+function updateKPIs(){
+  var a=DB.assures;
+  var totalAlloue=a.reduce(function(s,x){return s+(parseFloat(x.alloue)||0);},0);
+  var totalCumul =a.reduce(function(s,x){return s+(parseFloat(x.consomme_cumul)||0);},0);
+  var totalMois  =a.reduce(function(s,x){return s+(parseFloat(x.consomme_mois)||0);},0);
+  var totalFam   =a.reduce(function(s,x){return s+(parseInt(x.nb_famille)||0);},0);
+  var nbOK    =a.filter(function(x){return getIndicateur(x.alloue,x.consomme_cumul)==='OK';}).length;
+  var nbAlerte=a.filter(function(x){return getIndicateur(x.alloue,x.consomme_cumul)==='Alerte';}).length;
+  var nbLimite=a.filter(function(x){return getIndicateur(x.alloue,x.consomme_cumul)==='Limite atteinte';}).length;
+  var nbDep   =a.filter(function(x){return getIndicateur(x.alloue,x.consomme_cumul)==='Dépassé';}).length;
+  var pctG    =totalAlloue?Math.round(totalCumul/totalAlloue*100):0;
+
+  var el=document.getElementById('kpi-row');
+  el.innerHTML=
+    mkKPI('Assurés actifs',a.length,'','#C9A84C','Nb de bénéficiaires principaux')+
+    mkKPI('Personnes couvertes',totalFam,'','#4A9EFF','Assurés + famille')+
+    mkKPI('Budget alloué total',fmtM(totalAlloue),'FCFA','#34C77B','Enveloppe globale')+
+    mkKPI('Consommé ce mois',fmtM(totalMois),'FCFA','#FB923C','Consommation mensuelle')+
+    mkKPI('Consommé cumulé',fmtM(totalCumul),'FCFA','#A78BFA','Total de l\'annee')+
+    mkKPI('Taux consommation',pctG,'%',pctG>=90?'#F05A5A':pctG>=70?'#FBC724':'#34C77B','Budget global utilisé')+
+    mkKPI('OK',nbOK,'','#34C77B','Sous les 70%')+
+    mkKPI('Alerte',nbAlerte,'','#FBC724','Entre 70% et 90%')+
+    mkKPI('Limite / Dépassé',nbLimite+nbDep,'','#F05A5A','Au-delà de 90%');
+}
+function mkKPI(l,v,u,ac,sub){return '<div class="kpi" style="--ac:'+ac+'"><div class="kpi-lbl">'+l+'</div><div><span class="kpi-val">'+v+'</span><span class="kpi-u">'+u+'</span></div><div class="kpi-sub" style="color:var(--gris)">'+sub+'</div></div>';}
+
+// ── FILTRES ──
+function populateFilters(){
+  var depts=[...new Set(DB.assures.map(function(a){return a.dept;}).filter(Boolean))].sort();
+  var services=[...new Set(DB.assures.map(function(a){return a.service;}).filter(Boolean))].sort();
+  var sections=[...new Set(DB.assures.map(function(a){return a.section;}).filter(Boolean))].sort();
+  setOpts('f-dept',depts,'Tous les départements');
+  setOpts('f-service',services,'Tous les services');
+  setOpts('f-section',sections,'Toutes les sections');
+  var sel=document.getElementById('ex-assure');
+  sel.innerHTML='<option value="">— Sélectionner —</option>';
+  DB.assures.forEach(function(a){sel.innerHTML+='<option value="'+a.id+'">'+a.nom+' '+a.prenom+' ('+a.dept+')</option>';});
+}
+function setOpts(id,vals,placeholder){
+  var el=document.getElementById(id); var prev=el.value;
+  el.innerHTML='<option value="">'+placeholder+'</option>';
+  vals.forEach(function(v){el.innerHTML+='<option value="'+v+'">'+v+'</option>';});
+  el.value=prev;
+}
+function resetFiltres(){
+  ['srch-main','f-dept','f-service','f-section','f-ind','f-sort'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  filtrerTable();
+}
+
+// ── TABLE PRINCIPALE ──
+function getFiltered(){
+  var srch=(document.getElementById('srch-main').value||'').toLowerCase();
+  var fDept=document.getElementById('f-dept').value;
+  var fSvc =document.getElementById('f-service').value;
+  var fSec =document.getElementById('f-section').value;
+  var fInd =document.getElementById('f-ind').value;
+  var fSort=document.getElementById('f-sort').value;
+  var result=DB.assures.filter(function(a){
+    if(srch&&!(a.nom+' '+a.prenom+' '+a.mat).toLowerCase().includes(srch)) return false;
+    if(fDept&&a.dept!==fDept) return false;
+    if(fSvc&&a.service!==fSvc) return false;
+    if(fSec&&a.section!==fSec) return false;
+    if(fInd&&getIndicateur(a.alloue,a.consomme_cumul)!==fInd) return false;
+    return true;
+  });
+  if(fSort){
+    result=result.slice().sort(function(x,y){
+      if(fSort==='consomme_desc') return (y.consomme_cumul||0)-(x.consomme_cumul||0);
+      if(fSort==='consomme_asc')  return (x.consomme_cumul||0)-(y.consomme_cumul||0);
+      if(fSort==='restant_asc')   return getRestant(x.alloue,x.consomme_cumul)-getRestant(y.alloue,y.consomme_cumul);
+      if(fSort==='pct_desc')      return ((y.consomme_cumul||0)/(y.alloue||1))-((x.consomme_cumul||0)/(x.alloue||1));
+      if(fSort==='nom_asc')       return x.nom.localeCompare(y.nom);
+      return 0;
+    });
+  } else {
+    result=result.slice().sort(function(x,y){
+      var v1=x[sortCol]||0; var v2=y[sortCol]||0;
+      if(typeof v1==='string') return v1.localeCompare(v2)*sortDir;
+      return (v1-v2)*sortDir;
+    });
+  }
+  return result;
+}
+
+function filtrerTable(){
+  if(!DB.assures.length){
+    document.getElementById('empty-state').style.display='block';
+    document.getElementById('table-wrap').style.display='none';
+    document.getElementById('tbl-footer').style.display='none';
+    return;
+  }
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('table-wrap').style.display='block';
+
+  var data=getFiltered();
+  var tbody=document.getElementById('main-tbody');
+  tbody.innerHTML='';
+  var nbAlerte=0,nbLimite=0,nbDep=0;
+
+  data.forEach(function(a,i){
+    var ind=getIndicateur(a.alloue,a.consomme_cumul);
+    var restant=getRestant(a.alloue,a.consomme_cumul);
+    var pct=a.alloue?Math.round((a.consomme_cumul||0)/a.alloue*100):0;
+    var conseil=getConseil(ind,a.prenom+' '+a.nom);
+    var extras=DB.extras.filter(function(e){return e.assure_id===a.id;});
+    if(ind==='Alerte') nbAlerte++;
+    if(ind==='Limite atteinte') nbLimite++;
+    if(ind==='Dépassé') nbDep++;
+    var progColor=pct>=100?'var(--violet)':pct>=90?'var(--rouge)':pct>=70?'var(--jaune)':'var(--vert)';
+    var indHtml=mkInd(ind);
+    var conseilClass=ind==='OK'?'ok':ind==='Alerte'?'alerte':'limite';
+    var extraHtml=extras.length?
+      '<span class="extra-badge" onclick="showTab(\'extra\',null)">'+extras.length+' dossier'+(extras.length>1?'s':'')+'</span>':
+      '<button onclick="openExtraFor('+a.id+')" style="background:transparent;border:1px dashed var(--gris3);color:var(--gris2);padding:2px 8px;border-radius:20px;font-size:9px;cursor:pointer;font-family:var(--fd)" title="Ajouter une demande extra">+ Extra</button>';
+    var actionsMail='';
+    if(ind==='Limite atteinte'||ind==='Dépassé'){
+      actionsMail='<button onclick="ouvrirMail('+a.id+')" class="btn btn-rouge" style="padding:2px 8px;font-size:9px;margin-left:3px" title="Envoyer mail">✉️ Mail</button>';
+    } else if(ind==='Alerte'){
+      actionsMail='<button onclick="ouvrirMail('+a.id+')" class="btn btn-jaune" style="padding:2px 8px;font-size:9px;margin-left:3px" title="Prévenir">📢 Prévenir</button>';
+    }
+    tbody.innerHTML+=
+      '<tr>'+
+      '<td style="color:var(--gris)">'+(i+1)+'</td>'+
+      '<td><div style="display:flex;align-items:center;gap:7px">'+
+        '<div style="width:28px;height:28px;border-radius:50%;background:var(--or-g);color:var(--or);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+
+          (a.nom.charAt(0)+(a.prenom||'').charAt(0)).toUpperCase()+
+        '</div>'+
+        '<div><div style="font-weight:600">'+esc(a.nom)+'</div><div style="font-size:10px;color:var(--gris)">'+esc(a.prenom||'')+'</div></div>'+
+      '</div></td>'+
+      '<td style="color:var(--gris);font-size:10px">'+esc(a.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(a.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(a.service||'—')+'</td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(a.section||'—')+'</td>'+
+      '<td class="r"><span class="badge bo">'+a.nb_famille+'</span></td>'+
+      '<td class="r" style="color:var(--blanc)">'+fmt(a.alloue)+'</td>'+
+      '<td class="r">'+fmt(a.consomme_mois)+'</td>'+
+      '<td class="r" style="font-weight:600">'+fmt(a.consomme_cumul)+'</td>'+
+      '<td><div class="prog-wrap">'+
+        '<div class="prog-track"><div class="prog-fill" style="width:'+Math.min(pct,100)+'%;background:'+progColor+'"></div></div>'+
+        '<span class="prog-pct" style="color:'+progColor+'">'+pct+'%</span>'+
+      '</div></td>'+
+      '<td class="r" style="color:'+(restant===0?'var(--rouge)':'var(--vert)')+';font-weight:700">'+fmt(restant)+'</td>'+
+      '<td>'+indHtml+'</td>'+
+      '<td><div class="conseil '+conseilClass+'">'+conseil+'</div></td>'+
+      '<td style="text-align:center">'+extraHtml+'</td>'+
+      '<td style="white-space:nowrap">'+
+        '<button onclick="ouvrirUpdate('+a.id+')" class="btn btn-ghost" style="padding:2px 8px;font-size:9px">💊 MAJ</button>'+
+        actionsMail+
+        '<button onclick="supprimerAssure('+a.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;margin-left:4px" title="Supprimer">×</button>'+
+      '</td>'+
+      '</tr>';
+  });
+
+  // Alertes banner
+  var banner=document.getElementById('alert-banner');
+  var total=nbAlerte+nbLimite+nbDep;
+  if(total>0){
+    banner.style.display='flex';
+    document.getElementById('alert-banner-txt').textContent=
+      '⚠️ '+total+' assuré(s) nécessitent une action : '+nbAlerte+' alerte(s), '+nbLimite+' limite(s) atteinte(s), '+nbDep+' dépassement(s).';
+  } else {
+    banner.style.display='none';
+  }
+
+  var footer=document.getElementById('tbl-footer');
+  footer.style.display='flex';
+  footer.textContent=data.length+' assuré(s) affiché(s) sur '+DB.assures.length+' total';
+}
+
+function mkInd(ind){
+  var cls=ind==='OK'?'ind-ok':ind==='Alerte'?'ind-alerte':ind==='Limite atteinte'?'ind-limite':'ind-depasse';
+  var ico=ind==='OK'?'✅':ind==='Alerte'?'⚠️':ind==='Limite atteinte'?'🔴':'🟣';
+  return '<span class="ind '+cls+'">'+ico+' '+ind+'</span>';
+}
+
+function sortTable(col){
+  if(sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=1; }
+  filtrerTable();
+}
+
+// ── TOP CONSOMMATEURS ──
+function renderTopCons(){
+  var actifs=DB.assures.slice().sort(function(a,b){return (b.consomme_cumul||0)-(a.consomme_cumul||0);});
+  var max=actifs.length?actifs[0].consomme_cumul||1:1;
+
+  // Top individus
+  var el=document.getElementById('top-individus');
+  el.innerHTML='<div style="padding:.5rem .75rem">';
+  actifs.slice(0,10).forEach(function(a,i){
+    var pct=Math.round((a.consomme_cumul||0)/max*100);
+    var ind=getIndicateur(a.alloue,a.consomme_cumul);
+    var color=ind==='OK'?'var(--vert)':ind==='Alerte'?'var(--jaune)':ind==='Dépassé'?'var(--violet)':'var(--rouge)';
+    el.innerHTML+='<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">'+
+      '<span style="color:var(--blanc)">'+(i+1)+'. '+a.nom+' '+a.prenom+'</span>'+
+      '<span style="color:'+color+';font-family:var(--fd);font-weight:700">'+fmtM(a.consomme_cumul)+'</span></div>'+
+      '<div style="height:5px;background:var(--gris3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px"></div></div>'+
+    '</div>';
+  });
+  el.innerHTML+='</div>';
+
+  renderTopGroup('top-depts','dept');
+  renderTopGroup('top-services','service');
+  renderTopGroup('top-sections','section');
+  renderTopFamille();
+}
+
+function renderTopGroup(elId, field){
+  var groups={};
+  DB.assures.forEach(function(a){
+    var k=a[field]||'N/A';
+    if(!groups[k]) groups[k]={key:k,cumul:0,nb:0,alloue:0};
+    groups[k].cumul+=(parseFloat(a.consomme_cumul)||0);
+    groups[k].alloue+=(parseFloat(a.alloue)||0);
+    groups[k].nb++;
+  });
+  var sorted=Object.values(groups).sort(function(a,b){return b.cumul-a.cumul;});
+  var max=sorted.length?sorted[0].cumul||1:1;
+  var el=document.getElementById(elId);
+  el.innerHTML='<div style="padding:.5rem .75rem">';
+  sorted.forEach(function(g,i){
+    var pct=Math.round(g.cumul/max*100);
+    var gpct=g.alloue?Math.round(g.cumul/g.alloue*100):0;
+    var color=gpct>=90?'var(--rouge)':gpct>=70?'var(--jaune)':'var(--vert)';
+    el.innerHTML+='<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">'+
+      '<span style="color:var(--blanc)">'+esc(g.key)+'<span style="color:var(--gris);font-size:9px;margin-left:4px">'+g.nb+' pers.</span></span>'+
+      '<span style="color:'+color+';font-family:var(--fd);font-weight:700">'+fmtM(g.cumul)+'</span></div>'+
+      '<div style="height:5px;background:var(--gris3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px"></div></div>'+
+    '</div>';
+  });
+  el.innerHTML+='</div>';
+}
+
+function renderTopFamille(){
+  var groups={};
+  DB.assures.forEach(function(a){
+    var k=a.nb_famille+' personne'+(a.nb_famille>1?'s':'');
+    if(!groups[k]) groups[k]={key:k,cumul:0,nb:0,nb_fam:parseInt(a.nb_famille)||1};
+    groups[k].cumul+=(parseFloat(a.consomme_cumul)||0); groups[k].nb++;
+  });
+  var sorted=Object.values(groups).sort(function(a,b){return b.nb_fam-a.nb_fam;});
+  var max=sorted.length?Math.max.apply(null,sorted.map(function(g){return g.cumul;}))||1:1;
+  var el=document.getElementById('top-famille');
+  el.innerHTML='<div style="padding:.5rem .75rem">';
+  sorted.forEach(function(g){
+    var pct=Math.round(g.cumul/max*100);
+    el.innerHTML+='<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">'+
+      '<span style="color:var(--blanc)">'+esc(g.key)+'<span style="color:var(--gris);font-size:9px;margin-left:4px">'+g.nb+' assurés</span></span>'+
+      '<span style="color:var(--violet);font-family:var(--fd);font-weight:700">'+fmtM(g.cumul)+'</span></div>'+
+      '<div style="height:5px;background:var(--gris3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--violet);border-radius:3px"></div></div>'+
+    '</div>';
+  });
+  el.innerHTML+='</div>';
+}
+
+// ── EXTRAS ──
+function renderExtras(){
+  var fStatut=document.getElementById('ex-f-statut').value;
+  var extras=DB.extras.filter(function(e){return !fStatut||e.statut===fStatut;}).slice().reverse();
+  var tbody=document.getElementById('extra-tbody');
+  tbody.innerHTML='';
+  if(!extras.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--gris);padding:1.5rem">Aucune demande extra</td></tr>';return;}
+  extras.forEach(function(e){
+    var a=DB.assures.find(function(x){return x.id===e.assure_id;})||{};
+    var stCls=e.statut==='Acceptée'?'bv':e.statut==='Refusée'?'br':'by';
+    var plafond=a.alloue?'+'+(fmt(e.montant))+' FCFA au-delà':'—';
+    tbody.innerHTML+=
+      '<tr>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(e.date)+'</td>'+
+      '<td><strong>'+esc(a.nom||'?')+'</strong> <span style="color:var(--gris);font-size:10px">'+esc(a.prenom||'')+'</span></td>'+
+      '<td style="font-size:10px">'+esc(a.dept||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(e.motif)+'</td>'+
+      '<td class="r" style="color:var(--violet);font-weight:700">'+fmt(e.montant)+'</td>'+
+      '<td class="r" style="font-size:10px;color:var(--rouge)">'+plafond+'</td>'+
+      '<td><span class="badge '+stCls+'">'+e.statut+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(e.decision||e.notes||'—')+'</td>'+
+      '<td style="white-space:nowrap">'+
+        '<select onchange="updateExtraStatut('+e.id+',this.value)" style="background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-size:10px;padding:2px 6px;outline:none">'+
+          ['En attente','Acceptée','Refusée'].map(function(s){return '<option value="'+s+'"'+(e.statut===s?' selected':'')+'>'+s+'</option>';}).join('')+
+        '</select>'+
+        '<button onclick="supprimerExtra('+e.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;margin-left:3px" title="Supprimer">×</button>'+
+      '</td>'+
+      '</tr>';
+  });
+  updateBadgeExtra();
+}
+function filtrerExtra(){ renderExtras(); }
+function updateExtraStatut(id,val){
+  var e=DB.extras.find(function(x){return x.id===id;}); if(e){ e.statut=val; sauver(); renderExtras(); }
+}
+function supprimerExtra(id){
+  if(!confirm('Supprimer cette demande ?')) return;
+  DB.extras=DB.extras.filter(function(e){return e.id!==id;}); sauver(); renderExtras();
+}
+
+// ── GRAPHIQUES ──
+function renderGraphiques(){
+  renderChartGroup('chart-dept','dept','#F05A5A');
+  renderChartGroup('chart-service','service','#FB923C');
+  renderChartGroup('chart-section','section','#4A9EFF');
+  renderChartIndicateurs();
+  renderChartBudget();
+}
+function renderChartGroup(elId, field, color){
+  var groups={};
+  DB.assures.forEach(function(a){
+    var k=a[field]||'N/A';
+    if(!groups[k]) groups[k]={key:k,cumul:0,alloue:0};
+    groups[k].cumul+=(parseFloat(a.consomme_cumul)||0);
+    groups[k].alloue+=(parseFloat(a.alloue)||0);
+  });
+  var sorted=Object.values(groups).sort(function(a,b){return b.cumul-a.cumul;});
+  var max=sorted.length?sorted[0].cumul||1:1;
+  var el=document.getElementById(elId); el.innerHTML='';
+  sorted.forEach(function(g){
+    var pct=Math.round(g.cumul/max*100);
+    var gpct=g.alloue?Math.round(g.cumul/g.alloue*100):0;
+    var c=gpct>=90?'var(--rouge)':gpct>=70?'var(--jaune)':color;
+    el.innerHTML+='<div class="chart-bar-row"><div class="chart-bar-label">'+
+      '<span>'+esc(g.key)+'</span>'+
+      '<span style="color:'+c+';font-family:var(--fd);font-weight:700;font-size:10px">'+fmtM(g.cumul)+'</span></div>'+
+      '<div class="chart-bar-track"><div class="chart-bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div>'+
+    '</div>';
+  });
+}
+function renderChartIndicateurs(){
+  var ok=DB.assures.filter(function(a){return getIndicateur(a.alloue,a.consomme_cumul)==='OK';}).length;
+  var al=DB.assures.filter(function(a){return getIndicateur(a.alloue,a.consomme_cumul)==='Alerte';}).length;
+  var li=DB.assures.filter(function(a){return getIndicateur(a.alloue,a.consomme_cumul)==='Limite atteinte';}).length;
+  var dp=DB.assures.filter(function(a){return getIndicateur(a.alloue,a.consomme_cumul)==='Dépassé';}).length;
+  var tot=ok+al+li+dp||1;
+  var el=document.getElementById('chart-indicateurs'); el.innerHTML='';
+  [[ok,'OK','var(--vert)'],[al,'Alerte','var(--jaune)'],[li,'Limite atteinte','var(--rouge)'],[dp,'Dépassé','var(--violet)']].forEach(function(row){
+    var pct=Math.round(row[0]/tot*100);
+    el.innerHTML+='<div class="chart-bar-row"><div class="chart-bar-label">'+
+      '<span>'+row[1]+'</span>'+
+      '<span style="color:'+row[2]+';font-family:var(--fd);font-weight:700;font-size:10px">'+row[0]+' ('+pct+'%)</span></div>'+
+      '<div class="chart-bar-track"><div class="chart-bar-fill" style="width:'+pct+'%;background:'+row[2]+'"></div></div>'+
+    '</div>';
+  });
+}
+function renderChartBudget(){
+  var alloue=DB.assures.reduce(function(s,a){return s+(parseFloat(a.alloue)||0);},0);
+  var cumul =DB.assures.reduce(function(s,a){return s+(parseFloat(a.consomme_cumul)||0);},0);
+  var pct=alloue?Math.round(cumul/alloue*100):0;
+  var color=pct>=90?'var(--rouge)':pct>=70?'var(--jaune)':'var(--vert)';
+  var el=document.getElementById('chart-budget');
+  el.innerHTML=
+    '<div style="text-align:center;margin-bottom:.75rem">'+
+      '<div style="font-family:var(--fd);font-size:36px;font-weight:700;color:'+color+'">'+pct+'%</div>'+
+      '<div style="font-size:11px;color:var(--gris)">Budget global consommé</div>'+
+    '</div>'+
+    '<div style="height:12px;background:var(--gris3);border-radius:6px;overflow:hidden;margin-bottom:.5rem">'+
+      '<div style="height:100%;width:'+Math.min(pct,100)+'%;background:'+color+';border-radius:6px;transition:width .8s ease"></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gris)">'+
+      '<span>Consommé: <strong style="color:var(--blanc)">'+fmtM(cumul)+' FCFA</strong></span>'+
+      '<span>Alloué: <strong style="color:var(--blanc)">'+fmtM(alloue)+' FCFA</strong></span>'+
+    '</div>'+
+    '<div style="font-size:10px;color:var(--gris);text-align:center;margin-top:.4rem">Restant: <strong style="color:'+color+'">'+fmtM(Math.max(0,alloue-cumul))+' FCFA</strong></div>';
+}
+
+// ── HISTORIQUE ──
+function renderHistorique(filtre){
+  // Si onglet historique → version complète multi-mois
+  if(!filtre) { renderHistoriqueComplet(); return; }
+  var tbody=document.getElementById('hist-tbody');
+  var data=DB.assures.slice().reverse();
+  if(filtre) data=data.filter(function(a){return (a.nom+' '+a.prenom).toLowerCase().includes(filtre.toLowerCase());});
+  tbody.innerHTML='';
+  var periode=getPeriode();
+  data.forEach(function(a){
+    var ind=getIndicateur(a.alloue,a.consomme_cumul);
+    var restant=getRestant(a.alloue,a.consomme_cumul);
+    tbody.innerHTML+=
+      '<tr>'+
+      '<td style="font-size:10px;color:var(--gris)">'+periode+'</td>'+
+      '<td><strong>'+esc(a.nom)+'</strong> <span style="color:var(--gris);font-size:10px">'+esc(a.prenom||'')+'</span></td>'+
+      '<td style="font-size:10px;color:var(--gris)">'+esc(a.mat||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(a.dept||'—')+'</td>'+
+      '<td class="r"><span class="badge bo">'+a.nb_famille+'</span></td>'+
+      '<td class="r">'+fmt(a.alloue)+'</td>'+
+      '<td class="r">'+fmt(a.consomme_mois)+'</td>'+
+      '<td class="r" style="font-weight:600">'+fmt(a.consomme_cumul)+'</td>'+
+      '<td class="r" style="color:'+(restant===0?'var(--rouge)':'var(--vert)')+';font-weight:700">'+fmt(restant)+'</td>'+
+      '<td>'+mkInd(ind)+'</td>'+
+      '</tr>';
+  });
+  if(!data.length) tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--gris);padding:1.5rem">Aucune donnée</td></tr>';
+}
+function filtrerHistorique(v){ renderHistorique(v); }
+
+// ── AJOUTER / MODIFIER ASSURÉ ──
+function recalcModal(){
+  var alloue=parseFloat(document.getElementById('a-alloue').value)||0;
+  var cumul =parseFloat(document.getElementById('a-consomme-cumul').value)||0;
+  if(!alloue){ document.getElementById('modal-preview').style.display='none'; return; }
+  document.getElementById('modal-preview').style.display='block';
+  var restant=Math.max(0,alloue-cumul);
+  var pct=alloue?Math.round(cumul/alloue*100):0;
+  var ind=getIndicateur(alloue,cumul);
+  var color=pct>=100?'var(--violet)':pct>=90?'var(--rouge)':pct>=70?'var(--jaune)':'var(--vert)';
+  document.getElementById('prev-restant').textContent=fmt(restant)+' FCFA';
+  document.getElementById('prev-pct').textContent=pct+'%';
+  document.getElementById('prev-pct').style.color=color;
+  document.getElementById('prev-ind').innerHTML=mkInd(ind);
+  document.getElementById('prev-conseil').textContent=getConseil(ind,'');
+  document.getElementById('prev-conseil').style.color=color;
+}
+
+function sauvegarderAssure(){
+  var nom=document.getElementById('a-nom').value.trim();
+  if(!nom){ toast('Nom obligatoire'); return; }
+  var data={
+    nom:nom.toUpperCase(), prenom:document.getElementById('a-prenom').value.trim(),
+    mat:document.getElementById('a-mat').value.trim(),
+    dept:document.getElementById('a-dept').value.trim(),
+    service:document.getElementById('a-service').value.trim(),
+    section:document.getElementById('a-section').value.trim(),
+    nb_famille:parseInt(document.getElementById('a-famille').value)||1,
+    alloue:parseFloat(document.getElementById('a-alloue').value)||0,
+    consomme_mois:parseFloat(document.getElementById('a-consomme-mois').value)||0,
+    consomme_cumul:parseFloat(document.getElementById('a-consomme-cumul').value)||0,
+    obs:document.getElementById('a-obs').value.trim()
+  };
+  if(editId){
+    var a=DB.assures.find(function(x){return x.id===editId;}); if(a) Object.assign(a,data);
+    toast('Assuré mis à jour');
+  } else {
+    data.id=uid(); DB.assures.push(data);
+    toast('Assuré ajouté : '+data.nom);
+  }
+  sauverStore(); closeModal('modal-add'); renderAll(); editId=null;
+  ['a-nom','a-prenom','a-mat','a-dept','a-service','a-section','a-alloue','a-consomme-mois','a-consomme-cumul','a-obs'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('a-famille').value='1';
+  document.getElementById('modal-preview').style.display='none';
+}
+function supprimerAssure(id){
+  if(!confirm('Supprimer cet assuré et toutes ses données ?')) return;
+  DB.assures=DB.assures.filter(function(a){return a.id!==id;});
+  DB.extras=DB.extras.filter(function(e){return e.assure_id!==id;});
+  sauver(); renderAll(); toast('Assuré supprimé');
+}
+
+// ── MISE À JOUR CONSOMMATION ──
+var updateId=null;
+function ouvrirUpdate(id){
+  var a=DB.assures.find(function(x){return x.id===id;}); if(!a) return;
+  updateId=id;
+  document.getElementById('upd-name').textContent=a.nom+' '+a.prenom;
+  document.getElementById('upd-meta').textContent='Alloué: '+fmt(a.alloue)+' FCFA | Cumulé actuel: '+fmt(a.consomme_cumul)+' FCFA';
+  document.getElementById('upd-mois').value=a.consomme_mois||0;
+  document.getElementById('upd-cumul').value=a.consomme_cumul||0;
+  document.getElementById('upd-obs').value=a.obs||'';
+  recalcUpd();
+  openModal('modal-update');
+}
+function recalcUpd(){
+  var a=DB.assures.find(function(x){return x.id===updateId;}); if(!a) return;
+  var cumul=parseFloat(document.getElementById('upd-cumul').value)||0;
+  var restant=Math.max(0,a.alloue-cumul);
+  var pct=a.alloue?Math.round(cumul/a.alloue*100):0;
+  var ind=getIndicateur(a.alloue,cumul);
+  var color=pct>=100?'var(--violet)':pct>=90?'var(--rouge)':pct>=70?'var(--jaune)':'var(--vert)';
+  document.getElementById('upd-prev-restant').textContent=fmt(restant)+' FCFA';
+  document.getElementById('upd-prev-pct').textContent=pct+'%';
+  document.getElementById('upd-prev-pct').style.color=color;
+  document.getElementById('upd-prev-ind').innerHTML=mkInd(ind);
+  document.getElementById('upd-prev-conseil').textContent=getConseil(ind,a.prenom+' '+a.nom);
+}
+function confirmerUpdate(){
+  var a=DB.assures.find(function(x){return x.id===updateId;}); if(!a) return;
+  a.consomme_mois=parseFloat(document.getElementById('upd-mois').value)||0;
+  a.consomme_cumul=parseFloat(document.getElementById('upd-cumul').value)||0;
+  a.obs=document.getElementById('upd-obs').value;
+  sauverStore(); closeModal('modal-update'); renderAll();
+  toast('Consommation mise à jour — '+a.nom);
+}
+
+// ── MAIL ──
+function ouvrirMail(id){
+  var a=DB.assures.find(function(x){return x.id===id;}); if(!a) return;
+  var ind=getIndicateur(a.alloue,a.consomme_cumul);
+  var restant=getRestant(a.alloue,a.consomme_cumul);
+  var pct=a.alloue?Math.round(a.consomme_cumul/a.alloue*100):0;
+  document.getElementById('mail-to').value=a.nom+' '+a.prenom+' <'+a.nom.toLowerCase()+'.'+a.prenom.toLowerCase()+'@entreprise.com>';
+  var nl='\n';
+  if(ind==='Limite atteinte'||ind==='Depasse'){
+    document.getElementById('mail-subject').value='[Assurance Sante] Alerte — Budget presque epuise — '+a.nom+' '+a.prenom;
+    document.getElementById('mail-body').value=
+      'Madame, Monsieur '+a.nom+' '+a.prenom+','+nl+nl+
+      'Nous vous informons que votre budget assurance sante pour la periode en cours a atteint '+pct+'% de consommation.'+nl+nl+
+      'Montant alloue : '+fmt(a.alloue)+' FCFA'+nl+
+      'Montant consomme : '+fmt(a.consomme_cumul)+' FCFA'+nl+
+      'Montant restant : '+fmt(restant)+' FCFA'+nl+nl+
+      'Pour toute depense supplementaire au-dela du plafond, merci de soumettre une demande extra-limite aupres du service RH.'+nl+nl+
+      'Cordialement,'+nl+'Le Service Ressources Humaines'+nl+'Elite RH Consulting';
+  } else {
+    document.getElementById('mail-subject').value='[Assurance Sante] Information — Niveau alerte atteint — '+a.nom+' '+a.prenom;
+    document.getElementById('mail-body').value=
+      'Madame, Monsieur '+a.nom+' '+a.prenom+','+nl+nl+
+      'Nous vous informons que votre budget assurance sante a atteint '+pct+'% de consommation.'+nl+nl+
+      'Montant alloue : '+fmt(a.alloue)+' FCFA'+nl+
+      'Montant consomme : '+fmt(a.consomme_cumul)+' FCFA'+nl+
+      'Montant restant : '+fmt(restant)+' FCFA'+nl+nl+
+      'Merci de prendre en compte cette information pour vos prochaines depenses de sante.'+nl+nl+
+      'Cordialement,'+nl+'Le Service Ressources Humaines';
+  }
+  openModal('modal-mail');
+}
+function envoyerMail(){
+  var to=document.getElementById('mail-to').value.replace(/^.*</,'').replace(/>.*$/,'');
+  var sub=encodeURIComponent(document.getElementById('mail-subject').value);
+  var body=encodeURIComponent(document.getElementById('mail-body').value);
+  window.location.href='mailto:'+to+'?subject='+sub+'&body='+body;
+  closeModal('modal-mail');
+  toast('Client mail ouvert');
+}
+
+// ── EXTRA FOR ──
+function openExtraFor(assureId){
+  document.getElementById('ex-assure').value=assureId;
+  document.getElementById('ex-date').value=new Date().toISOString().split('T')[0];
+  openModal('modal-extra');
+}
+function sauvegarderExtra(){
+  var aId=parseInt(document.getElementById('ex-assure').value);
+  var motif=document.getElementById('ex-motif').value.trim();
+  var montant=parseFloat(document.getElementById('ex-montant-inp').value)||0;
+  if(!aId||!motif){ toast('Assuré et motif obligatoires'); return; }
+  DB.extras.push({
+    id:uid(), assure_id:aId,
+    date:document.getElementById('ex-date').value,
+    motif:motif, montant:montant,
+    statut:document.getElementById('ex-statut').value,
+    decision:document.getElementById('ex-decision').value,
+    notes:document.getElementById('ex-notes').value
+  });
+  sauver(); closeModal('modal-extra');
+  ['ex-motif','ex-montant-inp','ex-decision','ex-notes'].forEach(function(id){document.getElementById(id).value='';});
+  renderExtras(); updateBadgeExtra(); filtrerTable();
+  toast('Demande extra enregistrée');
+}
+
+// ── EXPORT ──
+function exporterExcel(){
+  if(!window.XLSX){ toast('XLSX non disponible'); return; }
+  var wb=XLSX.utils.book_new();
+  var data=[['Nom','Prénom','Matricule','Département','Service','Section','Nb Famille','Alloué','Consommé Mois','Consommé Cumulé','Restant','% Consommé','Indicateur','Conseil']];
+  DB.assures.forEach(function(a){
+    var ind=getIndicateur(a.alloue,a.consomme_cumul);
+    var pct=a.alloue?Math.round(a.consomme_cumul/a.alloue*100):0;
+    data.push([a.nom,a.prenom||'',a.mat||'',a.dept||'',a.service||'',a.section||'',a.nb_famille,a.alloue||0,a.consomme_mois||0,a.consomme_cumul||0,getRestant(a.alloue,a.consomme_cumul),pct+'%',ind,getConseil(ind,'')]);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Assurance Sante');
+  if(DB.extras.length){
+    var ex=[['Date','Assuré','Département','Motif','Montant','Statut','Décision']];
+    DB.extras.forEach(function(e){
+      var a=DB.assures.find(function(x){return x.id===e.assure_id;})||{};
+      ex.push([e.date,a.nom+' '+(a.prenom||''),a.dept||'',e.motif,e.montant,e.statut,e.decision||'']);
+    });
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ex),'Demandes Extra');
+  }
+  XLSX.writeFile(wb,'AssuranceSante-'+getPeriode()+'.xlsx');
+  toast('Export Excel généré');
+}
+
+// ── TABS / MODAL / UTILS ──
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='historique') renderHistoriqueComplet();
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+
+function fmt(v){ if(!v&&v!==0) return '—'; return Math.round(v).toLocaleString('fr-FR'); }
+function fmtM(v){ if(!v) return '0'; if(v>=1000000) return (Math.round(v/100000)/10)+'M'; if(v>=1000) return Math.round(v/1000)+'K'; return Math.round(v)+''; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var toastTimer;
+function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove('show');},3500); }
+
+// Période initiale
+(function(){
+  var now=new Date();
+  document.getElementById('sel-mois').value=String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('inp-annee').value=now.getFullYear();
+})();
+
+chargerStore();
+var p=getPeriode();
+chargerMois(p);
+renderAll();
+renderSelecteurMois();
+document.getElementById('lbl-period').textContent=getPeriodeLabel();
+
+// ════════════════════════════════════════
+// MÉMOIRE MENSUELLE
+// ════════════════════════════════════════
+
+function renderSelecteurMois(){
+  var mois=getMoisDisponibles();
+  var sel=document.getElementById('sel-mois-memoire');
+  var wrap=document.getElementById('mois-memoire-wrap');
+  if(!mois.length){ wrap.style.display='none'; return; }
+  wrap.style.display='flex';
+  sel.innerHTML='<option value="">📚 '+mois.length+' mois mémorisé(s)</option>';
+  mois.forEach(function(p){
+    var parts=p.split('-');
+    var label=MOIS_FR[parseInt(parts[1])-1]+' '+parts[0];
+    var isActive=p===getPeriode();
+    sel.innerHTML+='<option value="'+p+'"'+(isActive?' selected':'')+'>'+label+(isActive?' ← actuel':'')+'</option>';
+  });
+}
+
+function naviguerMois(periode){
+  if(!periode) return;
+  var parts=periode.split('-');
+  document.getElementById('sel-mois').value=parts[1];
+  document.getElementById('inp-annee').value=parts[0];
+  chargerMois(periode);
+  renderAll();
+  document.getElementById('lbl-period').textContent=getPeriodeLabel();
+  toast('Mois chargé : '+getPeriodeLabel());
+}
+
+function cloturerMois(){
+  var p=getPeriode();
+  var label=getPeriodeLabel();
+  if(!confirm('Clôturer '+label+' et créer le mois suivant ?\nLes données de '+label+' seront sauvegardées définitivement.')) return;
+
+  // Sauvegarder le mois actif
+  sauverStore();
+
+  // Calculer le mois suivant
+  var parts=p.split('-');
+  var an=parseInt(parts[0]); var mo=parseInt(parts[1]);
+  var moNext=mo===12?1:mo+1; var anNext=mo===12?an+1:an;
+  var pNext=anNext+'-'+String(moNext).padStart(2,'0');
+
+  // Aller au mois suivant
+  document.getElementById('sel-mois').value=String(moNext).padStart(2,'0');
+  document.getElementById('inp-annee').value=anNext;
+
+  // Charger/créer le nouveau mois
+  chargerMois(pNext);
+
+  // Le nouveau mois repart avec consomme_mois=0 mais conserve le cumul
+  DB.assures.forEach(function(a){ a.consomme_mois=0; });
+
+  renderAll();
+  renderSelecteurMois();
+  toast('Mois clôturé — '+label+' sauvegardé · Nouveau mois : '+getPeriodeLabel());
+}
+
+// Remplacer sauverStore pour mettre à jour le sélecteur après chaque sauvegarde
+var _origSauverStore=sauverStore;
+sauverStore=function(){
+  _origSauverStore();
+  renderSelecteurMois();
+};
+
+// Panel historique amélioré avec navigation mois
+function renderHistoriqueComplet(){
+  var tbody=document.getElementById('hist-tbody');
+  var moisDispo=getMoisDisponibles();
+  if(!moisDispo.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--gris);padding:1.5rem">Aucun historique. Cloturez au moins un mois pour voir l\'historique.</td></tr>';
+    return;
+  }
+  tbody.innerHTML='';
+  moisDispo.forEach(function(p){
+    var snap=STORE.mois[p];
+    if(!snap||!snap.assures) return;
+    var parts=p.split('-');
+    var label=MOIS_FR[parseInt(parts[1])-1]+' '+parts[0];
+    var isActive=p===getPeriode();
+    // Ligne titre mois
+    tbody.innerHTML+='<tr style="background:linear-gradient(135deg,rgba(201,168,76,.08),transparent)">'+
+      '<td colspan="10" style="font-family:var(--fd);font-size:12px;font-weight:700;color:var(--or);padding:8px 10px;">'+
+        '📅 '+label+(isActive?' <span style="font-size:9px;background:rgba(201,168,76,.15);padding:2px 8px;border-radius:20px;color:var(--or)">Mois actif</span>':'')+
+        ' — '+snap.assures.length+' assuré(s)'+
+        ' · <button onclick="naviguerMois(\'' +p+ '\')" style="background:transparent;border:1px solid rgba(201,168,76,.3);color:var(--or);padding:2px 8px;border-radius:20px;font-size:9px;font-family:var(--fd);cursor:pointer;margin-left:6px">Charger ce mois</button>'+
+      '</td>'+
+    '</tr>';
+    snap.assures.forEach(function(a){
+      var ind=getIndicateur(a.alloue,a.consomme_cumul);
+      var restant=getRestant(a.alloue,a.consomme_cumul);
+      tbody.innerHTML+=
+        '<tr>'+
+        '<td style="font-size:10px;color:var(--or);padding-left:1.5rem">'+label+'</td>'+
+        '<td><strong>'+esc(a.nom)+'</strong> <span style="color:var(--gris);font-size:10px">'+esc(a.prenom||'')+'</span></td>'+
+        '<td style="font-size:10px;color:var(--gris)">'+esc(a.mat||'—')+'</td>'+
+        '<td style="font-size:11px">'+esc(a.dept||'—')+'</td>'+
+        '<td class="r"><span class="badge bo">'+a.nb_famille+'</span></td>'+
+        '<td class="r">'+fmt(a.alloue)+'</td>'+
+        '<td class="r">'+fmt(a.consomme_mois)+'</td>'+
+        '<td class="r" style="font-weight:600">'+fmt(a.consomme_cumul)+'</td>'+
+        '<td class="r" style="color:'+(restant===0?'var(--rouge)':'var(--vert)')+';font-weight:700">'+fmt(restant)+'</td>'+
+        '<td>'+mkInd(ind)+'</td>'+
+        '</tr>';
+    });
+  });
+}
+</script>
+</body>
+</html>

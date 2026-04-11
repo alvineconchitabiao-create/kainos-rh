@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gestion des Stagiaires — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#07070D;--bg2:#0D0D18;--bg3:#13131F;--bg4:#1A1A2A;
+  --or:#C9A84C;--or2:#E2C47A;
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#1E1E2E;
+  --bleu:#4A9EFF;--vert:#34C77B;--jaune:#FBC724;--rouge:#F05A5A;
+  --violet:#A78BFA;--orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--r:8px;--rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.65rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:.75rem;}
+.hdr-logo{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:.06em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:18px;background:var(--gris3);}
+.hdr-title{font-size:10px;font-weight:600;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.btn-or{background:var(--or);color:var(--bg);}.btn-or:hover{background:var(--or2);}
+.btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.btn-vert{background:rgba(52,199,123,.12);color:var(--vert);border:1px solid rgba(52,199,123,.2);}
+.btn-violet{background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.18);}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.75rem;display:flex;overflow-x:auto;}
+.tab{padding:11px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--blanc);}.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.main{padding:1.25rem 1.75rem;max-width:1400px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+.sc{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem;}
+.sc-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.sc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);display:flex;align-items:center;gap:8px;}
+.sc-body{padding:1.25rem;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.875rem;margin-bottom:1.25rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:.875rem 1rem;border-top:2px solid transparent;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:.35rem;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;line-height:1;}
+.kpi-sub{font-size:10px;color:var(--gris2);margin-top:.25rem;}
+.dtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.dtbl th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);white-space:nowrap;text-align:left;}
+.dtbl th.c{text-align:center;}.dtbl td{padding:7px 10px;border-bottom:1px solid rgba(30,30,46,.5);vertical-align:middle;}
+.dtbl tr:hover td{background:var(--bg3);}.dtbl td.c{text-align:center;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+.fg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+.ff input,.ff select,.ff textarea{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff .hint{font-size:10px;color:var(--gris2);font-style:italic;}
+.ff-full{grid-column:1/-1;}
+.sec-title{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em;margin:1rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid rgba(201,168,76,.15);}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;}
+.b-actif{background:rgba(52,199,123,.12);color:var(--vert);}
+.b-termine{background:rgba(90,88,102,.12);color:var(--gris);}
+.b-bientot{background:rgba(251,199,36,.1);color:var(--jaune);}
+.b-eval{background:rgba(167,139,250,.1);color:var(--violet);}
+/* PROGRESS BAR */
+.prog-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;width:100px;}
+.prog-fill{height:100%;border-radius:3px;background:var(--or);transition:width .5s;}
+/* NOTE */
+.note-cercle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:800;border:2px solid;}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);width:100%;max-width:900px;margin:auto;animation:popIn .22s ease;}
+@keyframes popIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mh{padding:.875rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:var(--fd);font-size:15px;font-weight:700;}.mt span{color:var(--or);}
+.mc{background:none;border:none;color:var(--gris);font-size:20px;cursor:pointer;}
+.mb{padding:1.25rem;max-height:78vh;overflow-y:auto;}
+.mf{padding:.875rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:768px){.fg,.fg3,.fg4{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Gestion des Stagiaires</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-or" onclick="openModal('modal-stagiaire');modeEdit=false;viderForm()">+ Nouveau stagiaire</button>
+    <button class="btn btn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="btn btn-ghost" onclick="pousserVersPayroll()">⬆ Pousser indemnités → Paie</button>
+  </div>
+</header>
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dashboard',this)"><span class="tdot" style="background:var(--or)"></span>📊 Dashboard</button>
+  <button class="tab" onclick="showTab('liste',this)"><span class="tdot" style="background:var(--bleu)"></span>👥 Liste des stagiaires</button>
+  <button class="tab" onclick="showTab('presences',this)"><span class="tdot" style="background:var(--vert)"></span>📅 Présences</button>
+  <button class="tab" onclick="showTab('evaluations',this)"><span class="tdot" style="background:var(--violet)"></span>⭐ Évaluations</button>
+  <button class="tab" onclick="showTab('indemnites',this)"><span class="tdot" style="background:var(--cyan)"></span>💰 Indemnités</button>
+</nav>
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="panel-dashboard">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">⏳ Stages en cours</div></div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Stagiaire</th><th>École</th><th>Département</th><th class="c">Fin prévue</th><th class="c">Avancement</th><th class="c">Indemnité</th></tr></thead>
+        <tbody id="dash-encours-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🔔 Fins de stage dans 30 jours</div></div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto;">
+        <table class="dtbl"><thead><tr><th>Stagiaire</th><th>Département</th><th class="c">Fin prévue</th><th class="c">Dans</th><th class="c">Évaluation</th></tr></thead>
+        <tbody id="dash-bientot-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🏢 Répartition par Département</div></div>
+      <div class="sc-body" id="dept-bars"></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">🎓 Répartition par École/Université</div></div>
+      <div class="sc-body" id="ecole-bars"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LISTE -->
+<div class="panel" id="panel-liste">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="l-search" placeholder="🔍 Rechercher nom, école, département..." oninput="renderListe()" style="flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 12px;outline:none;"/>
+    <select id="l-f-statut" onchange="renderListe()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">Tous statuts</option>
+      <option value="actif">En cours</option>
+      <option value="termine">Terminé</option>
+    </select>
+    <select id="l-f-dept" onchange="renderListe()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;min-width:150px;">
+      <option value="">Tous départements</option>
+    </select>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">👥 Stagiaires <span id="liste-count" style="font-size:11px;font-weight:400;color:var(--gris);margin-left:4px;"></span></div></div>
+    <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>#</th><th>Nom & Prénoms</th><th>École / Université</th><th>Niveau</th>
+          <th>Département</th><th>Tuteur</th>
+          <th class="c">Début</th><th class="c">Fin</th><th class="c">Durée</th>
+          <th class="c">Avancement</th><th class="c">Indemnité/mois</th>
+          <th class="c">Statut</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="liste-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PRÉSENCES -->
+<div class="panel" id="panel-presences">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <select id="p-stagiaire" onchange="renderPresences()" style="flex:1;min-width:200px;padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">— Sélectionner un stagiaire —</option>
+    </select>
+    <select id="p-mois" onchange="renderPresences()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+    </select>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📅 Saisie des Présences</div></div>
+      <div class="sc-body">
+        <div class="fg3" style="margin-bottom:.875rem;">
+          <div class="ff"><label>Date *</label><input type="date" id="pr-date"/></div>
+          <div class="ff"><label>Statut *</label>
+            <select id="pr-statut">
+              <option value="present">✅ Présent</option>
+              <option value="absent">❌ Absent</option>
+              <option value="retard">⏰ Retard</option>
+              <option value="conge">🏖️ Congé autorisé</option>
+            </select>
+          </div>
+          <div class="ff"><label>Observation</label><input type="text" id="pr-obs" placeholder="Motif si absent..."/></div>
+        </div>
+        <button class="btn btn-or" onclick="sauverPresence()" style="width:100%;justify-content:center;">+ Enregistrer</button>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="sc-title">📊 Récapitulatif du mois</div></div>
+      <div class="sc-body" id="recap-presences"></div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-head"><div class="sc-title">📋 Journal des présences</div></div>
+    <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+      <table class="dtbl"><thead><tr><th class="c">Date</th><th class="c">Statut</th><th>Observation</th><th class="c">Actions</th></tr></thead>
+      <tbody id="presences-tbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ÉVALUATIONS -->
+<div class="panel" id="panel-evaluations">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <select id="ev-stagiaire" onchange="renderEvaluation()" style="flex:1;min-width:200px;padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+      <option value="">— Sélectionner un stagiaire —</option>
+    </select>
+  </div>
+  <div id="eval-content">
+    <div style="text-align:center;padding:3rem;color:var(--gris);">Sélectionnez un stagiaire pour voir ou saisir son évaluation.</div>
+  </div>
+</div>
+
+<!-- INDEMNITÉS -->
+<div class="panel" id="panel-indemnites">
+  <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+    <select id="ind-mois" onchange="renderIndemnites()" style="padding:7px 10px;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;outline:none;">
+    </select>
+    <button class="btn btn-ghost" onclick="pousserVersPayroll()">⬆ Pousser vers la Paie</button>
+  </div>
+  <div class="sc">
+    <div class="sc-head">
+      <div class="sc-title">💰 Indemnités du mois <span id="ind-total-label" style="font-size:11px;font-weight:400;color:var(--or);margin-left:8px;"></span></div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Stagiaire</th><th>Département</th><th>Tuteur</th>
+          <th class="c">Jours ouvrés</th><th class="c">Jours présents</th><th class="c">Jours absents</th>
+          <th class="c">Indemnité base/mois</th><th class="c">Taux présence</th>
+          <th class="c">Indemnité calculée</th><th class="c">Statut paiement</th><th class="c">Actions</th>
+        </tr></thead>
+        <tbody id="ind-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:1rem;padding:.875rem 1.25rem;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <div style="font-size:11px;color:var(--gris);">Note : L'indemnité est calculée au prorata des jours de présence effective sur les jours ouvrés du mois.</div>
+    <div style="margin-left:auto;font-family:var(--fd);font-size:18px;font-weight:800;color:var(--or);" id="ind-total-val"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- MODAL STAGIAIRE -->
+<div class="modal-ov" id="modal-stagiaire">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="ms-title">🎓 <span>Nouveau Stagiaire</span></div><button class="mc" onclick="closeModal('modal-stagiaire')">✕</button></div>
+    <div class="mb">
+
+      <div class="sec-title">👤 Informations Personnelles</div>
+      <div class="fg4" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Nom *</label><input type="text" id="s-nom" placeholder="Ex: DOSSOU"/></div>
+        <div class="ff"><label>Prénoms *</label><input type="text" id="s-prenom" placeholder="Ex: Aline"/></div>
+        <div class="ff"><label>Sexe</label><select id="s-sexe"><option value="">—</option><option value="M">Masculin</option><option value="F">Féminin</option></select></div>
+        <div class="ff"><label>Date de naissance</label><input type="date" id="s-naissance"/></div>
+        <div class="ff"><label>Téléphone</label><input type="text" id="s-tel" placeholder="+229 01 XX XX XX XX"/></div>
+        <div class="ff"><label>Email</label><input type="email" id="s-email" placeholder="Ex: aline@email.com"/></div>
+        <div class="ff ff-full"><label>Adresse</label><input type="text" id="s-adresse" placeholder="Ex: Quartier Akpakpa, Cotonou"/></div>
+      </div>
+
+      <div class="sec-title">🎓 Formation & École</div>
+      <div class="fg3" style="margin-bottom:.875rem;">
+        <div class="ff"><label>École / Université *</label><input type="text" id="s-ecole" placeholder="Ex: ENEAM, UAC, EPAC..."/></div>
+        <div class="ff"><label>Niveau d'études</label><select id="s-niveau">
+          <option value="">—</option><option value="BTS">BTS</option><option value="Licence">Licence</option>
+          <option value="Master 1">Master 1</option><option value="Master 2">Master 2</option>
+          <option value="Ingénieur">Ingénieur</option><option value="Autre">Autre</option>
+        </select></div>
+        <div class="ff"><label>Filière / Spécialité</label><input type="text" id="s-filiere" placeholder="Ex: Gestion RH, Comptabilité..."/></div>
+        <div class="ff"><label>N° carte étudiant</label><input type="text" id="s-carte-etud" placeholder="Ex: CE-2024-XXXX"/></div>
+        <div class="ff"><label>Nom du directeur de stage (école)</label><input type="text" id="s-directeur-ecole" placeholder="Ex: Prof. HOUENOU"/></div>
+        <div class="ff"><label>Contact école (tél/email)</label><input type="text" id="s-contact-ecole" placeholder="Ex: +229 XX XX XX XX"/></div>
+      </div>
+
+      <div class="sec-title">📄 Convention de Stage</div>
+      <div class="fg4" style="margin-bottom:.875rem;">
+        <div class="ff"><label>Département d'accueil *</label><input type="text" id="s-dept" placeholder="Ex: Finance, RH..."/></div>
+        <div class="ff"><label>Tuteur / Maître de stage *</label><input type="text" id="s-tuteur" placeholder="Ex: KPOSSOU Jean"/></div>
+        <div class="ff"><label>Date de début *</label><input type="date" id="s-debut" onchange="calcDuree()"/></div>
+        <div class="ff"><label>Date de fin *</label><input type="date" id="s-fin" onchange="calcDuree()"/></div>
+        <div class="ff"><label>Durée calculée</label><input type="text" id="s-duree" readonly style="background:var(--bg4);color:var(--or);font-weight:700;"/></div>
+        <div class="ff"><label>N° convention</label><input type="text" id="s-num-conv" placeholder="Ex: CONV-2026-001"/></div>
+        <div class="ff"><label>Indemnité mensuelle (FCFA)</label><input type="number" id="s-indemnite" min="0" placeholder="Ex: 50000" oninput="calcIndemnite()"/></div>
+        <div class="ff"><label>Statut</label><select id="s-statut"><option value="actif">En cours</option><option value="termine">Terminé</option></select></div>
+        <div class="ff ff-full"><label>Thème / Sujet du stage</label><input type="text" id="s-theme" placeholder="Ex: Mise en place d'un système de gestion des compétences..."/></div>
+        <div class="ff ff-full"><label>Missions confiées</label><textarea id="s-missions" rows="3" placeholder="Décrivez les principales missions et tâches confiées au stagiaire..."></textarea></div>
+        <div class="ff ff-full"><label>Objectifs pédagogiques</label><textarea id="s-objectifs" rows="2" placeholder="Compétences visées par ce stage..."></textarea></div>
+      </div>
+
+      <input type="hidden" id="s-id"/>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-stagiaire')">Annuler</button>
+      <button class="btn btn-violet" id="btn-attestation" onclick="genererAttestation()" style="display:none;">📜 Attestation</button>
+      <button class="btn btn-violet" id="btn-convention" onclick="genererConvention()" style="display:none;">📄 Convention</button>
+      <button class="btn btn-or" onclick="sauverStagiaire()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ÉVALUATION -->
+<div class="modal-ov" id="modal-eval">
+  <div class="modal" style="max-width:720px;">
+    <div class="mh"><div class="mt">⭐ <span id="mev-nom">Évaluation</span></div><button class="mc" onclick="closeModal('modal-eval')">✕</button></div>
+    <div class="mb" id="mev-body"></div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-eval')">Annuler</button>
+      <button class="btn btn-or" onclick="sauverEvaluation()">✓ Enregistrer l'évaluation</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SK = 'elitestagiaires_v1';
+var ST = { stagiaires:[], presences:[], evaluations:[], nextId:100 };
+var nextId = 100;
+var modeEdit = false;
+function uid(){ return ++nextId; }
+
+var CRITERES_EVAL = [
+  {id:'assiduite',   label:'Assiduité & Ponctualité'},
+  {id:'motivation',  label:'Motivation & Implication'},
+  {id:'qualite',     label:'Qualité du travail'},
+  {id:'autonomie',   label:'Autonomie & Initiative'},
+  {id:'communication',label:'Communication & Relations'},
+  {id:'competences', label:'Acquisition des compétences'},
+  {id:'respect',     label:'Respect des consignes'},
+  {id:'adaptation',  label:'Adaptation à l\'entreprise'}
+];
+
+function charger(){
+  try{
+    var d=localStorage.getItem(SK);
+    if(d){ ST=JSON.parse(d); nextId=ST.nextId||100; }
+    else{ ST={stagiaires:[],presences:[],evaluations:[],nextId:100}; }
+  }catch(e){ ST={stagiaires:[],presences:[],evaluations:[],nextId:100}; }
+}
+function sauver(){ try{ ST.nextId=nextId; localStorage.setItem(SK,JSON.stringify(ST)); }catch(e){ toast('Erreur sauvegarde'); } }
+
+// ── UTILS ──
+function today(){ return new Date().toISOString().split('T')[0]; }
+function fmtDate(d){ if(!d) return '—'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function fmt(v){ return Math.round(v||0).toLocaleString('fr-FR'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function diffJours(d1,d2){ return Math.max(0,Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24))); }
+function calcDureeStr(debut,fin){
+  if(!debut||!fin) return '—';
+  var j=diffJours(debut,fin);
+  var m=Math.floor(j/30); var jr=j%30;
+  if(!m) return j+' jours';
+  return m+' mois'+(jr?' '+jr+' jours':'');
+}
+function avancement(debut,fin){
+  if(!debut||!fin) return 0;
+  var total=diffJours(debut,fin); if(!total) return 100;
+  var ecoule=diffJours(debut,today());
+  return Math.min(100,Math.max(0,Math.round(ecoule/total*100)));
+}
+function statut(s){ return s.statut==='actif'&&today()<=s.fin?'actif':'termine'; }
+function getMoisOptions(){
+  var now=new Date();
+  var moisNoms=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var opts=[];
+  for(var i=-2;i<=4;i++){
+    var d=new Date(now.getFullYear(),now.getMonth()+i,1);
+    var key=d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1);
+    opts.push({key:key,label:moisNoms[d.getMonth()]+' '+d.getFullYear()});
+  }
+  return opts;
+}
+function remplirSelectStagiaires(ids,currentId){
+  var actifs=ST.stagiaires.filter(function(s){return statut(s)==='actif';});
+  ids.forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var cur=sel.value||currentId||'';
+    sel.innerHTML='<option value="">— Sélectionner un stagiaire —</option>';
+    actifs.forEach(function(s){ sel.innerHTML+='<option value="'+s.id+'"'+(String(s.id)===String(cur)?' selected':'')+'>'+esc(s.nom)+' '+esc(s.prenom||'')+'</option>'; });
+  });
+}
+function remplirSelectMois(ids){
+  var opts=getMoisOptions();
+  var cur=today().substring(0,7);
+  ids.forEach(function(id){
+    var sel=document.getElementById(id); if(!sel) return;
+    var prev=sel.value||cur;
+    sel.innerHTML='';
+    opts.forEach(function(o){ sel.innerHTML+='<option value="'+o.key+'"'+(o.key===prev?' selected':'')+'>'+o.label+'</option>'; });
+  });
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var actifs=ST.stagiaires.filter(function(s){return statut(s)==='actif';});
+  var termines=ST.stagiaires.filter(function(s){return statut(s)==='termine';});
+  var bientot=actifs.filter(function(s){ var j=diffJours(today(),s.fin); return j>=0&&j<=30; });
+  var masseSt=actifs.reduce(function(sum,s){return sum+(parseFloat(s.indemnite)||0);},0);
+  var avecEval=ST.evaluations.length;
+
+  function kc(label,val,sub,color,bc){
+    return '<div class="kpi-card" style="border-top-color:'+bc+'"><div class="kpi-label">'+label+'</div><div class="kpi-val" style="color:'+color+'">'+val+'</div><div class="kpi-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('kpi-grid').innerHTML=
+    kc('Stagiaires actifs',actifs.length,'stages en cours','var(--blanc)','var(--or)')+
+    kc('Fin dans 30j',bientot.length,'à évaluer bientôt',bientot.length>0?'var(--jaune)':'var(--gris)','var(--jaune)')+
+    kc('Stages terminés',termines.length,'depuis ouverture','var(--gris)','var(--gris)')+
+    kc('Évaluations',avecEval,'fiches remplies','var(--violet)','var(--violet)')+
+    kc('Masse indemnités',fmt(masseSt)+' F','par mois (actifs)','var(--cyan)','var(--cyan)')+
+    kc('Total stagiaires',ST.stagiaires.length,'depuis ouverture','var(--blanc)','var(--bleu)');
+
+  // En cours
+  var tbody=document.getElementById('dash-encours-tbody');
+  tbody.innerHTML='';
+  if(!actifs.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--gris);padding:1.5rem">Aucun stage en cours.</td></tr>'; }
+  actifs.forEach(function(s){
+    var av=avancement(s.debut,s.fin);
+    tbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(s.nom)+' '+esc(s.prenom||'')+'</strong><br><span style="font-size:10px;color:var(--gris)">'+esc(s.filiere||'—')+'</span></td>'+
+      '<td style="font-size:11px">'+esc(s.ecole||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(s.dept||'—')+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(s.fin)+'</td>'+
+      '<td class="c"><div style="display:flex;align-items:center;gap:6px;"><div class="prog-track"><div class="prog-fill" style="width:'+av+'%"></div></div><span style="font-size:10px;font-family:var(--fd);font-weight:700;color:var(--or)">'+av+'%</span></div></td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--cyan)">'+(s.indemnite?fmt(s.indemnite)+' F':'—')+'</td>'+
+    '</tr>';
+  });
+
+  // Bientôt
+  var tbody2=document.getElementById('dash-bientot-tbody');
+  tbody2.innerHTML='';
+  if(!bientot.length){ tbody2.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris);padding:1.5rem">Aucun stage se terminant dans 30 jours.</td></tr>'; }
+  bientot.sort(function(a,b){return a.fin>b.fin?1:-1;}).forEach(function(s){
+    var j=diffJours(today(),s.fin);
+    var eval_=ST.evaluations.find(function(e){return e.stag_id===s.id;});
+    tbody2.innerHTML+='<tr>'+
+      '<td><strong>'+esc(s.nom)+' '+esc(s.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(s.dept||'—')+'</td>'+
+      '<td class="c" style="color:var(--jaune)">'+fmtDate(s.fin)+'</td>'+
+      '<td class="c"><span class="badge b-bientot">'+j+' j.</span></td>'+
+      '<td class="c">'+(eval_?'<span class="badge b-actif">✓ Faite</span>':'<span class="badge b-eval">À faire</span>')+'</td>'+
+    '</tr>';
+  });
+
+  // Barres département
+  var deptMap={};
+  ST.stagiaires.forEach(function(s){var d=s.dept||'N/A';deptMap[d]=(deptMap[d]||0)+1;});
+  var maxD=Math.max(1,...Object.values(deptMap));
+  var dHTML='<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(deptMap).sort(function(a,b){return deptMap[b]-deptMap[a];}).forEach(function(d){
+    var pct=Math.round(deptMap[d]/maxD*100);
+    dHTML+='<div style="display:flex;align-items:center;gap:.75rem;"><div style="font-size:11px;min-width:130px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(d)+'</div><div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--or);border-radius:5px;"></div></div><div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:25px;text-align:right;color:var(--or)">'+deptMap[d]+'</div></div>';
+  });
+  document.getElementById('dept-bars').innerHTML=dHTML||'<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucune donnée</div>';
+
+  // Barres école
+  var ecoleMap={};
+  ST.stagiaires.forEach(function(s){var e=s.ecole||'N/A';ecoleMap[e]=(ecoleMap[e]||0)+1;});
+  var maxE=Math.max(1,...Object.values(ecoleMap));
+  var eHTML='<div style="display:flex;flex-direction:column;gap:.5rem;">';
+  Object.keys(ecoleMap).sort(function(a,b){return ecoleMap[b]-ecoleMap[a];}).forEach(function(e){
+    var pct=Math.round(ecoleMap[e]/maxE*100);
+    eHTML+='<div style="display:flex;align-items:center;gap:.75rem;"><div style="font-size:11px;min-width:130px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(e)+'</div><div style="flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--bleu);border-radius:5px;"></div></div><div style="font-family:var(--fd);font-size:11px;font-weight:700;min-width:25px;text-align:right;color:var(--bleu)">'+ecoleMap[e]+'</div></div>';
+  });
+  document.getElementById('ecole-bars').innerHTML=eHTML||'<div style="color:var(--gris);font-size:12px;text-align:center;padding:1rem">Aucune donnée</div>';
+}
+
+// ── LISTE ──
+function renderListe(){
+  var search=(document.getElementById('l-search').value||'').toLowerCase();
+  var fStat=document.getElementById('l-f-statut').value;
+  var fDept=document.getElementById('l-f-dept').value;
+
+  var deptSet={};
+  ST.stagiaires.forEach(function(s){if(s.dept) deptSet[s.dept]=true;});
+  var sel=document.getElementById('l-f-dept'); var cur=sel.value;
+  sel.innerHTML='<option value="">Tous départements</option>';
+  Object.keys(deptSet).sort().forEach(function(d){sel.innerHTML+='<option value="'+d+'"'+(d===cur?' selected':'')+'>'+esc(d)+'</option>';});
+
+  var list=ST.stagiaires.filter(function(s){
+    if(fStat&&statut(s)!==fStat) return false;
+    if(fDept&&s.dept!==fDept) return false;
+    if(search&&(s.nom+s.prenom+(s.ecole||'')+(s.dept||'')).toLowerCase().indexOf(search)===-1) return false;
+    return true;
+  }).slice().sort(function(a,b){return b.debut>a.debut?1:-1;});
+
+  document.getElementById('liste-count').textContent='— '+list.length+' stagiaire(s)';
+  var tbody=document.getElementById('liste-tbody');
+  tbody.innerHTML='';
+  if(!list.length){tbody.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--gris);padding:2rem">Aucun stagiaire trouvé.</td></tr>';return;}
+  list.forEach(function(s,i){
+    var st=statut(s);
+    var av=avancement(s.debut,s.fin);
+    tbody.innerHTML+='<tr>'+
+      '<td style="color:var(--gris);font-size:10px">'+(i+1)+'</td>'+
+      '<td><strong>'+esc(s.nom)+' '+esc(s.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px">'+esc(s.ecole||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(s.niveau||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(s.dept||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(s.tuteur||'—')+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(s.debut)+'</td>'+
+      '<td class="c" style="font-size:11px">'+fmtDate(s.fin)+'</td>'+
+      '<td class="c" style="font-size:11px;color:var(--gris)">'+calcDureeStr(s.debut,s.fin)+'</td>'+
+      '<td class="c"><div style="display:flex;align-items:center;gap:4px;"><div class="prog-track"><div class="prog-fill" style="width:'+av+'%"></div></div><span style="font-size:10px;font-family:var(--fd);font-weight:700;color:var(--or)">'+av+'%</span></div></td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700;color:var(--cyan)">'+(s.indemnite?fmt(s.indemnite)+' F':'—')+'</td>'+
+      '<td class="c"><span class="badge '+(st==='actif'?'b-actif':'b-termine')+'">'+(st==='actif'?'En cours':'Terminé')+'</span></td>'+
+      '<td class="c" style="white-space:nowrap;">'+
+        '<button onclick="editerStagiaire('+s.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Modifier">✏️</button> '+
+        '<button onclick="genererConventionId('+s.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Convention">📄</button> '+
+        '<button onclick="genererAttestationId('+s.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Attestation">📜</button> '+
+        '<button onclick="ouvrirEvalId('+s.id+')" class="btn btn-ghost" style="padding:2px 7px;font-size:9px;" title="Évaluation">⭐</button> '+
+        '<button onclick="supprimerStagiaire('+s.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button>'+
+      '</td>'+
+    '</tr>';
+  });
+}
+
+// ── PRÉSENCES ──
+function renderPresences(){
+  remplirSelectStagiaires(['p-stagiaire'],'');
+  remplirSelectMois(['p-mois']);
+  var stagId=parseInt(document.getElementById('p-stagiaire').value)||0;
+  var mois=document.getElementById('p-mois').value||today().substring(0,7);
+  if(!stagId){
+    document.getElementById('presences-tbody').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--gris);padding:1.5rem">Sélectionnez un stagiaire.</td></tr>';
+    document.getElementById('recap-presences').innerHTML='';
+    return;
+  }
+  var presences=ST.presences.filter(function(p){return p.stag_id===stagId&&(p.date||'').substring(0,7)===mois;})
+    .sort(function(a,b){return a.date>b.date?1:-1;});
+
+  var nbP=presences.filter(function(p){return p.statut==='present';}).length;
+  var nbA=presences.filter(function(p){return p.statut==='absent';}).length;
+  var nbR=presences.filter(function(p){return p.statut==='retard';}).length;
+  var nbC=presences.filter(function(p){return p.statut==='conge';}).length;
+  var nbTotal=presences.length;
+  var txP=nbTotal>0?Math.round(nbP/nbTotal*100):0;
+
+  document.getElementById('recap-presences').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">'+
+    recapBox('Présents',nbP,'var(--vert)')+recapBox('Absents',nbA,'var(--rouge)')+
+    recapBox('Retards',nbR,'var(--jaune)')+recapBox('Congés auth.',nbC,'var(--bleu)')+
+    '</div>'+
+    '<div style="margin-top:.75rem;background:var(--bg3);border-radius:var(--r);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;">'+
+      '<span style="font-size:11px;color:var(--gris)">Taux de présence</span>'+
+      '<span style="font-family:var(--fd);font-size:20px;font-weight:800;color:'+(txP>=80?'var(--vert)':txP>=60?'var(--jaune)':'var(--rouge)')+'">'+txP+'%</span>'+
+    '</div>';
+
+  var tbody=document.getElementById('presences-tbody');
+  tbody.innerHTML='';
+  if(!presences.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--gris);padding:1.5rem">Aucune présence enregistrée pour ce mois.</td></tr>';return;}
+  var statutMap={present:{label:'✅ Présent',color:'var(--vert)'},absent:{label:'❌ Absent',color:'var(--rouge)'},retard:{label:'⏰ Retard',color:'var(--jaune)'},conge:{label:'🏖️ Congé',color:'var(--bleu)'}};
+  presences.forEach(function(p){
+    var s=statutMap[p.statut]||{label:p.statut,color:'var(--gris)'};
+    tbody.innerHTML+='<tr>'+
+      '<td class="c">'+fmtDate(p.date)+'</td>'+
+      '<td class="c" style="color:'+s.color+';font-weight:700">'+s.label+'</td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(p.obs||'—')+'</td>'+
+      '<td class="c"><button onclick="supprimerPresence('+p.id+')" style="background:none;border:none;color:var(--gris2);cursor:pointer;font-size:14px;">×</button></td>'+
+    '</tr>';
+  });
+}
+function recapBox(label,val,color){
+  return '<div style="background:var(--bg3);border-radius:var(--r);padding:.5rem .75rem;text-align:center;">'+
+    '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;margin-bottom:2px;">'+label+'</div>'+
+    '<div style="font-family:var(--fd);font-size:20px;font-weight:800;color:'+color+'">'+val+'</div></div>';
+}
+function sauverPresence(){
+  var stagId=parseInt(document.getElementById('p-stagiaire').value)||0;
+  if(!stagId){toast('Sélectionnez un stagiaire');return;}
+  var date=document.getElementById('pr-date').value;
+  if(!date){toast('Date obligatoire');return;}
+  if(ST.presences.find(function(p){return p.stag_id===stagId&&p.date===date;})){toast('Présence déjà enregistrée pour ce jour');return;}
+  ST.presences.push({id:uid(),stag_id:stagId,date:date,statut:document.getElementById('pr-statut').value,obs:document.getElementById('pr-obs').value.trim()});
+  sauver(); renderPresences(); toast('Présence enregistrée');
+  document.getElementById('pr-date').value=''; document.getElementById('pr-obs').value='';
+}
+function supprimerPresence(id){
+  ST.presences=ST.presences.filter(function(p){return p.id!==id;});
+  sauver(); renderPresences(); toast('Supprimée');
+}
+
+// ── ÉVALUATION ──
+function renderEvaluation(){
+  remplirSelectStagiaires(['ev-stagiaire'],'');
+  var stagId=parseInt(document.getElementById('ev-stagiaire').value)||0;
+  if(!stagId){ document.getElementById('eval-content').innerHTML='<div style="text-align:center;padding:3rem;color:var(--gris);">Sélectionnez un stagiaire pour voir ou saisir son évaluation.</div>'; return; }
+  var s=ST.stagiaires.find(function(x){return x.id===stagId;}); if(!s) return;
+  var ev=ST.evaluations.find(function(e){return e.stag_id===stagId;});
+  var moyenne=0;
+  if(ev){ var notes=CRITERES_EVAL.map(function(c){return parseFloat(ev[c.id])||0;}); moyenne=notes.reduce(function(a,b){return a+b;},0)/notes.length; }
+
+  var html='<div class="sc"><div class="sc-head"><div class="sc-title">⭐ Évaluation de '+esc(s.nom)+' '+esc(s.prenom||'')+'</div>';
+  html+='<button class="btn btn-or" onclick="ouvrirEvalId('+s.id+')">✏️ '+(ev?'Modifier':'Saisir l\'évaluation')+'</button></div>';
+  if(ev){
+    html+='<div class="sc-body">';
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1rem;">';
+    CRITERES_EVAL.forEach(function(c){
+      var note=parseFloat(ev[c.id])||0;
+      var color=note>=8?'var(--vert)':note>=6?'var(--jaune)':'var(--rouge)';
+      html+='<div style="background:var(--bg3);border-radius:var(--r);padding:.6rem .875rem;display:flex;align-items:center;justify-content:space-between;">'+
+        '<span style="font-size:11px;color:var(--gris)">'+c.label+'</span>'+
+        '<div class="note-cercle" style="color:'+color+';border-color:'+color+'">'+note+'</div></div>';
+    });
+    html+='</div>';
+    html+='<div style="display:flex;align-items:center;gap:1rem;background:var(--bg3);border-radius:var(--r);padding:.75rem 1rem;">'+
+      '<span style="font-family:var(--fd);font-size:13px;font-weight:700;">Moyenne générale</span>'+
+      '<span style="font-family:var(--fd);font-size:28px;font-weight:800;color:'+(moyenne>=8?'var(--vert)':moyenne>=6?'var(--jaune)':'var(--rouge)')+'">'+moyenne.toFixed(1)+'/10</span>'+
+      '<span style="font-size:12px;color:var(--gris);margin-left:auto">'+(moyenne>=8?'Excellent':moyenne>=6?'Bien':moyenne>=4?'Passable':'Insuffisant')+'</span>'+
+    '</div>';
+    if(ev.commentaire) html+='<div style="margin-top:.75rem;padding:.75rem;background:var(--bg4);border-radius:var(--r);font-size:12px;color:var(--gris)">'+esc(ev.commentaire)+'</div>';
+    if(ev.recommandation) html+='<div style="margin-top:.5rem;padding:.5rem .875rem;background:rgba(52,199,123,.05);border:1px solid rgba(52,199,123,.15);border-radius:var(--r);font-size:11px;color:var(--vert);font-weight:600;">Recommandation : '+esc(ev.recommandation)+'</div>';
+    html+='</div>';
+  } else {
+    html+='<div style="text-align:center;padding:2rem;color:var(--gris);">Aucune évaluation enregistrée. Cliquez sur "Saisir l\'évaluation".</div>';
+  }
+  html+='</div>';
+  document.getElementById('eval-content').innerHTML=html;
+}
+function ouvrirEvalId(id){
+  var s=ST.stagiaires.find(function(x){return x.id===id;}); if(!s) return;
+  var ev=ST.evaluations.find(function(e){return e.stag_id===id;})||{};
+  document.getElementById('mev-nom').textContent=s.nom+' '+s.prenom;
+  var html='<div class="fg" style="margin-bottom:1rem;"><div class="ff"><label>Date d\'évaluation</label><input type="date" id="ev-date" value="'+(ev.date||today())+'"/></div>'+
+    '<div class="ff"><label>Période évaluée</label><input type="text" id="ev-periode" value="'+(ev.periode||calcDureeStr(s.debut,s.fin)||'')+'" placeholder="Ex: Du 01/01 au 31/03/2026"/></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;">';
+  CRITERES_EVAL.forEach(function(c){
+    html+='<div class="ff"><label>'+c.label+' (0-10)</label>'+
+      '<input type="number" id="ev-'+c.id+'" min="0" max="10" step="0.5" value="'+(ev[c.id]||'')+'"/></div>';
+  });
+  html+='</div>';
+  html+='<div class="ff" style="margin-bottom:.75rem;"><label>Commentaire général du tuteur</label><textarea id="ev-commentaire" rows="3" placeholder="Appréciation globale, points forts, axes d\'amélioration...">'+esc(ev.commentaire||'')+'</textarea></div>';
+  html+='<div class="ff"><label>Recommandation pour recrutement</label><select id="ev-recommandation">'+
+    '<option value="">—</option>'+
+    '<option value="Fortement recommandé(e)" '+(ev.recommandation==='Fortement recommandé(e)'?'selected':'')+'>Fortement recommandé(e)</option>'+
+    '<option value="Recommandé(e)" '+(ev.recommandation==='Recommandé(e)'?'selected':'')+'>Recommandé(e)</option>'+
+    '<option value="Sans avis" '+(ev.recommandation==='Sans avis'?'selected':'')+'>Sans avis</option>'+
+    '<option value="Non recommandé(e)" '+(ev.recommandation==='Non recommandé(e)'?'selected':'')+'>Non recommandé(e)</option>'+
+  '</select></div>';
+  html+='<input type="hidden" id="ev-stag-id" value="'+id+'"/>';
+  document.getElementById('mev-body').innerHTML=html;
+  openModal('modal-eval');
+}
+function sauverEvaluation(){
+  var stagId=parseInt(document.getElementById('ev-stag-id').value)||0; if(!stagId) return;
+  var data={stag_id:stagId,date:document.getElementById('ev-date').value,periode:document.getElementById('ev-periode').value,commentaire:document.getElementById('ev-commentaire').value.trim(),recommandation:document.getElementById('ev-recommandation').value};
+  CRITERES_EVAL.forEach(function(c){ data[c.id]=parseFloat(document.getElementById('ev-'+c.id).value)||0; });
+  var idx=ST.evaluations.findIndex(function(e){return e.stag_id===stagId;});
+  if(idx>=0) ST.evaluations[idx]=data; else ST.evaluations.push(data);
+  sauver(); closeModal('modal-eval');
+  if(document.getElementById('ev-stagiaire').value===String(stagId)) renderEvaluation();
+  renderDashboard(); toast('Évaluation enregistrée');
+}
+
+// ── INDEMNITÉS ──
+function renderIndemnites(){
+  remplirSelectMois(['ind-mois']);
+  var mois=document.getElementById('ind-mois').value||today().substring(0,7);
+  var actifs=ST.stagiaires.filter(function(s){return s.debut<=mois+'-31'&&s.fin>=mois+'-01';});
+  var tbody=document.getElementById('ind-tbody');
+  tbody.innerHTML='';
+  var totalMois=0;
+  if(!actifs.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--gris);padding:2rem">Aucun stagiaire actif pour ce mois.</td></tr>'; document.getElementById('ind-total-val').textContent=''; document.getElementById('ind-total-label').textContent=''; return; }
+  actifs.forEach(function(s){
+    var presencesM=ST.presences.filter(function(p){return p.stag_id===s.id&&(p.date||'').substring(0,7)===mois;});
+    var jouvres=22; // jours ouvrables/mois
+    var nbPres=presencesM.filter(function(p){return p.statut==='present'||p.statut==='conge';}).length;
+    var nbAbs=presencesM.filter(function(p){return p.statut==='absent';}).length;
+    var tx=presencesM.length>0?Math.round(nbPres/jouvres*100):100; // si pas de saisie = 100%
+    var base=parseFloat(s.indemnite)||0;
+    var indCalc=presencesM.length>0?Math.round(base*nbPres/jouvres):base;
+    totalMois+=indCalc;
+    // Vérifier si payé ce mois
+    var paiements=s.paiements||{};
+    var paye=paiements[mois]===true;
+    tbody.innerHTML+='<tr>'+
+      '<td><strong>'+esc(s.nom)+' '+esc(s.prenom||'')+'</strong></td>'+
+      '<td style="font-size:11px;color:var(--gris)">'+esc(s.dept||'—')+'</td>'+
+      '<td style="font-size:11px">'+esc(s.tuteur||'—')+'</td>'+
+      '<td class="c">'+jouvres+'</td>'+
+      '<td class="c" style="color:var(--vert)">'+nbPres+'</td>'+
+      '<td class="c" style="color:var(--rouge)">'+nbAbs+'</td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:700">'+fmt(base)+' F</td>'+
+      '<td class="c"><div style="display:flex;align-items:center;gap:4px;"><div class="prog-track"><div class="prog-fill" style="width:'+tx+'%;background:var(--vert)"></div></div><span style="font-size:10px;font-family:var(--fd);font-weight:700;color:var(--vert)">'+tx+'%</span></div></td>'+
+      '<td class="c" style="font-family:var(--fd);font-weight:800;color:var(--or)">'+fmt(indCalc)+' F</td>'+
+      '<td class="c"><span class="badge '+(paye?'b-actif':'b-bientot')+'">'+(paye?'✓ Payé':'En attente')+'</span></td>'+
+      '<td class="c"><button onclick="marquerPaye('+s.id+',\''+mois+'\')" class="btn btn-ghost" style="padding:2px 8px;font-size:9px;">'+(paye?'↺ Annuler':'✓ Marquer payé')+'</button></td>'+
+    '</tr>';
+  });
+  document.getElementById('ind-total-val').textContent='Total : '+fmt(totalMois)+' FCFA';
+  document.getElementById('ind-total-label').textContent='— '+actifs.length+' stagiaire(s)';
+}
+function marquerPaye(id,mois){
+  var s=ST.stagiaires.find(function(x){return x.id===id;}); if(!s) return;
+  if(!s.paiements) s.paiements={};
+  s.paiements[mois]=!s.paiements[mois];
+  sauver(); renderIndemnites(); toast(s.paiements[mois]?'Marqué comme payé':'Paiement annulé');
+}
+
+// ── POUSSER VERS PAYROLL ──
+function pousserVersPayroll(){
+  var SK_PAY='payrollmgr_v2';
+  var stPay={};
+  try{ stPay=JSON.parse(localStorage.getItem(SK_PAY)||'{}'); }catch(e){}
+  var periodes=stPay.periodes||{};
+  var keys=Object.keys(periodes).sort();
+  var agentsRef;
+  if(keys.length){ var lk=keys[keys.length-1]; if(!periodes[lk].agents) periodes[lk].agents=[]; agentsRef=periodes[lk].agents; }
+  else { if(!stPay.agents) stPay.agents=[]; agentsRef=stPay.agents; }
+  var actifs=ST.stagiaires.filter(function(s){return statut(s)==='actif';});
+  var pushed=0,updated=0;
+  actifs.forEach(function(s){
+    var mat='STG-'+(s.id);
+    var exist=agentsRef.findIndex(function(a){return (a.matricule||'').trim()===mat;});
+    var agentData={matricule:mat,nom:s.nom,prenom:s.prenom||'',poste:'Stagiaire — '+esc(s.filiere||''),dept:s.dept||'',service:'Stage',contrat:'Stage',staff1:'STAGIAIRE',base:parseFloat(s.indemnite)||0,hsupp:0,primes:0,logement:0,commission:0,deduction:0,actif:true,date_entree:s.debut||''};
+    if(exist>=0){ agentsRef[exist].base=agentData.base; updated++; }
+    else { agentData.company=(stPay.compagnies&&stPay.compagnies.length)?stPay.compagnies[0].nom:''; agentsRef.push(agentData); pushed++; }
+  });
+  if(keys.length) stPay.periodes=periodes; else stPay.agents=agentsRef;
+  try{ localStorage.setItem(SK_PAY,JSON.stringify(stPay)); }catch(err){}
+  toast(pushed+' stagiaire(s) ajouté(s), '+updated+' mis à jour dans la Paie ✓');
+}
+
+// ── FORM STAGIAIRE ──
+function calcDuree(){
+  var d=document.getElementById('s-debut').value;
+  var f=document.getElementById('s-fin').value;
+  document.getElementById('s-duree').value=calcDureeStr(d,f);
+}
+function viderForm(){
+  ['s-nom','s-prenom','s-naissance','s-tel','s-email','s-adresse','s-ecole','s-filiere',
+   's-carte-etud','s-directeur-ecole','s-contact-ecole','s-dept','s-tuteur',
+   's-debut','s-fin','s-duree','s-num-conv','s-indemnite','s-theme','s-missions',
+   's-objectifs','s-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('s-sexe').value='';
+  document.getElementById('s-niveau').value='';
+  document.getElementById('s-statut').value='actif';
+  document.getElementById('ms-title').innerHTML='🎓 <span>Nouveau Stagiaire</span>';
+  document.getElementById('btn-attestation').style.display='none';
+  document.getElementById('btn-convention').style.display='none';
+}
+function sauverStagiaire(){
+  var nom=document.getElementById('s-nom').value.trim();
+  if(!nom){toast('Nom obligatoire');return;}
+  var data={
+    nom:nom.toUpperCase(),prenom:document.getElementById('s-prenom').value.trim(),
+    sexe:document.getElementById('s-sexe').value,
+    date_naissance:document.getElementById('s-naissance').value,
+    tel:document.getElementById('s-tel').value.trim(),
+    email:document.getElementById('s-email').value.trim(),
+    adresse:document.getElementById('s-adresse').value.trim(),
+    ecole:document.getElementById('s-ecole').value.trim(),
+    niveau:document.getElementById('s-niveau').value,
+    filiere:document.getElementById('s-filiere').value.trim(),
+    carte_etud:document.getElementById('s-carte-etud').value.trim(),
+    directeur_ecole:document.getElementById('s-directeur-ecole').value.trim(),
+    contact_ecole:document.getElementById('s-contact-ecole').value.trim(),
+    dept:document.getElementById('s-dept').value.trim(),
+    tuteur:document.getElementById('s-tuteur').value.trim(),
+    debut:document.getElementById('s-debut').value,
+    fin:document.getElementById('s-fin').value,
+    num_conv:document.getElementById('s-num-conv').value.trim(),
+    indemnite:parseFloat(document.getElementById('s-indemnite').value)||0,
+    theme:document.getElementById('s-theme').value.trim(),
+    missions:document.getElementById('s-missions').value.trim(),
+    objectifs:document.getElementById('s-objectifs').value.trim(),
+    statut:document.getElementById('s-statut').value,
+    date_saisie:today()
+  };
+  var idVal=document.getElementById('s-id').value;
+  if(modeEdit&&idVal){
+    var s=ST.stagiaires.find(function(x){return x.id===parseInt(idVal);});
+    if(s){ Object.assign(s,data); toast('Stagiaire mis à jour'); }
+  } else {
+    data.id=uid();
+    ST.stagiaires.push(data);
+    toast('Stagiaire enregistré');
+  }
+  sauver(); closeModal('modal-stagiaire'); renderAll();
+}
+function editerStagiaire(id){
+  var s=ST.stagiaires.find(function(x){return x.id===id;}); if(!s) return;
+  modeEdit=true;
+  document.getElementById('ms-title').innerHTML='✏️ <span>Modifier — '+esc(s.nom)+' '+esc(s.prenom||'')+'</span>';
+  document.getElementById('btn-attestation').style.display='flex';
+  document.getElementById('btn-convention').style.display='flex';
+  var fields={'s-nom':s.nom,'s-prenom':s.prenom||'','s-naissance':s.date_naissance||'','s-tel':s.tel||'','s-email':s.email||'','s-adresse':s.adresse||'','s-ecole':s.ecole||'','s-filiere':s.filiere||'','s-carte-etud':s.carte_etud||'','s-directeur-ecole':s.directeur_ecole||'','s-contact-ecole':s.contact_ecole||'','s-dept':s.dept||'','s-tuteur':s.tuteur||'','s-debut':s.debut||'','s-fin':s.fin||'','s-num-conv':s.num_conv||'','s-indemnite':s.indemnite||'','s-theme':s.theme||'','s-missions':s.missions||'','s-objectifs':s.objectifs||'','s-id':id};
+  Object.keys(fields).forEach(function(k){var el=document.getElementById(k);if(el)el.value=fields[k];});
+  document.getElementById('s-sexe').value=s.sexe||'';
+  document.getElementById('s-niveau').value=s.niveau||'';
+  document.getElementById('s-statut').value=s.statut||'actif';
+  calcDuree();
+  openModal('modal-stagiaire');
+}
+function supprimerStagiaire(id){
+  if(!confirm('Supprimer ce stagiaire et toutes ses données ?')) return;
+  ST.stagiaires=ST.stagiaires.filter(function(x){return x.id!==id;});
+  ST.presences=ST.presences.filter(function(p){return p.stag_id!==id;});
+  ST.evaluations=ST.evaluations.filter(function(e){return e.stag_id!==id;});
+  sauver(); renderAll(); toast('Stagiaire supprimé');
+}
+
+// ── DOCUMENTS ──
+function getIdFromForm(){ return parseInt(document.getElementById('s-id').value)||0; }
+function genererConvention(){ var id=getIdFromForm(); if(id) genererConventionId(id); else toast('Enregistrez d\'abord le stagiaire'); }
+function genererAttestation(){ var id=getIdFromForm(); if(id) genererAttestationId(id); else toast('Enregistrez d\'abord le stagiaire'); }
+
+function genererConventionId(id){
+  var s=ST.stagiaires.find(function(x){return x.id===id;}); if(!s) return;
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Convention de Stage — '+s.nom+'</title>'+styleLettreS()+'</head><body>'+
+  '<div class="header"><div><strong style="font-size:18px;color:#C9A84C">Elite RH</strong> Consulting<br><span style="font-size:10px;color:#888;letter-spacing:.1em">CONVENTION DE STAGE</span></div>'+
+  '<div style="text-align:right;font-size:10px;color:#888;">Réf. : '+(s.num_conv||'CONV-'+id)+'<br>Établie le '+new Date().toLocaleDateString('fr-FR')+'</div></div>'+
+  '<div class="titre">CONVENTION DE STAGE DE FORMATION</div>'+
+  '<p>Entre : <strong>Elite RH Consulting</strong>, représentée par la Direction, ci-après dénommée "l\'Entreprise",</p>'+
+  '<p>Et : <strong>'+s.ecole+'</strong>, représentée par M./Mme <strong>'+esc(s.directeur_ecole||'____________________')+'</strong>, ci-après dénommée "l\'École",</p>'+
+  '<p>Et : M./Mme <strong>'+esc(s.nom)+' '+esc(s.prenom||'')+'</strong>, étudiant(e) en <strong>'+esc(s.niveau||'____')+'</strong> — Filière : <strong>'+esc(s.filiere||'____')+'</strong>, ci-après dénommé(e) "le/la Stagiaire".</p>'+
+  '<h2>Article 1 — Objet du stage</h2>'+
+  '<p>Le/la stagiaire est accueilli(e) au sein du département <strong>'+esc(s.dept||'____')+'</strong>, sous la responsabilité de <strong>'+esc(s.tuteur||'____')+'</strong>, Tuteur de stage.</p>'+
+  '<p>Thème du stage : <em>'+esc(s.theme||'À définir')+'</em></p>'+
+  '<p>Missions confiées : '+esc(s.missions||'À définir')+'</p>'+
+  '<h2>Article 2 — Durée et dates</h2>'+
+  '<p>Le stage se déroulera du <strong>'+fmtDate(s.debut)+'</strong> au <strong>'+fmtDate(s.fin)+'</strong>, soit une durée de <strong>'+calcDureeStr(s.debut,s.fin)+'</strong>.</p>'+
+  '<h2>Article 3 — Indemnité de stage</h2>'+
+  '<p>Le/la stagiaire percevra une indemnité mensuelle de <strong>'+fmt(s.indemnite||0)+' FCFA</strong>, versée à terme échu.</p>'+
+  '<h2>Article 4 — Obligations des parties</h2>'+
+  '<p>L\'entreprise s\'engage à : accueillir le/la stagiaire dans de bonnes conditions, assurer un suivi régulier, fournir les moyens nécessaires à l\'accomplissement des missions.</p>'+
+  '<p>Le/la stagiaire s\'engage à : respecter le règlement intérieur, effectuer les missions confiées avec sérieux, rédiger un rapport de stage à l\'issue du stage.</p>'+
+  '<h2>Article 5 — Confidentialité</h2>'+
+  '<p>Le/la stagiaire s\'engage à ne pas divulguer les informations confidentielles auxquelles il/elle aura accès durant le stage.</p>'+
+  signaturesS(['Le Directeur de l\'École','Le/La Stagiaire','Le Tuteur de stage','La Direction de l\'Entreprise'])+
+  '<div class="footer">Elite RH Consulting — Convention de stage — '+s.num_conv+'</div></body></html>';
+  imprimerDoc(html);
+}
+
+function genererAttestationId(id){
+  var s=ST.stagiaires.find(function(x){return x.id===id;}); if(!s) return;
+  var ev=ST.evaluations.find(function(e){return e.stag_id===id;});
+  var notes=ev?CRITERES_EVAL.map(function(c){return parseFloat(ev[c.id])||0;}):[];
+  var moyenne=notes.length?notes.reduce(function(a,b){return a+b;},0)/notes.length:null;
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Attestation — '+s.nom+'</title>'+styleLettreS()+'</head><body>'+
+  '<div class="header"><div><strong style="font-size:18px;color:#C9A84C">Elite RH</strong> Consulting<br><span style="font-size:10px;color:#888;letter-spacing:.1em">ATTESTATION DE STAGE</span></div>'+
+  '<div style="text-align:right;font-size:10px;color:#888;">Cotonou, le '+new Date().toLocaleDateString('fr-FR')+'</div></div>'+
+  '<div class="titre">ATTESTATION DE FIN DE STAGE</div>'+
+  '<p style="text-align:center;font-size:13px;">Je soussigné(e), Directeur(rice) de <strong>Elite RH Consulting</strong>, atteste que :</p>'+
+  '<p style="text-align:center;font-size:18px;font-weight:700;color:#C9A84C;border:2px solid #C9A84C;padding:.75rem;border-radius:4px;margin:1.5rem 0;">'+esc(s.nom)+' '+esc(s.prenom||'')+'</p>'+
+  '<p>Né(e) le '+fmtDate(s.date_naissance||'')+', étudiant(e) en <strong>'+esc(s.niveau||'____')+'</strong> à <strong>'+esc(s.ecole||'____')+'</strong>, filière <strong>'+esc(s.filiere||'____')+'</strong>,</p>'+
+  '<p>a effectué un stage au sein de notre organisation du <strong>'+fmtDate(s.debut)+'</strong> au <strong>'+fmtDate(s.fin)+'</strong>, soit une durée de <strong>'+calcDureeStr(s.debut,s.fin)+'</strong>.</p>'+
+  '<p><strong>Département d\'accueil :</strong> '+esc(s.dept||'—')+'<br>'+
+  '<strong>Tuteur de stage :</strong> '+esc(s.tuteur||'—')+'<br>'+
+  '<strong>Thème :</strong> '+esc(s.theme||'—')+'</p>'+
+  (moyenne!==null?'<p>À l\'issue de ce stage, le/la stagiaire a obtenu une appréciation globale de <strong>'+moyenne.toFixed(1)+'/10</strong> — <strong>'+(moyenne>=8?'Excellent':moyenne>=6?'Bien':moyenne>=4?'Passable':'Insuffisant')+'</strong>.</p>':'')+
+  (ev&&ev.recommandation?'<p><strong>Recommandation :</strong> '+esc(ev.recommandation)+'</p>':'')+
+  (ev&&ev.commentaire?'<p><strong>Appréciation :</strong> '+esc(ev.commentaire)+'</p>':'')+
+  '<p>La présente attestation est délivrée pour servir et valoir ce que de droit.</p>'+
+  signaturesS(['La Direction d\'Elite RH Consulting'])+
+  '<div class="footer">Elite RH Consulting — Attestation de stage — '+new Date().getFullYear()+'</div></body></html>';
+  imprimerDoc(html);
+}
+
+function styleLettreS(){
+  return '<style>body{font-family:"Times New Roman",serif;padding:2.5rem;color:#111;max-width:800px;margin:0 auto;font-size:13px;line-height:1.7;}'+
+    '.header{display:flex;justify-content:space-between;border-bottom:2px solid #C9A84C;padding-bottom:.75rem;margin-bottom:1.5rem;}'+
+    '.titre{font-size:17px;font-weight:700;text-align:center;text-decoration:underline;margin:1.25rem 0;text-transform:uppercase;letter-spacing:.08em;}'+
+    'h2{font-size:13px;font-weight:700;color:#C9A84C;margin:1rem 0 .4rem;}'+
+    'p{margin-bottom:.75rem;text-align:justify;}'+
+    '.signatures{margin-top:3rem;display:flex;justify-content:space-around;flex-wrap:wrap;gap:1rem;}'+
+    '.sig{text-align:center;min-width:150px;}.sig-line{border-top:1px solid #333;margin-top:3rem;font-size:11px;color:#555;padding-top:4px;}'+
+    '.footer{margin-top:2rem;padding-top:.75rem;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center;}'+
+    '@media print{button{display:none}}</style>';
+}
+function signaturesS(names){
+  return '<div class="signatures">'+names.map(function(n){return '<div class="sig"><div class="sig-line">'+n+'<br>Signature</div></div>';}).join('')+'</div>';
+}
+function imprimerDoc(html){
+  var win=window.open('','_blank','width=900,height=700');
+  win.document.write(html); win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+// ── EXPORT EXCEL ──
+function exporterExcel(){
+  if(!window.XLSX){toast('XLSX non disponible');return;}
+  var wb=XLSX.utils.book_new();
+  var headers=['Nom','Prénoms','Sexe','Date naissance','Téléphone','Email','École','Niveau','Filière','Département','Tuteur','Début','Fin','Durée','Indemnité/mois','Statut','Thème','N° Convention'];
+  var data=[headers];
+  ST.stagiaires.forEach(function(s){
+    data.push([s.nom,s.prenom||'',s.sexe||'',s.date_naissance||'',s.tel||'',s.email||'',s.ecole||'',s.niveau||'',s.filiere||'',s.dept||'',s.tuteur||'',s.debut||'',s.fin||'',calcDureeStr(s.debut,s.fin),s.indemnite||0,statut(s),s.theme||'',s.num_conv||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'Stagiaires');
+  // Évaluations
+  var data2=[['Nom','Prénoms'].concat(CRITERES_EVAL.map(function(c){return c.label;})).concat(['Moyenne','Recommandation','Commentaire'])];
+  ST.evaluations.forEach(function(ev){
+    var s=ST.stagiaires.find(function(x){return x.id===ev.stag_id;})||{nom:'—',prenom:''};
+    var notes=CRITERES_EVAL.map(function(c){return parseFloat(ev[c.id])||0;});
+    var moy=notes.reduce(function(a,b){return a+b;},0)/notes.length;
+    data2.push([s.nom,s.prenom||''].concat(notes).concat([moy.toFixed(1),ev.recommandation||'',ev.commentaire||'']));
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data2),'Évaluations');
+  XLSX.writeFile(wb,'Stagiaires-'+today()+'.xlsx');
+  toast('Export généré');
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  renderDashboard();
+  renderListe();
+  remplirSelectStagiaires(['p-stagiaire','ev-stagiaire'],'');
+  remplirSelectMois(['p-mois','ind-mois']);
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('panel-'+tab); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(tab==='presences') renderPresences();
+  if(tab==='evaluations') renderEvaluation();
+  if(tab==='indemnites') renderIndemnites();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});});
+var toastTmr;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(function(){el.classList.remove('show');},3500);}
+
+charger();
+renderAll();
+</script>
+</body>
+</html>

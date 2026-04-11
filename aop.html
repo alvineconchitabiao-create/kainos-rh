@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Plan Opérationnel Annuel — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#08080E;--bg2:#0F0F18;--bg3:#16161F;--bg4:#1D1D28;
+  --or:#C9A84C;--or2:#E2C47A;--or-glow:rgba(201,168,76,0.1);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#222230;
+  --bleu:#4A9EFF;--vert:#34C77B;--rouge:#F05A5A;--violet:#A78BFA;
+  --orange:#FB923C;--cyan:#22D3EE;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:10px;--rl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;gap:1rem;flex-wrap:wrap;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.08em;}
+.hdr-logo span{color:var(--or);}
+.hdr-sep{width:1px;height:20px;background:var(--gris3);}
+.hdr-title{font-size:11px;font-weight:600;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.hdr-year{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--gris);display:flex;align-items:center;gap:6px;}
+.hdr-year input{background:transparent;border:none;color:var(--blanc);font-family:var(--fd);font-size:14px;font-weight:700;outline:none;width:52px;text-align:center;}
+.hbtn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;text-decoration:none;}
+.hbtn-or{background:var(--or);color:var(--bg);}
+.hbtn-or:hover{background:var(--or2);}
+.hbtn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.hbtn-ghost:hover{border-color:var(--or);color:var(--or);}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 2rem;display:flex;overflow-x:auto;gap:0;}
+.tab{padding:12px 18px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;letter-spacing:.05em;display:flex;align-items:center;gap:7px;}
+.tab:hover{color:var(--blanc);}
+.tab.active{color:var(--or);border-bottom-color:var(--or);}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.main{padding:1.5rem 2rem;max-width:1600px;margin:0 auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.875rem;margin-bottom:1.5rem;}
+.ov-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.ov-card:hover{border-color:rgba(201,168,76,.25);}
+.ov-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--or)),transparent);opacity:.7;}
+.ov-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.6rem;}
+.ov-val{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--blanc);line-height:1;}
+.ov-unit{font-size:11px;color:var(--gris);margin-left:3px;}
+.ov-sub{font-size:10px;margin-top:.4rem;font-weight:500;color:var(--gris);}
+.global-progress{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;margin-bottom:1.5rem;}
+.gp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.gp-title{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--blanc);}
+.gp-pct{font-family:var(--fd);font-size:32px;font-weight:700;color:var(--or);}
+.gp-bar-track{height:10px;background:var(--gris3);border-radius:5px;overflow:hidden;}
+.gp-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--or),var(--or2));transition:width .8s ease;}
+.domaines-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;margin-top:1.25rem;}
+.domaine-summary-card{background:var(--bg3);border-radius:var(--r);padding:.875rem;border-left:3px solid var(--color,var(--or));}
+.ds-title{font-size:12px;font-weight:700;color:var(--blanc);margin-bottom:4px;}
+.ds-meta{font-size:10px;color:var(--gris);margin-bottom:6px;}
+.ds-bar{height:4px;background:var(--gris3);border-radius:2px;overflow:hidden;}
+.ds-fill{height:100%;border-radius:2px;transition:width .6s;}
+.ds-pct{font-size:11px;font-weight:700;margin-top:4px;}
+.alertes-section{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;}
+.alert-item{display:flex;align-items:center;gap:10px;padding:.5rem .75rem;border-radius:var(--r);margin-bottom:6px;font-size:12px;}
+.alert-rouge{background:rgba(240,90,90,.08);border:1px solid rgba(240,90,90,.2);color:#F05A5A;}
+.alert-jaune{background:rgba(251,199,36,.06);border:1px solid rgba(251,199,36,.2);color:#FBC724;}
+.alert-vert{background:rgba(52,199,123,.06);border:1px solid rgba(52,199,123,.2);color:#34C77B;}
+.domaines-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;}
+.domaine-block{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);margin-bottom:1.25rem;overflow:hidden;transition:border-color .2s;}
+.domaine-block:hover{border-color:rgba(201,168,76,.2);}
+.domaine-head{padding:1rem 1.25rem;background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.02));border-bottom:1px solid var(--gris3);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.domaine-head-left{flex:1;}
+.domaine-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--or);opacity:.8;margin-bottom:3px;}
+.domaine-title-input{background:transparent;border:none;font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);width:100%;outline:none;border-bottom:1px solid transparent;transition:border-color .2s;padding:2px 4px;}
+.domaine-title-input:focus{border-bottom-color:var(--or);}
+.domaine-title-input::placeholder{color:var(--gris2);}
+.domaine-desc-input{background:transparent;border:none;font-size:12px;color:var(--gris);width:100%;outline:none;border-bottom:1px solid transparent;transition:border-color .2s;padding:2px 4px;margin-top:4px;font-family:var(--fb);resize:none;}
+.domaine-desc-input:focus{border-bottom-color:var(--or);}
+.domaine-head-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.domaine-color-pick{width:24px;height:24px;border-radius:50%;border:none;cursor:pointer;padding:0;outline:none;}
+.domaine-toggle{background:none;border:1px solid var(--gris3);border-radius:var(--r);color:var(--gris);font-size:14px;width:28px;height:28px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.domaine-toggle:hover{border-color:var(--or);color:var(--or);}
+.domaine-del{background:none;border:none;color:var(--gris2);cursor:pointer;font-size:18px;transition:color .2s;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+.domaine-del:hover{color:var(--rouge);}
+.domaine-body{padding:1rem 1.25rem;}
+.exemple-hint{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:var(--r);padding:.6rem .875rem;font-size:11px;color:var(--gris);margin-bottom:1rem;display:flex;align-items:flex-start;gap:8px;line-height:1.6;}
+.hint-icon{color:var(--or);flex-shrink:0;font-size:13px;}
+.activites-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem;}
+.activite-card{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;transition:border-color .2s;}
+.activite-card:hover{border-color:rgba(201,168,76,.2);}
+.acti-head{padding:.875rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--gris3);flex-wrap:wrap;}
+.acti-num-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:11px;font-weight:700;flex-shrink:0;}
+.acti-title-input{flex:1;background:transparent;border:none;font-family:var(--fd);font-size:14px;font-weight:600;color:var(--blanc);outline:none;border-bottom:1px solid transparent;transition:border-color .2s;padding:2px 4px;min-width:200px;}
+.acti-title-input:focus{border-bottom-color:var(--or);}
+.acti-title-input::placeholder{color:var(--gris2);font-size:13px;}
+.acti-status-sel,.acti-priority-sel{background:var(--bg2);border:1px solid var(--gris3);border-radius:20px;font-family:var(--fd);font-size:10px;font-weight:600;padding:3px 10px;outline:none;cursor:pointer;}
+.acti-status-sel option,.acti-priority-sel option{background:var(--bg2);}
+.acti-del{background:none;border:none;color:var(--gris2);cursor:pointer;font-size:16px;transition:color .2s;}
+.acti-del:hover{color:var(--rouge);}
+.acti-body{padding:.875rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.acti-body-full{grid-column:1/-1;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);display:block;margin-bottom:4px;}
+.ff input,.ff select,.ff textarea{width:100%;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff textarea{resize:vertical;min-height:52px;line-height:1.6;}
+.ff select option{background:var(--bg2);}
+.placeholder-hint{font-size:10px;color:var(--gris2);margin-top:3px;font-style:italic;}
+.btn-add-acti{width:100%;padding:10px;border:1px dashed rgba(201,168,76,.3);border-radius:var(--rl);background:transparent;color:var(--or);font-family:var(--fb);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-add-acti:hover{background:var(--or-glow);border-color:var(--or);}
+.btn-add-domaine{padding:9px 20px;background:var(--or);color:var(--bg);border:none;border-radius:20px;font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-add-domaine:hover{background:var(--or2);}
+.btn-save-aop{padding:9px 20px;background:var(--vert);color:var(--bg);border:none;border-radius:20px;font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.gantt-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.gantt-header-row{display:flex;background:var(--bg3);border-bottom:1px solid var(--gris3);}
+.gantt-label-col{width:260px;flex-shrink:0;padding:.6rem .875rem;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris);border-right:1px solid var(--gris3);}
+.gantt-months{flex:1;display:grid;grid-template-columns:repeat(12,1fr);}
+.gantt-month-hdr{text-align:center;padding:.6rem 0;font-size:10px;font-weight:600;color:var(--gris);border-right:1px solid rgba(34,32,48,.5);}
+.gantt-month-hdr.cur-month{color:var(--or);font-weight:800;}
+.gantt-domaine-row{border-bottom:1px solid var(--gris3);}
+.gantt-domaine-label{display:flex;align-items:center;gap:8px;width:260px;padding:.6rem .875rem;background:var(--bg3);font-size:11px;font-weight:700;color:var(--blanc);border-right:1px solid var(--gris3);border-bottom:1px solid rgba(34,32,48,.4);}
+.gantt-acti-row{display:flex;border-bottom:1px solid rgba(34,32,48,.3);min-height:32px;align-items:center;}
+.gantt-acti-label{width:260px;flex-shrink:0;padding:.4rem .875rem .4rem 1.5rem;font-size:11px;color:var(--gris);border-right:1px solid var(--gris3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gantt-acti-bar-area{flex:1;display:grid;grid-template-columns:repeat(12,1fr);position:relative;min-height:32px;}
+.gantt-month-cell{border-right:1px solid rgba(34,32,48,.3);min-height:32px;}
+.gantt-month-cell.cur-month{background:rgba(201,168,76,.03);}
+.gantt-bar{position:absolute;top:6px;height:20px;border-radius:4px;z-index:2;display:flex;align-items:center;padding:0 6px;font-size:9px;font-weight:600;white-space:nowrap;overflow:hidden;cursor:default;}
+.suivi-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;}
+.suivi-table-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.suivi-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.suivi-tbl th{text-align:center;padding:7px 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);background:var(--bg3);border-bottom:1px solid var(--gris3);border-right:1px solid rgba(34,32,48,.4);white-space:nowrap;}
+.suivi-tbl th.left{text-align:left;}
+.suivi-tbl th.cur-m{color:var(--or);}
+.suivi-tbl td{padding:6px 8px;border-bottom:1px solid rgba(34,32,48,.3);border-right:1px solid rgba(34,32,48,.2);color:var(--blanc);vertical-align:middle;}
+.suivi-tbl tr:hover td{background:var(--bg3);}
+.suivi-tbl td.domaine-row{background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.02));font-family:var(--fd);font-size:12px;font-weight:700;border-left:3px solid var(--color,var(--or));}
+.taux-cell{text-align:center;}
+.taux-input{width:52px;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fd);font-size:12px;font-weight:700;text-align:center;padding:3px 4px;outline:none;transition:border-color .2s;}
+.taux-input:focus{border-color:var(--or);}
+.taux-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-align:center;}
+.taux-0{background:rgba(90,88,102,.2);color:var(--gris2);}
+.taux-25{background:rgba(240,90,90,.15);color:#F05A5A;}
+.taux-50{background:rgba(251,199,36,.12);color:#FBC724;}
+.taux-75{background:rgba(74,158,255,.12);color:#4A9EFF;}
+.taux-100{background:rgba(52,199,123,.15);color:#34C77B;}
+.obs-input{width:100%;background:transparent;border:none;border-bottom:1px dashed var(--gris3);color:var(--gris);font-family:var(--fb);font-size:11px;outline:none;padding:2px 4px;transition:border-color .2s;}
+.obs-input:focus{border-bottom-color:var(--or);}
+.export-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.export-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.5rem;text-align:center;transition:border-color .2s;cursor:pointer;}
+.export-card:hover{border-color:var(--or);}
+.export-icon{font-size:40px;margin-bottom:.75rem;}
+.export-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);margin-bottom:.4rem;}
+.export-desc{font-size:12px;color:var(--gris);line-height:1.7;margin-bottom:1rem;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:900px){.acti-body{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">Elite <span>RH</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-title">Plan Opérationnel Annuel</div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-year">AOP <input type="number" id="aop-annee" value="2025" onchange="changeAnnee(this.value)" min="2020" max="2035"/></div>
+    <button class="hbtn hbtn-ghost" onclick="exporterExcel()">📊 Export Excel</button>
+    <button class="hbtn hbtn-ghost" onclick="window.print()">🖨️ Imprimer</button>
+    <button class="hbtn hbtn-or" onclick="sauvegarder()">💾 Sauvegarder</button>
+    <a href="dashboard-rh.html" class="hbtn hbtn-ghost">← Dashboard</a>
+  </div>
+</header>
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('overview',this)"><span class="tdot" style="background:#C9A84C"></span>📊 Vue d'ensemble</button>
+  <button class="tab" onclick="showTab('domaines',this)"><span class="tdot" style="background:#4A9EFF"></span>🎯 Domaines &amp; Activités</button>
+  <button class="tab" onclick="showTab('gantt',this)"><span class="tdot" style="background:#34C77B"></span>📅 Calendrier Gantt</button>
+  <button class="tab" onclick="showTab('suivi',this)"><span class="tdot" style="background:#A78BFA"></span>📈 Suivi mensuel</button>
+  <button class="tab" onclick="showTab('export',this)"><span class="tdot" style="background:#FB923C"></span>⬇ Export</button>
+</nav>
+<div class="main">
+<div class="panel active" id="panel-overview">
+  <div class="overview-grid" id="ov-kpis"></div>
+  <div class="global-progress">
+    <div class="gp-header">
+      <div class="gp-title">Avancement global du Plan Opérationnel <span id="ov-annee-label" style="color:var(--or)">2025</span></div>
+      <div class="gp-pct" id="ov-pct-global">0%</div>
+    </div>
+    <div class="gp-bar-track"><div class="gp-bar-fill" id="ov-bar-global" style="width:0%"></div></div>
+    <div class="domaines-summary" id="ov-domaines-summary"></div>
+  </div>
+  <div class="alertes-section">
+    <div style="font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);margin-bottom:.875rem">⚡ Alertes &amp; Points d'attention</div>
+    <div id="ov-alertes"></div>
+  </div>
+</div>
+<div class="panel" id="panel-domaines">
+  <div class="domaines-toolbar">
+    <div>
+      <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--blanc)">Domaines Opérationnels <span style="color:var(--or)" id="dom-count"></span></div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Cliquez sur un champ pour le modifier. Sauvegarde automatique toutes les 2 minutes.</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-save-aop" onclick="sauvegarder()">💾 Sauvegarder</button>
+      <button class="btn-add-domaine" onclick="ajouterDomaine()">+ Ajouter un domaine</button>
+    </div>
+  </div>
+  <div id="domaines-container"></div>
+</div>
+<div class="panel" id="panel-gantt">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">Calendrier Gantt <span style="color:var(--or)" id="gantt-annee-lbl">2025</span></div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Barres générées depuis les dates début/fin. Colonne en or = mois actuel.</div>
+    </div>
+    <button class="hbtn hbtn-ghost" onclick="lireFormulaires();renderGantt()">🔄 Actualiser</button>
+  </div>
+  <div id="gantt-container"></div>
+</div>
+<div class="panel" id="panel-suivi">
+  <div class="suivi-toolbar">
+    <div>
+      <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc)">Suivi d'implémentation mensuel</div>
+      <div style="font-size:12px;color:var(--gris);margin-top:3px">Saisissez le taux d'avancement (0-100%) pour chaque activité par mois.</div>
+    </div>
+    <button class="hbtn hbtn-or" onclick="sauvegarder()">💾 Sauvegarder</button>
+  </div>
+  <div style="overflow-x:auto;"><div class="suivi-table-wrap"><table class="suivi-tbl" id="suivi-table"></table></div></div>
+</div>
+<div class="panel" id="panel-export">
+  <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--blanc);margin-bottom:1.25rem">Options d'export</div>
+  <div class="export-grid">
+    <div class="export-card" onclick="exporterExcel()">
+      <div class="export-icon">📊</div>
+      <div class="export-title">Export Excel complet</div>
+      <div class="export-desc">Toutes les activités, KPIs, budgets, responsables et taux mensuels dans un fichier .xlsx.</div>
+      <button class="hbtn hbtn-or" style="width:100%;justify-content:center">Télécharger .xlsx</button>
+    </div>
+    <div class="export-card" onclick="window.print()">
+      <div class="export-icon">🖨️</div>
+      <div class="export-title">Imprimer / PDF</div>
+      <div class="export-desc">Imprimez le plan en PDF. Le formatage est optimisé pour l'impression A4.</div>
+      <button class="hbtn hbtn-ghost" style="width:100%;justify-content:center">Imprimer</button>
+    </div>
+    <div class="export-card" onclick="exporterJSON()">
+      <div class="export-icon">💾</div>
+      <div class="export-title">Sauvegarde JSON</div>
+      <div class="export-desc">Exportez toutes vos données en fichier JSON pour archiver ou transférer.</div>
+      <button class="hbtn hbtn-ghost" style="width:100%;justify-content:center">Télécharger .json</button>
+    </div>
+    <div class="export-card">
+      <div class="export-icon">📂</div>
+      <div class="export-title">Importer une sauvegarde</div>
+      <div class="export-desc">Rechargez un fichier JSON pour restaurer votre plan complet.</div>
+      <button class="hbtn hbtn-ghost" style="width:100%;justify-content:center" onclick="document.getElementById('json-import').click()">Importer .json</button>
+      <input type="file" id="json-import" accept=".json" style="display:none" onchange="chargerJSON(this)"/>
+    </div>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1.25rem;margin-top:1rem;">
+    <div style="font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);margin-bottom:.875rem">📋 Récapitulatif</div>
+    <div id="export-recap" style="font-size:12px;color:var(--gris);line-height:2;"></div>
+  </div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var SK='eliteaop_v2';
+var anneeAOP=2025;
+var MOIS_LABELS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+var MOIS_FULL=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var DOMAINE_COLORS=['#C9A84C','#4A9EFF','#34C77B','#A78BFA','#FB923C','#F05A5A','#E2C47A','#22D3EE'];
+var STATUS_OPTIONS=['Non démarré','En cours','En retard','Terminé','Suspendu'];
+var PRIORITY_OPTIONS=['Haute','Moyenne','Faible'];
+var AOP={annee:2025,domaines:[]};
+var nextId=1000;
+function uid(){return ++nextId;}
+
+function getDefaults(){
+  return {annee:2025,domaines:[
+    {id:uid(),titre:'Gestion des Ressources Humaines',couleur:'#C9A84C',description:'Optimiser les processus RH fondamentaux et renforcer la conformité légale.',activites:[
+      {id:uid(),titre:'Révision de la politique RH',justification:"Mettre la politique RH en conformité avec le Code du Travail béninois et les meilleures pratiques du marché.",resultat:'Politique RH validée, diffusée et signée par la Direction.',kpi_label:'Taux de conformité',kpi_cible:'100%',kpi_unite:'%',responsables:'DRH, Juriste',date_debut:'2025-01-06',date_fin:'2025-03-28',budget:500000,priorite:'Haute',statut:'En cours',observations:'',taux:{Jan:20,Fév:40,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Mise en place du tableau de bord RH',justification:"Disposer d'indicateurs fiables pour piloter la fonction RH et prendre des décisions éclairées.",resultat:'Tableau de bord opérationnel avec 20 KPI mis à jour mensuellement.',kpi_label:'Nb de KPI suivis',kpi_cible:'20',kpi_unite:'KPI',responsables:'SIRH, Contrôleur de gestion RH',date_debut:'2025-02-03',date_fin:'2025-04-30',budget:300000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Formation & Développement des compétences',couleur:'#4A9EFF',description:"Développer les compétences clés alignées sur la stratégie d'entreprise.",activites:[
+      {id:uid(),titre:'Élaboration du Plan de Formation Annuel',justification:"Identifier les besoins en formation pour combler les écarts de compétences identifiés lors des évaluations.",resultat:'Plan de formation validé couvrant 100% des besoins identifiés, avec budget alloué.',kpi_label:'Taux de couverture des besoins',kpi_cible:'100%',kpi_unite:'%',responsables:'Responsable Formation, DRH',date_debut:'2025-01-06',date_fin:'2025-02-28',budget:200000,priorite:'Haute',statut:'En cours',observations:'',taux:{Jan:50,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Déploiement des formations techniques',justification:"Renforcer les compétences métier des équipes pour améliorer la performance opérationnelle.",resultat:'80% des collaborateurs ciblés formés avec une satisfaction supérieure ou égale à 4/5.',kpi_label:'Taux de réalisation',kpi_cible:'80%',kpi_unite:'%',responsables:'Responsable Formation',date_debut:'2025-04-01',date_fin:'2025-11-28',budget:4500000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Programme de développement du leadership',justification:"Préparer la prochaine génération de managers et renforcer les compétences managériales actuelles.",resultat:'20 managers formés, plan de succession activé pour 5 postes clés.',kpi_label:'Nb de managers formés',kpi_cible:'20',kpi_unite:'managers',responsables:'DRH, Coach externe',date_debut:'2025-03-03',date_fin:'2025-10-31',budget:2000000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Recrutement & Intégration',couleur:'#34C77B',description:'Attirer, sélectionner et intégrer les meilleurs talents dans les délais cibles.',activites:[
+      {id:uid(),titre:'Refonte du processus de recrutement',justification:'Réduire le délai moyen de recrutement de 45 à 25 jours et améliorer la qualité des recrutements.',resultat:'Nouveau processus documenté, délai inférieur à 25 jours, taux de rétention 1 an supérieur à 85%.',kpi_label:'Délai moyen de recrutement',kpi_cible:'25 j',kpi_unite:'jours',responsables:'Chargé Recrutement, DRH',date_debut:'2025-01-06',date_fin:'2025-03-31',budget:150000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:"Programme d'intégration (Onboarding)",justification:"Améliorer l'expérience d'intégration pour accélérer la montée en compétences et réduire le turnover précoce.",resultat:"Programme d'onboarding 90 jours déployé, satisfaction nouveaux entrants supérieure ou égale à 4/5.",kpi_label:'Satisfaction onboarding',kpi_cible:'4/5',kpi_unite:'/5',responsables:'RH, Managers',date_debut:'2025-02-03',date_fin:'2025-06-30',budget:100000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Performance & Évaluation',couleur:'#A78BFA',description:"Structurer le système d'évaluation de la performance et relier les résultats aux décisions RH.",activites:[
+      {id:uid(),titre:"Déploiement du système d'évaluation annuelle",justification:"Objectiver les décisions de rémunération, promotion et formation par un système d'évaluation structuré et équitable.",resultat:'100% des collaborateurs évalués selon le référentiel validé.',kpi_label:"Taux de réalisation des évaluations",kpi_cible:'100%',kpi_unite:'%',responsables:'DRH, Tous les managers',date_debut:'2025-01-06',date_fin:'2025-02-28',budget:80000,priorite:'Haute',statut:'En cours',observations:'',taux:{Jan:30,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Mise en place des entretiens de mi-année',justification:"Permettre un suivi intermédiaire des objectifs et réajuster les plans d'action avant la fin de l'année.",resultat:'Entretiens de mi-année réalisés pour 100% des collaborateurs en juin.',kpi_label:'Taux de réalisation',kpi_cible:'100%',kpi_unite:'%',responsables:'DRH, Managers',date_debut:'2025-05-01',date_fin:'2025-06-30',budget:30000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Relations sociales & Bien-être',couleur:'#FB923C',description:'Renforcer le dialogue social, prévenir les risques psychosociaux et améliorer la qualité de vie au travail.',activites:[
+      {id:uid(),titre:'Enquête de satisfaction et climat social',justification:"Mesurer le niveau d'engagement des collaborateurs et identifier les axes d'amélioration.",resultat:"Rapport avec plan d'action priorisé, taux de participation supérieur ou égal à 70%.",kpi_label:'Taux de participation',kpi_cible:'70%',kpi_unite:'%',responsables:'DRH, Communication interne',date_debut:'2025-03-03',date_fin:'2025-04-30',budget:200000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Programme bien-être au travail',justification:"Réduire l'absentéisme et les risques psychosociaux par des actions concrètes.",resultat:"Réduction de l'absentéisme de 20%, mise en place de 3 initiatives bien-être.",kpi_label:'Réduction absentéisme',kpi_cible:'20%',kpi_unite:'%',responsables:'DRH, Médecin du travail',date_debut:'2025-05-01',date_fin:'2025-12-31',budget:500000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Communication interne',couleur:'#F05A5A',description:"Améliorer la circulation de l'information et renforcer la culture d'entreprise.",activites:[
+      {id:uid(),titre:'Création du journal interne RH',justification:"Informer régulièrement les collaborateurs des actualités RH, des résultats et des projets en cours.",resultat:'Journal interne mensuel publié, taux de lecture supérieur ou égal à 60%.',kpi_label:'Taux de lecture',kpi_cible:'60%',kpi_unite:'%',responsables:'Communication, DRH',date_debut:'2025-02-03',date_fin:'2025-12-31',budget:120000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:"Sessions de partage et réunions d'information",justification:"Maintenir l'alignement de tous les collaborateurs sur la stratégie et les résultats.",resultat:'4 réunions plénières annuelles, 12 réunions départementales.',kpi_label:'Nb de sessions réalisées',kpi_cible:'16',kpi_unite:'sessions',responsables:'Direction, DRH',date_debut:'2025-01-06',date_fin:'2025-12-31',budget:80000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+    {id:uid(),titre:'Digitalisation RH',couleur:'#22D3EE',description:'Numériser les processus RH pour gagner en efficacité, en traçabilité et en expérience collaborateur.',activites:[
+      {id:uid(),titre:'Déploiement des outils RH en ligne',justification:"Réduire les délais de traitement des documents RH et améliorer l'accès aux services RH.",resultat:'100% des collaborateurs ont accès aux outils RH digitaux, gain de temps de 40%.',kpi_label:"Taux d'adoption",kpi_cible:'100%',kpi_unite:'%',responsables:'DRH, DSI',date_debut:'2025-01-06',date_fin:'2025-06-30',budget:1500000,priorite:'Haute',statut:'En cours',observations:'',taux:{Jan:15,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Dématérialisation des dossiers du personnel',justification:"Sécuriser et centraliser les dossiers des collaborateurs dans un système numérique confidentiel.",resultat:'100% des dossiers numérisés et accessibles, conformité RGPD assurée.',kpi_label:'Taux de numérisation',kpi_cible:'100%',kpi_unite:'%',responsables:'DRH, DSI, Archiviste',date_debut:'2025-04-01',date_fin:'2025-09-30',budget:800000,priorite:'Haute',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+      {id:uid(),titre:'Formation du personnel aux outils digitaux RH',justification:"Assurer l'adoption effective des outils digitaux par tous les utilisateurs RH et managers.",resultat:'100% des utilisateurs formés, satisfaction formation supérieure ou égale à 4/5.',kpi_label:'Taux de collaborateurs formés',kpi_cible:'100%',kpi_unite:'%',responsables:'Responsable Formation, DSI',date_debut:'2025-05-01',date_fin:'2025-08-29',budget:300000,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}},
+    ]},
+  ]};
+}
+
+function chargerAOP(){
+  try{var d=localStorage.getItem(SK);if(d){AOP=JSON.parse(d);anneeAOP=AOP.annee||2025;}else{AOP=getDefaults();}}catch(e){AOP=getDefaults();}
+  document.getElementById('aop-annee').value=anneeAOP;
+}
+function sauvegarder(){
+  lireFormulaires();AOP.annee=anneeAOP;
+  try{localStorage.setItem(SK,JSON.stringify(AOP));toast('Sauvegardé');}catch(e){toast('Erreur: '+e.message);}
+  renderOverview();
+}
+function changeAnnee(v){anneeAOP=parseInt(v)||2025;AOP.annee=anneeAOP;sauvegarder();renderAll();}
+
+function renderAll(){
+  document.getElementById('ov-annee-label').textContent=anneeAOP;
+  document.getElementById('gantt-annee-lbl').textContent=anneeAOP;
+  renderOverview();renderDomaines();renderGantt();renderSuivi();renderExportRecap();
+}
+
+function renderOverview(){
+  var totalD=AOP.domaines.length;
+  var totalA=AOP.domaines.reduce(function(a,d){return a+d.activites.length;},0);
+  var totalB=AOP.domaines.reduce(function(a,d){return a+d.activites.reduce(function(b,ac){return b+(ac.budget||0);},0);},0);
+  var term=AOP.domaines.reduce(function(a,d){return a+d.activites.filter(function(ac){return ac.statut==='Terminé';}).length;},0);
+  var retard=AOP.domaines.reduce(function(a,d){return a+d.activites.filter(function(ac){return ac.statut==='En retard';}).length;},0);
+  var enCours=AOP.domaines.reduce(function(a,d){return a+d.activites.filter(function(ac){return ac.statut==='En cours';}).length;},0);
+  var moisCurIdx=new Date().getMonth();var moisCurKey=MOIS_LABELS[moisCurIdx];
+  var allTaux=[];
+  AOP.domaines.forEach(function(d){d.activites.forEach(function(ac){var t=ac.taux&&ac.taux[moisCurKey]!==undefined?ac.taux[moisCurKey]:0;allTaux.push(t);});});
+  var tauxG=allTaux.length?Math.round(allTaux.reduce(function(a,b){return a+b;},0)/allTaux.length):0;
+  document.getElementById('ov-kpis').innerHTML=
+    mkOvCard('Domaines opérationnels',totalD,'','#C9A84C',totalD+' grands axes')+
+    mkOvCard('Activités planifiées',totalA,'','#4A9EFF',term+' terminées / '+enCours+' en cours')+
+    mkOvCard('Budget total prévu',Math.round(totalB/1000000*10)/10,'M FCFA','#34C77B','Enveloppe globale AOP')+
+    mkOvCard('Avancement global',tauxG,'%','#A78BFA','Mois de '+MOIS_FULL[moisCurIdx])+
+    mkOvCard('En retard',retard,'','#F05A5A','Activités à risque')+
+    mkOvCard('Terminées',term,'','#34C77B','Sur '+totalA+' activités');
+  document.getElementById('ov-pct-global').textContent=tauxG+'%';
+  document.getElementById('ov-bar-global').style.width=tauxG+'%';
+  var domSum=document.getElementById('ov-domaines-summary');domSum.innerHTML='';
+  AOP.domaines.forEach(function(d){
+    var allT=[];d.activites.forEach(function(ac){var t=ac.taux&&ac.taux[moisCurKey]!==undefined?ac.taux[moisCurKey]:0;allT.push(t);});
+    var pct=allT.length?Math.round(allT.reduce(function(a,b){return a+b;},0)/allT.length):0;
+    var color=pct>=80?'var(--vert)':pct>=50?'var(--bleu)':pct>=25?'var(--or)':'var(--rouge)';
+    domSum.innerHTML+='<div class="domaine-summary-card" style="--color:'+d.couleur+'"><div class="ds-title">'+d.titre+'</div><div class="ds-meta">'+d.activites.length+' activité(s) · Budget: '+Math.round(d.activites.reduce(function(a,ac){return a+(ac.budget||0);},0)/1000).toLocaleString('fr-FR')+' K FCFA</div><div class="ds-bar"><div class="ds-fill" style="width:'+pct+'%;background:'+d.couleur+'"></div></div><div class="ds-pct" style="color:'+color+'">'+pct+'% avancement</div></div>';
+  });
+  var alertEl=document.getElementById('ov-alertes');alertEl.innerHTML='';var alertes=[];
+  var todayStr=new Date().toISOString().split('T')[0];
+  AOP.domaines.forEach(function(d){d.activites.forEach(function(ac){
+    if(ac.statut==='En retard')alertes.push({cls:'alert-rouge',txt:'Retard : '+ac.titre+' ('+d.titre+')'});
+    if(ac.statut==='Non démarré'&&ac.date_debut&&ac.date_debut<=todayStr)alertes.push({cls:'alert-jaune',txt:'Non démarrée alors que la date de début est passée : '+ac.titre});
+    if(ac.statut==='Terminé')alertes.push({cls:'alert-vert',txt:'Terminée : '+ac.titre});
+  });});
+  if(!alertes.length)alertEl.innerHTML='<div style="text-align:center;padding:1rem;color:var(--gris);font-size:13px">Aucune alerte pour le moment.</div>';
+  else alertes.forEach(function(a){alertEl.innerHTML+='<div class="alert-item '+a.cls+'">'+a.txt+'</div>';});
+}
+
+function mkOvCard(label,val,unit,accent,sub){
+  return '<div class="ov-card" style="--accent:'+accent+'"><div class="ov-label">'+label+'</div><div><span class="ov-val">'+val+'</span><span class="ov-unit">'+unit+'</span></div><div class="ov-sub">'+sub+'</div></div>';
+}
+
+function renderDomaines(){
+  var container=document.getElementById('domaines-container');container.innerHTML='';
+  document.getElementById('dom-count').textContent='('+AOP.domaines.length+')';
+  AOP.domaines.forEach(function(domaine,dIdx){container.appendChild(buildDomaineBlock(domaine,dIdx));});
+}
+
+function buildDomaineBlock(domaine,dIdx){
+  var block=document.createElement('div');block.className='domaine-block';block.id='dom-'+domaine.id;
+  block.style.borderLeft='4px solid '+domaine.couleur;
+  var head=document.createElement('div');head.className='domaine-head';
+  head.innerHTML='<div class="domaine-head-left">'+
+    '<div class="domaine-num">Domaine '+(dIdx+1)+' — <span style="color:'+domaine.couleur+'">'+esc(domaine.titre)+'</span></div>'+
+    '<input class="domaine-title-input" value="'+esc(domaine.titre)+'" placeholder="Titre du domaine opérationnel..."/>'+
+    '<textarea class="domaine-desc-input" rows="1" placeholder="Description / Objectif stratégique...">'+esc(domaine.description)+'</textarea>'+
+    '</div>'+
+    '<div class="domaine-head-right">'+
+      '<input type="color" class="domaine-color-pick" value="'+domaine.couleur+'" title="Couleur"/>'+
+      '<button class="domaine-toggle" title="Replier/Déplier">▼</button>'+
+      '<button class="domaine-del" onclick="supprimerDomaine('+domaine.id+')" title="Supprimer">×</button>'+
+    '</div>';
+  var body=document.createElement('div');body.className='domaine-body';
+  body.innerHTML='<div class="exemple-hint"><span class="hint-icon">💡</span><div>'+
+    '<strong style="color:var(--or)">Exemple de formulation :</strong><br>'+
+    'Domaine : "Gestion des RH" | Activité : "Révision de la politique RH" | '+
+    'Justification : "Mettre en conformité avec le Code du Travail béninois 2025" | '+
+    'KPI : "Taux de conformité — Cible : 100%" | '+
+    'Résultat : "Politique validée et signée par la Direction avant fin mars 2025"'+
+    '</div></div>';
+  var actiList=document.createElement('div');actiList.className='activites-list';actiList.id='actilist-'+domaine.id;
+  domaine.activites.forEach(function(ac,aIdx){actiList.appendChild(buildActiviteCard(ac,aIdx,domaine.couleur,domaine.id));});
+  body.appendChild(actiList);
+  var btnAdd=document.createElement('button');btnAdd.className='btn-add-acti';btnAdd.innerHTML='+ Ajouter une activité à ce domaine';
+  btnAdd.onclick=function(){ajouterActivite(domaine.id);};
+  body.appendChild(btnAdd);
+  block.appendChild(head);block.appendChild(body);
+  head.querySelector('.domaine-title-input').addEventListener('input',function(e){domaine.titre=e.target.value;var n=head.querySelector('.domaine-num');if(n)n.innerHTML='Domaine '+(dIdx+1)+' — <span style="color:'+domaine.couleur+'">'+esc(domaine.titre)+'</span>';});
+  head.querySelector('.domaine-desc-input').addEventListener('input',function(e){domaine.description=e.target.value;});
+  head.querySelector('.domaine-color-pick').addEventListener('input',function(e){domaine.couleur=e.target.value;block.style.borderLeft='4px solid '+e.target.value;});
+  head.querySelector('.domaine-toggle').addEventListener('click',function(e){e.stopPropagation();var b=body;var open=b.style.display!=='none';b.style.display=open?'none':'block';this.textContent=open?'▶':'▼';});
+  return block;
+}
+
+function buildActiviteCard(ac,aIdx,couleur,domaineId){
+  var card=document.createElement('div');card.className='activite-card';card.id='ac-'+ac.id;
+  var sColor=ac.statut==='Terminé'?'#34C77B':ac.statut==='En cours'?'#4A9EFF':ac.statut==='En retard'?'#F05A5A':ac.statut==='Suspendu'?'#FB923C':'#5A5866';
+  var pColor=ac.priorite==='Haute'?'#F05A5A':ac.priorite==='Moyenne'?'#FBC724':'#34C77B';
+  card.innerHTML=
+    '<div class="acti-head">'+
+      '<div class="acti-num-badge" style="background:'+couleur+'22;color:'+couleur+';border:1px solid '+couleur+'44">A'+(aIdx+1)+'</div>'+
+      '<input class="acti-title-input" value="'+esc(ac.titre)+'" placeholder="Titre de cette activite"/>'+
+      '<select class="acti-status-sel" style="color:'+sColor+'">'+STATUS_OPTIONS.map(function(s){return '<option value="'+s+'"'+(ac.statut===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'+
+      '<select class="acti-priority-sel" style="color:'+pColor+'">'+PRIORITY_OPTIONS.map(function(p){return '<option value="'+p+'"'+(ac.priorite===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select>'+
+      '<button class="acti-del" onclick="supprimerActivite('+domaineId+','+ac.id+')" title="Supprimer">×</button>'+
+    '</div>'+
+    '<div class="acti-body">'+
+      '<div class="ff acti-body-full"><label>Mention justificative <span style="color:var(--gris2)">(Pourquoi cette activité ?)</span></label>'+
+        '<textarea placeholder="Ex: Justification de cette activite et son lien avec la strategie">'+esc(ac.justification)+'</textarea>'+
+        '<div class="placeholder-hint">Precisez le contexte et le lien strategique.</div></div>'+
+      '<div class="ff acti-body-full"><label>Résultat attendu à la fin <span style="color:var(--gris2)">(Outcome mesurable)</span></label>'+
+        '<textarea placeholder="Ex: 100% des collaborateurs evalues selon le nouveau referentiel, score satisfaction superieur ou egal a 4/5, toutes les decisions RH documentees.">'+esc(ac.resultat)+'</textarea>'+
+        '<div class="placeholder-hint">Decrivez le resultat concret et mesurable attendu.</div></div>'+
+      '<div class="ff"><label>KPI — Indicateur <span style="color:var(--gris2)">(Quoi mesurer ?)</span></label>'+
+        '<input data-field="kpi_label" value="'+esc(ac.kpi_label)+'" placeholder="Ex: Taux de couverture des besoins en formation"/>'+
+        '<div class="placeholder-hint">Ex: Taux de rétention · Délai moyen · Nb de personnes formées · Score satisfaction</div></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'+
+        '<div class="ff"><label>Cible KPI</label><input data-field="kpi_cible" value="'+esc(ac.kpi_cible)+'" placeholder="Ex: 80%"/></div>'+
+        '<div class="ff"><label>Unité</label><input data-field="kpi_unite" value="'+esc(ac.kpi_unite)+'" placeholder="Ex: % / j / pers."/></div>'+
+      '</div>'+
+      '<div class="ff"><label>Responsable(s)</label>'+
+        '<input data-field="responsables" value="'+esc(ac.responsables)+'" placeholder="Ex: DRH, Responsable Formation, Chef de projet"/>'+
+        '<div class="placeholder-hint">Indiquez le responsable principal et les contributeurs.</div></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'+
+        '<div class="ff"><label>Date de début</label><input type="date" data-field="date_debut" value="'+esc(ac.date_debut)+'"/></div>'+
+        '<div class="ff"><label>Date de fin</label><input type="date" data-field="date_fin" value="'+esc(ac.date_fin)+'"/></div>'+
+      '</div>'+
+      '<div class="ff"><label>Budget prévu (FCFA)</label>'+
+        '<input type="number" data-field="budget" value="'+esc(ac.budget||'')+'" placeholder="Ex: 500000"/>'+
+        '<div class="placeholder-hint">Montant en FCFA alloué à cette activité (ressources humaines, matérielles, prestations).</div></div>'+
+      '<div class="ff"><label>Observations</label>'+
+        '<textarea data-field="observations" placeholder="Ex: Prestataire externe retenu, en attente signature contrat. Demarrage mi-fevrier prevu.">'+esc(ac.observations||'')+'</textarea>'+
+        '<div class="placeholder-hint">Notes de suivi, points de blocage, décisions prises, risques identifiés.</div></div>'+
+    '</div>';
+  card.querySelectorAll('[data-field]').forEach(function(el){
+    var evt=el.tagName==='SELECT'||el.type==='date'?'change':'input';
+    el.addEventListener(evt,function(){
+      var f=el.getAttribute('data-field');
+      ac[f]=el.type==='number'?(parseFloat(el.value)||0):el.value;
+      if(f==='statut'){el.style.color=ac.statut==='Terminé'?'#34C77B':ac.statut==='En cours'?'#4A9EFF':ac.statut==='En retard'?'#F05A5A':ac.statut==='Suspendu'?'#FB923C':'#5A5866';}
+      if(f==='priorite'){el.style.color=ac.priorite==='Haute'?'#F05A5A':ac.priorite==='Moyenne'?'#FBC724':'#34C77B';}
+    });
+  });
+  return card;
+}
+
+function ajouterDomaine(){
+  var color=DOMAINE_COLORS[AOP.domaines.length%DOMAINE_COLORS.length];
+  var newD={id:uid(),titre:'Nouveau domaine',couleur:color,description:'',activites:[]};
+  AOP.domaines.push(newD);renderDomaines();sauvegarder();
+  var el=document.getElementById('dom-'+newD.id);
+  if(el){el.scrollIntoView({behavior:'smooth'});setTimeout(function(){var inp=el.querySelector('.domaine-title-input');if(inp){inp.focus();inp.select();}},200);}
+}
+function supprimerDomaine(id){
+  if(!confirm('Supprimer ce domaine et toutes ses activités ?'))return;
+  AOP.domaines=AOP.domaines.filter(function(d){return d.id!==id;});
+  sauvegarder();renderDomaines();renderAll();
+}
+function ajouterActivite(domaineId){
+  var d=AOP.domaines.find(function(d){return d.id===domaineId;});if(!d)return;
+  var newAc={id:uid(),titre:'Nouvelle activité',justification:'',resultat:'',kpi_label:'',kpi_cible:'',kpi_unite:'',responsables:'',date_debut:'',date_fin:'',budget:0,priorite:'Moyenne',statut:'Non démarré',observations:'',taux:{Jan:0,Fév:0,Mar:0,Avr:0,Mai:0,Jun:0,Jul:0,Aoû:0,Sep:0,Oct:0,Nov:0,Déc:0}};
+  d.activites.push(newAc);
+  var list=document.getElementById('actilist-'+domaineId);
+  if(list){list.appendChild(buildActiviteCard(newAc,d.activites.length-1,d.couleur,d.id));var el=document.getElementById('ac-'+newAc.id);if(el){el.scrollIntoView({behavior:'smooth'});setTimeout(function(){var inp=el.querySelector('.acti-title-input');if(inp){inp.focus();inp.select();}},200);}}
+  sauvegarder();
+}
+function supprimerActivite(domaineId,acId){
+  if(!confirm('Supprimer cette activité ?'))return;
+  var d=AOP.domaines.find(function(d){return d.id===domaineId;});
+  if(d){d.activites=d.activites.filter(function(a){return a.id!==acId;});}
+  sauvegarder();renderDomaines();renderAll();
+}
+function lireFormulaires(){
+  AOP.domaines.forEach(function(d){
+    var bloc=document.getElementById('dom-'+d.id);
+    if(!bloc)return;
+    var ti=bloc.querySelector('.domaine-title-input');if(ti)d.titre=ti.value;
+    var di=bloc.querySelector('.domaine-desc-input');if(di)d.description=di.value;
+    var ci=bloc.querySelector('.domaine-color-pick');if(ci)d.couleur=ci.value;
+    d.activites.forEach(function(ac){
+      var acEl=document.getElementById('ac-'+ac.id);if(!acEl)return;
+      acEl.querySelectorAll('[data-field]').forEach(function(el){var f=el.getAttribute('data-field');ac[f]=el.type==='number'?(parseFloat(el.value)||0):el.value;});
+    });
+  });
+  document.querySelectorAll('[data-taux]').forEach(function(el){
+    var parts=el.getAttribute('data-taux').split('_');var acId=parseInt(parts[0]);var mois=parts[1];var val=Math.min(100,Math.max(0,parseInt(el.value)||0));
+    AOP.domaines.forEach(function(d){var ac=d.activites.find(function(a){return a.id===acId;});if(ac){if(!ac.taux)ac.taux={};ac.taux[mois]=val;}});
+  });
+  document.querySelectorAll('[data-obs-ac]').forEach(function(el){
+    var acId=parseInt(el.getAttribute('data-obs-ac'));var val=el.value;
+    AOP.domaines.forEach(function(d){var ac=d.activites.find(function(a){return a.id===acId;});if(ac)ac.observations=val;});
+  });
+}
+
+function renderGantt(){
+  var container=document.getElementById('gantt-container');container.innerHTML='';
+  if(!AOP.domaines.length){container.innerHTML='<div style="text-align:center;padding:3rem;color:var(--gris)">Ajoutez des activités avec des dates pour afficher le Gantt.</div>';return;}
+  var curM=new Date().getMonth();
+  var wrap=document.createElement('div');wrap.className='gantt-wrap';
+  var hdr=document.createElement('div');hdr.className='gantt-header-row';
+  var lbl=document.createElement('div');lbl.className='gantt-label-col';lbl.textContent='Domaine / Activité';hdr.appendChild(lbl);
+  var months=document.createElement('div');months.className='gantt-months';
+  MOIS_LABELS.forEach(function(m,mi){var mh=document.createElement('div');mh.className='gantt-month-hdr'+(mi===curM?' cur-month':'');mh.textContent=m;months.appendChild(mh);});
+  hdr.appendChild(months);wrap.appendChild(hdr);
+  AOP.domaines.forEach(function(d){
+    if(!d.activites.length)return;
+    var domRow=document.createElement('div');domRow.className='gantt-domaine-row';
+    var dRowEl=document.createElement('div');dRowEl.style.cssText='display:flex;align-items:center;';
+    dRowEl.innerHTML='<div class="gantt-domaine-label" style="border-left:3px solid '+d.couleur+'"><span style="color:'+d.couleur+'">■</span> '+esc(d.titre)+'</div><div style="flex:1;background:'+d.couleur+'08;border-bottom:1px solid rgba(34,32,48,.4);display:grid;grid-template-columns:repeat(12,1fr)">'+MOIS_LABELS.map(function(m,mi){return '<div style="border-right:1px solid rgba(34,32,48,.2);'+(mi===curM?'background:rgba(201,168,76,.04)':'')+'"></div>';}).join('')+'</div>';
+    domRow.appendChild(dRowEl);
+    d.activites.forEach(function(ac){
+      var acRow=document.createElement('div');acRow.className='gantt-acti-row';
+      var acLbl=document.createElement('div');acLbl.className='gantt-acti-label';acLbl.title=ac.titre;
+      var dot=ac.statut==='Terminé'?'🟢':ac.statut==='En cours'?'🔵':ac.statut==='En retard'?'🔴':'⚪';
+      acLbl.textContent=dot+' '+ac.titre;
+      var barArea=document.createElement('div');barArea.className='gantt-acti-bar-area';
+      MOIS_LABELS.forEach(function(m,mi){var cell=document.createElement('div');cell.className='gantt-month-cell'+(mi===curM?' cur-month':'');barArea.appendChild(cell);});
+      if(ac.date_debut&&ac.date_fin){
+        var dS=new Date(ac.date_debut);var dE=new Date(ac.date_fin);
+        var sM=dS.getMonth();var eM=dE.getMonth();
+        var sPct=sM/12*100+(dS.getDate()-1)/(new Date(dS.getFullYear(),sM+1,0).getDate())/12*100;
+        var ePct=eM/12*100+dE.getDate()/(new Date(dE.getFullYear(),eM+1,0).getDate())/12*100;
+        sPct=Math.max(0,Math.min(100,sPct));ePct=Math.max(0,Math.min(100,ePct));
+        var bColor=ac.statut==='Terminé'?'rgba(52,199,123,.7)':ac.statut==='En retard'?'rgba(240,90,90,.7)':ac.statut==='En cours'?d.couleur+'BB':d.couleur+'77';
+        var bar=document.createElement('div');bar.className='gantt-bar';
+        bar.style.left=sPct+'%';bar.style.width=Math.max(0.5,ePct-sPct)+'%';bar.style.background=bColor;bar.style.color='rgba(240,238,248,.9)';
+        bar.textContent=ac.titre.substring(0,24);bar.title=ac.titre+'\n'+ac.date_debut+' => '+ac.date_fin;
+        barArea.appendChild(bar);
+      }
+      acRow.appendChild(acLbl);acRow.appendChild(barArea);domRow.appendChild(acRow);
+    });
+    wrap.appendChild(domRow);
+  });
+  container.appendChild(wrap);
+}
+
+function renderSuivi(){
+  var tbl=document.getElementById('suivi-table');var curM=new Date().getMonth();
+  var thead='<thead><tr><th class="left" style="min-width:200px">Activité</th><th class="left" style="min-width:100px">KPI</th><th class="left" style="min-width:70px">Cible</th>'+
+    MOIS_LABELS.map(function(m,i){return '<th class="'+(i===curM?'cur-m':'')+'" style="min-width:52px">'+m+'</th>';}).join('')+
+    '<th style="min-width:60px">Moy.</th><th class="left" style="min-width:150px">Observations</th><th class="left" style="min-width:110px">Responsable(s)</th><th style="min-width:80px">Budget</th></tr></thead>';
+  var tbody='<tbody>';
+  AOP.domaines.forEach(function(d){
+    tbody+='<tr><td colspan="18" class="domaine-row" style="--color:'+d.couleur+'"><span style="color:'+d.couleur+'">●</span> '+esc(d.titre)+'</td></tr>';
+    d.activites.forEach(function(ac){
+      var taux=ac.taux||{};
+      var vals=MOIS_LABELS.map(function(m){return taux[m]||0;});
+      var filled=vals.filter(function(v){return v>0;});
+      var moy=filled.length?Math.round(filled.reduce(function(a,b){return a+b;},0)/filled.length):0;
+      var mCls=moy>=100?'taux-100':moy>=75?'taux-75':moy>=50?'taux-50':moy>=25?'taux-25':'taux-0';
+      tbody+='<tr><td style="font-size:11px;font-weight:500;padding-left:1.5rem">'+esc(ac.titre)+'</td><td style="font-size:10px;color:var(--gris)">'+esc(ac.kpi_label)+'</td><td><span style="font-size:10px;font-weight:700;color:var(--or)">'+esc(ac.kpi_cible)+'</span></td>'+
+        MOIS_LABELS.map(function(m,mi){
+          var v=taux[m]||0;var cls=v>=100?'taux-100':v>=75?'taux-75':v>=50?'taux-50':v>=25?'taux-25':'taux-0';
+          return '<td class="taux-cell"><input type="number" class="taux-input" data-taux="'+ac.id+'_'+m+'" min="0" max="100" value="'+v+'" oninput="updateTaux(this,this.getAttribute(\'data-taux\').split(\'_\')[1],'+ac.id+')"/><div><span class="taux-pill '+cls+'" id="tpill-'+ac.id+'-'+mi+'">'+v+'%</span></div></td>';
+        }).join('')+
+        '<td><span class="taux-pill '+mCls+'">'+moy+'%</span></td>'+
+        '<td><input class="obs-input" data-obs-ac="'+ac.id+'" value="'+esc(ac.observations||'')+'" placeholder="Remarque..."/></td>'+
+        '<td style="font-size:10px;color:var(--gris)">'+esc(ac.responsables)+'</td>'+
+        '<td style="font-size:10px;font-weight:700;color:var(--or);text-align:right">'+(ac.budget?Math.round(ac.budget/1000).toLocaleString('fr-FR')+' K':'—')+'</td>'+
+      '</tr>';
+    });
+  });
+  tbody+='</tbody>';
+  tbl.innerHTML=thead+tbody;
+  tbl.querySelectorAll('[data-obs-ac]').forEach(function(el){
+    el.addEventListener('input',function(){var acId=parseInt(el.getAttribute('data-obs-ac'));AOP.domaines.forEach(function(d){var ac=d.activites.find(function(a){return a.id===acId;});if(ac)ac.observations=el.value;});});
+  });
+}
+
+function updateTaux(input,mois,acId){
+  var v=Math.min(100,Math.max(0,parseInt(input.value)||0));
+  AOP.domaines.forEach(function(d){var ac=d.activites.find(function(a){return a.id===acId;});if(ac){if(!ac.taux)ac.taux={};ac.taux[mois]=v;}});
+  var mi=MOIS_LABELS.indexOf(mois);var pill=document.getElementById('tpill-'+acId+'-'+mi);
+  if(pill){var cls=v>=100?'taux-100':v>=75?'taux-75':v>=50?'taux-50':v>=25?'taux-25':'taux-0';pill.className='taux-pill '+cls;pill.textContent=v+'%';}
+}
+
+function renderExportRecap(){
+  var totalA=AOP.domaines.reduce(function(a,d){return a+d.activites.length;},0);
+  var totalB=AOP.domaines.reduce(function(a,d){return a+d.activites.reduce(function(b,ac){return b+(ac.budget||0);},0);},0);
+  var term=AOP.domaines.reduce(function(a,d){return a+d.activites.filter(function(ac){return ac.statut==='Terminé';}).length;},0);
+  document.getElementById('export-recap').innerHTML='Année : <strong style="color:var(--blanc)">'+anneeAOP+'</strong><br>Domaines : <strong style="color:var(--blanc)">'+AOP.domaines.length+'</strong><br>Activités : <strong style="color:var(--blanc)">'+totalA+'</strong><br>Terminées : <strong style="color:#34C77B">'+term+'</strong><br>Budget total : <strong style="color:var(--or)">'+Math.round(totalB).toLocaleString('fr-FR')+' FCFA</strong>';
+}
+
+function exporterExcel(){
+  lireFormulaires();
+  var wb=XLSX.utils.book_new();
+  var data=[['Domaine','Activité','Justification','Résultat attendu','KPI','Cible','Unité','Responsable(s)','Date début','Date fin','Budget FCFA','Priorité','Statut','Observations'].concat(MOIS_LABELS).concat(['Moyenne'])];
+  AOP.domaines.forEach(function(d){d.activites.forEach(function(ac){
+    var taux=ac.taux||{};var vals=MOIS_LABELS.map(function(m){return taux[m]||0;});
+    var filled=vals.filter(function(v){return v>0;});var moy=filled.length?Math.round(filled.reduce(function(a,b){return a+b;},0)/filled.length):0;
+    data.push([d.titre,ac.titre,ac.justification,ac.resultat,ac.kpi_label,ac.kpi_cible,ac.kpi_unite,ac.responsables,ac.date_debut,ac.date_fin,ac.budget||0,ac.priorite,ac.statut,ac.observations||''].concat(vals).concat([moy+'%']));
+  });});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),'AOP '+anneeAOP);
+  XLSX.writeFile(wb,'AOP-'+anneeAOP+'.xlsx');toast('Export Excel généré');
+}
+function exporterJSON(){
+  lireFormulaires();
+  var blob=new Blob([JSON.stringify(AOP,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AOP-'+anneeAOP+'.json';a.click();URL.revokeObjectURL(a.href);
+  toast('Sauvegarde JSON exportée');
+}
+function chargerJSON(input){
+  if(!input.files[0])return;
+  var reader=new FileReader();
+  reader.onload=function(ev){try{AOP=JSON.parse(ev.target.result);anneeAOP=AOP.annee||2025;document.getElementById('aop-annee').value=anneeAOP;sauvegarder();renderAll();toast('Plan importé');}catch(e){toast('Erreur: '+e.message);}};
+  reader.readAsText(input.files[0]);input.value='';
+}
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('panel-'+tab).classList.add('active');if(btn)btn.classList.add('active');
+  if(tab==='gantt'){lireFormulaires();renderGantt();}
+  if(tab==='suivi'){lireFormulaires();renderSuivi();}
+  if(tab==='overview'){lireFormulaires();renderOverview();}
+  if(tab==='export'){lireFormulaires();renderExportRecap();}
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+var toastTimer;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3000);}
+setInterval(function(){lireFormulaires();sauvegarder();},120000);
+chargerAOP();renderAll();
+</script>
+</body>
+</html>

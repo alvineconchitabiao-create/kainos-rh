@@ -1,0 +1,3157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tableau de Bord RH — Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#0B0B0F;--bg2:#111116;--bg3:#18181F;--bg4:#202028;
+  --or:#C9A84C;--or2:#E2C47A;--or-glow:rgba(201,168,76,0.12);
+  --blanc:#F0EEF8;--gris:#9896A4;--gris2:#5A5866;--gris3:#2C2A38;
+  --bleu:#4A9EFF;--vert:#34C77B;--rouge:#F05A5A;--violet:#A78BFA;--orange:#FB923C;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:10px;--rl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--blanc);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--gris3);border-radius:2px;}
+
+/* TOPBAR */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:.75rem;flex-wrap:wrap;}
+.tb-brand{display:flex;align-items:center;gap:10px;}
+.tb-logo{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.08em;}
+.tb-logo span{color:var(--or);}
+.tb-sep{width:1px;height:20px;background:var(--gris3);}
+.tb-title{font-size:11px;font-weight:600;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;}
+.tb-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tb-year{background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--gris);}
+.tb-year select{background:transparent;border:none;color:var(--blanc);font-family:var(--fb);font-size:11px;outline:none;cursor:pointer;}
+.tb-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.tb-btn-or{background:var(--or);color:var(--bg);}
+.tb-btn-or:hover{background:var(--or2);}
+.tb-btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.tb-btn-ghost:hover{border-color:var(--or);color:var(--or);}
+.tb-back{font-size:11px;color:var(--gris);text-decoration:none;transition:color .2s;padding:6px 10px;}
+.tb-back:hover{color:var(--or);}
+.tb-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gris);padding:5px 12px;background:var(--bg3);border:1px solid var(--gris3);border-radius:20px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* TABS */
+.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--gris3);padding:0 1.5rem;display:flex;gap:0;overflow-x:auto;}
+.tab-btn{padding:12px 16px;border:none;background:transparent;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--gris);cursor:pointer;transition:all .2s;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;letter-spacing:.04em;}
+.tab-btn:hover{color:var(--blanc);}
+.tab-btn.active{color:var(--or);border-bottom-color:var(--or);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr;flex:1;}
+.main{padding:1.25rem 1.5rem;overflow:auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.75rem;margin-bottom:1rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.kpi-card:hover{border-color:rgba(201,168,76,.25);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--or)),transparent);opacity:.7;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-bottom:.6rem;}
+.kpi-val{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--blanc);line-height:1;}
+.kpi-unit{font-size:11px;color:var(--gris);margin-left:3px;}
+.kpi-sub{font-size:10px;margin-top:.4rem;font-weight:500;}
+.kpi-up{color:var(--vert);}
+.kpi-down{color:var(--rouge);}
+.kpi-neutral{color:var(--gris);}
+
+/* CHARTS */
+.charts-grid{display:grid;gap:.75rem;margin-bottom:.75rem;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:1fr 1fr 1fr;}
+.g21{grid-template-columns:2fr 1fr;}
+.g12{grid-template-columns:1fr 2fr;}
+.chart-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;}
+.cc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;}
+.cc-title{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--blanc);}
+.cc-sub{font-size:10px;color:var(--gris);margin-top:2px;}
+.chart-h{position:relative;height:200px;}
+.chart-h-sm{position:relative;height:150px;}
+.chart-h-lg{position:relative;height:260px;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+.bv{background:rgba(52,199,123,.12);color:var(--vert);}
+.br{background:rgba(240,90,90,.12);color:var(--rouge);}
+.bo{background:rgba(201,168,76,.12);color:var(--or);}
+.bb{background:rgba(74,158,255,.12);color:var(--bleu);}
+.bvl{background:rgba(167,139,250,.12);color:var(--violet);}
+.bog{background:rgba(251,146,60,.12);color:var(--orange);}
+
+/* PROGRESS */
+.prog-list{display:flex;flex-direction:column;gap:9px;}
+.prog-item-header{display:flex;justify-content:space-between;margin-bottom:3px;}
+.prog-item-label{font-size:11px;color:var(--blanc);}
+.prog-item-val{font-size:11px;font-weight:600;}
+.prog-track{height:5px;background:var(--gris3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;max-height:280px;overflow-y:auto;border-radius:var(--r);border:1px solid var(--gris3);}
+.data-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.data-tbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);border-bottom:1px solid var(--gris3);background:var(--bg3);position:sticky;top:0;}
+.data-tbl td{padding:8px 10px;border-bottom:1px solid rgba(44,42,56,.4);color:var(--blanc);vertical-align:middle;}
+.data-tbl tr:hover td{background:var(--bg3);}
+
+/* ══ SAISIE MENSUELLE PANEL ══ */
+.saisie-container{display:grid;grid-template-columns:260px 1fr;gap:1rem;height:calc(100vh - 130px);}
+.saisie-sidebar{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;display:flex;flex-direction:column;}
+.saisie-sb-head{padding:1rem;border-bottom:1px solid var(--gris3);background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.04));}
+.saisie-sb-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);}
+.saisie-sb-sub{font-size:10px;color:var(--gris);margin-top:3px;}
+.month-list{flex:1;overflow-y:auto;padding:.5rem;}
+.month-btn{width:100%;padding:.6rem 1rem;border:none;background:transparent;color:var(--gris);font-family:var(--fb);font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--r);transition:all .2s;display:flex;align-items:center;justify-content:space-between;text-align:left;}
+.month-btn:hover{background:var(--bg3);color:var(--blanc);}
+.month-btn.active{background:var(--or-glow);color:var(--or);border:1px solid rgba(201,168,76,.2);}
+.month-btn.has-data .month-dot{background:var(--vert);}
+.month-dot{width:7px;height:7px;border-radius:50%;background:var(--gris3);flex-shrink:0;}
+.saisie-sb-footer{padding:.75rem 1rem;border-top:1px solid var(--gris3);}
+.saisie-main{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;display:flex;flex-direction:column;}
+.saisie-main-head{padding:1rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--bg3),rgba(201,168,76,.03));}
+.saisie-main-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);}
+.saisie-main-title span{color:var(--or);}
+.saisie-tabs{display:flex;gap:4px;padding:.75rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);overflow-x:auto;}
+.saisie-tab{padding:6px 14px;border:none;background:transparent;color:var(--gris);font-family:var(--fd);font-size:11px;font-weight:600;cursor:pointer;border-radius:var(--r);transition:all .2s;white-space:nowrap;letter-spacing:.04em;}
+.saisie-tab.active{background:var(--bg2);color:var(--or);}
+.saisie-body{flex:1;overflow-y:auto;padding:1.25rem;}
+.saisie-volet{display:none;}
+.saisie-volet.active{display:block;}
+
+/* FORM ELEMENTS */
+.form-section{margin-bottom:1.25rem;}
+.fs-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--or);opacity:.8;margin-bottom:.75rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);display:block;margin-bottom:4px;}
+.ff input,.ff select,.ff textarea{width:100%;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-family:var(--fb);font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--or);}
+.ff select option{background:var(--bg2);}
+.ff textarea{resize:vertical;min-height:50px;line-height:1.5;}
+
+/* Import zone */
+.import-zone{border:2px dashed var(--gris3);border-radius:var(--rl);padding:1.5rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);margin-bottom:1rem;}
+.import-zone:hover,.import-zone.drag{border-color:var(--or);background:var(--or-glow);}
+.iz-icon{font-size:32px;margin-bottom:.5rem;}
+.iz-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--blanc);margin-bottom:.25rem;}
+.iz-sub{font-size:11px;color:var(--gris);line-height:1.6;}
+.iz-fmts{display:flex;gap:6px;justify-content:center;margin-top:.5rem;}
+.iz-fmt{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;background:var(--bg2);border:1px solid var(--gris3);color:var(--gris);}
+
+/* Action buttons */
+.saisie-actions{padding:.75rem 1.25rem;border-top:1px solid var(--gris3);display:flex;gap:8px;background:var(--bg2);}
+.btn-save{flex:1;padding:10px;background:var(--or);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-save:hover{background:var(--or2);}
+.btn-clear{padding:10px 16px;background:var(--bg3);color:var(--rouge);border:1px solid rgba(240,90,90,.2);border-radius:var(--r);font-family:var(--fb);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-clear:hover{border-color:var(--rouge);}
+.btn-demo-data{padding:10px 16px;background:var(--bg3);color:var(--gris);border:1px solid var(--gris3);border-radius:var(--r);font-family:var(--fb);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-demo-data:hover{border-color:var(--bleu);color:var(--bleu);}
+
+/* Status bar */
+.status-bar{display:flex;align-items:center;gap:1rem;padding:.5rem 1.25rem;border-bottom:1px solid var(--gris3);background:var(--bg3);flex-wrap:wrap;}
+.status-item{font-size:10px;color:var(--gris);display:flex;align-items:center;gap:5px;}
+.status-val{font-weight:700;color:var(--blanc);}
+.status-vert{color:var(--vert);}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--or);color:var(--blanc);padding:10px 18px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* Radar */
+#radarWrap{position:relative;height:220px;}
+
+/* 9box */
+.ninebox-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:.5rem;}
+.nb-cell{border-radius:var(--r);padding:.6rem;text-align:center;}
+.nb-val{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--blanc);}
+.nb-lbl{font-size:9px;color:var(--gris);margin-top:2px;}
+
+/* File preview */
+.file-preview{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem;margin-top:.75rem;display:none;}
+.fp-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.5rem;}
+.fp-cols{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.5rem;}
+.fp-info{font-size:10px;color:var(--gris);}
+
+/* Responsive */
+@media(max-width:900px){
+  .g2,.g3,.g21,.g12{grid-template-columns:1fr;}
+  .saisie-container{grid-template-columns:1fr;height:auto;}
+  .form-row,.form-row-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">Elite <span>RH</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Tableau de Bord RH</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-indicator"><span class="tb-dot"></span><span id="tb-last-update">Aucune donnée</span></div>
+    <div class="tb-year">
+      <select id="sel-year" onchange="changeYear(this.value)">
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2026">2026</option>
+      </select>
+    </div>
+    <button class="tb-btn tb-btn-ghost" onclick="window.print()">⬇ Exporter</button>
+    <a href="index.html" class="tb-back">← Accueil</a>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('effectifs',this)"><span class="tab-dot" style="background:#C9A84C"></span>👥 Effectifs</button>
+  <button class="tab-btn" onclick="showTab('salaires',this)"><span class="tab-dot" style="background:#34C77B"></span>💰 Masse Salariale</button>
+  <button class="tab-btn" onclick="showTab('recrutement',this)"><span class="tab-dot" style="background:#4A9EFF"></span>🔍 Recrutement</button>
+  <button class="tab-btn" onclick="showTab('formations',this)"><span class="tab-dot" style="background:#A78BFA"></span>🎓 Formations</button>
+  <button class="tab-btn" onclick="showTab('absences',this)"><span class="tab-dot" style="background:#FB923C"></span>📅 Absences</button>
+  <button class="tab-btn" onclick="showTab('performance',this)"><span class="tab-dot" style="background:#F05A5A"></span>📊 Performance</button>
+  <button class="tab-btn" onclick="showTab('competences',this)"><span class="tab-dot" style="background:#E2C47A"></span>🎯 Compétences</button>
+  <button class="tab-btn" onclick="showTab('organigramme',this)"><span class="tab-dot" style="background:#38BDF8"></span>🏢 Organigramme</button>
+  <button class="tab-btn" onclick="showTab('pyramide',this)"><span class="tab-dot" style="background:#F472B6"></span>🔺 Pyramide des âges</button>
+  <button class="tab-btn" onclick="showTab('succession',this)"><span class="tab-dot" style="background:#38BDF8"></span>🔄 Plan de succession</button>
+  <button class="tab-btn" onclick="showTab('saisie',this)" style="margin-left:auto;border-left:1px solid var(--gris3)"><span class="tab-dot" style="background:#34C77B"></span>✏️ Saisie mensuelle</button>
+</div>
+
+<div class="main">
+
+<!-- ══ EFFECTIFS ══ -->
+<div class="panel active" id="panel-effectifs">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Effectif total</div><div><span class="kpi-val" id="e-total">—</span></div><div class="kpi-sub kpi-neutral" id="e-total-s">Aucune donnée</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Entrées</div><div><span class="kpi-val" id="e-entrees">—</span></div><div class="kpi-sub kpi-up" id="e-entrees-s">—</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Sorties</div><div><span class="kpi-val" id="e-sorties">—</span></div><div class="kpi-sub kpi-down" id="e-sorties-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Taux de turnover</div><div><span class="kpi-val" id="e-turnover">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Norme : &lt;10%</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Ancienneté moy.</div><div><span class="kpi-val" id="e-anciennete">—</span><span class="kpi-unit">ans</span></div><div class="kpi-sub kpi-neutral" id="e-anciennete-s">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Ratio Femmes</div><div><span class="kpi-val" id="e-femmes">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Objectif : 45%</div></div>
+  </div>
+  <div class="charts-grid g21">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Évolution effectifs</div><div class="cc-sub">Entrées / Sorties mensuelles</div></div></div><div class="chart-h"><canvas id="ch-eff-evol"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Répartition genre</div></div><div class="chart-h"><canvas id="ch-eff-genre"></canvas></div></div>
+  </div>
+  <div class="charts-grid g3">
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Par département</div></div><div class="chart-h"><canvas id="ch-eff-dept"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Par tranche d'âge</div></div><div class="chart-h"><canvas id="ch-eff-age"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Par type de contrat</div></div><div class="chart-h"><canvas id="ch-eff-contrat"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ══ SALAIRES ══ -->
+<div class="panel" id="panel-salaires">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Masse salariale</div><div><span class="kpi-val" id="s-masse">—</span><span class="kpi-unit">M FCFA</span></div><div class="kpi-sub kpi-neutral" id="s-masse-s">—</div></div>
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Salaire moyen brut</div><div><span class="kpi-val" id="s-moyen">—</span><span class="kpi-unit">K FCFA</span></div><div class="kpi-sub kpi-neutral" id="s-moyen-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Charges patronales</div><div><span class="kpi-val" id="s-charges">—</span><span class="kpi-unit">M FCFA</span></div><div class="kpi-sub kpi-neutral" id="s-charges-s">—</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">% MS / CA</div><div><span class="kpi-val" id="s-pct-ca">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Cible : 28%</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Primes versées</div><div><span class="kpi-val" id="s-primes">—</span><span class="kpi-unit">M FCFA</span></div><div class="kpi-sub kpi-neutral" id="s-primes-s">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Heures supplémentaires</div><div><span class="kpi-val" id="s-hs">—</span><span class="kpi-unit">h</span></div><div class="kpi-sub kpi-neutral" id="s-hs-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Évolution masse salariale</div><div class="cc-sub">12 mois glissants — M FCFA</div></div></div><div class="chart-h"><canvas id="ch-sal-evol"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Répartition par département</div></div></div><div class="chart-h"><canvas id="ch-sal-dept"></canvas></div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Distribution salaires bruts</div></div><div class="chart-h"><canvas id="ch-sal-distrib"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Salaire moyen par catégorie</div></div><div class="prog-list" id="sal-cat-list" style="padding:.25rem 0;margin-top:.5rem"></div></div>
+  </div>
+</div>
+
+<!-- ══ RECRUTEMENT ══ -->
+<div class="panel" id="panel-recrutement">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Postes ouverts</div><div><span class="kpi-val" id="r-postes">—</span></div><div class="kpi-sub kpi-down" id="r-postes-s">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Candidatures reçues</div><div><span class="kpi-val" id="r-candidatures">—</span></div><div class="kpi-sub kpi-up" id="r-cands-s">—</div></div>
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Délai moyen (jours)</div><div><span class="kpi-val" id="r-delai">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub kpi-neutral">Cible : &lt;30j</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Taux conversion</div><div><span class="kpi-val" id="r-conv">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="r-conv-s">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Postes pourvus</div><div><span class="kpi-val" id="r-pourvus">—</span></div><div class="kpi-sub kpi-up" id="r-pourvus-s">—</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Rétention 1 an</div><div><span class="kpi-val" id="r-retention">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="r-retention-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Pipeline de recrutement</div><div class="cc-sub">Candidats par étape</div></div></div><div class="chart-h"><canvas id="ch-rec-pipeline"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Sources de recrutement</div></div><div class="chart-h"><canvas id="ch-rec-sources"></canvas></div></div>
+  </div>
+  <div class="chart-card"><div class="cc-head"><div class="cc-title">Suivi des postes en cours</div></div>
+    <div class="tbl-wrap"><table class="data-tbl"><thead><tr><th>Poste</th><th>Département</th><th>Ouvert depuis</th><th>Candidatures</th><th>Étape</th><th>Priorité</th></tr></thead><tbody id="tbl-postes-body"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ FORMATIONS ══ -->
+<div class="panel" id="panel-formations">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Heures de formation</div><div><span class="kpi-val" id="f-heures">—</span><span class="kpi-unit">h</span></div><div class="kpi-sub kpi-neutral" id="f-heures-s">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Taux d'accès</div><div><span class="kpi-val" id="f-taux">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Objectif : 70%</div></div>
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Budget formation</div><div><span class="kpi-val" id="f-budget">—</span><span class="kpi-unit">M FCFA</span></div><div class="kpi-sub kpi-neutral" id="f-budget-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Satisfaction moy.</div><div><span class="kpi-val" id="f-satis">—</span><span class="kpi-unit">/5</span></div><div class="kpi-sub kpi-neutral" id="f-satis-s">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Coût / stagiaire</div><div><span class="kpi-val" id="f-cout">—</span><span class="kpi-unit">K FCFA</span></div><div class="kpi-sub kpi-neutral" id="f-cout-s">—</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Formations réalisées</div><div><span class="kpi-val" id="f-realisees">—</span></div><div class="kpi-sub kpi-neutral" id="f-realisees-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Heures de formation / mois</div></div><div class="chart-h"><canvas id="ch-form-heures"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Répartition par thématique</div></div><div class="chart-h"><canvas id="ch-form-themes"></canvas></div></div>
+  </div>
+  <div class="chart-card"><div class="cc-head"><div class="cc-title">Plan de formation — Taux de réalisation</div></div><div class="prog-list" id="form-plan-list" style="padding:.25rem 0;margin-top:.5rem;max-height:200px;overflow-y:auto"></div></div>
+</div>
+
+<!-- ══ ABSENCES ══ -->
+<div class="panel" id="panel-absences">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Taux d'absentéisme</div><div><span class="kpi-val" id="a-taux">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Norme : 3.5%</div></div>
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Jours absence / ETP</div><div><span class="kpi-val" id="a-jours">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub kpi-neutral" id="a-jours-s">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Congés pris / acquis</div><div><span class="kpi-val" id="a-conges">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="a-conges-s">—</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Arrêts maladie</div><div><span class="kpi-val" id="a-maladie">—</span></div><div class="kpi-sub kpi-down" id="a-maladie-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Durée moy. arrêt</div><div><span class="kpi-val" id="a-duree">—</span><span class="kpi-unit">j</span></div><div class="kpi-sub kpi-neutral" id="a-duree-s">—</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Coût absentéisme</div><div><span class="kpi-val" id="a-cout">—</span><span class="kpi-unit">M FCFA</span></div><div class="kpi-sub kpi-down" id="a-cout-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Absentéisme mensuel</div><div class="cc-sub">Taux % — avec ligne norme</div></div></div><div class="chart-h"><canvas id="ch-abs-evol"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Motifs d'absence</div></div><div class="chart-h"><canvas id="ch-abs-motifs"></canvas></div></div>
+  </div>
+  <div class="chart-card"><div class="cc-head"><div class="cc-title">Absentéisme par département</div></div><div class="prog-list" id="abs-dept-list" style="padding:.25rem 0;margin-top:.5rem"></div></div>
+</div>
+
+<!-- ══ PERFORMANCE ══ -->
+<div class="panel" id="panel-performance">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Score moyen</div><div><span class="kpi-val" id="p-score">—</span><span class="kpi-unit">/5</span></div><div class="kpi-sub kpi-neutral" id="p-score-s">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Objectifs atteints</div><div><span class="kpi-val" id="p-atteints">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="p-atteints-s">—</div></div>
+    <div class="kpi-card" style="--accent:#C9A84C"><div class="kpi-label">Évaluations faites</div><div><span class="kpi-val" id="p-evals">—</span></div><div class="kpi-sub kpi-neutral" id="p-evals-s">—</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA"><div class="kpi-label">Hauts potentiels</div><div><span class="kpi-val" id="p-hp">—</span></div><div class="kpi-sub kpi-neutral" id="p-hp-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Plan d'amélioration</div><div><span class="kpi-val" id="p-pip">—</span></div><div class="kpi-sub kpi-down" id="p-pip-s">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C"><div class="kpi-label">Promotions internes</div><div><span class="kpi-val" id="p-promos">—</span></div><div class="kpi-sub kpi-up" id="p-promos-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Distribution des notes</div></div></div><div class="chart-h"><canvas id="ch-perf-distrib"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div class="cc-title">Score moyen par département</div></div><div class="chart-h"><canvas id="ch-perf-dept"></canvas></div></div>
+  </div>
+  <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Matrice 9-Box — Potentiel × Performance</div></div></div><div class="ninebox-grid" id="ninebox"></div></div>
+</div>
+
+<!-- ══ COMPETENCES ══ -->
+<div class="panel" id="panel-competences">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#E2C47A"><div class="kpi-label">Score compétences</div><div><span class="kpi-val" id="c-score">—</span><span class="kpi-unit">/4</span></div><div class="kpi-sub kpi-neutral" id="c-score-s">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Compétences maîtrisées</div><div><span class="kpi-val" id="c-maitrisees">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral">Niveau 3–4</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Écarts critiques</div><div><span class="kpi-val" id="c-ecarts">—</span></div><div class="kpi-sub kpi-down" id="c-ecarts-s">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF"><div class="kpi-label">Matrices complétées</div><div><span class="kpi-val" id="c-matrices">—</span></div><div class="kpi-sub kpi-neutral" id="c-matrices-s">—</div></div>
+  </div>
+  <div class="charts-grid g2">
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Radar compétences</div><div class="cc-sub">Requis vs Actuel</div></div></div><div id="radarWrap"><canvas id="ch-radar"></canvas></div></div>
+    <div class="chart-card"><div class="cc-head"><div><div class="cc-title">Écarts par catégorie</div><div class="cc-sub">% sous le niveau requis</div></div></div><div class="chart-h"><canvas id="ch-ecarts-cat"></canvas></div></div>
+  </div>
+  <div class="chart-card"><div class="cc-head"><div class="cc-title">Top compétences à développer</div></div><div class="prog-list" id="comp-top-list" style="padding:.25rem 0;margin-top:.5rem"></div></div>
+</div>
+
+<!-- ══ ORGANIGRAMME ══ -->
+<div class="panel" id="panel-organigramme">
+
+<style>
+/* ── ORGANIGRAMME CSS ── */
+.org-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.org-kpis{display:flex;gap:.75rem;flex-wrap:wrap;}
+.org-kpi{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.6rem 1rem;display:flex;align-items:center;gap:10px;}
+.org-kpi-icon{font-size:18px;}
+.org-kpi-val{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--blanc);}
+.org-kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-top:1px;}
+.org-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.org-toggle{display:flex;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);overflow:hidden;}
+.org-toggle-btn{padding:7px 14px;border:none;background:transparent;color:var(--gris);font-family:var(--fd);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.org-toggle-btn.active{background:var(--or);color:var(--bg);}
+.org-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.04em;}
+.org-btn-or{background:var(--or);color:var(--bg);}
+.org-btn-or:hover{background:var(--or2);}
+.org-btn-ghost{background:transparent;color:var(--gris);border:1px solid var(--gris3);}
+.org-btn-ghost:hover{border-color:var(--or);color:var(--or);}
+
+/* Canvas zone */
+.org-canvas-wrap{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;position:relative;}
+.org-canvas-inner{overflow:auto;cursor:grab;user-select:none;min-height:500px;}
+.org-canvas-inner:active{cursor:grabbing;}
+.org-svg-wrap{display:inline-block;padding:2rem;min-width:100%;}
+
+/* Nodes */
+.org-node{position:relative;}
+.org-card{
+  border-radius:12px;padding:12px 14px;min-width:160px;max-width:200px;
+  display:flex;flex-direction:column;gap:4px;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;position:relative;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.org-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.org-card-dept{background:linear-gradient(135deg,#1A1A22,#222230);border:1px solid rgba(201,168,76,.35);border-top:3px solid var(--or);}
+.org-card-filled{background:var(--bg3);border:1px solid var(--gris3);border-top:3px solid var(--bleu);}
+.org-card-vacant{background:rgba(240,90,90,.06);border:1px dashed rgba(240,90,90,.4);border-top:3px dashed var(--rouge);}
+.org-card-tag{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;margin-bottom:2px;}
+.org-card-dept .org-card-tag{color:var(--or);}
+.org-card-filled .org-card-tag{color:var(--bleu);}
+.org-card-vacant .org-card-tag{color:var(--rouge);}
+.org-card-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);line-height:1.2;}
+.org-card-name{font-size:11px;font-weight:500;color:var(--gris);margin-top:2px;}
+.org-card-meta{font-size:9px;color:var(--gris2);margin-top:3px;}
+.org-vacant-badge{position:absolute;top:-8px;right:8px;background:var(--rouge);color:white;font-size:8px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.08em;}
+
+/* Zoom controls */
+.org-zoom-btns{position:absolute;bottom:1rem;right:1rem;display:flex;flex-direction:column;gap:4px;z-index:10;}
+.org-zoom-btn{width:30px;height:30px;background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);color:var(--blanc);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.org-zoom-btn:hover{border-color:var(--or);color:var(--or);}
+
+/* Import zone */
+.org-import-zone{border:2px dashed var(--gris3);border-radius:var(--rl);padding:3rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);}
+.org-import-zone:hover{border-color:var(--or);background:var(--or-glow);}
+
+/* Légende */
+.org-legende{display:flex;gap:1rem;flex-wrap:wrap;padding:.75rem 1rem;background:var(--bg3);border-top:1px solid var(--gris3);}
+.org-leg-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--gris);}
+.org-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* Tooltip */
+.org-tooltip{position:fixed;background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem 1rem;font-size:11px;z-index:500;pointer-events:none;opacity:0;transition:opacity .2s;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.org-tooltip.show{opacity:1;}
+.org-tooltip-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:.5rem;}
+.org-tooltip-row{display:flex;gap:6px;margin-bottom:2px;color:var(--gris);}
+.org-tooltip-key{color:var(--gris2);min-width:70px;}
+
+/* Panneau éditeur */
+.org-editor{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.org-editor-head{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.org-editor-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);}
+.org-editor-body{padding:1rem;max-height:400px;overflow-y:auto;}
+.org-emp-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r);border:1px solid var(--gris3);margin-bottom:6px;background:var(--bg3);}
+.org-emp-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.org-emp-info{flex:1;min-width:0;}
+.org-emp-name{font-size:11px;font-weight:600;color:var(--blanc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.org-emp-post{font-size:10px;color:var(--gris);}
+.org-emp-dept{font-size:9px;color:var(--gris2);}
+.org-emp-vacant{border-color:rgba(240,90,90,.3);background:rgba(240,90,90,.04);}
+</style>
+
+<!-- TOP BAR -->
+<div class="org-topbar">
+  <div class="org-kpis">
+    <div class="org-kpi" style="--accent:#C9A84C;border-color:rgba(201,168,76,.2)">
+      <div class="org-kpi-icon">🏢</div>
+      <div><div class="org-kpi-val" id="org-nb-total">0</div><div class="org-kpi-label">Postes total</div></div>
+    </div>
+    <div class="org-kpi" style="border-color:rgba(52,199,123,.2)">
+      <div class="org-kpi-icon">👤</div>
+      <div><div class="org-kpi-val" id="org-nb-pourvus" style="color:var(--vert)">0</div><div class="org-kpi-label">Postes pourvus</div></div>
+    </div>
+    <div class="org-kpi" style="border-color:rgba(240,90,90,.2)">
+      <div class="org-kpi-icon">🔴</div>
+      <div><div class="org-kpi-val" id="org-nb-vacants" style="color:var(--rouge)">0</div><div class="org-kpi-label">Postes vacants</div></div>
+    </div>
+    <div class="org-kpi" style="border-color:rgba(74,158,255,.2)">
+      <div class="org-kpi-icon">🏗️</div>
+      <div><div class="org-kpi-val" id="org-nb-depts" style="color:var(--bleu)">0</div><div class="org-kpi-label">Départements</div></div>
+    </div>
+  </div>
+  <div class="org-controls">
+    <div class="org-toggle">
+      <button class="org-toggle-btn active" id="org-btn-mixte" onclick="setOrgMode('mixte')">Mixte</button>
+      <button class="org-toggle-btn" id="org-btn-nominatif" onclick="setOrgMode('nominatif')">Nominatif</button>
+      <button class="org-toggle-btn" id="org-btn-fonctionnel" onclick="setOrgMode('fonctionnel')">Fonctionnel</button>
+    </div>
+    <button class="org-btn org-btn-ghost" onclick="orgZoom(1.2)">🔍+</button>
+    <button class="org-btn org-btn-ghost" onclick="orgZoom(0.8)">🔍−</button>
+    <button class="org-btn org-btn-ghost" onclick="orgFitView()">⊡ Ajuster</button>
+    <button class="org-btn org-btn-ghost" onclick="exportOrgPDF()">⬇ PDF</button>
+    <button class="org-btn org-btn-or" onclick="document.getElementById('org-file-input').click()">⬆ Importer Excel/CSV</button>
+    <button class="org-btn org-btn-ghost" onclick="chargerOrgDemo()">🎲 Démo</button>
+    <input type="file" id="org-file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleOrgFile(this)"/>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 280px;gap:1rem;">
+
+  <!-- CANVAS -->
+  <div class="org-canvas-wrap" id="org-canvas-wrap">
+    <div class="org-canvas-inner" id="org-canvas" onwheel="handleOrgWheel(event)">
+      <div id="org-tree-root" style="transform-origin:0 0;transition:transform .15s;padding:2rem;display:inline-block;min-width:100%;"></div>
+    </div>
+    <!-- Zone d'import vide -->
+    <div id="org-empty-state" style="display:flex;align-items:center;justify-content:center;min-height:460px;">
+      <div class="org-import-zone" style="max-width:480px;" onclick="document.getElementById('org-file-input').click()">
+        <div style="font-size:48px;margin-bottom:.75rem;">🏢</div>
+        <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Importer votre structure</div>
+        <div style="font-size:12px;color:var(--gris);line-height:1.7;margin-bottom:1rem;">Glissez un fichier Excel ou CSV avec vos postes et employés.<br>L'organigramme se génère automatiquement.</div>
+        <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem 1rem;text-align:left;font-size:11px;color:var(--gris);margin-bottom:1rem;">
+          <div style="font-weight:700;color:var(--or);margin-bottom:.4rem;">Colonnes attendues :</div>
+          <div>Département · Poste · Responsable · Nom · Prénom · Statut (Pourvu/Vacant) · NiveauHierarchique (1=DG, 2=Directeur…)</div>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:center;">
+          <span style="padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--gris3);color:var(--gris)">.xlsx</span>
+          <span style="padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--gris3);color:var(--gris)">.xls</span>
+          <span style="padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--gris3);color:var(--gris)">.csv</span>
+        </div>
+        <button class="org-btn org-btn-ghost" style="margin-top:1rem;width:100%" onclick="event.stopPropagation();chargerOrgDemo()">🎲 Ou charger les données de démonstration</button>
+      </div>
+    </div>
+    <!-- Légende -->
+    <div class="org-legende" id="org-legende" style="display:none">
+      <div class="org-leg-item"><div class="org-leg-dot" style="background:var(--or)"></div>Département</div>
+      <div class="org-leg-item"><div class="org-leg-dot" style="background:var(--bleu)"></div>Poste pourvu</div>
+      <div class="org-leg-item"><div class="org-leg-dot" style="background:var(--rouge)"></div>Poste vacant</div>
+    </div>
+  </div>
+
+  <!-- PANNEAU DROITE -->
+  <div style="display:flex;flex-direction:column;gap:.75rem;">
+    <!-- Résumé par département -->
+    <div class="org-editor">
+      <div class="org-editor-head">
+        <div class="org-editor-title">📊 Par département</div>
+      </div>
+      <div class="org-editor-body" id="org-dept-summary" style="padding:.5rem;"></div>
+    </div>
+    <!-- Liste des vacants -->
+    <div class="org-editor">
+      <div class="org-editor-head">
+        <div class="org-editor-title" style="color:var(--rouge)">🔴 Postes vacants</div>
+        <span id="org-vacant-count" style="font-size:10px;color:var(--rouge);background:rgba(240,90,90,.1);padding:2px 8px;border-radius:20px;font-weight:700;">0</span>
+      </div>
+      <div class="org-editor-body" id="org-vacant-list" style="padding:.5rem;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="org-tooltip" id="org-tooltip"></div>
+
+</div>
+<!-- ══ FIN ORGANIGRAMME ══ -->
+
+<!-- ══ PYRAMIDE DES ÂGES ══ -->
+<div class="panel" id="panel-pyramide">
+<style>
+.pyr-layout{display:grid;grid-template-columns:1fr 340px;gap:1rem;}
+.pyr-left{display:flex;flex-direction:column;gap:.75rem;}
+.pyr-right{display:flex;flex-direction:column;gap:.75rem;}
+.pyr-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);padding:1rem;}
+.pyr-card-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+
+/* Pyramide SVG */
+.pyr-wrap{position:relative;background:var(--bg3);border-radius:var(--r);overflow:hidden;}
+.pyr-svg{display:block;width:100%;}
+.pyr-axis-label{font-size:11px;fill:#5A5866;font-family:'DM Sans',sans-serif;}
+.pyr-bar-f{fill:#A78BFA;opacity:.85;transition:opacity .2s;}
+.pyr-bar-m{fill:#4A9EFF;opacity:.85;transition:opacity .2s;}
+.pyr-bar-f:hover,.pyr-bar-m:hover{opacity:1;}
+.pyr-label{font-size:11px;fill:#F0EEF8;font-family:'DM Sans',sans-serif;font-weight:600;}
+.pyr-center-label{font-size:11px;fill:#9896A4;font-family:'DM Sans',sans-serif;}
+.pyr-legend{display:flex;gap:1rem;justify-content:center;margin-top:.5rem;}
+.pyr-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gris);}
+.pyr-leg-dot{width:10px;height:10px;border-radius:2px;}
+
+/* Diagnostic */
+.diag-header{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.diag-forme{font-family:var(--fd);font-size:18px;font-weight:700;}
+.diag-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;}
+.diag-badge-vert{background:rgba(52,199,123,.15);color:#34C77B;border:1px solid rgba(52,199,123,.3);}
+.diag-badge-jaune{background:rgba(251,199,36,.15);color:#FBC724;border:1px solid rgba(251,199,36,.3);}
+.diag-badge-rouge{background:rgba(240,90,90,.15);color:#F05A5A;border:1px solid rgba(240,90,90,.3);}
+.diag-desc{font-size:12px;color:var(--gris);line-height:1.8;margin-bottom:.75rem;}
+
+/* Actions RH */
+.actions-list{display:flex;flex-direction:column;gap:8px;}
+.action-item{border-radius:var(--r);padding:.75rem 1rem;display:flex;align-items:flex-start;gap:10px;}
+.action-vert {background:rgba(52,199,123,.07);border:1px solid rgba(52,199,123,.2);}
+.action-jaune{background:rgba(251,199,36,.07);border:1px solid rgba(251,199,36,.2);}
+.action-rouge{background:rgba(240,90,90,.07);border:1px solid rgba(240,90,90,.2);}
+.action-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.action-content{}
+.action-title{font-size:12px;font-weight:700;margin-bottom:2px;}
+.action-vert  .action-title{color:#34C77B;}
+.action-jaune .action-title{color:#FBC724;}
+.action-rouge .action-title{color:#F05A5A;}
+.action-desc{font-size:11px;color:var(--gris);line-height:1.6;}
+
+/* Stats tranches */
+.tranche-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tranche-item{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.6rem .75rem;}
+.tranche-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:3px;}
+.tranche-val{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);}
+.tranche-pct{font-size:10px;color:var(--gris2);}
+.tranche-bar{height:3px;background:var(--gris3);border-radius:2px;margin-top:4px;overflow:hidden;}
+.tranche-fill{height:100%;border-radius:2px;}
+
+/* Import zone */
+.pyr-import{border:2px dashed var(--gris3);border-radius:var(--rl);padding:2rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);margin-bottom:1rem;}
+.pyr-import:hover{border-color:#F472B6;background:rgba(244,114,182,.06);}
+
+/* Score global */
+.score-ring{display:flex;flex-direction:column;align-items:center;padding:1rem;}
+.score-ring-val{font-family:var(--fd);font-size:48px;font-weight:700;line-height:1;}
+.score-ring-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--gris);margin-top:4px;}
+.score-ring-desc{font-size:12px;font-style:italic;margin-top:6px;text-align:center;}
+</style>
+
+<!-- TOP BAR PYRAMIDE -->
+<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap;" id="pyr-kpis">
+    <div class="kpi-card" style="--accent:#F472B6;min-width:140px"><div class="kpi-label">Âge moyen</div><div><span class="kpi-val" id="pyr-age-moyen">—</span><span class="kpi-unit">ans</span></div><div class="kpi-sub kpi-neutral" id="pyr-age-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#A78BFA;min-width:140px"><div class="kpi-label">Moins de 35 ans</div><div><span class="kpi-val" id="pyr-pct-jeunes">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="pyr-jeunes-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#4A9EFF;min-width:140px"><div class="kpi-label">35 – 50 ans</div><div><span class="kpi-val" id="pyr-pct-mid">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="pyr-mid-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#FB923C;min-width:140px"><div class="kpi-label">Plus de 50 ans</div><div><span class="kpi-val" id="pyr-pct-senior">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="pyr-senior-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B;min-width:140px"><div class="kpi-label">Départs retraite 5 ans</div><div><span class="kpi-val" id="pyr-departs">—</span></div><div class="kpi-sub kpi-down" id="pyr-departs-sub">—</div></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="tb-btn tb-btn-ghost" onclick="document.getElementById('pyr-file-input').click()">⬆ Importer Excel/CSV</button>
+    <button class="tb-btn tb-btn-ghost" onclick="chargerPyrDemo()">🎲 Démo</button>
+    <input type="file" id="pyr-file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="handlePyrFile(this)"/>
+  </div>
+</div>
+
+<!-- EMPTY STATE -->
+<div id="pyr-empty" style="display:flex;align-items:center;justify-content:center;min-height:400px;">
+  <div class="pyr-import" style="max-width:460px;" onclick="document.getElementById('pyr-file-input').click()">
+    <div style="font-size:42px;margin-bottom:.75rem;">🔺</div>
+    <div style="font-family:var(--fd);font-size:17px;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Importer vos données d'âge</div>
+    <div style="font-size:12px;color:var(--gris);line-height:1.7;margin-bottom:.75rem;">Colonnes attendues : <strong style="color:var(--blanc)">Tranche</strong> (ex: 25-35), <strong style="color:var(--blanc)">Hommes</strong>, <strong style="color:var(--blanc)">Femmes</strong><br>Ou : <strong style="color:var(--blanc)">Age</strong>, <strong style="color:var(--blanc)">Genre</strong> — une ligne par employé</div>
+    <button class="tb-btn tb-btn-ghost" style="margin-top:.5rem" onclick="event.stopPropagation();chargerPyrDemo()">🎲 Charger données démo</button>
+  </div>
+</div>
+
+<!-- CONTENU PYRAMIDE -->
+<div class="pyr-layout" id="pyr-content" style="display:none;">
+
+  <!-- GAUCHE : pyramide + stats -->
+  <div class="pyr-left">
+
+    <!-- SVG Pyramide -->
+    <div class="pyr-card">
+      <div class="pyr-card-title">🔺 Pyramide des âges <span id="pyr-type-label" style="font-size:10px;font-weight:500;color:var(--gris);margin-left:4px;"></span></div>
+      <div class="pyr-wrap" id="pyr-svg-wrap">
+        <svg id="pyr-svg" class="pyr-svg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="pyr-legend">
+        <div class="pyr-leg"><div class="pyr-leg-dot" style="background:#A78BFA"></div>Femmes</div>
+        <div class="pyr-leg"><div class="pyr-leg-dot" style="background:#4A9EFF"></div>Hommes</div>
+      </div>
+    </div>
+
+    <!-- Stats par tranche -->
+    <div class="pyr-card">
+      <div class="pyr-card-title">📊 Répartition détaillée</div>
+      <div class="tranche-grid" id="pyr-tranche-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- DROITE : diagnostic + actions -->
+  <div class="pyr-right">
+
+    <!-- Score & forme -->
+    <div class="pyr-card" id="pyr-diag-card">
+      <div class="pyr-card-title">🩺 Diagnostic RH</div>
+      <div id="pyr-diag-content"></div>
+    </div>
+
+    <!-- Actions RH recommandées -->
+    <div class="pyr-card">
+      <div class="pyr-card-title">⚡ Actions RH recommandées</div>
+      <div class="actions-list" id="pyr-actions-list"></div>
+    </div>
+
+    <!-- Projections -->
+    <div class="pyr-card">
+      <div class="pyr-card-title">📅 Projections & alertes</div>
+      <div id="pyr-projections"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- ══ FIN PYRAMIDE DES ÂGES ══ -->
+
+<!-- ══ PLAN DE SUCCESSION ══ -->
+<div class="panel" id="panel-succession">
+<style>
+/* ── SUCCESSION CSS ── */
+.suc-layout{display:grid;grid-template-columns:1fr 320px;gap:1rem;align-items:start;}
+.suc-main{display:flex;flex-direction:column;gap:1rem;}
+.suc-sidebar{display:flex;flex-direction:column;gap:1rem;position:sticky;top:80px;}
+
+/* KPI */
+.suc-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-bottom:1rem;}
+
+/* Carte poste clé */
+.suc-poste-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;transition:border-color .2s;}
+.suc-poste-card:hover{border-color:rgba(201,168,76,.3);}
+.suc-poste-head{padding:1rem 1.25rem;border-bottom:1px solid var(--gris3);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.suc-poste-head-left{}
+.suc-poste-dept{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px;}
+.suc-poste-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--blanc);line-height:1.2;}
+.suc-poste-titulaire{font-size:11px;color:var(--gris);margin-top:3px;}
+.suc-poste-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.suc-risk-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.06em;}
+.suc-risk-rouge{background:rgba(240,90,90,.15);color:#F05A5A;border:1px solid rgba(240,90,90,.25);}
+.suc-risk-jaune{background:rgba(251,199,36,.12);color:#FBC724;border:1px solid rgba(251,199,36,.25);}
+.suc-risk-vert {background:rgba(52,199,123,.12);color:#34C77B;border:1px solid rgba(52,199,123,.25);}
+.suc-no-suc-badge{background:rgba(240,90,90,.1);color:#F05A5A;border:1px solid rgba(240,90,90,.2);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+
+/* Corps de la carte */
+.suc-poste-body{padding:1rem 1.25rem;}
+
+/* Compétences requises */
+.suc-comp-section{margin-bottom:1rem;}
+.suc-comp-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);margin-bottom:.5rem;opacity:.8;}
+.suc-comp-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.suc-comp-tag{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500;}
+.suc-comp-required{background:rgba(74,158,255,.1);color:var(--bleu);border:1px solid rgba(74,158,255,.2);}
+
+/* Successeurs */
+.suc-successeurs{display:flex;flex-direction:column;gap:.75rem;}
+.suc-item{background:var(--bg3);border:1px solid var(--gris3);border-radius:var(--r);padding:.875rem 1rem;position:relative;}
+.suc-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;gap:.5rem;}
+.suc-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:700;flex-shrink:0;}
+.suc-name-block{flex:1;}
+.suc-name{font-size:13px;font-weight:600;color:var(--blanc);}
+.suc-poste-actuel{font-size:10px;color:var(--gris);}
+.suc-readiness{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+.ready-now  {background:rgba(52,199,123,.15);color:#34C77B;border:1px solid rgba(52,199,123,.25);}
+.ready-12   {background:rgba(74,158,255,.12);color:#4A9EFF;border:1px solid rgba(74,158,255,.2);}
+.ready-35   {background:rgba(251,199,36,.1); color:#FBC724;border:1px solid rgba(251,199,36,.2);}
+
+/* Scores pot/perf */
+.suc-scores{display:flex;gap:.75rem;margin-bottom:.6rem;}
+.suc-score-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gris);}
+.suc-score-val{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--blanc);}
+.suc-score-bar{width:60px;height:4px;background:var(--gris3);border-radius:2px;overflow:hidden;}
+.suc-score-fill{height:100%;border-radius:2px;}
+
+/* Compétences gap */
+.suc-gap-section{margin-top:.6rem;}
+.suc-gap-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gris2);margin-bottom:4px;}
+.suc-gap-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px;}
+.suc-comp-ok   {background:rgba(52,199,123,.1);color:#34C77B;border:1px solid rgba(52,199,123,.15);}
+.suc-comp-gap  {background:rgba(240,90,90,.1); color:#F05A5A;border:1px solid rgba(240,90,90,.15);}
+.suc-comp-dev  {background:rgba(251,199,36,.1);color:#FBC724;border:1px solid rgba(251,199,36,.15);}
+
+/* Plan de développement */
+.suc-plan{margin-top:.75rem;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12);border-radius:var(--r);padding:.75rem;}
+.suc-plan-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--or);margin-bottom:.5rem;opacity:.8;}
+.suc-plan-actions{display:flex;flex-direction:column;gap:4px;}
+.suc-plan-action{font-size:11px;color:var(--gris);display:flex;align-items:flex-start;gap:6px;line-height:1.5;}
+.suc-plan-action::before{content:"→";color:var(--or);font-weight:700;flex-shrink:0;}
+
+/* Rang successeur */
+.suc-rank{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--bg2);border:1px solid var(--gris3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--gris);}
+
+/* Alerte aucun successeur */
+.suc-no-successeur{background:rgba(240,90,90,.06);border:1px dashed rgba(240,90,90,.3);border-radius:var(--r);padding:1rem;text-align:center;color:var(--rouge);font-size:12px;}
+
+/* Import zone */
+.suc-import-zone{border:2px dashed var(--gris3);border-radius:var(--rl);padding:2.5rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg3);}
+.suc-import-zone:hover{border-color:var(--or);background:var(--or-glow);}
+
+/* Sidebar */
+.suc-summary-card{background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--rl);overflow:hidden;}
+.suc-summary-head{padding:.75rem 1rem;border-bottom:1px solid var(--gris3);background:var(--bg3);font-family:var(--fd);font-size:13px;font-weight:700;color:var(--blanc);}
+.suc-summary-body{padding:.75rem;}
+.suc-summary-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem;border-radius:var(--r);font-size:11px;margin-bottom:4px;}
+.suc-summary-row:hover{background:var(--bg3);}
+.suc-summary-poste{color:var(--blanc);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.suc-coverage-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* Filtre */
+.suc-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.suc-filter-btn{padding:5px 12px;border:1px solid var(--gris3);border-radius:20px;background:transparent;color:var(--gris);font-family:var(--fd);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.suc-filter-btn.active{background:var(--or);color:var(--bg);border-color:var(--or);}
+.suc-filter-btn:hover:not(.active){border-color:var(--or);color:var(--or);}
+</style>
+
+<!-- TOP BAR -->
+<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+  <div class="suc-kpi-grid" style="flex:1;" id="suc-kpis">
+    <div class="kpi-card" style="--accent:#38BDF8"><div class="kpi-label">Postes clés identifiés</div><div><span class="kpi-val" id="suc-nb-postes">—</span></div><div class="kpi-sub kpi-neutral" id="suc-postes-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Couverture succession</div><div><span class="kpi-val" id="suc-couverture">—</span><span class="kpi-unit">%</span></div><div class="kpi-sub kpi-neutral" id="suc-couv-sub">—</div></div>
+    <div class="kpi-card" style="--accent:#34C77B"><div class="kpi-label">Prêts maintenant</div><div><span class="kpi-val" id="suc-pret-now">—</span></div><div class="kpi-sub kpi-up">Successeurs opérationnels</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Postes sans successeur</div><div><span class="kpi-val" id="suc-sans-suc">—</span></div><div class="kpi-sub kpi-down">Risque critique</div></div>
+    <div class="kpi-card" style="--accent:#F05A5A"><div class="kpi-label">Risque départ élevé</div><div><span class="kpi-val" id="suc-risque-eleve">—</span></div><div class="kpi-sub kpi-down">Titulaires à risque</div></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button class="tb-btn tb-btn-ghost" onclick="exportSucPDF()">⬇ PDF</button>
+    <button class="tb-btn tb-btn-ghost" onclick="chargerSucDemo()">🎲 Démo</button>
+    <button class="tb-btn tb-btn-or" onclick="document.getElementById('suc-file-input').click()">⬆ Importer Excel/CSV</button>
+    <input type="file" id="suc-file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleSucFile(this)"/>
+  </div>
+</div>
+
+<!-- EMPTY STATE -->
+<div id="suc-empty" style="display:flex;align-items:center;justify-content:center;min-height:400px;">
+  <div class="suc-import-zone" style="max-width:520px;" onclick="document.getElementById('suc-file-input').click()">
+    <div style="font-size:42px;margin-bottom:.75rem;">🔄</div>
+    <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--blanc);margin-bottom:.5rem;">Importer votre plan de succession</div>
+    <div style="font-size:12px;color:var(--gris);line-height:1.8;margin-bottom:1rem;">
+      Colonnes attendues dans votre fichier Excel :<br>
+      <strong style="color:var(--blanc)">PosteCle · Departement · Titulaire · RisqueDépart · SuccesseurNom · SuccesseurPoste · Readiness · Potentiel · Performance · CompétencesOK · CompétencesADévelopper · PlanDéveloppement</strong>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--gris3);border-radius:var(--r);padding:.75rem 1rem;text-align:left;font-size:11px;color:var(--gris);margin-bottom:1rem;">
+      <div style="font-weight:700;color:var(--or);margin-bottom:.4rem;">💡 Conseil :</div>
+      Plusieurs successeurs par poste = plusieurs lignes avec le même PosteCle.<br>
+      Readiness : "Prêt maintenant", "1-2 ans" ou "3-5 ans"<br>
+      RisqueDépart : "Élevé", "Modéré" ou "Faible"<br>
+      CompétencesOK et CompétencesADévelopper : séparées par des virgules
+    </div>
+    <button class="tb-btn tb-btn-ghost" style="margin-top:.25rem" onclick="event.stopPropagation();chargerSucDemo()">🎲 Charger données de démonstration</button>
+  </div>
+</div>
+
+<!-- CONTENU -->
+<div id="suc-content" style="display:none;">
+
+  <!-- FILTRES -->
+  <div class="suc-filter-bar">
+    <button class="suc-filter-btn active" onclick="filterSuc('tous',this)">Tous les postes</button>
+    <button class="suc-filter-btn" onclick="filterSuc('critique',this)">🔴 Risque critique</button>
+    <button class="suc-filter-btn" onclick="filterSuc('sans',this)">⚠️ Sans successeur</button>
+    <button class="suc-filter-btn" onclick="filterSuc('pret',this)">✅ Successeur prêt</button>
+    <button class="suc-filter-btn" onclick="filterSuc('dev',this)">🎓 En développement</button>
+  </div>
+
+  <div class="suc-layout">
+    <!-- Liste des postes clés -->
+    <div class="suc-main" id="suc-postes-list"></div>
+    <!-- Sidebar résumé -->
+    <div class="suc-sidebar">
+      <div class="suc-summary-card">
+        <div class="suc-summary-head">📋 Tableau de couverture</div>
+        <div class="suc-summary-body" id="suc-coverage-table"></div>
+      </div>
+      <div class="suc-summary-card">
+        <div class="suc-summary-head">⚡ Priorités d'action</div>
+        <div class="suc-summary-body" id="suc-priorities"></div>
+      </div>
+      <div class="suc-summary-card">
+        <div class="suc-summary-head">📊 Readiness globale</div>
+        <div class="suc-summary-body" id="suc-readiness-chart" style="padding:.75rem 0;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- ══ FIN PLAN DE SUCCESSION ══ -->
+
+<!-- ══ SAISIE MENSUELLE ══ -->
+<div class="panel" id="panel-saisie">
+  <div class="saisie-container">
+
+    <!-- Sidebar mois -->
+    <div class="saisie-sidebar">
+      <div class="saisie-sb-head">
+        <div class="saisie-sb-title">📅 Saisie mensuelle</div>
+        <div class="saisie-sb-sub" id="sb-year-label">Année 2025</div>
+      </div>
+      <div class="month-list" id="month-list"></div>
+      <div class="saisie-sb-footer">
+        <div style="font-size:10px;color:var(--gris);line-height:1.6">
+          <span style="color:var(--vert)">●</span> Mois avec données<br>
+          <span style="color:var(--gris3)">●</span> Mois sans données
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="saisie-main">
+      <div class="saisie-main-head">
+        <div>
+          <div class="saisie-main-title">Données de <span id="saisie-month-label">—</span></div>
+          <div style="font-size:10px;color:var(--gris);margin-top:3px">Remplissez les volets ou importez un fichier Excel</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="tb-btn tb-btn-ghost" onclick="importerFichierMois()" style="font-size:11px">📂 Importer Excel/CSV</button>
+          <input type="file" id="file-mois" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFileMois(this)"/>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar" id="status-bar">
+        <div class="status-item">Mois sélectionné : <span class="status-val" id="sb-mois">—</span></div>
+        <div class="status-item">Données : <span class="status-val status-vert" id="sb-status">—</span></div>
+        <div class="status-item">Dernière màj : <span class="status-val" id="sb-last">—</span></div>
+      </div>
+
+      <!-- Onglets volets -->
+      <div class="saisie-tabs">
+        <button class="saisie-tab active" onclick="showVolet('effectifs',this)">👥 Effectifs</button>
+        <button class="saisie-tab" onclick="showVolet('salaires',this)">💰 Salaires</button>
+        <button class="saisie-tab" onclick="showVolet('recrutement',this)">🔍 Recrutement</button>
+        <button class="saisie-tab" onclick="showVolet('formations',this)">🎓 Formations</button>
+        <button class="saisie-tab" onclick="showVolet('absences',this)">📅 Absences</button>
+        <button class="saisie-tab" onclick="showVolet('performance',this)">📊 Performance</button>
+        <button class="saisie-tab" onclick="showVolet('competences',this)">🎯 Compétences</button>
+      </div>
+
+      <div class="saisie-body">
+
+        <!-- Volet EFFECTIFS -->
+        <div class="saisie-volet active" id="volet-effectifs">
+          <div class="import-zone" onclick="importerFichierMois()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDropMois(event)">
+            <div class="iz-icon">📂</div>
+            <div class="iz-title">Glissez ou cliquez pour importer</div>
+            <div class="iz-sub">Colonnes attendues : Nom, Prénom, Département, Poste, DateEntree, DateSortie, Genre, DateNaissance, TypeContrat</div>
+            <div class="iz-fmts"><span class="iz-fmt">.xlsx</span><span class="iz-fmt">.csv</span></div>
+          </div>
+          <div class="file-preview" id="prev-effectifs"></div>
+          <div class="form-section">
+            <div class="fs-title">Chiffres clés — Effectifs</div>
+            <div class="form-row">
+              <div class="ff"><label>Effectif total au 1er du mois</label><input type="number" id="m-e-total" placeholder="ex: 247"/></div>
+              <div class="ff"><label>Ancienneté moyenne (ans)</label><input type="number" step="0.1" id="m-e-anciennete" placeholder="ex: 4.2"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Entrées ce mois</label><input type="number" id="m-e-entrees" placeholder="ex: 5"/></div>
+              <div class="ff"><label>Sorties ce mois</label><input type="number" id="m-e-sorties" placeholder="ex: 3"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>% Femmes</label><input type="number" id="m-e-femmes" placeholder="ex: 42"/></div>
+              <div class="ff"><label>Promotions internes</label><input type="number" id="m-e-promos" placeholder="ex: 2"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Répartition par département (nb employés)</div>
+            <div class="form-row">
+              <div class="ff"><label>Direction</label><input type="number" id="m-dept-direction" placeholder="0"/></div>
+              <div class="ff"><label>Commercial</label><input type="number" id="m-dept-commercial" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Production</label><input type="number" id="m-dept-production" placeholder="0"/></div>
+              <div class="ff"><label>Ressources Humaines</label><input type="number" id="m-dept-rh" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Finance / Comptabilité</label><input type="number" id="m-dept-finance" placeholder="0"/></div>
+              <div class="ff"><label>Informatique / IT</label><input type="number" id="m-dept-it" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Logistique</label><input type="number" id="m-dept-logistique" placeholder="0"/></div>
+              <div class="ff"><label>Autre département</label><input type="number" id="m-dept-autre" placeholder="0"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Répartition par tranche d'âge</div>
+            <div class="form-row-3">
+              <div class="ff"><label>Moins de 25 ans</label><input type="number" id="m-age-25" placeholder="0"/></div>
+              <div class="ff"><label>25 – 35 ans</label><input type="number" id="m-age-2535" placeholder="0"/></div>
+              <div class="ff"><label>36 – 45 ans</label><input type="number" id="m-age-3645" placeholder="0"/></div>
+            </div>
+            <div class="form-row-3">
+              <div class="ff"><label>46 – 55 ans</label><input type="number" id="m-age-4655" placeholder="0"/></div>
+              <div class="ff"><label>Plus de 55 ans</label><input type="number" id="m-age-55" placeholder="0"/></div>
+              <div class="ff"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Répartition par type de contrat</div>
+            <div class="form-row">
+              <div class="ff"><label>CDI</label><input type="number" id="m-ctr-cdi" placeholder="0"/></div>
+              <div class="ff"><label>CDD</label><input type="number" id="m-ctr-cdd" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Stage</label><input type="number" id="m-ctr-stage" placeholder="0"/></div>
+              <div class="ff"><label>Prestataire</label><input type="number" id="m-ctr-prest" placeholder="0"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet SALAIRES -->
+        <div class="saisie-volet" id="volet-salaires">
+          <div class="form-section">
+            <div class="fs-title">Masse salariale du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Masse salariale brute (M FCFA)</label><input type="number" step="0.1" id="m-s-masse" placeholder="ex: 10.4"/></div>
+              <div class="ff"><label>Charges patronales CNSS (M FCFA)</label><input type="number" step="0.1" id="m-s-charges" placeholder="ex: 1.9"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Primes versées (M FCFA)</label><input type="number" step="0.1" id="m-s-primes" placeholder="ex: 0.7"/></div>
+              <div class="ff"><label>Heures supplémentaires (h)</label><input type="number" id="m-s-hs" placeholder="ex: 124"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Chiffre d'affaires (M FCFA)</label><input type="number" step="0.1" id="m-s-ca" placeholder="ex: 35.0"/></div>
+              <div class="ff"><label>Salaire moyen brut (K FCFA)</label><input type="number" id="m-s-moyen" placeholder="ex: 504"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Répartition MS par département (M FCFA)</div>
+            <div class="form-row">
+              <div class="ff"><label>Direction</label><input type="number" step="0.1" id="m-sdept-direction" placeholder="0"/></div>
+              <div class="ff"><label>Commercial</label><input type="number" step="0.1" id="m-sdept-commercial" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Production</label><input type="number" step="0.1" id="m-sdept-production" placeholder="0"/></div>
+              <div class="ff"><label>RH</label><input type="number" step="0.1" id="m-sdept-rh" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Finance</label><input type="number" step="0.1" id="m-sdept-finance" placeholder="0"/></div>
+              <div class="ff"><label>IT</label><input type="number" step="0.1" id="m-sdept-it" placeholder="0"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Salaire moyen par catégorie (K FCFA)</div>
+            <div class="form-row">
+              <div class="ff"><label>Direction</label><input type="number" id="m-scat-direction" placeholder="0"/></div>
+              <div class="ff"><label>Cadres</label><input type="number" id="m-scat-cadres" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Agents de maîtrise</label><input type="number" id="m-scat-am" placeholder="0"/></div>
+              <div class="ff"><label>Employés</label><input type="number" id="m-scat-employes" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Ouvriers</label><input type="number" id="m-scat-ouvriers" placeholder="0"/></div>
+              <div class="ff"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet RECRUTEMENT -->
+        <div class="saisie-volet" id="volet-recrutement">
+          <div class="form-section">
+            <div class="fs-title">Indicateurs du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Postes ouverts</label><input type="number" id="m-r-postes" placeholder="ex: 12"/></div>
+              <div class="ff"><label>Postes pourvus ce mois</label><input type="number" id="m-r-pourvus" placeholder="ex: 4"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Candidatures reçues</label><input type="number" id="m-r-candidatures" placeholder="ex: 68"/></div>
+              <div class="ff"><label>Délai moyen recrutement (j)</label><input type="number" id="m-r-delai" placeholder="ex: 28"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Taux de conversion (%)</label><input type="number" step="0.1" id="m-r-conv" placeholder="ex: 12.0"/></div>
+              <div class="ff"><label>Taux de rétention 1 an (%)</label><input type="number" step="0.1" id="m-r-retention" placeholder="ex: 84"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Pipeline recrutement (nb candidats par étape)</div>
+            <div class="form-row">
+              <div class="ff"><label>Candidatures reçues</label><input type="number" id="m-pip-cands" placeholder="0"/></div>
+              <div class="ff"><label>Présélection</label><input type="number" id="m-pip-presel" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Entretien RH</label><input type="number" id="m-pip-rh" placeholder="0"/></div>
+              <div class="ff"><label>Entretien Métier</label><input type="number" id="m-pip-metier" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Offre émise</label><input type="number" id="m-pip-offre" placeholder="0"/></div>
+              <div class="ff"><label>Embauché</label><input type="number" id="m-pip-embauche" placeholder="0"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Sources de recrutement (nb candidats)</div>
+            <div class="form-row">
+              <div class="ff"><label>LinkedIn</label><input type="number" id="m-src-linkedin" placeholder="0"/></div>
+              <div class="ff"><label>Réseau / Cooptation</label><input type="number" id="m-src-reseau" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Jobboards</label><input type="number" id="m-src-jobboard" placeholder="0"/></div>
+              <div class="ff"><label>Site web / Spontanée</label><input type="number" id="m-src-site" placeholder="0"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet FORMATIONS -->
+        <div class="saisie-volet" id="volet-formations">
+          <div class="form-section">
+            <div class="fs-title">Indicateurs du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Heures de formation totales</label><input type="number" id="m-f-heures" placeholder="ex: 124"/></div>
+              <div class="ff"><label>Taux d'accès formation (%)</label><input type="number" step="0.1" id="m-f-taux" placeholder="ex: 67"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Budget consommé (M FCFA)</label><input type="number" step="0.01" id="m-f-budget" placeholder="ex: 0.52"/></div>
+              <div class="ff"><label>Satisfaction moyenne (/5)</label><input type="number" step="0.1" id="m-f-satis" placeholder="ex: 4.2" max="5"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Formations réalisées</label><input type="number" id="m-f-realisees" placeholder="ex: 3"/></div>
+              <div class="ff"><label>Formations planifiées</label><input type="number" id="m-f-planifiees" placeholder="ex: 4"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Heures par thématique</div>
+            <div class="form-row">
+              <div class="ff"><label>Management & Leadership</label><input type="number" id="m-th-mgmt" placeholder="0"/></div>
+              <div class="ff"><label>Droit social</label><input type="number" id="m-th-droit" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Technique métier</label><input type="number" id="m-th-tech" placeholder="0"/></div>
+              <div class="ff"><label>Digital & IA</label><input type="number" id="m-th-digital" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Soft skills</label><input type="number" id="m-th-soft" placeholder="0"/></div>
+              <div class="ff"><label>Paie & Finance</label><input type="number" id="m-th-paie" placeholder="0"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet ABSENCES -->
+        <div class="saisie-volet" id="volet-absences">
+          <div class="form-section">
+            <div class="fs-title">Indicateurs du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Taux d'absentéisme (%)</label><input type="number" step="0.1" id="m-a-taux" placeholder="ex: 4.2"/></div>
+              <div class="ff"><label>Jours d'absence / ETP</label><input type="number" step="0.1" id="m-a-jours" placeholder="ex: 15.3"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Congés pris / acquis (%)</label><input type="number" step="0.1" id="m-a-conges" placeholder="ex: 78"/></div>
+              <div class="ff"><label>Nb arrêts maladie</label><input type="number" id="m-a-maladie" placeholder="ex: 8"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Durée moyenne arrêt (j)</label><input type="number" step="0.1" id="m-a-duree" placeholder="ex: 5.8"/></div>
+              <div class="ff"><label>Coût estimé absentéisme (M FCFA)</label><input type="number" step="0.01" id="m-a-cout" placeholder="ex: 0.32"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Motifs d'absence (nb jours)</div>
+            <div class="form-row">
+              <div class="ff"><label>Maladie</label><input type="number" id="m-mot-maladie" placeholder="0"/></div>
+              <div class="ff"><label>Accident du travail</label><input type="number" id="m-mot-accident" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Congé payé</label><input type="number" id="m-mot-conge" placeholder="0"/></div>
+              <div class="ff"><label>Congé familial / exceptionnel</label><input type="number" id="m-mot-familial" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Absence injustifiée</label><input type="number" id="m-mot-injustifie" placeholder="0"/></div>
+              <div class="ff"><label>Autres</label><input type="number" id="m-mot-autres" placeholder="0"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Taux d'absentéisme par département (%)</div>
+            <div class="form-row">
+              <div class="ff"><label>Direction</label><input type="number" step="0.1" id="m-adept-direction" placeholder="0"/></div>
+              <div class="ff"><label>Commercial</label><input type="number" step="0.1" id="m-adept-commercial" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Production</label><input type="number" step="0.1" id="m-adept-production" placeholder="0"/></div>
+              <div class="ff"><label>Finance</label><input type="number" step="0.1" id="m-adept-finance" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>IT</label><input type="number" step="0.1" id="m-adept-it" placeholder="0"/></div>
+              <div class="ff"><label>Logistique</label><input type="number" step="0.1" id="m-adept-logistique" placeholder="0"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet PERFORMANCE -->
+        <div class="saisie-volet" id="volet-performance">
+          <div class="form-section">
+            <div class="fs-title">Indicateurs du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Score moyen global (/5)</label><input type="number" step="0.1" id="m-p-score" placeholder="ex: 3.4" max="5"/></div>
+              <div class="ff"><label>% Objectifs atteints</label><input type="number" step="0.1" id="m-p-atteints" placeholder="ex: 74"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Évaluations réalisées</label><input type="number" id="m-p-evals" placeholder="ex: 189"/></div>
+              <div class="ff"><label>Hauts potentiels identifiés</label><input type="number" id="m-p-hp" placeholder="ex: 18"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>En plan d'amélioration (PIP)</label><input type="number" id="m-p-pip" placeholder="ex: 12"/></div>
+              <div class="ff"><label>Promotions internes</label><input type="number" id="m-p-promos" placeholder="ex: 3"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Distribution des notes (nb employés par note)</div>
+            <div class="form-row-3">
+              <div class="ff"><label>Note 1 — Insuffisant</label><input type="number" id="m-note-1" placeholder="0"/></div>
+              <div class="ff"><label>Note 2 — À améliorer</label><input type="number" id="m-note-2" placeholder="0"/></div>
+              <div class="ff"><label>Note 3 — Satisfaisant</label><input type="number" id="m-note-3" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Note 4 — Bien</label><input type="number" id="m-note-4" placeholder="0"/></div>
+              <div class="ff"><label>Note 5 — Excellent</label><input type="number" id="m-note-5" placeholder="0"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Score moyen par département</div>
+            <div class="form-row">
+              <div class="ff"><label>Direction</label><input type="number" step="0.1" id="m-pdept-direction" placeholder="0" max="5"/></div>
+              <div class="ff"><label>Commercial</label><input type="number" step="0.1" id="m-pdept-commercial" placeholder="0" max="5"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Production</label><input type="number" step="0.1" id="m-pdept-production" placeholder="0" max="5"/></div>
+              <div class="ff"><label>IT</label><input type="number" step="0.1" id="m-pdept-it" placeholder="0" max="5"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Finance</label><input type="number" step="0.1" id="m-pdept-finance" placeholder="0" max="5"/></div>
+              <div class="ff"><label>RH</label><input type="number" step="0.1" id="m-pdept-rh" placeholder="0" max="5"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volet COMPETENCES -->
+        <div class="saisie-volet" id="volet-competences">
+          <div class="form-section">
+            <div class="fs-title">Indicateurs du mois</div>
+            <div class="form-row">
+              <div class="ff"><label>Score compétences moyen (/4)</label><input type="number" step="0.1" id="m-c-score" placeholder="ex: 2.7" max="4"/></div>
+              <div class="ff"><label>% Compétences maîtrisées (niv 3-4)</label><input type="number" step="0.1" id="m-c-maitrisees" placeholder="ex: 61"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Nb écarts critiques (niv requis - 2+)</label><input type="number" id="m-c-ecarts" placeholder="ex: 24"/></div>
+              <div class="ff"><label>Matrices complétées</label><input type="number" id="m-c-matrices" placeholder="ex: 143"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">Radar compétences — Niveau ACTUEL moyen (/4)</div>
+            <div class="form-row">
+              <div class="ff"><label>Compétences Techniques</label><input type="number" step="0.1" id="m-rad-tech" placeholder="ex: 2.8" max="4"/></div>
+              <div class="ff"><label>Compétences Comportementales</label><input type="number" step="0.1" id="m-rad-comp" placeholder="ex: 3.0" max="4"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Compétences Managériales</label><input type="number" step="0.1" id="m-rad-mgmt" placeholder="ex: 2.4" max="4"/></div>
+              <div class="ff"><label>Savoirs Théoriques</label><input type="number" step="0.1" id="m-rad-savoir" placeholder="ex: 3.1" max="4"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Communication</label><input type="number" step="0.1" id="m-rad-comm" placeholder="ex: 2.7" max="4"/></div>
+              <div class="ff"><label>Leadership</label><input type="number" step="0.1" id="m-rad-lead" placeholder="ex: 2.1" max="4"/></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="fs-title">% employés sous le niveau requis par domaine</div>
+            <div class="form-row">
+              <div class="ff"><label>Leadership</label><input type="number" id="m-ec-lead" placeholder="0"/></div>
+              <div class="ff"><label>Techniques IT</label><input type="number" id="m-ec-it" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Gestion de projet</label><input type="number" id="m-ec-projet" placeholder="0"/></div>
+              <div class="ff"><label>Digital & IA</label><input type="number" id="m-ec-digital" placeholder="0"/></div>
+            </div>
+            <div class="form-row">
+              <div class="ff"><label>Anglais professionnel</label><input type="number" id="m-ec-anglais" placeholder="0"/></div>
+              <div class="ff"><label>Analyse de données</label><input type="number" id="m-ec-data" placeholder="0"/></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /saisie-body -->
+
+      <div class="saisie-actions">
+        <button class="btn-demo-data" onclick="chargerDemoMois()">🎲 Données démo</button>
+        <button class="btn-clear" onclick="effacerMois()">🗑 Effacer</button>
+        <button class="btn-save" onclick="sauvegarderMois()">✓ Enregistrer et mettre à jour le tableau de bord</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// STOCKAGE
+// ══════════════════════════════════════════
+const SK = 'eliterhdb_v2';
+let DB = chargerDB();
+let anneeActive = '2025';
+let moisActif = null;
+
+function chargerDB() {
+  try { const d = localStorage.getItem(SK); return d ? JSON.parse(d) : {}; }
+  catch(e) { return {}; }
+}
+function sauverDB() {
+  try { localStorage.setItem(SK, JSON.stringify(DB)); } catch(e) {}
+}
+function cleDB(annee, mois) { return annee + '_' + String(mois+1).padStart(2,'0'); }
+function getDonneesMois(annee, mois) { return DB[cleDB(annee,mois)] || null; }
+function setDonneesMois(annee, mois, data) {
+  DB[cleDB(annee,mois)] = { ...data, _savedAt: new Date().toISOString() };
+  sauverDB();
+}
+function supprimerDonneesMois(annee, mois) {
+  delete DB[cleDB(annee,mois)];
+  sauverDB();
+}
+
+// ══════════════════════════════════════════
+// MOIS
+// ══════════════════════════════════════════
+const MOIS_LABELS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MOIS_SHORT  = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+const COLORS = ['#C9A84C','#4A9EFF','#34C77B','#F05A5A','#A78BFA','#FB923C','#E2C47A','#5DADE2'];
+
+function buildMonthList() {
+  const list = document.getElementById('month-list');
+  list.innerHTML = '';
+  document.getElementById('sb-year-label').textContent = 'Année ' + anneeActive;
+  MOIS_LABELS.forEach((m, i) => {
+    const hasDat = getDonneesMois(anneeActive, i) !== null;
+    const btn = document.createElement('button');
+    btn.className = 'month-btn' + (hasDat ? ' has-data' : '') + (moisActif === i ? ' active' : '');
+    btn.innerHTML = m + '<span class="month-dot"></span>';
+    btn.onclick = () => selectMois(i);
+    list.appendChild(btn);
+  });
+}
+
+function selectMois(i) {
+  moisActif = i;
+  buildMonthList();
+  document.getElementById('saisie-month-label').textContent = MOIS_LABELS[i] + ' ' + anneeActive;
+  document.getElementById('sb-mois').textContent = MOIS_LABELS[i] + ' ' + anneeActive;
+  const d = getDonneesMois(anneeActive, i);
+  document.getElementById('sb-status').textContent = d ? '✓ Données enregistrées' : 'Aucune donnée';
+  document.getElementById('sb-status').style.color = d ? 'var(--vert)' : 'var(--gris)';
+  document.getElementById('sb-last').textContent = d && d._savedAt ? new Date(d._savedAt).toLocaleDateString('fr-FR') + ' ' + new Date(d._savedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
+  if (d) remplirFormulaire(d);
+  else viderFormulaire();
+}
+
+function changeYear(val) {
+  anneeActive = val;
+  buildMonthList();
+  moisActif = null;
+  viderFormulaire();
+  document.getElementById('saisie-month-label').textContent = '—';
+  document.getElementById('sb-mois').textContent = '—';
+  document.getElementById('sb-status').textContent = '—';
+  document.getElementById('sb-last').textContent = '—';
+  renderAllCharts();
+}
+
+// ══════════════════════════════════════════
+// FORMULAIRE
+// ══════════════════════════════════════════
+const CHAMPS = [
+  'm-e-total','m-e-anciennete','m-e-entrees','m-e-sorties','m-e-femmes','m-e-promos',
+  'm-dept-direction','m-dept-commercial','m-dept-production','m-dept-rh','m-dept-finance','m-dept-it','m-dept-logistique','m-dept-autre',
+  'm-age-25','m-age-2535','m-age-3645','m-age-4655','m-age-55',
+  'm-ctr-cdi','m-ctr-cdd','m-ctr-stage','m-ctr-prest',
+  'm-s-masse','m-s-charges','m-s-primes','m-s-hs','m-s-ca','m-s-moyen',
+  'm-sdept-direction','m-sdept-commercial','m-sdept-production','m-sdept-rh','m-sdept-finance','m-sdept-it',
+  'm-scat-direction','m-scat-cadres','m-scat-am','m-scat-employes','m-scat-ouvriers',
+  'm-r-postes','m-r-pourvus','m-r-candidatures','m-r-delai','m-r-conv','m-r-retention',
+  'm-pip-cands','m-pip-presel','m-pip-rh','m-pip-metier','m-pip-offre','m-pip-embauche',
+  'm-src-linkedin','m-src-reseau','m-src-jobboard','m-src-site',
+  'm-f-heures','m-f-taux','m-f-budget','m-f-satis','m-f-realisees','m-f-planifiees',
+  'm-th-mgmt','m-th-droit','m-th-tech','m-th-digital','m-th-soft','m-th-paie',
+  'm-a-taux','m-a-jours','m-a-conges','m-a-maladie','m-a-duree','m-a-cout',
+  'm-mot-maladie','m-mot-accident','m-mot-conge','m-mot-familial','m-mot-injustifie','m-mot-autres',
+  'm-adept-direction','m-adept-commercial','m-adept-production','m-adept-finance','m-adept-it','m-adept-logistique',
+  'm-p-score','m-p-atteints','m-p-evals','m-p-hp','m-p-pip','m-p-promos',
+  'm-note-1','m-note-2','m-note-3','m-note-4','m-note-5',
+  'm-pdept-direction','m-pdept-commercial','m-pdept-production','m-pdept-it','m-pdept-finance','m-pdept-rh',
+  'm-c-score','m-c-maitrisees','m-c-ecarts','m-c-matrices',
+  'm-rad-tech','m-rad-comp','m-rad-mgmt','m-rad-savoir','m-rad-comm','m-rad-lead',
+  'm-ec-lead','m-ec-it','m-ec-projet','m-ec-digital','m-ec-anglais','m-ec-data'
+];
+
+function lireFormulaire() {
+  const d = {};
+  CHAMPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value !== '') d[id] = parseFloat(el.value) || 0;
+  });
+  return d;
+}
+
+function remplirFormulaire(d) {
+  CHAMPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = d[id] !== undefined ? d[id] : '';
+  });
+}
+
+function viderFormulaire() {
+  CHAMPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function sauvegarderMois() {
+  if (moisActif === null) { toast('⚠️ Sélectionnez un mois d\'abord'); return; }
+  const d = lireFormulaire();
+  setDonneesMois(anneeActive, moisActif, d);
+  buildMonthList();
+  document.getElementById('sb-status').textContent = '✓ Données enregistrées';
+  document.getElementById('sb-status').style.color = 'var(--vert)';
+  document.getElementById('sb-last').textContent = new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  updateLastUpdateLabel();
+  renderAllCharts();
+  toast('✓ Données de ' + MOIS_LABELS[moisActif] + ' enregistrées — Tableau de bord mis à jour !');
+}
+
+function effacerMois() {
+  if (moisActif === null) return;
+  if (!confirm('Effacer les données de ' + MOIS_LABELS[moisActif] + ' ?')) return;
+  supprimerDonneesMois(anneeActive, moisActif);
+  viderFormulaire();
+  buildMonthList();
+  document.getElementById('sb-status').textContent = 'Aucune donnée';
+  document.getElementById('sb-status').style.color = 'var(--gris)';
+  renderAllCharts();
+  toast('🗑 Données effacées');
+}
+
+// ══════════════════════════════════════════
+// DONNÉES AGRÉGÉES SUR L'ANNÉE
+// ══════════════════════════════════════════
+function getMoisData() {
+  // Retourne un tableau de 12 éléments (null si pas de données)
+  return Array.from({length:12}, (_,i) => getDonneesMois(anneeActive, i));
+}
+
+function aggMois(key, reduce='last') {
+  const moisData = getMoisData();
+  const vals = moisData.map(d => d && d[key] !== undefined ? d[key] : null);
+  if (reduce === 'last') {
+    for (let i = vals.length-1; i >= 0; i--) if (vals[i] !== null) return vals[i];
+    return null;
+  }
+  if (reduce === 'sum') return vals.filter(v=>v!==null).reduce((a,b)=>a+b,0) || null;
+  if (reduce === 'avg') { const f=vals.filter(v=>v!==null); return f.length?f.reduce((a,b)=>a+b,0)/f.length:null; }
+  if (reduce === 'array') return vals;
+  return null;
+}
+
+function fmt(v, dec=0) {
+  if (v === null || v === undefined) return '—';
+  return parseFloat(v).toFixed(dec).replace(/\.0$/,'');
+}
+
+function updateLastUpdateLabel() {
+  const moisData = getMoisData();
+  const dernierMois = moisData.reduce((acc,d,i) => (d && d._savedAt ? i : acc), -1);
+  if (dernierMois >= 0) {
+    document.getElementById('tb-last-update').textContent = 'Màj : ' + MOIS_LABELS[dernierMois] + ' ' + anneeActive;
+  }
+}
+
+// ══════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════
+Chart.defaults.color = '#9896A4';
+Chart.defaults.font.family = "'DM Sans',sans-serif";
+Chart.defaults.font.size = 11;
+const CHARTS = {};
+
+function mkChart(id, type, data, opts={}) {
+  if (CHARTS[id]) { CHARTS[id].destroy(); delete CHARTS[id]; }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  CHARTS[id] = new Chart(ctx, { type, data, options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{ boxWidth:9, padding:10 } } },
+    ...opts
+  }});
+}
+
+const GR = {
+  scales:{
+    x:{ grid:{color:'rgba(44,42,56,.5)'}, ticks:{color:'#5A5866'} },
+    y:{ grid:{color:'rgba(44,42,56,.5)'}, ticks:{color:'#5A5866'} }
+  }
+};
+
+function hasAnyData() {
+  return getMoisData().some(d => d !== null);
+}
+
+// ──────────────────────────────────────────
+// EFFECTIFS
+// ──────────────────────────────────────────
+function renderEffectifs() {
+  const total = aggMois('m-e-total','last');
+  const entrees = aggMois('m-e-entrees','sum');
+  const sorties = aggMois('m-e-sorties','sum');
+  const femmes = aggMois('m-e-femmes','last');
+  const anciennete = aggMois('m-e-anciennete','avg');
+  const turnover = (total && sorties) ? ((sorties/total)*100).toFixed(1) : null;
+
+  document.getElementById('e-total').textContent = fmt(total);
+  document.getElementById('e-entrees').textContent = fmt(entrees);
+  document.getElementById('e-sorties').textContent = fmt(sorties);
+  document.getElementById('e-turnover').textContent = fmt(turnover,1);
+  document.getElementById('e-anciennete').textContent = fmt(anciennete,1);
+  document.getElementById('e-femmes').textContent = fmt(femmes,1);
+  document.getElementById('e-total-s').textContent = total ? '▲ Effectif en cours' : 'Saisissez des données';
+  document.getElementById('e-entrees-s').textContent = entrees ? '▲ Recrutements sur la période' : '—';
+  document.getElementById('e-sorties-s').textContent = sorties ? '▼ Dont départs sur la période' : '—';
+
+  const md = getMoisData();
+  const entreesArr = md.map(d => d ? (d['m-e-entrees']||0) : 0);
+  const sortiesArr = md.map(d => d ? (d['m-e-sorties']||0) : 0);
+  const netArr = entreesArr.map((v,i) => v - sortiesArr[i]);
+
+  mkChart('ch-eff-evol','bar',{
+    labels: MOIS_SHORT,
+    datasets:[
+      {label:'Entrées',data:entreesArr,backgroundColor:'rgba(52,199,123,.7)',borderRadius:3},
+      {label:'Sorties',data:sortiesArr,backgroundColor:'rgba(240,90,90,.7)',borderRadius:3},
+      {label:'Net',data:netArr,type:'line',borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#C9A84C'}
+    ]
+  },{...GR});
+
+  const dernierMois = md.reduce((acc,d,i)=>d?i:acc,-1);
+  const lm = dernierMois >= 0 ? md[dernierMois] : null;
+
+  mkChart('ch-eff-genre','doughnut',{
+    labels:['Femmes','Hommes'],
+    datasets:[{data:[lm?lm['m-e-femmes']||42:0, 100-(lm?lm['m-e-femmes']||42:0)],backgroundColor:['#A78BFA','#4A9EFF'],borderWidth:0}]
+  },{plugins:{legend:{position:'bottom'}}});
+
+  const depts = ['direction','commercial','production','rh','finance','it','logistique','autre'];
+  const deptLabels = ['Direction','Commercial','Production','RH','Finance','IT','Logistique','Autre'];
+  const deptVals = depts.map(d => lm ? (lm['m-dept-'+d]||0) : 0);
+  mkChart('ch-eff-dept','bar',{
+    labels:deptLabels,datasets:[{label:'Effectif',data:deptVals,backgroundColor:COLORS.map(c=>c+'BB'),borderRadius:3}]
+  },{...GR,indexAxis:'y',plugins:{legend:{display:false}}});
+
+  const ages = ['age-25','age-2535','age-3645','age-4655','age-55'];
+  const ageLabels = ['< 25','25–35','36–45','46–55','> 55'];
+  mkChart('ch-eff-age','bar',{
+    labels:ageLabels,datasets:[{label:'Employés',data:ages.map(k=>lm?(lm['m-'+k]||0):0),backgroundColor:'rgba(201,168,76,.7)',borderRadius:3}]
+  },{...GR,plugins:{legend:{display:false}}});
+
+  const ctrs = ['cdi','cdd','stage','prest'];
+  const ctrLabels = ['CDI','CDD','Stage','Prestataire'];
+  mkChart('ch-eff-contrat','doughnut',{
+    labels:ctrLabels,datasets:[{data:ctrs.map(k=>lm?(lm['m-ctr-'+k]||0):0),backgroundColor:COLORS,borderWidth:0}]
+  },{plugins:{legend:{position:'bottom'}}});
+}
+
+// ──────────────────────────────────────────
+// SALAIRES
+// ──────────────────────────────────────────
+function renderSalaires() {
+  const masse = aggMois('m-s-masse','sum');
+  const moyen = aggMois('m-s-moyen','avg');
+  const charges = aggMois('m-s-charges','sum');
+  const primes = aggMois('m-s-primes','sum');
+  const hs = aggMois('m-s-hs','sum');
+  const ca = aggMois('m-s-ca','sum');
+  const pctCA = (masse && ca) ? ((masse/ca)*100).toFixed(1) : null;
+
+  document.getElementById('s-masse').textContent = fmt(masse,1);
+  document.getElementById('s-moyen').textContent = fmt(moyen,0);
+  document.getElementById('s-charges').textContent = fmt(charges,1);
+  document.getElementById('s-pct-ca').textContent = fmt(pctCA,1);
+  document.getElementById('s-primes').textContent = fmt(primes,1);
+  document.getElementById('s-hs').textContent = fmt(hs,0);
+
+  const md = getMoisData();
+  const masseArr = md.map(d => d ? (d['m-s-masse']||0) : 0);
+  mkChart('ch-sal-evol','line',{
+    labels:MOIS_SHORT,datasets:[{label:'MS (M FCFA)',data:masseArr,borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#C9A84C'}]
+  },{...GR,plugins:{legend:{display:false}}});
+
+  const dernierMois = md.reduce((acc,d,i)=>d?i:acc,-1);
+  const lm = dernierMois >= 0 ? md[dernierMois] : null;
+  const sdepts = ['direction','commercial','production','rh','finance','it'];
+  mkChart('ch-sal-dept','doughnut',{
+    labels:['Direction','Commercial','Production','RH','Finance','IT'],
+    datasets:[{data:sdepts.map(k=>lm?(lm['m-sdept-'+k]||0):0),backgroundColor:COLORS,borderWidth:0}]
+  },{plugins:{legend:{position:'right'}}});
+
+  const distribVals = [
+    md.filter(d=>d&&d['m-s-moyen']<200).length,
+    md.filter(d=>d&&d['m-s-moyen']>=200&&d['m-s-moyen']<350).length,
+    md.filter(d=>d&&d['m-s-moyen']>=350&&d['m-s-moyen']<500).length,
+    md.filter(d=>d&&d['m-s-moyen']>=500&&d['m-s-moyen']<750).length,
+    md.filter(d=>d&&d['m-s-moyen']>=750).length,
+  ];
+  mkChart('ch-sal-distrib','bar',{
+    labels:['< 200K','200–350K','350–500K','500–750K','> 750K'],
+    datasets:[{label:'Mois',data:distribVals,backgroundColor:'rgba(74,158,255,.7)',borderRadius:3}]
+  },{...GR,plugins:{legend:{display:false}}});
+
+  const cats = [{k:'direction',l:'Direction',max:2500},{k:'cadres',l:'Cadres',max:1200},{k:'am',l:'A.Maîtrise',max:600},{k:'employes',l:'Employés',max:400},{k:'ouvriers',l:'Ouvriers',max:280}];
+  const list = document.getElementById('sal-cat-list');
+  list.innerHTML = '';
+  cats.forEach((c,i) => {
+    const v = lm ? (lm['m-scat-'+c.k]||0) : 0;
+    const pct = v ? Math.round(v/c.max*100) : 0;
+    list.innerHTML += '<div class="prog-item" style="margin-bottom:8px"><div class="prog-item-header"><span class="prog-item-label">'+c.l+'</span><span class="prog-item-val">'+v+' K</span></div><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%;background:'+COLORS[i]+'"></div></div></div>';
+  });
+}
+
+// ──────────────────────────────────────────
+// RECRUTEMENT
+// ──────────────────────────────────────────
+function renderRecrutement() {
+  const postes = aggMois('m-r-postes','last');
+  const cands = aggMois('m-r-candidatures','sum');
+  const delai = aggMois('m-r-delai','avg');
+  const conv = aggMois('m-r-conv','avg');
+  const pourvus = aggMois('m-r-pourvus','sum');
+  const retention = aggMois('m-r-retention','last');
+
+  document.getElementById('r-postes').textContent = fmt(postes);
+  document.getElementById('r-candidatures').textContent = fmt(cands);
+  document.getElementById('r-delai').textContent = fmt(delai,0);
+  document.getElementById('r-conv').textContent = fmt(conv,1);
+  document.getElementById('r-pourvus').textContent = fmt(pourvus);
+  document.getElementById('r-retention').textContent = fmt(retention,0);
+
+  const md = getMoisData();
+  const dernierMois = md.reduce((acc,d,i)=>d?i:acc,-1);
+  const lm = dernierMois >= 0 ? md[dernierMois] : null;
+
+  const pipelineKeys = ['pip-cands','pip-presel','pip-rh','pip-metier','pip-offre','pip-embauche'];
+  const pipelineLabels = ['Candidatures','Présélection','Entretien RH','Entretien Métier','Offre','Embauche'];
+  mkChart('ch-rec-pipeline','bar',{
+    labels:pipelineLabels,
+    datasets:[{label:'Candidats',data:pipelineKeys.map(k=>lm?(lm['m-'+k]||0):0),backgroundColor:COLORS.map(c=>c+'CC'),borderRadius:3}]
+  },{...GR,indexAxis:'y',plugins:{legend:{display:false}}});
+
+  mkChart('ch-rec-sources','doughnut',{
+    labels:['LinkedIn','Réseau','Jobboards','Site web'],
+    datasets:[{data:['src-linkedin','src-reseau','src-jobboard','src-site'].map(k=>lm?(lm['m-'+k]||0):0),backgroundColor:COLORS,borderWidth:0}]
+  },{plugins:{legend:{position:'right'}}});
+
+  const tbody = document.getElementById('tbl-postes-body');
+  tbody.innerHTML = '';
+  if (!postes && postes !== 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gris);padding:1.5rem">Aucune donnée — saisissez les informations de recrutement</td></tr>';
+  } else {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gris);padding:1rem;font-size:11px">Détail des postes à renseigner dans la saisie mensuelle</td></tr>';
+  }
+}
+
+// ──────────────────────────────────────────
+// FORMATIONS
+// ──────────────────────────────────────────
+function renderFormations() {
+  const heures = aggMois('m-f-heures','sum');
+  const taux = aggMois('m-f-taux','avg');
+  const budget = aggMois('m-f-budget','sum');
+  const satis = aggMois('m-f-satis','avg');
+  const realisees = aggMois('m-f-realisees','sum');
+  const planifiees = aggMois('m-f-planifiees','sum');
+  const cout = (budget && realisees) ? ((budget*1000/realisees)).toFixed(0) : null;
+
+  document.getElementById('f-heures').textContent = fmt(heures);
+  document.getElementById('f-taux').textContent = fmt(taux,1);
+  document.getElementById('f-budget').textContent = fmt(budget,2);
+  document.getElementById('f-satis').textContent = fmt(satis,1);
+  document.getElementById('f-realisees').textContent = fmt(realisees);
+  document.getElementById('f-cout').textContent = fmt(cout);
+  document.getElementById('f-realisees-s').textContent = planifiees ? '/ '+fmt(planifiees)+' planifiées' : '—';
+
+  const md = getMoisData();
+  const heuresArr = md.map(d => d ? (d['m-f-heures']||0) : 0);
+  mkChart('ch-form-heures','bar',{
+    labels:MOIS_SHORT,datasets:[{label:'Heures',data:heuresArr,backgroundColor:'rgba(167,139,250,.7)',borderRadius:3}]
+  },{...GR,plugins:{legend:{display:false}}});
+
+  const themsKeys = ['th-mgmt','th-droit','th-tech','th-digital','th-soft','th-paie'];
+  const themsLabels = ['Management','Droit social','Technique','Digital','Soft skills','Paie'];
+  const sumMois = key => md.reduce((acc,d)=>acc+(d?(d['m-'+key]||0):0),0);
+  mkChart('ch-form-themes','doughnut',{
+    labels:themsLabels,datasets:[{data:themsKeys.map(k=>sumMois(k)),backgroundColor:COLORS,borderWidth:0}]
+  },{plugins:{legend:{position:'right'}}});
+
+  const plan = [
+    {l:'Management & Leadership',k:'th-mgmt'},{l:'Droit du Travail',k:'th-droit'},
+    {l:'Outils IA & Digital',k:'th-digital'},{l:'Technique métier',k:'th-tech'},
+    {l:'Soft skills',k:'th-soft'},{l:'Paie & Finance',k:'th-paie'}
+  ];
+  const maxH = Math.max(...plan.map(p=>sumMois(p.k)),1);
+  const list = document.getElementById('form-plan-list');
+  list.innerHTML = '';
+  plan.forEach((p,i) => {
+    const v = sumMois(p.k);
+    const pct = Math.round(v/maxH*100);
+    const color = pct>=80?'#34C77B':pct>=50?'#C9A84C':'#F05A5A';
+    list.innerHTML += '<div class="prog-item" style="margin-bottom:8px"><div class="prog-item-header"><span class="prog-item-label">'+p.l+'</span><span class="prog-item-val" style="color:'+color+'">'+v+'h</span></div><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+  });
+}
+
+// ──────────────────────────────────────────
+// ABSENCES
+// ──────────────────────────────────────────
+function renderAbsences() {
+  const taux = aggMois('m-a-taux','avg');
+  const jours = aggMois('m-a-jours','avg');
+  const conges = aggMois('m-a-conges','avg');
+  const maladie = aggMois('m-a-maladie','sum');
+  const duree = aggMois('m-a-duree','avg');
+  const cout = aggMois('m-a-cout','sum');
+
+  document.getElementById('a-taux').textContent = fmt(taux,1);
+  document.getElementById('a-jours').textContent = fmt(jours,1);
+  document.getElementById('a-conges').textContent = fmt(conges,1);
+  document.getElementById('a-maladie').textContent = fmt(maladie);
+  document.getElementById('a-duree').textContent = fmt(duree,1);
+  document.getElementById('a-cout').textContent = fmt(cout,2);
+
+  const md = getMoisData();
+  const tauxArr = md.map(d => d ? (d['m-a-taux']||null) : null);
+  mkChart('ch-abs-evol','line',{
+    labels:MOIS_SHORT,
+    datasets:[
+      {label:'Taux (%)',data:tauxArr,borderColor:'#FB923C',backgroundColor:'rgba(251,146,60,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#FB923C',spanGaps:true},
+      {label:'Norme 3.5%',data:Array(12).fill(3.5),borderColor:'rgba(240,90,90,.4)',borderDash:[5,5],pointRadius:0}
+    ]
+  },{...GR});
+
+  const motKeys = ['mot-maladie','mot-accident','mot-conge','mot-familial','mot-injustifie','mot-autres'];
+  const motLabels = ['Maladie','Accident','Congé payé','Familial','Injustifiée','Autres'];
+  const sumMois = key => md.reduce((acc,d)=>acc+(d?(d['m-'+key]||0):0),0);
+  mkChart('ch-abs-motifs','doughnut',{
+    labels:motLabels,datasets:[{data:motKeys.map(k=>sumMois(k)),backgroundColor:COLORS,borderWidth:0}]
+  },{plugins:{legend:{position:'right'}}});
+
+  const depts = [{k:'adept-production',l:'Production'},{k:'adept-logistique',l:'Logistique'},{k:'adept-commercial',l:'Commercial'},{k:'adept-it',l:'IT'},{k:'adept-finance',l:'Finance'},{k:'adept-direction',l:'Direction'}];
+  const list = document.getElementById('abs-dept-list');
+  list.innerHTML = '';
+  depts.forEach(d => {
+    const v = parseFloat(aggMois('m-'+d.k,'avg')) || 0;
+    const color = v>5?'#F05A5A':v>3.5?'#FB923C':'#34C77B';
+    const pct = Math.min(v/8*100,100);
+    list.innerHTML += '<div class="prog-item" style="margin-bottom:8px"><div class="prog-item-header"><span class="prog-item-label">'+d.l+'</span><span class="prog-item-val" style="color:'+color+'">'+fmt(v,1)+'%</span></div><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+  });
+}
+
+// ──────────────────────────────────────────
+// PERFORMANCE
+// ──────────────────────────────────────────
+function renderPerformance() {
+  const score = aggMois('m-p-score','avg');
+  const atteints = aggMois('m-p-atteints','avg');
+  const evals = aggMois('m-p-evals','sum');
+  const hp = aggMois('m-p-hp','last');
+  const pip = aggMois('m-p-pip','last');
+  const promos = aggMois('m-p-promos','sum');
+
+  document.getElementById('p-score').textContent = fmt(score,1);
+  document.getElementById('p-atteints').textContent = fmt(atteints,1);
+  document.getElementById('p-evals').textContent = fmt(evals);
+  document.getElementById('p-hp').textContent = fmt(hp);
+  document.getElementById('p-pip').textContent = fmt(pip);
+  document.getElementById('p-promos').textContent = fmt(promos);
+
+  const md = getMoisData();
+  const dernierMois = md.reduce((acc,d,i)=>d?i:acc,-1);
+  const lm = dernierMois >= 0 ? md[dernierMois] : null;
+
+  mkChart('ch-perf-distrib','bar',{
+    labels:['Insuffisant (1)','À améliorer (2)','Satisfaisant (3)','Bien (4)','Excellent (5)'],
+    datasets:[{label:'Employés',data:[1,2,3,4,5].map(n=>lm?(lm['m-note-'+n]||0):0),backgroundColor:['#F05A5A','#FB923C','#C9A84C','#4A9EFF','#34C77B'],borderRadius:3}]
+  },{...GR,plugins:{legend:{display:false}}});
+
+  const pdepts = ['direction','commercial','production','it','finance','rh'];
+  const pdeptLabels = ['Direction','Commercial','Production','IT','Finance','RH'];
+  mkChart('ch-perf-dept','bar',{
+    labels:pdeptLabels,datasets:[{label:'Score /5',data:pdepts.map(k=>lm?(lm['m-pdept-'+k]||0):0),backgroundColor:'rgba(74,158,255,.7)',borderRadius:3}]
+  },{...GR,indexAxis:'y',plugins:{legend:{display:false}},scales:{...GR.scales,x:{...GR.scales.x,min:0,max:5}}});
+
+  const nbBox = [
+    {l:'Dilemme',bg:'rgba(251,146,60,.12)',b:'rgba(251,146,60,.2)'},
+    {l:'Étoile montante',bg:'rgba(52,199,123,.12)',b:'rgba(52,199,123,.2)'},
+    {l:'Star',bg:'rgba(52,199,123,.18)',b:'rgba(52,199,123,.3)'},
+    {l:'Questionnable',bg:'rgba(240,90,90,.1)',b:'rgba(240,90,90,.2)'},
+    {l:'Performant',bg:'rgba(74,158,255,.1)',b:'rgba(74,158,255,.2)'},
+    {l:'Haut potentiel',bg:'rgba(167,139,250,.12)',b:'rgba(167,139,250,.2)'},
+    {l:'Sous-performant',bg:'rgba(240,90,90,.15)',b:'rgba(240,90,90,.25)'},
+    {l:'À surveiller',bg:'rgba(251,146,60,.1)',b:'rgba(251,146,60,.2)'},
+    {l:'Pivot',bg:'rgba(201,168,76,.1)',b:'rgba(201,168,76,.2)'},
+  ];
+  const hp_val = parseFloat(hp)||0;
+  const tot = parseFloat(aggMois('m-e-total','last'))||100;
+  const nineVals = [4,Math.round(hp_val*0.6),Math.round(hp_val*0.4), 12,Math.round(tot*0.4),10, 6,22,tot-hp_val-50];
+  const order = [6,7,8,3,4,5,0,1,2];
+  const box = document.getElementById('ninebox');
+  box.innerHTML = '';
+  order.forEach(i => {
+    const n = nbBox[i];
+    box.innerHTML += '<div class="nb-cell" style="background:'+n.bg+';border:1px solid '+n.b+'"><div class="nb-val">'+Math.max(nineVals[i],0)+'</div><div class="nb-lbl">'+n.l+'</div></div>';
+  });
+}
+
+// ──────────────────────────────────────────
+// COMPETENCES
+// ──────────────────────────────────────────
+function renderCompetences() {
+  const score = aggMois('m-c-score','avg');
+  const maitrisees = aggMois('m-c-maitrisees','avg');
+  const ecarts = aggMois('m-c-ecarts','last');
+  const matrices = aggMois('m-c-matrices','last');
+
+  document.getElementById('c-score').textContent = fmt(score,1);
+  document.getElementById('c-maitrisees').textContent = fmt(maitrisees,1);
+  document.getElementById('c-ecarts').textContent = fmt(ecarts);
+  document.getElementById('c-matrices').textContent = fmt(matrices);
+
+  const md = getMoisData();
+  const dernierMois = md.reduce((acc,d,i)=>d?i:acc,-1);
+  const lm = dernierMois >= 0 ? md[dernierMois] : null;
+
+  const radKeys = ['rad-tech','rad-comp','rad-mgmt','rad-savoir','rad-comm','rad-lead'];
+  const radLabels = ['Techniques','Comportementales','Managériales','Savoirs','Communication','Leadership'];
+  const requis = [3.5,3.2,3.0,3.3,3.1,2.8];
+  const actuel = radKeys.map(k => lm ? (lm['m-'+k]||0) : 0);
+
+  if (CHARTS['ch-radar']) { CHARTS['ch-radar'].destroy(); delete CHARTS['ch-radar']; }
+  const ctx = document.getElementById('ch-radar');
+  if (ctx) {
+    CHARTS['ch-radar'] = new Chart(ctx, { type:'radar', data:{
+      labels:radLabels,
+      datasets:[
+        {label:'Requis',data:requis,borderColor:'#4A9EFF',backgroundColor:'rgba(74,158,255,.1)',pointBackgroundColor:'#4A9EFF',pointRadius:3},
+        {label:'Actuel',data:actuel,borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.1)',pointBackgroundColor:'#C9A84C',pointRadius:3}
+      ]
+    }, options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:4,ticks:{stepSize:1,color:'#5A5866',backdropColor:'transparent'},grid:{color:'rgba(44,42,56,.6)'},pointLabels:{color:'#9896A4',font:{size:10}}}}}});
+  }
+
+  const ecartKeys = ['ec-lead','ec-it','ec-projet','ec-digital','ec-anglais','ec-data'];
+  const ecartLabels = ['Leadership','Techniques IT','Gestion projet','Digital & IA','Anglais','Analyse données'];
+  mkChart('ch-ecarts-cat','bar',{
+    labels:ecartLabels,
+    datasets:[{label:'% sous niveau requis',data:ecartKeys.map(k=>lm?(lm['m-'+k]||0):0),backgroundColor:'rgba(240,90,90,.7)',borderRadius:3}]
+  },{...GR,indexAxis:'y',plugins:{legend:{display:false}}});
+
+  const topData = ecartKeys.map((k,i)=>({l:ecartLabels[i],v:lm?(lm['m-'+k]||0):0,c:COLORS[i]})).sort((a,b)=>b.v-a.v);
+  const list = document.getElementById('comp-top-list');
+  list.innerHTML = '';
+  topData.forEach(t => {
+    list.innerHTML += '<div class="prog-item" style="margin-bottom:8px"><div class="prog-item-header"><span class="prog-item-label">'+t.l+'</span><span class="prog-item-val" style="color:'+t.c+'">'+t.v+'% à former</span></div><div class="prog-track"><div class="prog-fill" style="width:'+t.v+'%;background:'+t.c+'"></div></div></div>';
+  });
+}
+
+// ══════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════
+function renderAllCharts() {
+  const activeTab = document.querySelector('.tab-btn.active');
+  if (!activeTab) return;
+  const tab = activeTab.getAttribute('onclick').match(/showTab\('([^']+)'/)[1];
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const renderers = {
+    effectifs:renderEffectifs, salaires:renderSalaires,
+    recrutement:renderRecrutement, formations:renderFormations,
+    absences:renderAbsences, performance:renderPerformance,
+    competences:renderCompetences
+  };
+  if (renderers[tab]) renderers[tab]();
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function showTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab !== 'saisie') renderTab(tab);
+}
+
+function showVolet(v, btn) {
+  document.querySelectorAll('.saisie-volet').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.saisie-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('volet-'+v).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// IMPORT FICHIER
+// ══════════════════════════════════════════
+function importerFichierMois() { document.getElementById('file-mois').click(); }
+
+function handleDropMois(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag');
+  if (e.dataTransfer.files[0]) processFileMois(e.dataTransfer.files[0]);
+}
+
+function handleFileMois(input) {
+  if (input.files[0]) processFileMois(input.files[0]);
+  input.value = '';
+}
+
+function processFileMois(file) {
+  if (moisActif === null) { toast('⚠️ Sélectionnez d\'abord un mois'); return; }
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      let data = {};
+      if (ext === 'csv') {
+        const lines = ev.target.result.split('\n').filter(l=>l.trim());
+        const headers = lines[0].split(/[,;]/).map(h=>h.trim().toLowerCase());
+        lines.slice(1).forEach(line => {
+          const vals = line.split(/[,;]/);
+          headers.forEach((h,i) => {
+            const v = (vals[i]||'').trim().replace(/"/g,'');
+            if (v !== '') mapColonneAuChamp(h, v, data);
+          });
+        });
+      } else {
+        const wb = XLSX.read(ev.target.result, {type:'binary'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(ws);
+        json.forEach(row => {
+          Object.entries(row).forEach(([k,v]) => mapColonneAuChamp(k.toLowerCase().trim(), String(v), data));
+        });
+      }
+      remplirFormulaire(data);
+      toast('📂 Fichier importé — Vérifiez et cliquez sur Enregistrer');
+    } catch(e) {
+      toast('❌ Erreur lors de la lecture du fichier : ' + e.message);
+    }
+  };
+  ext === 'csv' ? reader.readAsText(file) : reader.readAsBinaryString(file);
+}
+
+function mapColonneAuChamp(col, val, data) {
+  const n = parseFloat(val);
+  if (isNaN(n)) return;
+  const map = {
+    'effectif total':['m-e-total'],'effectif':['m-e-total'],'total':['m-e-total'],
+    'entrees':['m-e-entrees'],'entrées':['m-e-entrees'],'entree':['m-e-entrees'],
+    'sorties':['m-e-sorties'],'sortie':['m-e-sorties'],
+    'femmes':['m-e-femmes'],'% femmes':['m-e-femmes'],
+    'anciennete':['m-e-anciennete'],'ancienneté':['m-e-anciennete'],
+    'masse salariale':['m-s-masse'],'ms':['m-s-masse'],
+    'salaire moyen':['m-s-moyen'],'salaire brut moyen':['m-s-moyen'],
+    'charges':['m-s-charges'],'charges patronales':['m-s-charges'],
+    'primes':['m-s-primes'],'prime':['m-s-primes'],
+    'taux absenteisme':['m-a-taux'],"taux d'absentéisme":['m-a-taux'],'absenteisme':['m-a-taux'],
+    'arrets maladie':['m-a-maladie'],'arrêts maladie':['m-a-maladie'],
+    'jours absence':['m-a-jours'],
+    'heures formation':['m-f-heures'],'heures de formation':['m-f-heures'],
+    'budget formation':['m-f-budget'],
+    'satisfaction':['m-f-satis'],'satisfaction formation':['m-f-satis'],
+    'postes ouverts':['m-r-postes'],'postes':['m-r-postes'],
+    'candidatures':['m-r-candidatures'],'candidatures reçues':['m-r-candidatures'],
+    'delai recrutement':['m-r-delai'],'délai moyen':['m-r-delai'],
+    'score performance':['m-p-score'],'score moyen':['m-p-score'],
+    'objectifs atteints':['m-p-atteints'],
+    'hauts potentiels':['m-p-hp'],
+  };
+  const key = col.toLowerCase();
+  Object.entries(map).forEach(([pattern, ids]) => {
+    if (key.includes(pattern) || pattern.includes(key)) {
+      ids.forEach(id => { data[id] = n; });
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// DONNÉES DÉMO
+// ══════════════════════════════════════════
+function chargerDemoMois() {
+  if (moisActif === null) { toast('⚠️ Sélectionnez un mois'); return; }
+  const demoData = {
+    'm-e-total':247,'m-e-entrees':Math.floor(2+Math.random()*6),'m-e-sorties':Math.floor(1+Math.random()*4),
+    'm-e-femmes':42,'m-e-anciennete':4.2,'m-e-promos':2,
+    'm-dept-direction':18,'m-dept-commercial':52,'m-dept-production':68,'m-dept-rh':12,'m-dept-finance':22,'m-dept-it':31,'m-dept-logistique':44,'m-dept-autre':0,
+    'm-age-25':28,'m-age-2535':82,'m-age-3645':74,'m-age-4655':45,'m-age-55':18,
+    'm-ctr-cdi':172,'m-ctr-cdd':48,'m-ctr-stage':18,'m-ctr-prest':9,
+    'm-s-masse':+(9.8+Math.random()*1.5).toFixed(1),'m-s-charges':1.9,'m-s-primes':0.7,'m-s-hs':Math.floor(80+Math.random()*80),'m-s-ca':35,'m-s-moyen':504,
+    'm-sdept-direction':2.4,'m-sdept-commercial':2.8,'m-sdept-production':3.2,'m-sdept-rh':0.8,'m-sdept-finance':1.4,'m-sdept-it':1.2,
+    'm-scat-direction':1850,'m-scat-cadres':850,'m-scat-am':450,'m-scat-employes':280,'m-scat-ouvriers':195,
+    'm-r-postes':12,'m-r-pourvus':3,'m-r-candidatures':Math.floor(40+Math.random()*40),'m-r-delai':28,'m-r-conv':12,'m-r-retention':84,
+    'm-pip-cands':68,'m-pip-presel':32,'m-pip-rh':18,'m-pip-metier':10,'m-pip-offre':5,'m-pip-embauche':3,
+    'm-src-linkedin':24,'m-src-reseau':18,'m-src-jobboard':16,'m-src-site':10,
+    'm-f-heures':Math.floor(60+Math.random()*80),'m-f-taux':67,'m-f-budget':0.52,'m-f-satis':4.2,'m-f-realisees':3,'m-f-planifiees':4,
+    'm-th-mgmt':18,'m-th-droit':12,'m-th-tech':22,'m-th-digital':14,'m-th-soft':8,'m-th-paie':6,
+    'm-a-taux':+(3+Math.random()*3).toFixed(1),'m-a-jours':15.3,'m-a-conges':78,'m-a-maladie':Math.floor(3+Math.random()*8),'m-a-duree':5.8,'m-a-cout':0.32,
+    'm-mot-maladie':38,'m-mot-accident':8,'m-mot-conge':142,'m-mot-familial':22,'m-mot-injustifie':14,'m-mot-autres':18,
+    'm-adept-direction':1.5,'m-adept-commercial':4.0,'m-adept-production':6.2,'m-adept-finance':2.8,'m-adept-it':3.2,'m-adept-logistique':5.1,
+    'm-p-score':+(3+Math.random()).toFixed(1),'m-p-atteints':74,'m-p-evals':189,'m-p-hp':18,'m-p-pip':12,'m-p-promos':2,
+    'm-note-1':8,'m-note-2':24,'m-note-3':78,'m-note-4':62,'m-note-5':17,
+    'm-pdept-direction':4.1,'m-pdept-commercial':3.6,'m-pdept-production':3.2,'m-pdept-it':4.0,'m-pdept-finance':3.9,'m-pdept-rh':3.8,
+    'm-c-score':2.7,'m-c-maitrisees':61,'m-c-ecarts':24,'m-c-matrices':143,
+    'm-rad-tech':2.8,'m-rad-comp':3.0,'m-rad-mgmt':2.4,'m-rad-savoir':3.1,'m-rad-comm':2.7,'m-rad-lead':2.1,
+    'm-ec-lead':42,'m-ec-it':38,'m-ec-projet':35,'m-ec-digital':52,'m-ec-anglais':28,'m-ec-data':45
+  };
+  remplirFormulaire(demoData);
+  toast('🎲 Données démo chargées pour '+MOIS_LABELS[moisActif]+' — Cliquez sur Enregistrer');
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+
+
+// ══════════════════════════════════════════
+// ORGANIGRAMME
+// ══════════════════════════════════════════
+
+let ORG_DATA = [];
+let ORG_MODE = 'mixte';
+let ORG_SCALE = 1;
+let ORG_DRAG = {active:false, startX:0, startY:0, scrollLeft:0, scrollTop:0};
+
+const DEPT_COLORS = ['#C9A84C','#4A9EFF','#34C77B','#A78BFA','#FB923C','#F05A5A','#E2C47A','#38BDF8','#34D399','#F472B6'];
+const deptColorMap = {};
+
+function getDeptColor(dept) {
+  if (!deptColorMap[dept]) {
+    const keys = Object.keys(deptColorMap);
+    deptColorMap[dept] = DEPT_COLORS[keys.length % DEPT_COLORS.length];
+  }
+  return deptColorMap[dept];
+}
+
+function handleOrgFile(input) {
+  if (input.files[0]) processOrgFile(input.files[0]);
+  input.value = '';
+}
+
+function processOrgFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      let rows = [];
+      if (ext === 'csv') {
+        const lines = ev.target.result.split('\n').filter(l=>l.trim());
+        const headers = lines[0].split(/[,;]/).map(h=>h.trim());
+        rows = lines.slice(1).map(line => {
+          const vals = line.split(/[,;]/);
+          const obj = {};
+          headers.forEach((h,i) => obj[h.trim()] = (vals[i]||'').trim().replace(/"/g,''));
+          return obj;
+        });
+      } else {
+        const wb = XLSX.read(ev.target.result, {type:'binary'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(ws);
+      }
+      parseOrgRows(rows);
+      toast('Organigramme genere - ' + ORG_DATA.length + ' postes charges');
+    } catch(e) { toast('Erreur : ' + e.message); }
+  };
+  ext === 'csv' ? reader.readAsText(file) : reader.readAsBinaryString(file);
+}
+
+function parseOrgRows(rows) {
+  ORG_DATA = rows.map((r, i) => {
+    const get = function() {
+      for (let ki = 0; ki < arguments.length; ki++) {
+        const k = arguments[ki];
+        const found = Object.keys(r).find(rk => rk.toLowerCase().replace(/[^a-z]/g,'') === k.toLowerCase().replace(/[^a-z]/g,''));
+        if (found && r[found] !== undefined && r[found] !== '') return String(r[found]).trim();
+      }
+      return '';
+    };
+    const statutRaw = get('statut','status','etat');
+    return {
+      id: i + 1,
+      dept:        get('departement','departement','dept','service','direction'),
+      poste:       get('poste','fonction','titre','position'),
+      responsable: get('responsable','manager','superieur','reporte'),
+      nom:         get('nom','lastname','name'),
+      prenom:      get('prenom','prenom','firstname'),
+      statut:      statutRaw.toLowerCase().includes('vac') ? 'Vacant' : 'Pourvu',
+      niveau:      parseInt(get('niveauhierarchique','niveau','level','hierarchie')) || 3,
+    };
+  }).filter(function(r) { return r.dept || r.poste; });
+  renderOrg();
+}
+
+function chargerOrgDemo() {
+  var demo = [
+    {Departement:'Direction Generale', Poste:'Directeur General',          Responsable:'',                     Nom:'Adjobi',  Prenom:'Kossi',    Statut:'Pourvu', NiveauHierarchique:1},
+    {Departement:'Direction Generale', Poste:'Assistante de Direction',    Responsable:'Directeur General',    Nom:'Agossou', Prenom:'Marie',    Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Ressources Humaines',Poste:'Directrice RH',              Responsable:'Directeur General',    Nom:'Dossou',  Prenom:'Aline',    Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Ressources Humaines',Poste:'Charge Recrutement',         Responsable:'Directrice RH',        Nom:'Houenou', Prenom:'Patrick',  Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Ressources Humaines',Poste:'Gestionnaire Paie',          Responsable:'Directrice RH',        Nom:'',        Prenom:'',         Statut:'Vacant', NiveauHierarchique:3},
+    {Departement:'Commercial',         Poste:'Directeur Commercial',       Responsable:'Directeur General',    Nom:'Kpossou', Prenom:'Jean',     Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Commercial',         Poste:'Responsable Grands Comptes', Responsable:'Directeur Commercial', Nom:'Zannou',  Prenom:'Sylvie',   Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Commercial',         Poste:'Commercial Terrain',         Responsable:'Directeur Commercial', Nom:'Gbenou',  Prenom:'Abel',     Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Commercial',         Poste:'Commercial Terrain',         Responsable:'Directeur Commercial', Nom:'',        Prenom:'',         Statut:'Vacant', NiveauHierarchique:3},
+    {Departement:'Finance',            Poste:'Directeur Financier',        Responsable:'Directeur General',    Nom:'Soglo',   Prenom:'Nadege',   Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Finance',            Poste:'Comptable Senior',           Responsable:'Directeur Financier',  Nom:'Loko',    Prenom:'Theodore', Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Finance',            Poste:'Comptable Junior',           Responsable:'Directeur Financier',  Nom:'',        Prenom:'',         Statut:'Vacant', NiveauHierarchique:3},
+    {Departement:'Production',         Poste:'Directeur Production',       Responsable:'Directeur General',    Nom:'Hounsou', Prenom:'Remi',     Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Production',         Poste:'Chef equipe A',              Responsable:'Directeur Production', Nom:'Tossou',  Prenom:'Barnabe',  Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Production',         Poste:'Chef equipe B',              Responsable:'Directeur Production', Nom:'Akpo',    Prenom:'Fatima',   Statut:'Pourvu', NiveauHierarchique:3},
+    {Departement:'Informatique',       Poste:'Responsable IT',             Responsable:'Directeur General',    Nom:'Gbessi',  Prenom:'Romuald',  Statut:'Pourvu', NiveauHierarchique:2},
+    {Departement:'Informatique',       Poste:'Developpeur Web',            Responsable:'Responsable IT',       Nom:'',        Prenom:'',         Statut:'Vacant', NiveauHierarchique:3},
+  ];
+  parseOrgRows(demo);
+  toast('Donnees demo chargees');
+}
+
+function renderOrg() {
+  if (!ORG_DATA.length) return;
+  var pourvus = ORG_DATA.filter(function(p){return p.statut==='Pourvu';}).length;
+  var vacants  = ORG_DATA.filter(function(p){return p.statut==='Vacant';}).length;
+  var depts    = ORG_DATA.map(function(p){return p.dept;}).filter(Boolean).filter(function(v,i,a){return a.indexOf(v)===i;});
+  document.getElementById('org-nb-total').textContent   = ORG_DATA.length;
+  document.getElementById('org-nb-pourvus').textContent = pourvus;
+  document.getElementById('org-nb-vacants').textContent = vacants;
+  document.getElementById('org-nb-depts').textContent   = depts.length;
+  document.getElementById('org-vacant-count').textContent = vacants;
+  document.getElementById('org-empty-state').style.display = 'none';
+  document.getElementById('org-legende').style.display = 'flex';
+  renderDeptSummary(depts);
+  renderVacantList();
+  buildOrgTree();
+}
+
+function renderDeptSummary(depts) {
+  var el = document.getElementById('org-dept-summary');
+  el.innerHTML = '';
+  depts.forEach(function(dept) {
+    var members = ORG_DATA.filter(function(p){return p.dept===dept;});
+    var pourvus  = members.filter(function(p){return p.statut==='Pourvu';}).length;
+    var vacants   = members.filter(function(p){return p.statut==='Vacant';}).length;
+    var color = getDeptColor(dept);
+    var pct = members.length ? Math.round(pourvus/members.length*100) : 0;
+    el.innerHTML +=
+      '<div style="margin-bottom:8px;padding:8px;background:var(--bg2);border-radius:var(--r);border-left:3px solid '+color+'">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+          '<span style="font-size:11px;font-weight:600;color:var(--blanc)">'+dept+'</span>' +
+          '<span style="font-size:10px;color:var(--gris)">'+members.length+' postes</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:4px">' +
+          '<span style="font-size:10px;color:var(--vert)">'+pourvus+' pourvus</span>' +
+          (vacants ? '<span style="font-size:10px;color:var(--rouge)">'+vacants+' vacants</span>' : '') +
+        '</div>' +
+        '<div style="height:4px;background:var(--gris3);border-radius:2px;overflow:hidden">' +
+          '<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:2px"></div>' +
+        '</div>' +
+      '</div>';
+  });
+}
+
+function renderVacantList() {
+  var el = document.getElementById('org-vacant-list');
+  var vacants = ORG_DATA.filter(function(p){return p.statut==='Vacant';});
+  if (!vacants.length) {
+    el.innerHTML = '<div style="text-align:center;padding:1rem;font-size:11px;color:var(--vert)">Aucun poste vacant</div>';
+    return;
+  }
+  el.innerHTML = '';
+  vacants.forEach(function(p) {
+    var color = getDeptColor(p.dept);
+    el.innerHTML +=
+      '<div class="org-emp-row org-emp-vacant">' +
+        '<div class="org-emp-badge" style="background:rgba(240,90,90,.15);color:var(--rouge)">?</div>' +
+        '<div class="org-emp-info">' +
+          '<div class="org-emp-name" style="color:var(--rouge)">'+(p.poste||'Poste sans titre')+'</div>' +
+          '<div class="org-emp-post" style="color:'+color+'">'+p.dept+'</div>' +
+          (p.responsable ? '<div class="org-emp-dept">Responsable: '+p.responsable+'</div>' : '') +
+        '</div>' +
+      '</div>';
+  });
+}
+
+function buildOrgTree() {
+  var root = document.getElementById('org-tree-root');
+  root.innerHTML = '';
+  var niveaux = ORG_DATA.map(function(p){return p.niveau;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort(function(a,b){return a-b;});
+  var byNiveau = {};
+  niveaux.forEach(function(n){ byNiveau[n] = ORG_DATA.filter(function(p){return p.niveau===n;}); });
+  var container = document.createElement('div');
+  container.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0;min-width:max-content;';
+  niveaux.forEach(function(niveau, nIdx) {
+    var postes = byNiveau[niveau];
+    if (!postes.length) return;
+    var rowWrap = document.createElement('div');
+    rowWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;margin-top:'+(nIdx===0?'0':'2.5rem')+';';
+    if (nIdx > 0) {
+      var vLine = document.createElement('div');
+      vLine.style.cssText = 'width:2px;height:24px;background:rgba(44,42,56,0.8);';
+      rowWrap.appendChild(vLine);
+    }
+    if (postes.length > 1) {
+      var hLine = document.createElement('div');
+      hLine.style.cssText = 'height:2px;background:rgba(44,42,56,0.8);width:calc(100% - 80px);';
+      rowWrap.appendChild(hLine);
+    }
+    var cardsRow = document.createElement('div');
+    cardsRow.style.cssText = 'display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap;justify-content:center;';
+    postes.forEach(function(p) {
+      cardsRow.appendChild(buildCard(p, niveau));
+    });
+    rowWrap.appendChild(cardsRow);
+    container.appendChild(rowWrap);
+  });
+  root.appendChild(container);
+  root.style.transform = 'scale('+ORG_SCALE+')';
+  root.style.transformOrigin = 'top center';
+}
+
+function buildCard(p, niveau) {
+  var isVacant = p.statut === 'Vacant';
+  var color = getDeptColor(p.dept);
+  var wrapper = document.createElement('div');
+  wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+  var card = document.createElement('div');
+  var cardClass = isVacant ? 'org-card org-card-vacant' : (niveau===1 ? 'org-card org-card-dept' : 'org-card org-card-filled');
+  card.className = cardClass;
+  card.style.borderTopColor = color;
+
+  if (isVacant) {
+    var badge = document.createElement('div');
+    badge.className = 'org-vacant-badge';
+    badge.textContent = 'VACANT';
+    card.appendChild(badge);
+  }
+
+  // Avatar initiales
+  if (ORG_MODE !== 'fonctionnel') {
+    var avatar = document.createElement('div');
+    var initials = isVacant ? '?' : ((p.prenom||'').charAt(0) + (p.nom||'').charAt(0)).toUpperCase() || '?';
+    avatar.style.cssText = 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:700;margin-bottom:6px;flex-shrink:0;' +
+      (isVacant ? 'background:rgba(240,90,90,.15);color:var(--rouge);border:1px dashed var(--rouge)' : 'background:'+color+'22;color:'+color+';border:1px solid '+color+'44');
+    avatar.textContent = initials;
+    card.appendChild(avatar);
+  }
+
+  var tag = document.createElement('div');
+  tag.className = 'org-card-tag';
+  tag.style.color = color;
+  tag.textContent = p.dept;
+  card.appendChild(tag);
+
+  var title = document.createElement('div');
+  title.className = 'org-card-title';
+  title.textContent = p.poste || 'Poste';
+  card.appendChild(title);
+
+  if (ORG_MODE !== 'fonctionnel') {
+    var name = document.createElement('div');
+    name.className = 'org-card-name';
+    if (isVacant) {
+      name.innerHTML = '<span style="color:var(--rouge);font-size:10px">A pourvoir</span>';
+    } else {
+      var fullName = [p.prenom, p.nom].filter(Boolean).join(' ');
+      name.textContent = fullName || '—';
+    }
+    card.appendChild(name);
+  }
+
+  card.addEventListener('mouseenter', function(e){ showOrgTooltip(e, p); });
+  card.addEventListener('mouseleave', hideOrgTooltip);
+  card.addEventListener('mousemove',  function(e){ moveOrgTooltip(e); });
+  wrapper.appendChild(card);
+  return wrapper;
+}
+
+function setOrgMode(mode) {
+  ORG_MODE = mode;
+  document.querySelectorAll('.org-toggle-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('org-btn-'+mode);
+  if (btn) btn.classList.add('active');
+  if (ORG_DATA.length) buildOrgTree();
+}
+
+function orgZoom(factor) {
+  ORG_SCALE = Math.min(Math.max(ORG_SCALE * factor, 0.25), 2.5);
+  var root = document.getElementById('org-tree-root');
+  if (root) root.style.transform = 'scale('+ORG_SCALE+')';
+}
+
+function orgFitView() {
+  ORG_SCALE = 1;
+  var root = document.getElementById('org-tree-root');
+  if (root) root.style.transform = 'scale(1)';
+  var canvas = document.getElementById('org-canvas');
+  if (canvas) { canvas.scrollLeft = 0; canvas.scrollTop = 0; }
+}
+
+function handleOrgWheel(e) {
+  if (e.ctrlKey) { e.preventDefault(); orgZoom(e.deltaY < 0 ? 1.1 : 0.9); }
+}
+
+function showOrgTooltip(e, p) {
+  var tt = document.getElementById('org-tooltip');
+  if (!tt) return;
+  var color = getDeptColor(p.dept);
+  var fullName = [p.prenom, p.nom].filter(Boolean).join(' ') || 'A pourvoir';
+  tt.innerHTML =
+    '<div class="org-tooltip-title" style="color:'+color+'">'+(p.poste||'—')+'</div>' +
+    '<div class="org-tooltip-row"><span class="org-tooltip-key">Departement :</span>'+p.dept+'</div>' +
+    (ORG_MODE !== 'fonctionnel' ? '<div class="org-tooltip-row"><span class="org-tooltip-key">Titulaire :</span>'+fullName+'</div>' : '') +
+    '<div class="org-tooltip-row"><span class="org-tooltip-key">Statut :</span><span style="color:'+(p.statut==='Vacant'?'var(--rouge)':'var(--vert)')+'">'+p.statut+'</span></div>' +
+    (p.responsable ? '<div class="org-tooltip-row"><span class="org-tooltip-key">Responsable :</span>'+p.responsable+'</div>' : '');
+  tt.classList.add('show');
+  moveOrgTooltip(e);
+}
+function moveOrgTooltip(e) {
+  var tt = document.getElementById('org-tooltip');
+  if (tt) { tt.style.left=(e.clientX+14)+'px'; tt.style.top=(e.clientY-10)+'px'; }
+}
+function hideOrgTooltip() {
+  var tt = document.getElementById('org-tooltip');
+  if (tt) tt.classList.remove('show');
+}
+function exportOrgPDF() { window.print(); }
+
+// Drag-to-pan
+setTimeout(function() {
+  var canvas = document.getElementById('org-canvas');
+  if (!canvas) return;
+  canvas.addEventListener('mousedown', function(e) {
+    ORG_DRAG = {active:true, startX:e.pageX-canvas.offsetLeft, startY:e.pageY-canvas.offsetTop, scrollLeft:canvas.scrollLeft, scrollTop:canvas.scrollTop};
+  });
+  canvas.addEventListener('mouseleave', function(){ ORG_DRAG.active=false; });
+  canvas.addEventListener('mouseup',    function(){ ORG_DRAG.active=false; });
+  canvas.addEventListener('mousemove', function(e) {
+    if (!ORG_DRAG.active) return;
+    e.preventDefault();
+    var x = e.pageX-canvas.offsetLeft, y = e.pageY-canvas.offsetTop;
+    canvas.scrollLeft = ORG_DRAG.scrollLeft-(x-ORG_DRAG.startX);
+    canvas.scrollTop  = ORG_DRAG.scrollTop-(y-ORG_DRAG.startY);
+  });
+}, 500);
+
+
+
+// ══════════════════════════════════════════
+// PYRAMIDE DES ÂGES
+// ══════════════════════════════════════════
+
+var PYR_DATA = []; // [{tranche, hommes, femmes, total}]
+var PYR_AGE_RETRAITE = 60; // âge de départ retraite
+
+// Tranches standards
+var PYR_TRANCHES = ['< 25','25-34','35-44','45-54','55-64','65+'];
+var PYR_TRANCHES_MID = [22, 29, 39, 49, 59, 67]; // âge médian de chaque tranche
+
+function handlePyrFile(input) {
+  if (input.files[0]) processPyrFile(input.files[0]);
+  input.value = '';
+}
+
+function processPyrFile(file) {
+  var ext = file.name.split('.').pop().toLowerCase();
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var rows = [];
+      if (ext === 'csv') {
+        var lines = ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var headers = lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows = lines.slice(1).map(function(line) {
+          var vals = line.split(/[,;]/);
+          var obj = {};
+          headers.forEach(function(h,i){ obj[h.trim()] = (vals[i]||'').trim().replace(/"/g,''); });
+          return obj;
+        });
+      } else {
+        var wb = XLSX.read(ev.target.result, {type:'binary'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(ws);
+      }
+      parsePyrRows(rows);
+      toast('Pyramide des ages generee');
+    } catch(e) { toast('Erreur : ' + e.message); }
+  };
+  ext === 'csv' ? reader.readAsText(file) : reader.readAsBinaryString(file);
+}
+
+function parsePyrRows(rows) {
+  if (!rows.length) return;
+  var keys = Object.keys(rows[0]).map(function(k){return k.toLowerCase().trim();});
+  
+  // Mode 1 : colonnes Tranche + Hommes + Femmes
+  var hasTranche = keys.some(function(k){return k.includes('tranche')||k.includes('groupe')||k.includes('age');});
+  var hasGenre   = keys.some(function(k){return k.includes('genre')||k.includes('sexe');});
+  
+  if (hasGenre) {
+    // Mode 2 : une ligne par employé avec Age + Genre
+    var byTranche = {};
+    PYR_TRANCHES.forEach(function(t){ byTranche[t] = {hommes:0,femmes:0}; });
+    rows.forEach(function(r) {
+      var ageKey = Object.keys(r).find(function(k){return k.toLowerCase().includes('age')||k.toLowerCase().includes('annee');});
+      var genreKey = Object.keys(r).find(function(k){return k.toLowerCase().includes('genre')||k.toLowerCase().includes('sexe');});
+      if (!ageKey || !genreKey) return;
+      var age = parseInt(r[ageKey]);
+      var genre = String(r[genreKey]).toLowerCase();
+      if (isNaN(age)) return;
+      var tranche = age<25?'< 25':age<35?'25-34':age<45?'35-44':age<55?'45-54':age<65?'55-64':'65+';
+      if (genre.includes('f') || genre.includes('fem')) byTranche[tranche].femmes++;
+      else byTranche[tranche].hommes++;
+    });
+    PYR_DATA = PYR_TRANCHES.map(function(t){
+      return {tranche:t, hommes:byTranche[t].hommes, femmes:byTranche[t].femmes, total:byTranche[t].hommes+byTranche[t].femmes};
+    });
+  } else {
+    // Mode 1 : déjà agrégé par tranche
+    PYR_DATA = rows.map(function(r) {
+      var getKey = function() {
+        for (var i=0;i<arguments.length;i++) {
+          var k = arguments[i];
+          var found = Object.keys(r).find(function(rk){return rk.toLowerCase().replace(/[^a-z]/g,'').includes(k.toLowerCase().replace(/[^a-z]/g,''));});
+          if (found) return r[found]||0;
+        }
+        return 0;
+      };
+      var trancheKey = Object.keys(r).find(function(k){return k.toLowerCase().includes('tranche')||k.toLowerCase().includes('groupe')||k.toLowerCase().includes('age');});
+      var h = parseInt(getKey('hommes','male','h','homme')) || 0;
+      var f = parseInt(getKey('femmes','female','f','femme')) || 0;
+      var tot = parseInt(getKey('total')) || (h+f);
+      return { tranche: r[trancheKey]||'?', hommes:h, femmes:f, total:tot };
+    }).filter(function(r){return r.total > 0;});
+  }
+  
+  renderPyramide();
+}
+
+function chargerPyrDemo() {
+  PYR_DATA = [
+    {tranche:'< 25',  hommes:12, femmes:16, total:28},
+    {tranche:'25-34', hommes:38, femmes:44, total:82},
+    {tranche:'35-44', hommes:42, femmes:32, total:74},
+    {tranche:'45-54', hommes:28, femmes:17, total:45},
+    {tranche:'55-64', hommes:11, femmes:7,  total:18},
+    {tranche:'65+',   hommes:2,  femmes:1,  total:3},
+  ];
+  renderPyramide();
+  toast('Donnees demo chargees');
+}
+
+// ─── RENDU PRINCIPAL ───
+function renderPyramide() {
+  if (!PYR_DATA.length) return;
+  document.getElementById('pyr-empty').style.display = 'none';
+  document.getElementById('pyr-content').style.display = 'grid';
+
+  var totalEff = PYR_DATA.reduce(function(acc,d){return acc+d.total;},0);
+  if (!totalEff) return;
+
+  // Calculs
+  var ageMoyen = 0;
+  PYR_DATA.forEach(function(d,i) {
+    var midAge = PYR_TRANCHES_MID[PYR_TRANCHES.indexOf(d.tranche)] || PYR_TRANCHES_MID[i] || 35;
+    ageMoyen += midAge * d.total;
+  });
+  ageMoyen = (ageMoyen / totalEff).toFixed(1);
+
+  var pctJeunes  = Math.round(PYR_DATA.filter(function(d){return d.tranche==='< 25'||d.tranche==='25-34';}).reduce(function(acc,d){return acc+d.total;},0)/totalEff*100);
+  var pctMid     = Math.round(PYR_DATA.filter(function(d){return d.tranche==='35-44'||d.tranche==='45-54';}).reduce(function(acc,d){return acc+d.total;},0)/totalEff*100);
+  var pctSenior  = Math.round(PYR_DATA.filter(function(d){return d.tranche==='55-64'||d.tranche==='65+';}).reduce(function(acc,d){return acc+d.total;},0)/totalEff*100);
+  var nbDeparts  = PYR_DATA.filter(function(d){return d.tranche==='55-64'||d.tranche==='65+';}).reduce(function(acc,d){return acc+d.total;},0);
+
+  // KPIs
+  document.getElementById('pyr-age-moyen').textContent   = ageMoyen;
+  document.getElementById('pyr-pct-jeunes').textContent  = pctJeunes;
+  document.getElementById('pyr-pct-mid').textContent     = pctMid;
+  document.getElementById('pyr-pct-senior').textContent  = pctSenior;
+  document.getElementById('pyr-departs').textContent     = nbDeparts;
+
+  var colorJeunes  = pctJeunes<15?'kpi-down':(pctJeunes>40?'kpi-neutral':'kpi-up');
+  var colorSenior  = pctSenior>30?'kpi-down':(pctSenior<10?'kpi-up':'kpi-neutral');
+  document.getElementById('pyr-jeunes-sub').className  = 'kpi-sub '+colorJeunes;
+  document.getElementById('pyr-jeunes-sub').textContent = pctJeunes<15?'Très faible — risque renouvellement':pctJeunes>40?'Eleve - main-d\'oeuvre jeune':'Équilibré';
+  document.getElementById('pyr-mid-sub').className     = 'kpi-sub kpi-neutral';
+  document.getElementById('pyr-mid-sub').textContent   = 'Coeur de l\'effectif';
+  document.getElementById('pyr-senior-sub').className  = 'kpi-sub '+colorSenior;
+  document.getElementById('pyr-senior-sub').textContent = pctSenior>30?'Vieillissement critique':pctSenior<10?'Faible':'Modéré';
+  document.getElementById('pyr-departs-sub').textContent = 'Départs retraite à anticiper (< 5 ans)';
+
+  // Dessiner SVG
+  drawPyramideSVG(totalEff);
+
+  // Tranches détaillées
+  renderTranchesDetail(totalEff);
+
+  // Diagnostic & Actions
+  var diag = analyserPyramide(pctJeunes, pctMid, pctSenior, ageMoyen, nbDeparts, totalEff);
+  renderDiagnostic(diag);
+  renderActions(diag);
+  renderProjections(diag, nbDeparts, totalEff);
+}
+
+// ─── DESSIN SVG ───
+function drawPyramideSVG(total) {
+  var svg = document.getElementById('pyr-svg');
+  svg.innerHTML = '';
+  var W=600, H=400, centerX=300, barMaxW=220, barH=38, gap=6, topPad=20, labelW=60;
+
+  var maxVal = Math.max.apply(null, PYR_DATA.map(function(d){return Math.max(d.hommes,d.femmes);}));
+  var n = PYR_DATA.length;
+
+  // Axes centre
+  var axeLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+  axeLine.setAttribute('x1',centerX); axeLine.setAttribute('y1',topPad);
+  axeLine.setAttribute('x2',centerX); axeLine.setAttribute('y2',H-20);
+  axeLine.setAttribute('stroke','rgba(44,42,56,0.8)'); axeLine.setAttribute('stroke-width','1');
+  svg.appendChild(axeLine);
+
+  // Grille verticale
+  [0.25,0.5,0.75,1].forEach(function(pct) {
+    var x1 = centerX - barMaxW*pct;
+    var x2 = centerX + barMaxW*pct;
+    [x1,x2].forEach(function(x) {
+      var gl = document.createElementNS('http://www.w3.org/2000/svg','line');
+      gl.setAttribute('x1',x); gl.setAttribute('y1',topPad);
+      gl.setAttribute('x2',x); gl.setAttribute('y2',H-20);
+      gl.setAttribute('stroke','rgba(44,42,56,0.4)'); gl.setAttribute('stroke-width','1');
+      gl.setAttribute('stroke-dasharray','3,4');
+      svg.appendChild(gl);
+    });
+  });
+
+  PYR_DATA.forEach(function(d, i) {
+    var y = topPad + i*(barH+gap);
+    var wF = maxVal>0 ? (d.femmes/maxVal)*barMaxW : 0;
+    var wH = maxVal>0 ? (d.hommes/maxVal)*barMaxW : 0;
+
+    // Barre femmes (gauche)
+    var barF = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    barF.setAttribute('x', centerX-wF); barF.setAttribute('y', y);
+    barF.setAttribute('width', wF); barF.setAttribute('height', barH);
+    barF.setAttribute('rx','4'); barF.setAttribute('class','pyr-bar-f');
+    barF.innerHTML = '<title>'+d.tranche+' — Femmes : '+d.femmes+'</title>';
+    svg.appendChild(barF);
+
+    // Barre hommes (droite)
+    var barM = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    barM.setAttribute('x', centerX); barM.setAttribute('y', y);
+    barM.setAttribute('width', wH); barM.setAttribute('height', barH);
+    barM.setAttribute('rx','4'); barM.setAttribute('class','pyr-bar-m');
+    barM.innerHTML = '<title>'+d.tranche+' — Hommes : '+d.hommes+'</title>';
+    svg.appendChild(barM);
+
+    // Label tranche (centre)
+    var txtTranche = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txtTranche.setAttribute('x', centerX); txtTranche.setAttribute('y', y+barH/2+4);
+    txtTranche.setAttribute('text-anchor','middle');
+    txtTranche.setAttribute('class','pyr-center-label');
+    txtTranche.textContent = d.tranche;
+    svg.appendChild(txtTranche);
+
+    // Valeur femmes
+    if (d.femmes > 0) {
+      var txtF = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txtF.setAttribute('x', centerX-wF-4); txtF.setAttribute('y', y+barH/2+4);
+      txtF.setAttribute('text-anchor','end');
+      txtF.setAttribute('class','pyr-label');
+      txtF.textContent = d.femmes;
+      svg.appendChild(txtF);
+    }
+
+    // Valeur hommes
+    if (d.hommes > 0) {
+      var txtH = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txtH.setAttribute('x', centerX+wH+4); txtH.setAttribute('y', y+barH/2+4);
+      txtH.setAttribute('text-anchor','start');
+      txtH.setAttribute('class','pyr-label');
+      txtH.textContent = d.hommes;
+      svg.appendChild(txtH);
+    }
+
+    // % total à droite
+    var pct = Math.round(d.total/total*100);
+    var txtPct = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txtPct.setAttribute('x', W-4); txtPct.setAttribute('y', y+barH/2+4);
+    txtPct.setAttribute('text-anchor','end');
+    txtPct.setAttribute('class','pyr-axis-label');
+    txtPct.textContent = pct+'%';
+    svg.appendChild(txtPct);
+  });
+
+  // Labels axes
+  var lF = document.createElementNS('http://www.w3.org/2000/svg','text');
+  lF.setAttribute('x',60); lF.setAttribute('y',H-4);
+  lF.setAttribute('text-anchor','middle');
+  lF.setAttribute('class','pyr-axis-label');
+  lF.setAttribute('fill','#A78BFA');
+  lF.textContent = 'FEMMES';
+  svg.appendChild(lF);
+
+  var lH = document.createElementNS('http://www.w3.org/2000/svg','text');
+  lH.setAttribute('x',540); lH.setAttribute('y',H-4);
+  lH.setAttribute('text-anchor','middle');
+  lH.setAttribute('class','pyr-axis-label');
+  lH.setAttribute('fill','#4A9EFF');
+  lH.textContent = 'HOMMES';
+  svg.appendChild(lH);
+}
+
+// ─── TRANCHES DÉTAIL ───
+function renderTranchesDetail(total) {
+  var grid = document.getElementById('pyr-tranche-grid');
+  grid.innerHTML = '';
+  var colors = ['#A78BFA','#4A9EFF','#34C77B','#FB923C','#F05A5A','#E2C47A'];
+  PYR_DATA.forEach(function(d,i) {
+    var pct = total ? Math.round(d.total/total*100) : 0;
+    var color = colors[i%colors.length];
+    grid.innerHTML +=
+      '<div class="tranche-item">' +
+        '<div class="tranche-label">'+d.tranche+' ans</div>' +
+        '<div><span class="tranche-val">'+d.total+'</span> <span class="tranche-pct">'+pct+'%</span></div>' +
+        '<div style="font-size:10px;color:var(--gris)">F:'+d.femmes+' / H:'+d.hommes+'</div>' +
+        '<div class="tranche-bar"><div class="tranche-fill" style="width:'+pct+'%;background:'+color+'"></div></div>' +
+      '</div>';
+  });
+}
+
+// ─── ANALYSE & DIAGNOSTIC ───
+function analyserPyramide(pctJeunes, pctMid, pctSenior, ageMoyen, nbDeparts, total) {
+  var forme, niveau, couleur, description;
+  var am = parseFloat(ageMoyen);
+
+  // Déterminer la forme
+  if (pctJeunes > 40 && pctSenior < 15) {
+    forme = 'Pyramide classique (Base large)';
+    if (pctJeunes > 55) {
+      niveau = 'jaune'; couleur = '#FBC724';
+      description = "Effectif très jeune : fort potentiel d'énergie mais manque d'expérience. Risque de turn-over élevé si les perspectives d'évolution sont insuffisantes.";
+    } else {
+      niveau = 'vert'; couleur = '#34C77B';
+      description = "Structure saine avec une bonne base de jeunes actifs. Les seniors transmettent leur savoir aux nouvelles générations. Situation favorable.";
+    }
+  } else if (pctSenior > 35) {
+    forme = 'Pyramide inversée (Vieillissement)';
+    niveau = 'rouge'; couleur = '#F05A5A';
+    description = "Vieillissement critique de l'effectif. Le poids des seniors est très élevé, avec un risque massif de départs à la retraite à court terme et une perte de compétences.";
+  } else if (pctMid > 55 && pctJeunes < 20 && pctSenior < 20) {
+    forme = 'Pyramide en toupie (Génération centrale)';
+    niveau = 'jaune'; couleur = '#FBC724';
+    description = "La génération intermédiaire (35-50 ans) domine l'effectif. Risque de blocage des évolutions de carrière pour les jeunes. Renouvellement générationnel insuffisant.";
+  } else if (pctSenior > 20 && pctJeunes < 20) {
+    forme = 'Pyramide en champignon (Surreprésentation seniors)';
+    niveau = 'rouge'; couleur = '#F05A5A';
+    description = "Les seniors sont surreprésentés, les jeunes sous-représentés. Le renouvellement des compétences est insuffisant. Action urgente sur le recrutement de jeunes talents.";
+  } else if (am > 47) {
+    forme = 'Pyramide vieillissante';
+    niveau = 'rouge'; couleur = '#F05A5A';
+    description = "L'âge moyen dépasse 47 ans, signal d'alerte majeur. La perte de compétences clés à court terme est inévitable sans plan de recrutement et de transfert de savoirs.";
+  } else if (am < 33) {
+    forme = 'Pyramide très jeune';
+    niveau = 'jaune'; couleur = '#FBC724';
+    description = "Effectif très jeune. Dynamisme assuré mais manque d'expertise et d'expérience. Le risque de turn-over est élevé si la fidélisation n'est pas travaillée.";
+  } else {
+    forme = 'Pyramide équilibrée';
+    niveau = 'vert'; couleur = '#34C77B';
+    description = "La structure par âge est équilibrée entre jeunes, actifs expérimentés et seniors. Situation RH favorable permettant transmission des savoirs et renouvellement progressif.";
+  }
+
+  // Actions RH selon le diagnostic
+  var actions = genererActions(niveau, pctJeunes, pctMid, pctSenior, am, nbDeparts, total);
+
+  return { forme:forme, niveau:niveau, couleur:couleur, description:description, actions:actions,
+           pctJeunes:pctJeunes, pctMid:pctMid, pctSenior:pctSenior, ageMoyen:am, nbDeparts:nbDeparts };
+}
+
+function genererActions(niveau, pJ, pM, pS, am, departs, total) {
+  var actions = [];
+
+  if (niveau === 'rouge') {
+    if (pS > 30) {
+      actions.push({niv:'rouge', icon:'🚨', titre:'Plan de succession URGENT', desc:'Identifier les postes clés détenus par les +50 ans et lancer un programme de transfert de compétences immédiatement.'});
+      actions.push({niv:'rouge', icon:'🎯', titre:'Recrutement jeunes — Priorité absolue', desc:'Ouvrir des postes juniors et des programmes stagiaires/alternants pour rééquilibrer la pyramide.'});
+      actions.push({niv:'rouge', icon:'📚', titre:'Cartographie des savoirs critiques', desc:'Documenter les expertises des seniors avant leurs départs pour éviter la perte irrémédiable de compétences.'});
+    }
+    if (am > 47) {
+      actions.push({niv:'rouge', icon:'⏰', titre:'Plan départs retraite sur 3 ans', desc:'Anticiper '+departs+' départs retraite. Prévoir les remplacements et budgets de recrutement dès maintenant.'});
+    }
+  }
+
+  if (niveau === 'jaune') {
+    if (pJ > 40) {
+      actions.push({niv:'jaune', icon:'🌱', titre:'Programme de fidélisation jeunes', desc:'Mettre en place des parcours de carrière clairs, du mentorat et des avantages pour retenir les talents jeunes.'});
+      actions.push({niv:'jaune', icon:'🎓', titre:'Accélération du développement des compétences', desc:'Investir dans la formation des jeunes talents pour combler le deficit d\'experience. Prévoir un plan de formation intensif.'});
+    }
+    if (pM > 55) {
+      actions.push({niv:'jaune', icon:'📈', titre:'Fluidifier les évolutions de carrière', desc:'Les +35 ans bloquent les progressions. Créer de nouveaux parcours : mobilité fonctionnelle, promotions transversales.'});
+      actions.push({niv:'jaune', icon:'🔄', titre:'Renouvellement générationnel planifié', desc:'Anticiper les departs pour liberer des postes aux jeunes et maintenir la dynamique de l\'equipe.'});
+    }
+  }
+
+  if (niveau === 'vert') {
+    actions.push({niv:'vert', icon:'✅', titre:'Maintenir l\'equilibre des generations', desc:'La structure est saine. Continuer a recruter de maniere equilibree entre les tranches d\'age pour preserver cette situation.'});
+    actions.push({niv:'vert', icon:'🤝', titre:'Programmes de mentorat intergénérationnel', desc:'Capitaliser sur la diversite des ages en structurant le transfert de savoir entre seniors et juniors.'});
+    if (pS > 15) {
+      actions.push({niv:'vert', icon:'📋', titre:'Anticiper les départs seniors', desc:''+departs+' départs prévus dans 5 ans. Planifier sereinement les remplacements sans urgence.'});
+    }
+  }
+
+  // Action universelle si femmes/hommes très déséquilibré
+  actions.push({niv:'jaune', icon:'⚖️', titre:'Veiller a l\'equilibre Femmes / Hommes', desc:'Analyser la repartition de genre par tranche et departement pour identifier les desequilibres a corriger.'});
+
+  return actions;
+}
+
+// ─── RENDU DIAGNOSTIC ───
+function renderDiagnostic(diag) {
+  var el = document.getElementById('pyr-diag-content');
+  var badgeCls = 'diag-badge diag-badge-'+diag.niveau;
+  var niveauLabel = diag.niveau==='rouge'?'SITUATION CRITIQUE':diag.niveau==='jaune'?'VIGILANCE':'SITUATION SAINE';
+  document.getElementById('pyr-type-label').textContent = '— ' + diag.forme;
+  el.innerHTML =
+    '<div class="diag-header">' +
+      '<div class="diag-forme" style="color:'+diag.couleur+'">'+diag.forme+'</div>' +
+    '</div>' +
+    '<span class="'+badgeCls+'">'+niveauLabel+'</span>' +
+    '<div class="diag-desc" style="margin-top:.75rem">'+diag.description+'</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:.75rem;">' +
+      '<div style="text-align:center;background:var(--bg3);border-radius:var(--r);padding:.5rem">' +
+        '<div style="font-size:18px;font-weight:700;font-family:var(--fd);color:#A78BFA">'+diag.pctJeunes+'%</div>' +
+        '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">< 35 ans</div>' +
+      '</div>' +
+      '<div style="text-align:center;background:var(--bg3);border-radius:var(--r);padding:.5rem">' +
+        '<div style="font-size:18px;font-weight:700;font-family:var(--fd);color:#4A9EFF">'+diag.pctMid+'%</div>' +
+        '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">35-54 ans</div>' +
+      '</div>' +
+      '<div style="text-align:center;background:var(--bg3);border-radius:var(--r);padding:.5rem">' +
+        '<div style="font-size:18px;font-weight:700;font-family:var(--fd);color:#FB923C">'+diag.pctSenior+'%</div>' +
+        '<div style="font-size:9px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em">55 ans +</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderActions(diag) {
+  var el = document.getElementById('pyr-actions-list');
+  el.innerHTML = '';
+  diag.actions.forEach(function(a) {
+    el.innerHTML +=
+      '<div class="action-item action-'+a.niv+'">' +
+        '<div class="action-icon">'+a.icon+'</div>' +
+        '<div class="action-content">' +
+          '<div class="action-title">'+a.titre+'</div>' +
+          '<div class="action-desc">'+a.desc+'</div>' +
+        '</div>' +
+      '</div>';
+  });
+}
+
+function renderProjections(diag, nbDeparts, total) {
+  var el = document.getElementById('pyr-projections');
+  var pct5ans = total ? Math.round(nbDeparts/total*100) : 0;
+  var couleurDeparts = pct5ans>20?'var(--rouge)':pct5ans>10?'#FBC724':'var(--vert)';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;gap:8px;">' +
+      '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div style="font-size:12px;color:var(--gris)">Départs retraite estimés (5 ans)</div>' +
+        '<div style="font-family:var(--fd);font-size:20px;font-weight:700;color:'+couleurDeparts+'">'+nbDeparts+' <span style="font-size:11px;font-weight:400;color:var(--gris)">('+pct5ans+'%)</span></div>' +
+      '</div>' +
+      '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div style="font-size:12px;color:var(--gris)">Âge moyen actuel</div>' +
+        '<div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--blanc)">'+diag.ageMoyen+' <span style="font-size:11px;font-weight:400;color:var(--gris)">ans</span></div>' +
+      '</div>' +
+      '<div style="background:var(--bg3);border-radius:var(--r);padding:.75rem;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div style="font-size:12px;color:var(--gris)">Pression renouvellement</div>' +
+        '<div style="font-family:var(--fd);font-size:14px;font-weight:700;color:'+couleurDeparts+'">'+(pct5ans>20?'ÉLEVÉE':pct5ans>10?'MODÉRÉE':'FAIBLE')+'</div>' +
+      '</div>' +
+    '</div>';
+}
+
+
+
+// ══════════════════════════════════════════
+// PLAN DE SUCCESSION
+// ══════════════════════════════════════════
+var SUC_DATA = [];   // postes cles avec successeurs
+var SUC_FILTER = 'tous';
+
+var DEPT_COLORS_SUC = ['#C9A84C','#4A9EFF','#34C77B','#A78BFA','#FB923C','#F05A5A','#E2C47A','#38BDF8'];
+var sucDeptColors = {};
+function getSucDeptColor(dept) {
+  if (!sucDeptColors[dept]) {
+    var keys = Object.keys(sucDeptColors);
+    sucDeptColors[dept] = DEPT_COLORS_SUC[keys.length % DEPT_COLORS_SUC.length];
+  }
+  return sucDeptColors[dept];
+}
+
+// ─── IMPORT ───
+function handleSucFile(input) {
+  if (input.files[0]) processSucFile(input.files[0]);
+  input.value = '';
+}
+
+function processSucFile(file) {
+  var ext = file.name.split('.').pop().toLowerCase();
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var rows = [];
+      if (ext === 'csv') {
+        var lines = ev.target.result.split('\n').filter(function(l){return l.trim();});
+        var headers = lines[0].split(/[,;]/).map(function(h){return h.trim();});
+        rows = lines.slice(1).map(function(line) {
+          var vals = line.split(/[,;]/);
+          var obj = {};
+          headers.forEach(function(h,i){ obj[h.trim()] = (vals[i]||'').trim().replace(/"/g,''); });
+          return obj;
+        });
+      } else {
+        var wb = XLSX.read(ev.target.result, {type:'binary'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(ws);
+      }
+      parseSucRows(rows);
+      toast('Plan de succession charge - ' + SUC_DATA.length + ' postes cles');
+    } catch(e) { toast('Erreur : ' + e.message); }
+  };
+  ext === 'csv' ? reader.readAsText(file) : reader.readAsBinaryString(file);
+}
+
+function getCol(r, keys) {
+  for (var i=0; i<keys.length; i++) {
+    var found = Object.keys(r).find(function(k){ return k.toLowerCase().replace(/[^a-z]/g,'').indexOf(keys[i].toLowerCase().replace(/[^a-z]/g,'')) !== -1; });
+    if (found && r[found] !== undefined && r[found] !== '') return String(r[found]).trim();
+  }
+  return '';
+}
+
+function parseSucRows(rows) {
+  // Grouper par poste cle
+  var postesMap = {};
+  rows.forEach(function(r) {
+    var poste     = getCol(r, ['postcle','postecle','poste','position','fonction','titre']);
+    var dept      = getCol(r, ['departement','dept','service','direction']);
+    var titulaire = getCol(r, ['titulaire','actuel','incumbent','occupant']);
+    var risque    = getCol(r, ['risquedepart','risque','risk','turnover']);
+    var sucNom    = getCol(r, ['successeurnom','successeur','nom','candidat','candidate']);
+    var sucPoste  = getCol(r, ['successeurposte','posteactuel','currentrole']);
+    var readiness = getCol(r, ['readiness','pret','preparation','delai']);
+    var potentiel = parseFloat(getCol(r, ['potentiel','potential'])) || 0;
+    var perf      = parseFloat(getCol(r, ['performance','perf','score'])) || 0;
+    var compOK    = getCol(r, ['competencesok','competok','acquis','maitrise']);
+    var compDev   = getCol(r, ['competencesadev','adevelopper','adev','gap','manque']);
+    var plan      = getCol(r, ['plandeveloppement','plan','actions','developpement']);
+    var compReq   = getCol(r, ['competencesrequises','required','requises','necessaires']);
+
+    if (!poste) return;
+
+    var key = poste + '||' + dept;
+    if (!postesMap[key]) {
+      postesMap[key] = {
+        poste: poste, dept: dept, titulaire: titulaire,
+        risque: risque || 'Modere',
+        competencesRequises: compReq ? compReq.split(/[,;|]/).map(function(s){return s.trim();}).filter(Boolean) : [],
+        successeurs: []
+      };
+    }
+    if (sucNom) {
+      postesMap[key].successeurs.push({
+        nom: sucNom, posteActuel: sucPoste,
+        readiness: normalizeReadiness(readiness),
+        potentiel: potentiel, performance: perf,
+        compOK: compOK ? compOK.split(/[,;|]/).map(function(s){return s.trim();}).filter(Boolean) : [],
+        compDev: compDev ? compDev.split(/[,;|]/).map(function(s){return s.trim();}).filter(Boolean) : [],
+        plan: plan ? plan.split(/[;|]/).map(function(s){return s.trim();}).filter(Boolean) : []
+      });
+    }
+  });
+
+  SUC_DATA = Object.values(postesMap);
+  renderSuccession();
+}
+
+function normalizeReadiness(r) {
+  var rl = String(r).toLowerCase();
+  if (rl.includes('maint') || rl.includes('now') || rl === '0') return 'Pret maintenant';
+  if (rl.includes('1') || rl.includes('2') || rl.includes('court')) return '1-2 ans';
+  if (rl.includes('3') || rl.includes('4') || rl.includes('5') || rl.includes('moyen')) return '3-5 ans';
+  return '1-2 ans';
+}
+
+// ─── DEMO ───
+function chargerSucDemo() {
+  var rows = [
+    {PosteCle:'Directeur General',         Departement:'Direction',  Titulaire:'Kossi Adjobi',    RisqueDépart:'Élevé',   SuccesseurNom:'Aline Dossou',    SuccesseurPoste:'Directrice RH',       Readiness:'1-2 ans',       Potentiel:4.5, Performance:4.2, CompétencesOK:'Leadership,Vision stratégique,Communication', CompétencesADévelopper:'Gestion financière,Négociation externe,Réseau institutionnel', PlanDéveloppement:'Formation finance avancée;Participation CODIR pendant 12 mois;Mentoring DG actuel', CompétencesRequises:'Leadership,Vision stratégique,Gestion financière,Communication,Négociation externe,Réseau institutionnel'},
+    {PosteCle:'Directeur General',         Departement:'Direction',  Titulaire:'Kossi Adjobi',    RisqueDépart:'Élevé',   SuccesseurNom:'Jean Kpossou',     SuccesseurPoste:'Directeur Commercial',Readiness:'3-5 ans',       Potentiel:3.8, Performance:4.0, CompétencesOK:'Négociation externe,Réseau institutionnel,Communication', CompétencesADévelopper:'Leadership,Vision stratégique,Gestion financière', PlanDéveloppement:'Programme leadership senior;Formation gestion financière;Mission transversale 18 mois', CompétencesRequises:'Leadership,Vision stratégique,Gestion financière,Communication,Négociation externe,Réseau institutionnel'},
+    {PosteCle:'Directrice RH',             Departement:'RH',         Titulaire:'Aline Dossou',    RisqueDépart:'Modéré',  SuccesseurNom:'Patrick Houenou',  SuccesseurPoste:'Chargé Recrutement',  Readiness:'1-2 ans',       Potentiel:4.0, Performance:3.8, CompétencesOK:'Recrutement,Droit social,Communication', CompétencesADévelopper:'Management équipe,GPEC,Gestion paie,Stratégie RH', PlanDéveloppement:'Formation management;Prise en charge dossiers GPEC;Coaching par DRH actuelle', CompétencesRequises:'Recrutement,Droit social,Management équipe,GPEC,Gestion paie,Stratégie RH,Communication'},
+    {PosteCle:'Directeur Commercial',      Departement:'Commercial', Titulaire:'Jean Kpossou',    RisqueDépart:'Faible',  SuccesseurNom:'Sylvie Zannou',    SuccesseurPoste:'Resp. Grands Comptes', Readiness:'Pret maintenant',Potentiel:4.2, Performance:4.5, CompétencesOK:'Négociation,Grands comptes,Animation équipe,Prospection,Reporting commercial', CompétencesADévelopper:'Management direction,Budget prévisionnel', PlanDéveloppement:'Délégation progressive de la direction;Formation budget et finance', CompétencesRequises:'Négociation,Grands comptes,Animation équipe,Management direction,Budget prévisionnel,Prospection,Reporting commercial'},
+    {PosteCle:'Directeur Financier',       Departement:'Finance',    Titulaire:'Nadège Soglo',    RisqueDépart:'Élevé',   SuccesseurNom:'Théodore Loko',    SuccesseurPoste:'Comptable Senior',    Readiness:'1-2 ans',       Potentiel:3.5, Performance:4.0, CompétencesOK:'Comptabilité,Fiscalité,Trésorerie', CompétencesADévelopper:'Gestion budgétaire,Contrôle de gestion,Management,Reportings DAF', PlanDéveloppement:'Formation contrôle de gestion;Prise en charge du reporting mensuel;Formation management équipe', CompétencesRequises:'Comptabilité,Fiscalité,Trésorerie,Gestion budgétaire,Contrôle de gestion,Management,Reportings DAF'},
+    {PosteCle:'Responsable IT',            Departement:'IT',         Titulaire:'Romuald Gbessi',  RisqueDépart:'Modéré',  SuccesseurNom:'',                 SuccesseurPoste:'',                    Readiness:'',              Potentiel:0,   Performance:0,   CompétencesOK:'', CompétencesADévelopper:'', PlanDéveloppement:'', CompétencesRequises:'Architecture SI,Cybersécurité,Management IT,DevOps,Gestion projets tech'},
+    {PosteCle:'Directeur Production',      Departement:'Production', Titulaire:'Rémi Hounsou',    RisqueDépart:'Faible',  SuccesseurNom:'Barnabé Tossou',   SuccesseurPoste:'Chef équipe A',       Readiness:'3-5 ans',       Potentiel:3.2, Performance:3.5, CompétencesOK:'Gestion équipe terrain,Qualité,Process production', CompétencesADévelopper:'Management global,Planification industrielle,Budget production,HSE avancé', PlanDéveloppement:'Formation management direction;Immersion gestion budgétaire;Délégation progressive missions Directeur', CompétencesRequises:'Gestion équipe terrain,Management global,Planification industrielle,Budget production,Qualité,Process production,HSE avancé'},
+  ];
+  parseSucRows(rows);
+  toast('Donnees demo chargees - 6 postes cles');
+}
+
+// ─── RENDU ───
+function renderSuccession() {
+  if (!SUC_DATA.length) return;
+
+  document.getElementById('suc-empty').style.display   = 'none';
+  document.getElementById('suc-content').style.display = 'block';
+
+  // KPIs
+  var total      = SUC_DATA.length;
+  var avecSuc    = SUC_DATA.filter(function(p){return p.successeurs.length>0;}).length;
+  var sansSuc    = total - avecSuc;
+  var pretNow    = 0;
+  var risqueEleve = SUC_DATA.filter(function(p){return p.risque.toLowerCase().includes('elev')||p.risque.toLowerCase().includes('lev');}).length;
+  SUC_DATA.forEach(function(p){ p.successeurs.forEach(function(s){ if(s.readiness==='Pret maintenant') pretNow++; }); });
+  var couverture = total ? Math.round(avecSuc/total*100) : 0;
+
+  document.getElementById('suc-nb-postes').textContent  = total;
+  document.getElementById('suc-couverture').textContent = couverture;
+  document.getElementById('suc-pret-now').textContent   = pretNow;
+  document.getElementById('suc-sans-suc').textContent   = sansSuc;
+  document.getElementById('suc-risque-eleve').textContent = risqueEleve;
+  document.getElementById('suc-postes-sub').textContent = avecSuc + ' couverts / ' + sansSuc + ' sans successeur';
+  document.getElementById('suc-couv-sub').textContent   = couverture>=80?'Bonne couverture':couverture>=50?'Couverture partielle':'Couverture insuffisante';
+
+  renderSucPostes();
+  renderSucSidebar();
+}
+
+function filterSuc(filter, btn) {
+  SUC_FILTER = filter;
+  document.querySelectorAll('.suc-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderSucPostes();
+}
+
+function getFilteredPostes() {
+  return SUC_DATA.filter(function(p) {
+    if (SUC_FILTER === 'tous') return true;
+    if (SUC_FILTER === 'critique') return p.risque.toLowerCase().includes('elev')||p.risque.toLowerCase().includes('lev');
+    if (SUC_FILTER === 'sans') return p.successeurs.length === 0;
+    if (SUC_FILTER === 'pret') return p.successeurs.some(function(s){return s.readiness==='Pret maintenant';});
+    if (SUC_FILTER === 'dev') return p.successeurs.some(function(s){return s.readiness!=='Pret maintenant';});
+    return true;
+  });
+}
+
+function renderSucPostes() {
+  var container = document.getElementById('suc-postes-list');
+  container.innerHTML = '';
+  var postes = getFilteredPostes();
+
+  if (!postes.length) {
+    container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gris);font-size:13px">Aucun poste correspondant au filtre.</div>';
+    return;
+  }
+
+  postes.forEach(function(p) {
+    var color = getSucDeptColor(p.dept);
+    var risqLow = p.risque.toLowerCase();
+    var risqCls  = risqLow.includes('elev')||risqLow.includes('lev') ? 'suc-risk-rouge' : risqLow.includes('mod') ? 'suc-risk-jaune' : 'suc-risk-vert';
+    var risqLabel = risqLow.includes('elev')||risqLow.includes('lev') ? 'Risque élevé' : risqLow.includes('mod') ? 'Risque modéré' : 'Risque faible';
+
+    var card = document.createElement('div');
+    card.className = 'suc-poste-card';
+
+    // Bordure gauche colorée selon risque
+    var borderColor = risqLow.includes('elev')||risqLow.includes('lev') ? '#F05A5A' : risqLow.includes('mod') ? '#FBC724' : '#34C77B';
+    card.style.borderLeft = '4px solid ' + borderColor;
+
+    // HEAD
+    var headHtml = '<div class="suc-poste-head">' +
+      '<div class="suc-poste-head-left">' +
+        '<div class="suc-poste-dept" style="color:'+color+'">'+p.dept+'</div>' +
+        '<div class="suc-poste-title">'+p.poste+'</div>' +
+        (p.titulaire ? '<div class="suc-poste-titulaire">👤 Titulaire actuel : <strong style="color:var(--blanc)">'+p.titulaire+'</strong></div>' : '') +
+      '</div>' +
+      '<div class="suc-poste-badges">' +
+        '<span class="suc-risk-badge '+risqCls+'">'+risqLabel+'</span>' +
+        (p.successeurs.length === 0 ? '<span class="suc-no-suc-badge">⚠️ Aucun successeur</span>' : '<span style="background:rgba(74,158,255,.1);color:var(--bleu);border:1px solid rgba(74,158,255,.2);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;">'+p.successeurs.length+' successeur(s)</span>') +
+      '</div>' +
+    '</div>';
+
+    // BODY
+    var bodyHtml = '<div class="suc-poste-body">';
+
+    // Compétences requises
+    if (p.competencesRequises.length) {
+      bodyHtml += '<div class="suc-comp-section">' +
+        '<div class="suc-comp-title">Compétences requises pour ce poste</div>' +
+        '<div class="suc-comp-tags">' +
+          p.competencesRequises.map(function(c){ return '<span class="suc-comp-tag suc-comp-required">'+c+'</span>'; }).join('') +
+        '</div>' +
+      '</div>';
+    }
+
+    // Successeurs
+    if (p.successeurs.length === 0) {
+      bodyHtml += '<div class="suc-no-successeur">⚠️ Aucun successeur identifié pour ce poste — Action RH requise</div>';
+    } else {
+      bodyHtml += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);opacity:.8;margin-bottom:.5rem;">Successeurs potentiels</div>';
+      bodyHtml += '<div class="suc-successeurs">';
+      p.successeurs.forEach(function(s, idx) {
+        var initials = s.nom.split(' ').map(function(w){return w.charAt(0);}).join('').substring(0,2).toUpperCase();
+        var avatarColor = DEPT_COLORS_SUC[idx % DEPT_COLORS_SUC.length];
+        var readyCls = s.readiness==='Pret maintenant' ? 'ready-now' : s.readiness==='1-2 ans' ? 'ready-12' : 'ready-35';
+        var readyLabel = s.readiness==='Pret maintenant' ? '✅ Prêt maintenant' : s.readiness==='1-2 ans' ? '🔵 Prêt 1–2 ans' : '⏳ Prêt 3–5 ans';
+
+        var potPct = s.potentiel ? Math.round(s.potentiel/5*100) : 0;
+        var perfPct = s.performance ? Math.round(s.performance/5*100) : 0;
+        var potColor = s.potentiel>=4?'#34C77B':s.potentiel>=3?'#4A9EFF':'#FB923C';
+        var perfColor = s.performance>=4?'#34C77B':s.performance>=3?'#4A9EFF':'#FB923C';
+
+        // Calcul gap compétences vs requises
+        var compOKSet  = s.compOK.map(function(c){return c.toLowerCase();});
+        var compDevSet = s.compDev.map(function(c){return c.toLowerCase();});
+
+        var sucHtml = '<div class="suc-item">' +
+          '<div class="suc-rank">'+(idx+1)+'</div>' +
+          '<div class="suc-item-head">' +
+            '<div class="suc-avatar" style="background:'+avatarColor+'22;color:'+avatarColor+';border:1px solid '+avatarColor+'44">'+initials+'</div>' +
+            '<div class="suc-name-block">' +
+              '<div class="suc-name">'+s.nom+'</div>' +
+              (s.posteActuel ? '<div class="suc-poste-actuel">Poste actuel : '+s.posteActuel+'</div>' : '') +
+            '</div>' +
+            '<span class="suc-readiness '+readyCls+'">'+readyLabel+'</span>' +
+          '</div>';
+
+        // Scores pot/perf
+        if (s.potentiel || s.performance) {
+          sucHtml += '<div class="suc-scores">' +
+            '<div class="suc-score-item">Potentiel <span class="suc-score-val" style="color:'+potColor+'">'+s.potentiel.toFixed(1)+'</span>/5' +
+              '<div class="suc-score-bar"><div class="suc-score-fill" style="width:'+potPct+'%;background:'+potColor+'"></div></div>' +
+            '</div>' +
+            '<div class="suc-score-item" style="margin-left:.75rem">Performance <span class="suc-score-val" style="color:'+perfColor+'">'+s.performance.toFixed(1)+'</span>/5' +
+              '<div class="suc-score-bar"><div class="suc-score-fill" style="width:'+perfPct+'%;background:'+perfColor+'"></div></div>' +
+            '</div>' +
+          '</div>';
+        }
+
+        // Compétences acquises vs à développer
+        if (s.compOK.length || s.compDev.length) {
+          sucHtml += '<div class="suc-gap-section">';
+          if (s.compOK.length) {
+            sucHtml += '<div class="suc-gap-title">✓ Compétences acquises</div>' +
+              '<div class="suc-gap-row">' +
+                s.compOK.map(function(c){ return '<span class="suc-comp-tag suc-comp-ok">'+c+'</span>'; }).join('') +
+              '</div>';
+          }
+          if (s.compDev.length) {
+            sucHtml += '<div class="suc-gap-title" style="margin-top:5px">⬆ À développer</div>' +
+              '<div class="suc-gap-row">' +
+                s.compDev.map(function(c){ return '<span class="suc-comp-tag suc-comp-gap">'+c+'</span>'; }).join('') +
+              '</div>';
+          }
+          sucHtml += '</div>';
+        }
+
+        // Plan développement
+        if (s.plan.length) {
+          sucHtml += '<div class="suc-plan">' +
+            '<div class="suc-plan-title">📋 Plan de développement</div>' +
+            '<div class="suc-plan-actions">' +
+              s.plan.map(function(a){ return '<div class="suc-plan-action">'+a+'</div>'; }).join('') +
+            '</div>' +
+          '</div>';
+        }
+
+        sucHtml += '</div>';
+        bodyHtml += sucHtml;
+      });
+      bodyHtml += '</div>';
+    }
+
+    bodyHtml += '</div>';
+    card.innerHTML = headHtml + bodyHtml;
+    container.appendChild(card);
+  });
+}
+
+function renderSucSidebar() {
+  // Tableau de couverture
+  var covEl = document.getElementById('suc-coverage-table');
+  covEl.innerHTML = '';
+  SUC_DATA.forEach(function(p) {
+    var hasSuc = p.successeurs.length > 0;
+    var hasNow = p.successeurs.some(function(s){return s.readiness==='Pret maintenant';});
+    var dotColor = !hasSuc?'#F05A5A':hasNow?'#34C77B':'#FBC724';
+    var status = !hasSuc?'Sans successeur':hasNow?'Prêt':p.successeurs.length+' en dév.';
+    var color = getSucDeptColor(p.dept);
+    covEl.innerHTML += '<div class="suc-summary-row">' +
+      '<div style="width:4px;height:20px;border-radius:2px;background:'+color+';flex-shrink:0;margin-right:6px"></div>' +
+      '<span class="suc-summary-poste" title="'+p.poste+'">'+p.poste+'</span>' +
+      '<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">' +
+        '<span style="font-size:10px;color:'+dotColor+'">'+status+'</span>' +
+        '<div class="suc-coverage-dot" style="background:'+dotColor+'"></div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  // Priorités
+  var prioEl = document.getElementById('suc-priorities');
+  prioEl.innerHTML = '';
+  var critiques = SUC_DATA.filter(function(p){
+    var r = p.risque.toLowerCase();
+    return (r.includes('elev')||r.includes('lev')) && p.successeurs.length===0;
+  });
+  var urgents = SUC_DATA.filter(function(p){
+    var r = p.risque.toLowerCase();
+    return (r.includes('elev')||r.includes('lev')) && p.successeurs.length>0;
+  });
+  var sansSuc = SUC_DATA.filter(function(p){ return p.successeurs.length===0 && !critiques.includes(p); });
+
+  if (critiques.length) {
+    prioEl.innerHTML += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#F05A5A;margin-bottom:4px">🚨 Urgence critique</div>' +
+      critiques.map(function(p){
+        return '<div style="font-size:11px;color:var(--blanc);padding:4px 6px;background:rgba(240,90,90,.06);border-radius:var(--r);margin-bottom:3px">'+p.poste+'</div>';
+      }).join('') + '</div>';
+  }
+  if (urgents.length) {
+    prioEl.innerHTML += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#FBC724;margin-bottom:4px">⚠️ Accélérer la préparation</div>' +
+      urgents.map(function(p){
+        return '<div style="font-size:11px;color:var(--blanc);padding:4px 6px;background:rgba(251,199,36,.06);border-radius:var(--r);margin-bottom:3px">'+p.poste+'</div>';
+      }).join('') + '</div>';
+  }
+  if (sansSuc.length) {
+    prioEl.innerHTML += '<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4A9EFF;margin-bottom:4px">🎯 Identifier des successeurs</div>' +
+      sansSuc.map(function(p){
+        return '<div style="font-size:11px;color:var(--blanc);padding:4px 6px;background:rgba(74,158,255,.06);border-radius:var(--r);margin-bottom:3px">'+p.poste+'</div>';
+      }).join('') + '</div>';
+  }
+  if (!critiques.length && !urgents.length && !sansSuc.length) {
+    prioEl.innerHTML = '<div style="text-align:center;padding:.75rem;font-size:12px;color:#34C77B">Bonne couverture globale !</div>';
+  }
+
+  // Readiness chart
+  var readEl = document.getElementById('suc-readiness-chart');
+  var now=0, mid=0, far=0;
+  SUC_DATA.forEach(function(p){ p.successeurs.forEach(function(s){
+    if(s.readiness==='Pret maintenant') now++;
+    else if(s.readiness==='1-2 ans') mid++;
+    else far++;
+  }); });
+  var total = now+mid+far || 1;
+  readEl.innerHTML = '<div style="padding:0 .75rem">' +
+    makeReadBar('Prêts maintenant', now, total, '#34C77B') +
+    makeReadBar('Prêts 1–2 ans',    mid, total, '#4A9EFF') +
+    makeReadBar('Prêts 3–5 ans',    far, total, '#FBC724') +
+  '</div>';
+}
+
+function makeReadBar(label, val, total, color) {
+  var pct = Math.round(val/total*100);
+  return '<div style="margin-bottom:10px">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
+      '<span style="font-size:11px;color:var(--blanc)">'+label+'</span>' +
+      '<span style="font-size:11px;font-weight:700;color:'+color+'">'+val+'</span>' +
+    '</div>' +
+    '<div style="height:5px;background:var(--gris3);border-radius:3px;overflow:hidden">' +
+      '<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;transition:width .6s ease"></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function exportSucPDF() { window.print(); }
+
+buildMonthList();
+updateLastUpdateLabel();
+renderEffectifs();
+</script>
+</body>
+</html>

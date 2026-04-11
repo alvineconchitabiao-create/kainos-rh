@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Générateur de KPI – Elite RH Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+<style>
+:root {
+  --noir: #0a0a0a; --noir-2: #111; --noir-3: #1a1a1a;
+  --or: #C9A84C; --or-clair: #E2C47A; --or-pale: #FDF3DC;
+  --blanc: #FAFAF8; --gris: #888880; --gris-clair: #D4D2CB;
+  --bleu: #185FA5; --bleu-clair: #E6F1FB;
+  --vert: #3B6D11; --vert-clair: #EAF3DE;
+  --rouge: #A32D2D; --rouge-clair: #FCEBEB;
+  --font-d: 'Syne', sans-serif; --font-b: 'DM Sans', sans-serif;
+  --r: 10px; --rl: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-b); background: #F4F3EF; color: var(--noir); min-height: 100vh; }
+
+/* HEADER */
+header { background: var(--noir); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: var(--font-d); font-size: 16px; font-weight: 700; color: var(--blanc); letter-spacing: 0.05em; display: flex; align-items: center; gap: 10px; }
+.logo-dot { width: 8px; height: 8px; background: var(--or); border-radius: 50%; }
+.back-btn { font-size: 12px; color: var(--gris-clair); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.back-btn:hover { color: var(--or); }
+
+/* MAIN */
+.wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* HERO BAND */
+.hero-band { background: var(--noir); border-radius: var(--rl); padding: 2rem 2.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.hero-band h1 { font-family: var(--font-d); font-size: 26px; font-weight: 700; color: var(--blanc); }
+.hero-band h1 span { color: var(--or); }
+.hero-band p { font-size: 13px; color: var(--gris-clair); margin-top: 4px; line-height: 1.6; max-width: 480px; }
+.hero-stats { display: flex; gap: 1.5rem; flex-shrink: 0; }
+.hstat { text-align: center; }
+.hstat-num { font-family: var(--font-d); font-size: 28px; font-weight: 700; color: var(--or); }
+.hstat-lbl { font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* POSTE INFO */
+.poste-card { background: white; border-radius: var(--rl); border: 1px solid #E5E3DC; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+.poste-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 160px; }
+.poste-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); }
+.poste-input { font-size: 14px; font-weight: 500; color: var(--noir); background: #F4F3EF; border: 1px solid #E5E3DC; border-radius: var(--r); padding: 8px 12px; outline: none; font-family: var(--font-b); transition: border-color 0.15s; }
+.poste-input:focus { border-color: var(--or); }
+
+/* TABS */
+.tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { padding: 8px 18px; border-radius: 20px; border: 1px solid #E5E3DC; font-size: 13px; font-weight: 500; cursor: pointer; background: white; color: var(--gris); font-family: var(--font-b); transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+.tab.active { background: var(--noir); color: var(--or); border-color: var(--noir); }
+.tab .count { background: var(--or); color: var(--noir); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+.tab.active .count { background: var(--or); color: var(--noir); }
+
+/* KPI SECTION */
+.kpi-section { display: none; }
+.kpi-section.active { display: block; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.section-title { font-family: var(--font-d); font-size: 16px; font-weight: 600; color: var(--noir); display: flex; align-items: center; gap: 8px; }
+.section-badge { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.btn-add-kpi { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--noir); color: var(--or); border: none; border-radius: var(--r); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-b); transition: all 0.15s; }
+.btn-add-kpi:hover { background: var(--noir-3); }
+
+/* KPI CARD */
+.kpi-list { display: flex; flex-direction: column; gap: 12px; }
+.kpi-card { background: white; border-radius: var(--rl); border: 1px solid #E5E3DC; padding: 1.25rem; position: relative; transition: border-color 0.2s; }
+.kpi-card:hover { border-color: var(--or); }
+.kpi-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.kpi-num { width: 32px; height: 32px; border-radius: 8px; background: var(--or-pale); color: var(--or); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-d); }
+.kpi-name-wrap { flex: 1; }
+.kpi-name { font-size: 15px; font-weight: 600; color: var(--noir); background: none; border: none; outline: none; font-family: var(--font-b); width: 100%; border-bottom: 1px dashed #E5E3DC; padding-bottom: 4px; transition: border-color 0.15s; }
+.kpi-name:focus { border-color: var(--or); }
+.kpi-name::placeholder { color: var(--gris); font-weight: 400; }
+.kpi-desc { font-size: 12px; color: var(--gris); margin-top: 4px; background: none; border: none; outline: none; font-family: var(--font-b); width: 100%; resize: none; }
+.kpi-desc::placeholder { color: #BBBBBB; }
+.del-btn { background: none; border: none; cursor: pointer; color: var(--gris); font-size: 18px; line-height: 1; padding: 0; transition: color 0.15s; flex-shrink: 0; }
+.del-btn:hover { color: var(--rouge); }
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+.kpi-field { display: flex; flex-direction: column; gap: 4px; }
+.kpi-field label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); }
+.kpi-field input, .kpi-field select { font-size: 13px; font-family: var(--font-b); color: var(--noir); background: #F4F3EF; border: 1px solid #E5E3DC; border-radius: var(--r); padding: 7px 10px; outline: none; transition: border-color 0.15s; }
+.kpi-field input:focus, .kpi-field select:focus { border-color: var(--or); }
+.kpi-poids { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+.kpi-poids label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); white-space: nowrap; }
+.poids-slider { flex: 1; accent-color: var(--or); }
+.poids-val { font-size: 14px; font-weight: 700; color: var(--or); min-width: 36px; text-align: right; font-family: var(--font-d); }
+.poids-bar { height: 4px; background: #E5E3DC; border-radius: 2px; flex: 1; position: relative; }
+.poids-fill { height: 100%; background: var(--or); border-radius: 2px; transition: width 0.2s; }
+
+/* POIDS TOTAL */
+.poids-total { background: white; border-radius: var(--rl); border: 1px solid #E5E3DC; padding: 1rem 1.5rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+.pt-label { font-size: 13px; font-weight: 500; color: var(--noir); flex: 1; }
+.pt-bar { flex: 2; height: 8px; background: #F4F3EF; border-radius: 4px; overflow: hidden; }
+.pt-fill { height: 100%; border-radius: 4px; transition: width 0.3s, background 0.3s; }
+.pt-val { font-family: var(--font-d); font-size: 20px; font-weight: 700; min-width: 56px; text-align: right; }
+.pt-ok { color: var(--vert); }
+.pt-warn { color: var(--or); }
+.pt-err { color: var(--rouge); }
+
+/* SYNTHESE */
+.synthese { background: white; border-radius: var(--rl); border: 1px solid #E5E3DC; overflow: hidden; margin-top: 1.5rem; }
+.synthese-header { background: var(--noir); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.synthese-title { font-family: var(--font-d); font-size: 16px; font-weight: 700; color: var(--blanc); }
+.synthese-subtitle { font-size: 12px; color: var(--gris-clair); margin-top: 2px; }
+.synthese-body { padding: 1.5rem; }
+.synthese-poste { font-size: 20px; font-weight: 700; color: var(--noir); font-family: var(--font-d); }
+.synthese-poste span { color: var(--or); }
+.kpi-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+.kpi-table th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); padding: 8px 12px; border-bottom: 1px solid #E5E3DC; text-align: left; }
+.kpi-table td { padding: 10px 12px; border-bottom: 1px solid #F4F3EF; vertical-align: middle; }
+.kpi-table tr:last-child td { border-bottom: none; }
+.kpi-table tr:hover td { background: #FAFAF8; }
+.type-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.type-q { background: var(--bleu-clair); color: var(--bleu); }
+.type-ql { background: #EDE9FE; color: #5B21B6; }
+.type-d { background: var(--vert-clair); color: var(--vert); }
+.freq-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; background: #F4F3EF; color: var(--gris); }
+.poids-pill { display: inline-flex; align-items: center; gap: 4px; }
+.poids-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--or); }
+
+/* ACTIONS */
+.actions { display: flex; gap: 10px; margin-top: 1.5rem; flex-wrap: wrap; }
+.btn-pdf { display: flex; align-items: center; gap: 6px; padding: 11px 22px; background: white; border: 1px solid #E5E3DC; border-radius: var(--r); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-b); color: var(--noir); transition: all 0.15s; }
+.btn-pdf:hover { border-color: var(--or); color: var(--or); }
+.btn-word { display: flex; align-items: center; gap: 6px; padding: 11px 22px; background: var(--bleu); color: white; border: none; border-radius: var(--r); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-b); transition: all 0.15s; }
+.btn-word:hover { background: #0C447C; }
+.btn-fiche { display: flex; align-items: center; gap: 6px; padding: 11px 22px; background: var(--noir); color: var(--or); border: none; border-radius: var(--r); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-b); transition: all 0.15s; text-decoration: none; }
+.btn-fiche:hover { background: var(--noir-3); }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--gris); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-text { font-size: 14px; }
+
+@media print {
+  header, .tabs, .poste-card .poste-input, .btn-add-kpi, .del-btn, .actions, .kpi-poids input[type=range] { display: none !important; }
+  body { background: white; }
+  .wrap { padding: 0; max-width: 100%; }
+  .hero-band { border-radius: 0; }
+  .kpi-section { display: block !important; }
+}
+@media(max-width: 600px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats { display: none; }
+  .synthese-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-dot"></div>Elite RH — KPI</div>
+  <a href="fiche-poste.html" class="back-btn">← Fiche de poste</a>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero-band">
+    <div>
+      <h1>Définir les <span>KPI</span> du poste</h1>
+      <p>Définissez les indicateurs clés de performance pour chaque poste. Quantitatifs, qualitatifs, délais — avec pondération et seuils cibles.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num" id="stat-total">0</div><div class="hstat-lbl">KPI définis</div></div>
+      <div class="hstat"><div class="hstat-num" id="stat-poids">0%</div><div class="hstat-lbl">Poids total</div></div>
+    </div>
+  </div>
+
+  <!-- INFOS POSTE -->
+  <div class="poste-card">
+    <div class="poste-field">
+      <span class="poste-label">Intitulé du poste</span>
+      <input class="poste-input" id="p-intitule" type="text" placeholder="ex: Responsable Commercial" oninput="refreshSynthese()"/>
+    </div>
+    <div class="poste-field">
+      <span class="poste-label">Direction / Service</span>
+      <input class="poste-input" id="p-direction" type="text" placeholder="ex: Direction Commerciale" oninput="refreshSynthese()"/>
+    </div>
+    <div class="poste-field">
+      <span class="poste-label">Période d'évaluation</span>
+      <input class="poste-input" id="p-periode" type="text" placeholder="ex: Annuelle, Semestrielle" oninput="refreshSynthese()"/>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('quanti')">📊 KPI Quantitatifs <span class="count" id="c-quanti">0</span></button>
+    <button class="tab" onclick="showTab('quali')">🎯 KPI Qualitatifs <span class="count" id="c-quali">0</span></button>
+    <button class="tab" onclick="showTab('delai')">⏱️ KPI de Délai <span class="count" id="c-delai">0</span></button>
+    <button class="tab" onclick="showTab('synthese')">📋 Synthèse & Export</button>
+  </div>
+
+  <!-- KPI QUANTITATIFS -->
+  <div class="kpi-section active" id="sec-quanti">
+    <div class="section-header">
+      <div class="section-title"><div class="section-badge" style="background:#E6F1FB">📊</div>KPI Quantitatifs</div>
+      <button class="btn-add-kpi" onclick="addKpi('quanti')">+ Ajouter un KPI</button>
+    </div>
+    <div class="kpi-list" id="list-quanti">
+      <div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">Aucun KPI quantitatif — cliquez sur "Ajouter"</div></div>
+    </div>
+    <div class="poids-total" id="pt-quanti">
+      <span class="pt-label">Poids total des KPI quantitatifs</span>
+      <div class="pt-bar"><div class="pt-fill" id="ptf-quanti" style="width:0%;background:var(--or)"></div></div>
+      <span class="pt-val pt-warn" id="ptv-quanti">0%</span>
+    </div>
+  </div>
+
+  <!-- KPI QUALITATIFS -->
+  <div class="kpi-section" id="sec-quali">
+    <div class="section-header">
+      <div class="section-title"><div class="section-badge" style="background:#EDE9FE">🎯</div>KPI Qualitatifs</div>
+      <button class="btn-add-kpi" onclick="addKpi('quali')">+ Ajouter un KPI</button>
+    </div>
+    <div class="kpi-list" id="list-quali">
+      <div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">Aucun KPI qualitatif — cliquez sur "Ajouter"</div></div>
+    </div>
+    <div class="poids-total" id="pt-quali">
+      <span class="pt-label">Poids total des KPI qualitatifs</span>
+      <div class="pt-bar"><div class="pt-fill" id="ptf-quali" style="width:0%;background:#7C3AED"></div></div>
+      <span class="pt-val pt-warn" id="ptv-quali">0%</span>
+    </div>
+  </div>
+
+  <!-- KPI DÉLAI -->
+  <div class="kpi-section" id="sec-delai">
+    <div class="section-header">
+      <div class="section-title"><div class="section-badge" style="background:var(--vert-clair)">⏱️</div>KPI de Délai</div>
+      <button class="btn-add-kpi" onclick="addKpi('delai')">+ Ajouter un KPI</button>
+    </div>
+    <div class="kpi-list" id="list-delai">
+      <div class="empty-state"><div class="empty-icon">⏱️</div><div class="empty-text">Aucun KPI de délai — cliquez sur "Ajouter"</div></div>
+    </div>
+    <div class="poids-total" id="pt-delai">
+      <span class="pt-label">Poids total des KPI de délai</span>
+      <div class="pt-bar"><div class="pt-fill" id="ptf-delai" style="width:0%;background:var(--vert)"></div></div>
+      <span class="pt-val pt-warn" id="ptv-delai">0%</span>
+    </div>
+  </div>
+
+  <!-- SYNTHÈSE -->
+  <div class="kpi-section" id="sec-synthese">
+    <div class="synthese">
+      <div class="synthese-header">
+        <div>
+          <div class="synthese-title">Tableau de bord KPI</div>
+          <div class="synthese-subtitle" id="syn-periode"></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--gris-clair);text-transform:uppercase;letter-spacing:.1em">Poids global</div>
+          <div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:var(--or)" id="syn-poids-total">0%</div>
+        </div>
+      </div>
+      <div class="synthese-body">
+        <div class="synthese-poste" id="syn-poste">—</div>
+        <div id="syn-direction" style="font-size:13px;color:var(--gris);margin-top:2px"></div>
+        <div id="syn-table"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-pdf" onclick="window.print()">📄 Imprimer / PDF</button>
+      <button class="btn-word" onclick="exportWord()">📝 Télécharger Word</button>
+      <a href="fiche-poste.html" class="btn-fiche">📋 Créer la fiche de poste →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const kpis = { quanti: [], quali: [], delai: [] };
+let idCounter = 0;
+
+const typeConfig = {
+  quanti: { label: 'Quantitatif', color: '#185FA5', bg: '#E6F1FB', badge: 'type-q', fields: ['unité', 'seuil min', 'objectif cible'] },
+  quali:  { label: 'Qualitatif',  color: '#5B21B6', bg: '#EDE9FE', badge: 'type-ql', fields: ['critère', 'seuil min', 'objectif cible'] },
+  delai:  { label: 'Délai',       color: '#3B6D11', bg: '#EAF3DE', badge: 'type-d', fields: ['fréquence', 'délai min', 'délai cible'] }
+};
+
+const freqs = ['Quotidien','Hebdomadaire','Mensuel','Trimestriel','Semestriel','Annuel'];
+
+function showTab(tab) {
+  document.querySelectorAll('.kpi-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'synthese') refreshSynthese();
+}
+
+function addKpi(type) {
+  const id = ++idCounter;
+  kpis[type].push({ id, nom: '', desc: '', seuil: '', cible: '', unite: '', freq: 'Mensuel', poids: 10 });
+  renderKpis(type);
+}
+
+function removeKpi(type, id) {
+  kpis[type] = kpis[type].filter(k => k.id !== id);
+  renderKpis(type);
+}
+
+function renderKpis(type) {
+  const list = document.getElementById('list-' + type);
+  const cfg = typeConfig[type];
+
+  if (!kpis[type].length) {
+    const icons = { quanti: '📊', quali: '🎯', delai: '⏱️' };
+    const labels = { quanti: 'quantitatif', quali: 'qualitatif', delai: 'de délai' };
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">${icons[type]}</div><div class="empty-text">Aucun KPI ${labels[type]} — cliquez sur "Ajouter"</div></div>`;
+  } else {
+    list.innerHTML = kpis[type].map((k, i) => `
+      <div class="kpi-card" id="card-${k.id}">
+        <div class="kpi-card-header">
+          <div class="kpi-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="kpi-name-wrap">
+            <input class="kpi-name" type="text" placeholder="Nom du KPI (ex: Taux de satisfaction client)" value="${k.nom}"
+              oninput="kpis['${type}'][${i}].nom=this.value; updateStats()"/>
+            <input class="kpi-desc" type="text" placeholder="Description / contexte (optionnel)" value="${k.desc}"
+              oninput="kpis['${type}'][${i}].desc=this.value"/>
+          </div>
+          <button class="del-btn" onclick="removeKpi('${type}',${k.id})">×</button>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-field">
+            <label>${type === 'delai' ? 'Fréquence' : (type === 'quanti' ? 'Unité de mesure' : 'Critère d\'évaluation')}</label>
+            ${type === 'delai'
+              ? `<select onchange="kpis['${type}'][${i}].freq=this.value">${freqs.map(f=>`<option ${k.freq===f?'selected':''}>${f}</option>`).join('')}</select>`
+              : `<input type="text" placeholder="${type==='quanti'?'%, €, nombre...':'Échelle 1-5, note...'}" value="${k.unite}" oninput="kpis['${type}'][${i}].unite=this.value"/>`
+            }
+          </div>
+          <div class="kpi-field">
+            <label>Seuil minimum</label>
+            <input type="text" placeholder="${type==='delai'?'ex: 48h max':'ex: 70%'}" value="${k.seuil}"
+              oninput="kpis['${type}'][${i}].seuil=this.value"/>
+          </div>
+          <div class="kpi-field">
+            <label>Objectif cible</label>
+            <input type="text" placeholder="${type==='delai'?'ex: 24h':'ex: 90%'}" value="${k.cible}"
+              oninput="kpis['${type}'][${i}].cible=this.value"/>
+          </div>
+        </div>
+        <div class="kpi-poids">
+          <label>Pondération</label>
+          <input type="range" class="poids-slider" min="0" max="100" step="5" value="${k.poids}"
+            oninput="kpis['${type}'][${i}].poids=parseInt(this.value); document.getElementById('pv-${k.id}').textContent=this.value+'%'; updatePoidsBar('${type}'); updateStats()"/>
+          <span class="poids-val" id="pv-${k.id}">${k.poids}%</span>
+        </div>
+      </div>`).join('');
+  }
+
+  updatePoidsBar(type);
+  updateStats();
+  document.getElementById('c-' + type).textContent = kpis[type].length;
+}
+
+function updatePoidsBar(type) {
+  const total = kpis[type].reduce((s, k) => s + k.poids, 0);
+  const fill = document.getElementById('ptf-' + type);
+  const val = document.getElementById('ptv-' + type);
+  const pct = Math.min(total, 100);
+  fill.style.width = pct + '%';
+  val.textContent = total + '%';
+  val.className = 'pt-val ' + (total === 100 ? 'pt-ok' : total > 100 ? 'pt-err' : 'pt-warn');
+  const colors = { quanti: 'var(--bleu)', quali: '#7C3AED', delai: 'var(--vert)' };
+  fill.style.background = total > 100 ? 'var(--rouge)' : colors[type];
+}
+
+function updateStats() {
+  const total = kpis.quanti.length + kpis.quali.length + kpis.delai.length;
+  const poids = [...kpis.quanti, ...kpis.quali, ...kpis.delai].reduce((s, k) => s + k.poids, 0);
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-poids').textContent = poids + '%';
+}
+
+function refreshSynthese() {
+  const intitule = document.getElementById('p-intitule').value || '—';
+  const direction = document.getElementById('p-direction').value;
+  const periode = document.getElementById('p-periode').value;
+  document.getElementById('syn-poste').innerHTML = intitule;
+  document.getElementById('syn-direction').textContent = direction;
+  document.getElementById('syn-periode').textContent = periode ? 'Période : ' + periode : '';
+
+  const allKpis = [
+    ...kpis.quanti.map(k => ({...k, type:'quanti'})),
+    ...kpis.quali.map(k => ({...k, type:'quali'})),
+    ...kpis.delai.map(k => ({...k, type:'delai'}))
+  ];
+
+  const poids = allKpis.reduce((s, k) => s + k.poids, 0);
+  const pv = document.getElementById('syn-poids-total');
+  pv.textContent = poids + '%';
+  pv.style.color = poids === 100 ? '#3B6D11' : poids > 100 ? '#A32D2D' : '#C9A84C';
+
+  if (!allKpis.length) {
+    document.getElementById('syn-table').innerHTML = '<p style="font-size:13px;color:var(--gris);margin-top:1rem;text-align:center;padding:2rem">Aucun KPI défini — ajoutez des KPI dans les onglets précédents</p>';
+    return;
+  }
+
+  const typeLabels = { quanti: 'Quantitatif', quali: 'Qualitatif', delai: 'Délai' };
+  const typeBadges = { quanti: 'type-q', quali: 'type-ql', delai: 'type-d' };
+
+  document.getElementById('syn-table').innerHTML = `
+    <table class="kpi-table">
+      <thead><tr>
+        <th>#</th><th>KPI</th><th>Type</th><th>Seuil min</th><th>Objectif cible</th><th>Fréquence / Unité</th><th>Poids</th>
+      </tr></thead>
+      <tbody>${allKpis.map((k,i) => `
+        <tr>
+          <td style="font-weight:600;color:var(--gris)">${String(i+1).padStart(2,'0')}</td>
+          <td>
+            <div style="font-weight:500;color:var(--noir)">${k.nom || '<em style="color:var(--gris)">Sans nom</em>'}</div>
+            ${k.desc ? `<div style="font-size:11px;color:var(--gris);margin-top:2px">${k.desc}</div>` : ''}
+          </td>
+          <td><span class="type-badge ${typeBadges[k.type]}">${typeLabels[k.type]}</span></td>
+          <td style="font-size:13px">${k.seuil || '—'}</td>
+          <td style="font-size:13px;font-weight:500;color:var(--vert)">${k.cible || '—'}</td>
+          <td><span class="freq-badge">${k.type === 'delai' ? k.freq : (k.unite || '—')}</span></td>
+          <td>
+            <div class="poids-pill">
+              <div class="poids-dot"></div>
+              <span style="font-weight:700;font-family:var(--font-d)">${k.poids}%</span>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function exportWord() {
+  const btn = event.target;
+  btn.textContent = '⏳ Génération...';
+  btn.disabled = true;
+
+  try {
+    const intitule = document.getElementById('p-intitule').value || 'Poste';
+    const direction = document.getElementById('p-direction').value;
+    const periode = document.getElementById('p-periode').value;
+    const allKpis = [
+      ...kpis.quanti.map(k => ({...k, type:'Quantitatif'})),
+      ...kpis.quali.map(k => ({...k, type:'Qualitatif'})),
+      ...kpis.delai.map(k => ({...k, type:'Délai'}))
+    ];
+
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+            AlignmentType, BorderStyle, WidthType, ShadingType } = docx;
+
+    const b0 = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    const borders0 = { top: b0, bottom: b0, left: b0, right: b0 };
+    const bLine = { style: BorderStyle.SINGLE, size: 1, color: 'E5E3DC' };
+    const bordersLine = { top: bLine, bottom: bLine, left: bLine, right: bLine };
+
+    const cell = (text, opts = {}) => new TableCell({
+      borders: opts.borders || bordersLine,
+      width: opts.width ? { size: opts.width, type: WidthType.DXA } : undefined,
+      shading: opts.bg ? { fill: opts.bg, type: ShadingType.CLEAR } : undefined,
+      margins: { top: 80, bottom: 80, left: 120, right: 120 },
+      children: [new Paragraph({ children: [new TextRun({ text: String(text || '—'), font: 'Arial', size: opts.size || 20, bold: opts.bold, color: opts.color || '2C2C2A' })] })]
+    });
+
+    const children = [
+      new Paragraph({ children: [new TextRun({ text: 'Tableau de bord KPI', font: 'Arial', size: 48, bold: true, color: '185FA5' })], spacing: { after: 80 } }),
+      new Paragraph({ children: [new TextRun({ text: intitule, font: 'Arial', size: 28, color: 'C9A84C' })], spacing: { after: 40 } }),
+      direction ? new Paragraph({ children: [new TextRun({ text: direction, font: 'Arial', size: 22, color: '888880' })], spacing: { after: 40 } }) : null,
+      periode ? new Paragraph({ children: [new TextRun({ text: 'Période : ' + periode, font: 'Arial', size: 22, color: '888880' })], spacing: { after: 240 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '185FA5', space: 4 } } }) : null,
+    ].filter(Boolean);
+
+    // Header row
+    const headerRow = new TableRow({
+      children: [
+        cell('#', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 500 }),
+        cell('KPI', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 2800 }),
+        cell('Type', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 1000 }),
+        cell('Seuil min', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 1200 }),
+        cell('Objectif cible', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 1200 }),
+        cell('Fréq. / Unité', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 1260 }),
+        cell('Poids', { bg: '0a0a0a', bold: true, color: 'C9A84C', size: 18, width: 700 }),
+      ]
+    });
+
+    const dataRows = allKpis.map((k, i) => new TableRow({
+      children: [
+        cell(String(i+1).padStart(2,'0'), { bg: i%2===0?'FAFAF8':'FFFFFF', bold: true, color: '888880', size: 18, width: 500 }),
+        cell(k.nom || 'Sans nom', { bg: i%2===0?'FAFAF8':'FFFFFF', bold: true, width: 2800 }),
+        cell(k.type, { bg: i%2===0?'FAFAF8':'FFFFFF', color: k.type==='Quantitatif'?'185FA5':k.type==='Qualitatif'?'5B21B6':'3B6D11', width: 1000 }),
+        cell(k.seuil || '—', { bg: i%2===0?'FAFAF8':'FFFFFF', width: 1200 }),
+        cell(k.cible || '—', { bg: i%2===0?'FAFAF8':'FFFFFF', color: '3B6D11', bold: true, width: 1200 }),
+        cell(k.type === 'Délai' ? k.freq : (k.unite || '—'), { bg: i%2===0?'FAFAF8':'FFFFFF', width: 1260 }),
+        cell(k.poids + '%', { bg: i%2===0?'FAFAF8':'FFFFFF', bold: true, color: 'C9A84C', width: 700 }),
+      ]
+    }));
+
+    children.push(new Table({ width: { size: 9660, type: WidthType.DXA }, columnWidths: [500,2800,1000,1200,1200,1260,700], rows: [headerRow, ...dataRows] }));
+
+    const totalPoids = allKpis.reduce((s,k) => s+k.poids, 0);
+    children.push(new Paragraph({ children: [new TextRun({ text: '' })], spacing: { before: 200 } }));
+    children.push(new Paragraph({ children: [new TextRun({ text: `Poids total : ${totalPoids}%`, font: 'Arial', size: 22, bold: true, color: totalPoids===100?'3B6D11':totalPoids>100?'A32D2D':'C9A84C' })] }));
+    children.push(new Paragraph({ children: [new TextRun({ text: 'Généré par Elite RH Consulting', font: 'Arial', size: 18, color: '888880' })], spacing: { before: 400 } }));
+
+    const doc = new Document({ sections: [{ properties: { page: { size: { width: 16838, height: 11906 }, margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 } } }, children }] });
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = 'kpi-' + (intitule||'poste').toLowerCase().replace(/\s+/g,'-') + '.docx';
+    a.click(); URL.revokeObjectURL(url);
+    btn.textContent = '✓ Téléchargé !';
+    setTimeout(() => { btn.innerHTML = '📝 Télécharger Word'; btn.disabled = false; }, 2500);
+  } catch(e) {
+    console.error(e);
+    btn.textContent = '❌ Erreur';
+    setTimeout(() => { btn.innerHTML = '📝 Télécharger Word'; btn.disabled = false; }, 3000);
+  }
+}
+</script>
+</body>
+</html>
