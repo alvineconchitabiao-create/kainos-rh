@@ -439,8 +439,8 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
         <div class="ci"><div class="ci-ico">🌐</div><div><div class="ci-lbl">Autres services KAINOS RH</div>
           <div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:8px;">
-            <a href="kainos-rh.html" style="font-size:11px;color:var(--or);font-weight:700;">Elite RH</a>
-            <a href="services-rh-enligne.html" style="font-size:11px;color:var(--bleu);font-weight:700;">RH en ligne</a>
+            <a href="elite-rh.html" style="font-size:11px;color:var(--or);font-weight:700;">Elite RH</a>
+            <a href="votre-rh-en-ligne.html" style="font-size:11px;color:var(--bleu);font-weight:700;">RH en ligne</a>
             <a href="rhfit.html" style="font-size:11px;color:var(--vt);font-weight:700;">RHFit</a>
             <a href="stratos.html" style="font-size:11px;color:var(--violet);font-weight:700;">STRATOS</a>
           </div>
@@ -484,9 +484,9 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
   <div class="fl">KAINOS <span>RH</span> — Programme d'Aide aux Employés</div>
   <div class="flinks">
     <a href="index.html">← Accueil KAINOS RH</a>
-    <a href="kainos-rh.html">Elite RH Consulting</a>
+    <a href="elite-rh.html">Elite RH Consulting</a>
     <a href="jobfit.html">Jobfit</a>
-    <a href="services-rh-enligne.html">Votre RH en ligne</a>
+    <a href="votre-rh-en-ligne.html">Votre RH en ligne</a>
     <a href="rhfit.html">RHFit</a>
     <a href="stratos.html">STRATOS</a>
   </div>
@@ -497,7 +497,17 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
 <script>
 var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.08});
 document.querySelectorAll('.fade-up').forEach(function(el){obs.observe(el);});
-function envoyer(){var n=document.getElementById('c-nom').value.trim(),t=document.getElementById('c-tel').value.trim();if(!n||!t){toast('Nom et téléphone obligatoires');return;}toast('✅ Demande envoyée ! Nous vous contactons sous 48h avec une proposition.');['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(i){document.getElementById(i).value='';});}
+function envoyer(){
+  var ids=['c-nom','c-ent','c-tel','c-email','c-msg','c-service','c-offre','c-formule','c-nb','c-besoin','c-axe','c-services','c-type-dem'];
+  var nom='',tel='',data={};
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.value.trim()){data[id]=el.value.trim();if(id==='c-nom')nom=el.value.trim();if(id==='c-tel')tel=el.value.trim();}});
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  fetch('https://formspree.io/f/xdaywqpp',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+  .then(function(r){
+    if(r.ok){toast('✅ Message envoyé ! Nous vous répondons sous 48h.');ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
+    else{toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');}
+  }).catch(function(){toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');});
+}toast('✅ Demande envoyée ! Nous vous contactons sous 48h avec une proposition.');['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(i){document.getElementById(i).value='';});}
 var tt;function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
 </script>
 </body>
