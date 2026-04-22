@@ -1,308 +1,256 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Votre RH en ligne — Elite RH Consulting</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Votre RH en ligne — Externalisation RH · KAINOS RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --noir:#0a0a0a; --noir-2:#111111; --noir-3:#1a1a1a;
-  --or:#C9A84C; --or-clair:#E2C47A;
-  --blanc:#FAFAF8; --gris:#D4D2CB; --gris-clair:#E8E6DF;
-  --bleu:#4A9EFF; --violet:#A78BFA; --vert:#34C77B;
-  --font-display:'Cormorant Garamond',serif;
-  --font-body:'Montserrat',sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:var(--font-body);background:var(--noir);color:var(--blanc);overflow-x:hidden;}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--noir);}
-::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
-*{cursor:none;}
-#cursor{position:fixed;width:8px;height:8px;background:var(--or);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
-#cursor-ring{position:fixed;width:32px;height:32px;border:1px solid var(--or);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease-out;opacity:.5;}
+:root{--m:#071428;--m2:#0A1F3D;--m3:#0F2A50;--or:#C9A84C;--or2:#E2C47A;--ord:rgba(201,168,76,.1);--ors:rgba(201,168,76,.2);--bl:#F5F2EA;--gr:#8A9AB8;--gr2:#4A5A78;--gr3:#1E2E48;--vt:#22D48A;--bleu:#4A9EFF;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--m);color:var(--bl);overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--bleu);border-radius:2px;}
+a{text-decoration:none;color:inherit;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(7,20,40,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(74,158,255,.1);}
+.nlogo{font-family:var(--fd);font-size:15px;font-weight:800;}.nlogo span{color:var(--bleu);}
+.nnav{display:flex;align-items:center;gap:1.5rem;}
+.nnav a{font-size:12px;color:var(--gr);font-weight:500;transition:color .2s;}.nnav a:hover{color:var(--bleu);}
+.nback{border:1px solid var(--gr3);padding:6px 14px;border-radius:20px;font-size:11px;}
+.nback:hover{border-color:rgba(74,158,255,.3);color:var(--bleu);}
 
-/* HEADER */
-header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.15);}
-.logo-main{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:.12em;color:var(--blanc);line-height:1;}
-.logo-main span{color:var(--or);}
-.logo-sub{font-size:9px;font-weight:500;letter-spacing:.35em;color:var(--gris);text-transform:uppercase;margin-top:3px;}
-.back-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border:1px solid rgba(201,168,76,0.3);border-radius:30px;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--or);text-decoration:none;transition:all .25s;}
-.back-btn:hover{background:rgba(201,168,76,0.08);border-color:var(--or);}
+.hero{padding:110px 5vw 80px;position:relative;overflow:hidden;min-height:80vh;display:flex;align-items:center;}
+.hbg{position:absolute;inset:0;background:linear-gradient(160deg,var(--m),var(--m2));}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(74,158,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,.03) 1px,transparent 1px);background-size:55px 55px;}
+.hglow{position:absolute;top:-150px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(74,158,255,.07) 0%,transparent 65%);pointer-events:none;}
+.hline{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--bleu),transparent);}
+.hi{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%;}
+.htag{display:inline-flex;align-items:center;gap:8px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bleu);margin-bottom:1.5rem;}
+.hdot{width:6px;height:6px;border-radius:50%;background:var(--vt);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+h1{font-family:var(--fd);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;line-height:1.06;letter-spacing:-.025em;margin-bottom:1.25rem;max-width:700px;}
+h1 em{font-style:normal;color:var(--bleu);}
+.hdesc{font-size:15px;color:var(--gr);line-height:1.9;font-weight:300;margin-bottom:2.5rem;max-width:560px;}
+.hbtns{display:flex;gap:.875rem;flex-wrap:wrap;}
+.btn-bleu{background:var(--bleu);color:#fff;padding:12px 28px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;transition:all .2s;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 24px rgba(74,158,255,.25);}
+.btn-bleu:hover{background:#5BAAFF;transform:translateY(-2px);}
+.btn-gh{background:transparent;color:var(--bl);padding:12px 28px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);letter-spacing:.06em;transition:all .2s;}
+.btn-gh:hover{border-color:var(--bleu);color:var(--bleu);}
 
-/* HERO */
-.hero{padding:9rem 4rem 4rem;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 50%,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;}
-.hero-tag{font-size:10px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--or);margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
-.hero-tag::before{content:'';width:28px;height:1px;background:var(--or);}
-.hero-title{font-family:var(--font-display);font-size:clamp(38px,5vw,68px);font-weight:300;line-height:1.05;color:var(--blanc);margin-bottom:1.5rem;}
-.hero-title em{color:var(--or);font-style:italic;}
-.hero-desc{font-size:14px;color:var(--gris-clair);line-height:1.9;max-width:600px;margin-bottom:2.5rem;}
-.hero-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--or);color:var(--noir);border-radius:4px;font-size:12px;font-weight:600;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:all .25s;}
-.hero-cta:hover{background:var(--or-clair);}
+/* OFFRES EXTERANALISATION */
+section.sec{padding:80px 5vw;}
+.si{max-width:1200px;margin:0 auto;}
+.sey{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--bleu);margin-bottom:.75rem;}
+.stit{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;line-height:1.1;letter-spacing:-.015em;margin-bottom:1rem;}
+.stit em{font-style:normal;color:var(--bleu);}
+.sdesc{font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;max-width:620px;margin-bottom:3rem;}
 
-/* UTILS */
-.gold-line{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);margin:0 4rem;}
-.section{padding:5rem 4rem;}
-.section-tag{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
-.section-tag-line{width:28px;height:1px;background:var(--or);}
-.section-tag-text{font-size:10px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--or);}
-.section-title{font-family:var(--font-display);font-size:clamp(28px,3.5vw,44px);font-weight:300;color:var(--blanc);margin-bottom:.75rem;line-height:1.1;}
-.section-title em{color:var(--or);font-style:italic;}
-.section-desc{font-size:13px;color:var(--gris);line-height:1.9;max-width:640px;margin-bottom:3rem;}
+/* FORMULES */
+.formules{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem;}
+.fm{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;overflow:hidden;transition:all .3s;}
+.fm:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,.4);border-color:rgba(74,158,255,.25);}
+.fm-bar{height:3px;background:var(--bleu);}
+.fm-body{padding:2rem;}
+.fm-icon{font-size:2.25rem;margin-bottom:.875rem;}
+.fm-name{font-family:var(--fd);font-size:1.2rem;font-weight:800;color:var(--bl);margin-bottom:.35rem;}
+.fm-tagline{font-size:11px;color:var(--bleu);font-weight:600;margin-bottom:.875rem;font-style:italic;}
+.fm-desc{font-size:13px;color:var(--gr);line-height:1.8;margin-bottom:1.25rem;}
+.fm-list{display:flex;flex-direction:column;gap:.5rem;}
+.fm-item{font-size:12px;color:var(--gr);display:flex;align-items:flex-start;gap:7px;line-height:1.5;}
+.fm-item::before{content:'✓';color:var(--bleu);font-weight:700;flex-shrink:0;margin-top:1px;}
+.fm-footer{padding:1.5rem 2rem;border-top:1px solid var(--gr3);}
+.fm-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--fd);font-size:11px;font-weight:700;color:var(--bleu);letter-spacing:.06em;transition:gap .2s;}
+.fm-btn:hover{gap:10px;}
 
-/* OPTIONS A/B */
-.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem;}
-.option-card{background:var(--noir-2);border-radius:20px;padding:2rem;position:relative;overflow:hidden;transition:transform .3s;}
-.option-card:hover{transform:translateY(-4px);}
-.option-card.recommande{border:1px solid rgba(201,168,76,0.4);background:linear-gradient(135deg,rgba(201,168,76,0.05),var(--noir-2));}
-.option-card.standard{border:1px solid rgba(255,255,255,0.06);}
-.option-badge{position:absolute;top:16px;right:16px;background:var(--or);color:var(--noir);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;}
-.option-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:1.25rem;}
-.option-icon.or{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);}
-.option-icon.gris{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);}
-.option-label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--or);margin-bottom:.3rem;}
-.option-title{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--blanc);margin-bottom:.75rem;}
-.option-desc{font-size:13px;color:var(--gris-clair);line-height:1.8;margin-bottom:1.5rem;}
-.tarif-box{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
-.tarif-label{font-size:11px;color:var(--gris);}
-.tarif-val{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--or);}
-.btn-or{display:block;padding:11px;background:var(--or);color:var(--noir);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;letter-spacing:.04em;transition:all .2s;font-family:var(--font-body);}
-.btn-or:hover{background:var(--or-clair);}
-.btn-ghost{display:block;padding:11px;background:transparent;color:var(--or);border:1px solid rgba(201,168,76,0.35);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;letter-spacing:.04em;transition:all .2s;font-family:var(--font-body);}
-.btn-ghost:hover{background:rgba(201,168,76,0.07);}
+/* AVANTAGES */
+.av-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+.av{background:var(--m2);border:1px solid var(--gr3);border-radius:14px;padding:1.5rem;transition:all .25s;}
+.av:hover{border-color:rgba(74,158,255,.25);}
+.av-ico{font-size:1.75rem;margin-bottom:.75rem;}
+.av-tit{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--bleu);margin-bottom:.4rem;}
+.av-desc{font-size:12px;color:var(--gr);line-height:1.7;}
 
-/* OUTILS CARDS */
-.outils-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;}
-.outil-card{border-radius:18px;padding:2rem;position:relative;overflow:hidden;transition:transform .3s;}
-.outil-card:hover{transform:translateY(-3px);}
-.outil-card.or-theme{background:linear-gradient(135deg,rgba(201,168,76,0.07),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.25);}
-.outil-card.bleu-theme{background:linear-gradient(135deg,rgba(74,158,255,0.07),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.2);}
-.outil-card.violet-theme{background:linear-gradient(135deg,rgba(167,139,250,0.07),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.2);}
-.outil-accent{position:absolute;top:0;left:0;right:0;height:3px;opacity:.85;}
-.outil-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.5rem;}
-.outil-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.outil-icon-wrap.or{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);}
-.outil-icon-wrap.bleu{background:rgba(74,158,255,0.12);border:1px solid rgba(74,158,255,0.25);}
-.outil-icon-wrap.violet{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);}
-.outil-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:.35rem;}
-.outil-badge.or{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.35);color:var(--or);}
-.outil-badge.bleu{background:rgba(74,158,255,0.12);border:1px solid rgba(74,158,255,0.25);color:var(--bleu);}
-.outil-badge.violet{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);color:var(--violet);}
-.outil-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px;}
-.outil-label.or{color:var(--or);}
-.outil-label.bleu{color:var(--bleu);}
-.outil-label.violet{color:var(--violet);}
-.outil-title{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--blanc);line-height:1.2;}
-.outil-desc{font-size:13px;color:var(--gris-clair);line-height:1.85;margin-top:.75rem;}
-.outil-btns{display:flex;flex-direction:column;gap:.5rem;flex-shrink:0;}
-.btn-outil{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:.04em;transition:opacity .2s;white-space:nowrap;font-family:var(--font-body);}
-.btn-outil:hover{opacity:.85;}
-.btn-outil.or{background:var(--or);color:var(--noir);}
-.btn-outil.bleu{background:var(--bleu);color:#fff;}
-.btn-outil.violet{background:var(--violet);color:#fff;}
-.btn-outil.ghost-violet{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:var(--violet);}
+/* CONTACT */
+section.contact{background:var(--m2);border-top:1px solid var(--gr3);}
+.cg{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
+.cf{background:var(--m3);border:1px solid var(--gr3);border-radius:18px;padding:2rem;}
+.cf-tit{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--bleu);margin-bottom:1.5rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ffl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);}
+.ffi{background:var(--m2);border:1px solid var(--gr3);border-radius:7px;color:var(--bl);font-family:var(--fb);font-size:12px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
+.ffi:focus{border-color:var(--bleu);}
+.ff-full{grid-column:1/-1;}
+.cf-btn{width:100%;padding:12px;background:var(--bleu);color:#fff;border:none;border-radius:7px;font-family:var(--fd);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.08em;transition:all .2s;margin-top:.5rem;}
+.cf-btn:hover{background:#5BAAFF;}
+.ci{display:flex;align-items:flex-start;gap:.875rem;margin-bottom:1.25rem;}
+.ci-ico{width:38px;height:38px;border-radius:9px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ci-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:2px;}
+.ci-val{font-size:13px;color:var(--bl);font-weight:500;}
 
-/* FOOTER */
-footer{background:var(--noir-2);border-top:1px solid rgba(201,168,76,0.1);padding:2.5rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
-.footer-brand{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:.1em;}
-.footer-brand span{color:var(--or);}
-.footer-info{font-size:11px;color:var(--gris);line-height:1.7;text-align:right;}
-
-/* ANIMATIONS */
-
-
-@media(max-width:900px){
-  header{padding:1rem 1.5rem;}
-  .hero,.section{padding-left:1.5rem;padding-right:1.5rem;}
-  .gold-line{margin:0 1.5rem;}
-  .options-grid{grid-template-columns:1fr;}
-  .outil-inner{grid-template-columns:1fr;}
-  .outil-btns{flex-direction:row;flex-wrap:wrap;}
-  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center;}
-  .footer-info{text-align:center;}
-}
+footer{background:#040D1A;border-top:1px solid rgba(74,158,255,.08);padding:2rem 5vw;text-align:center;}
+.fl{font-family:var(--fd);font-size:15px;font-weight:800;margin-bottom:.4rem;}.fl span{color:var(--bleu);}
+.flinks{display:flex;gap:2rem;justify-content:center;margin:.75rem 0;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:var(--gr2);transition:color .2s;}.flinks a:hover{color:var(--or);}
+.fcopy{font-size:11px;color:var(--gr2);}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m3);border:1px solid var(--bleu);color:var(--bl);padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+@media(max-width:900px){.formules,.cg{grid-template-columns:1fr;}.av-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.av-grid{grid-template-columns:1fr;}.fg{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
-<!-- HEADER -->
-<header>
-  <div>
-    <div class="logo-main">Elite <span>RH</span></div>
-    <div class="logo-sub">Consulting · Bénin</div>
+<nav>
+  <div class="nlogo">KAINOS <span>RH</span> <span style="font-size:9px;color:var(--gr);font-weight:400;margin-left:4px;">· Votre RH en ligne</span></div>
+  <div class="nnav">
+    <a href="#offres">Nos formules</a>
+    <a href="#contact">Contact</a>
+    <a href="index.html" class="nback">← Accueil KAINOS RH</a>
   </div>
-  <a href="index.html" class="back-btn">← Retour à l'accueil</a>
-</header>
+</nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">Service 08</div>
-  <h1 class="hero-title">Votre <em>RH</em><br>en ligne</h1>
-  <p class="hero-desc">Une suite d'outils digitaux RH et un service de gestion externalisée pour piloter vos ressources humaines avec rigueur — sans recruter un DRH à temps plein.</p>
-  <a href="#contact" class="hero-cta">Demander un devis ↓</a>
-</section>
-
-<div class="gold-line"></div>
-
-<!-- OPTIONS A & B -->
-<section class="section">
-  <div class="section-tag"><div class="section-tag-line"></div><div class="section-tag-text">Nos formules</div></div>
-  <h2 class="section-title">Deux formules,<br><em>un seul objectif</em></h2>
-  <p class="section-desc">Choisissez l'offre adaptée à votre structure et à votre niveau de maturité RH.</p>
-
-  <div class="options-grid">
-
-    <!-- OPTION A -->
-    <div class="option-card standard">
-      <div class="option-icon gris">🛒</div>
-      <div class="option-label">Option A</div>
-      <div class="option-title">Outils à la carte</div>
-      <div class="option-desc">Accédez à nos outils ponctuellement selon vos besoins. Fiche de poste, KPI du poste, et bien d'autres — facturés uniquement à l'utilisation, par employé traité.</div>
-      <a href="tarifs.html" class="btn-or">🧮 Calculer mon tarif →</a>
+  <div class="hbg"></div><div class="hgrid"></div><div class="hglow"></div><div class="hline"></div>
+  <div class="hi">
+    <div class="htag"><span class="hdot"></span>Service 03 · KAINOS RH · Actif</div>
+    <h1>Externalisez vos RH.<br>Gagnez en <em>sérénité.</em></h1>
+    <p class="hdesc">Votre RH en ligne prend en charge l'intégralité de votre gestion des ressources humaines — paie, administration, conformité, congés — sans que vous ayez à recruter un DRH à temps plein.</p>
+    <div class="hbtns">
+      <a href="#offres" class="btn-bleu">Découvrir les formules →</a>
+      <a href="#contact" class="btn-gh">Demander un devis</a>
     </div>
-
-    <!-- OPTION B -->
-    <div class="option-card recommande">
-      <div class="option-badge">✦ Recommandé</div>
-      <div class="option-icon or">🏆</div>
-      <div class="option-label">Option B</div>
-      <div class="option-title">RH Externalisée</div>
-      <div class="option-desc">Confiez-nous l'intégralité de votre gestion RH. Nos experts prennent en charge votre paie, vos évaluations, votre plan de formation et bien plus — avec accès à toute notre suite d'outils digitaux, sans frais supplémentaires.</div>
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--or);margin-bottom:.75rem;">Tous les outils inclus</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 1rem;">
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Fiche de poste</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> KPI du poste</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Contrats &amp; lettres RH</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Matrice de compétences</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Tableau de bord RH</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Planning des congés</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Paye Externalisée</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Prêts &amp; Avances</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Évaluation de la Performance</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Plan de Formation Annuel</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Gestion des Heures Supplémentaires</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Conseil RH &amp; veille juridique</div>
-          <div style="font-size:12px;color:var(--gris-clair);display:flex;align-items:center;gap:7px;"><span style="color:var(--or);font-size:10px;">▸</span> Reporting mensuel dédié</div>
-        </div>
-      </div>
-      <div class="tarif-box">
-        <div class="tarif-label">Tarif abonnement</div>
-        <div class="tarif-val">Sur devis</div>
-      </div>
-      <a href="#contact" class="btn-ghost">✉️ Demander un devis →</a>
-    </div>
-
   </div>
-
-  <div class="gold-line" style="margin:0;"></div>
 </section>
 
-<!-- OUTILS SUR ABONNEMENT -->
-<section class="section" style="padding-top:3rem;">
-  <div class="section-tag"><div class="section-tag-line"></div><div class="section-tag-text">Outils inclus</div></div>
-  <h2 class="section-title">Nos outils<br><em>sur abonnement</em></h2>
-  <p class="section-desc">Disponibles dans le cadre de l'abonnement RH Externalisée. Chaque outil est opérationnel, sécurisé et adapté au droit du travail béninois.</p>
-
-  <div class="outils-grid">
-
-    <!-- PAYE EXTERNALISÉE -->
-    <div class="outil-card or-theme">
-      <div class="outil-accent" style="background:linear-gradient(90deg,transparent,var(--or),transparent);"></div>
-      <div class="outil-inner">
-        <div class="outil-icon-wrap or">💼</div>
-        <div>
-          <div class="outil-label or">Sur abonnement — RH Externalisée</div>
-          <div class="outil-title">Paye Externalisée</div>
-          <div class="outil-badge or">🔒 Sur abonnement</div>
-          <div class="outil-desc">La paie est souvent le premier poste de risque juridique et social pour une entreprise. Confiez-la à des experts qui maîtrisent chaque paramètre du droit du travail béninois. Votre personnel est payé correctement, dans les délais, avec des bulletins conformes et des déclarations sociales irréprochables — pendant que vous, vous vous concentrez sur votre cœur de métier.</div>
+<!-- FORMULES -->
+<section class="sec" id="offres">
+  <div class="si">
+    <div class="sey">Nos formules</div>
+    <h2 class="stit">Deux formules<br>d'<em>externalisation RH.</em></h2>
+    <p class="sdesc">Choisissez la formule adaptée à la taille et aux besoins de votre entreprise. Toutes nos formules incluent un interlocuteur RH dédié et un suivi mensuel.</p>
+    <div class="formules">
+      <!-- Formule À la carte -->
+      <div class="fm">
+        <div class="fm-bar"></div>
+        <div class="fm-body">
+          <div class="fm-icon">🎯</div>
+          <div class="fm-name">Formule À la carte</div>
+          <div class="fm-tagline">Interventions ponctuelles selon vos besoins</div>
+          <div class="fm-desc">Vous choisissez uniquement les prestations dont vous avez besoin. Idéal pour les petites structures ou les entreprises souhaitant déléguer une partie spécifique de leurs RH.</div>
+          <div class="fm-list">
+            <div class="fm-item">Traitement de la paie mensuelle</div>
+            <div class="fm-item">Rédaction de contrats & lettres RH</div>
+            <div class="fm-item">Gestion des déclarations CNSS & ITS</div>
+            <div class="fm-item">Suivi des congés & absences</div>
+            <div class="fm-item">Conseil juridique ponctuel</div>
+            <div class="fm-item">Facturation à l'acte — sans engagement</div>
+          </div>
         </div>
-        <div class="outil-btns">
-          <a href="payroll.html" class="btn-outil or">Accéder à l'outil →</a>
+        <div class="fm-footer"><a href="#contact" class="fm-btn">Demander un devis →</a></div>
+      </div>
+      <!-- Formule Abonnement -->
+      <div class="fm">
+        <div class="fm-bar" style="background:var(--or);"></div>
+        <div class="fm-body">
+          <div class="fm-icon">🏆</div>
+          <div class="fm-name">Formule Abonnement</div>
+          <div class="fm-tagline">Gestion RH complète — DRH externalisé</div>
+          <div class="fm-desc">Nous devenons votre DRH externalisé. Prise en charge complète de toute la fonction RH avec un interlocuteur dédié, disponible et réactif tout au long du mois.</div>
+          <div class="fm-list">
+            <div class="fm-item">Paie complète, bulletins & déclarations sociales</div>
+            <div class="fm-item">Administration RH & gestion des dossiers</div>
+            <div class="fm-item">Conformité légale & veille juridique</div>
+            <div class="fm-item">Gestion des congés, absences & HS</div>
+            <div class="fm-item">Entretiens annuels & gestion des performances</div>
+            <div class="fm-item">Reporting RH mensuel & tableau de bord</div>
+            <div class="fm-item">Interlocuteur RH dédié — réponse sous 24h</div>
+          </div>
         </div>
+        <div class="fm-footer"><a href="#contact" class="fm-btn" style="color:var(--or);">Choisir l'abonnement →</a></div>
       </div>
     </div>
 
-    <!-- PRÊTS & AVANCES -->
-    <div class="outil-card bleu-theme">
-      <div class="outil-accent" style="background:linear-gradient(90deg,transparent,#4A9EFF,transparent);"></div>
-      <div class="outil-inner">
-        <div class="outil-icon-wrap bleu">💳</div>
-        <div>
-          <div class="outil-label bleu">Sur abonnement — RH Externalisée</div>
-          <div class="outil-title">Prêts &amp; Avances sur Salaire</div>
-          <div class="outil-badge bleu">🔒 Sur abonnement</div>
-          <div class="outil-desc">Un collaborateur en difficulté financière est un collaborateur moins performant. Offrir un accès encadré aux prêts et avances sur salaire, c'est un levier de fidélisation puissant et responsable. Nous assurons la gestion complète de ces demandes — de la validation à l'apurement, mois après mois — avec une traçabilité totale et aucun risque d'oubli.</div>
-        </div>
-        <div class="outil-btns">
-          <a href="prets.html" class="btn-outil bleu">Accéder à l'outil →</a>
-        </div>
-      </div>
+    <!-- Avantages -->
+    <div class="sey">Pourquoi externaliser avec KAINOS RH</div>
+    <div class="av-grid">
+      <div class="av"><div class="av-ico">💰</div><div class="av-tit">Réduction des coûts</div><div class="av-desc">Pas de salaire fixe DRH, pas de charges sociales additionnelles. Vous payez uniquement les services dont vous avez besoin.</div></div>
+      <div class="av"><div class="av-ico">🛡️</div><div class="av-tit">Conformité garantie</div><div class="av-desc">Maîtrise du Code du Travail béninois et des obligations CNSS/ITS. Zéro risque de non-conformité ou de pénalités.</div></div>
+      <div class="av"><div class="av-ico">⚡</div><div class="av-tit">Réactivité totale</div><div class="av-desc">Un interlocuteur dédié disponible, des délais tenus et une réponse à toutes vos questions RH sous 24h maximum.</div></div>
+      <div class="av"><div class="av-ico">📊</div><div class="av-tit">Reporting mensuel</div><div class="av-desc">Tableau de bord RH mensuel avec tous vos indicateurs clés : effectif, masse salariale, absences, charges sociales.</div></div>
+      <div class="av"><div class="av-ico">🔗</div><div class="av-tit">Outils digitaux inclus</div><div class="av-desc">Accès à notre suite de 22 outils RH digitaux pour une gestion encore plus fluide et automatisée de votre personnel.</div></div>
+      <div class="av"><div class="av-ico">🤝</div><div class="av-tit">Partenariat durable</div><div class="av-desc">Nous nous impliquons dans votre croissance. Plus nous vous connaissons, plus nous anticipons vos besoins RH.</div></div>
     </div>
-
-    <!-- ÉVALUATION + PLAN FORMATION -->
-    <div class="outil-card violet-theme">
-      <div class="outil-accent" style="background:linear-gradient(90deg,transparent,#A78BFA,transparent);"></div>
-      <div class="outil-inner">
-        <div class="outil-icon-wrap violet">⭐</div>
-        <div>
-          <div class="outil-label violet">Sur abonnement — RH Externalisée</div>
-          <div class="outil-title">Évaluation de la Performance<br><span style="font-size:15px;font-weight:400;color:var(--gris);">+ Plan de Formation Annuel</span></div>
-          <div class="outil-badge violet">🔒 Sur abonnement</div>
-          <div class="outil-desc">Une entreprise qui performe, c'est une entreprise qui évalue et qui forme. Nous structurons vos campagnes d'évaluation de A à Z, en impliquant à la fois les collaborateurs et leurs managers dans une démarche rigoureuse et équitable. Les besoins de formation identifiés sont automatiquement consolidés dans un plan annuel budgété, planifié par trimestre et suivi jusqu'à la compétence effectivement acquise.</div>
-        </div>
-        <div class="outil-btns">
-          <a href="eval-performance.html" class="btn-outil violet">⭐ Évaluation →</a>
-          <a href="eval-performance.html" class="btn-outil ghost-violet">🗓️ Plan de Formation →</a>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- HEURES SUPPLÉMENTAIRES -->
-    <div class="outil-card" style="background:linear-gradient(135deg,rgba(34,211,238,0.07),rgba(34,211,238,0.02));border:1px solid rgba(34,211,238,0.2);border-radius:18px;padding:2rem;position:relative;overflow:hidden;transition:transform .3s;">
-      <div class="outil-accent" style="background:linear-gradient(90deg,transparent,#22D3EE,transparent);"></div>
-      <div class="outil-inner">
-        <div class="outil-icon-wrap" style="background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);">⏱️</div>
-        <div>
-          <div class="outil-label" style="color:#22D3EE;">Sur abonnement — RH Externalisée</div>
-          <div class="outil-title">Gestion des Heures Supplémentaires</div>
-          <div class="outil-badge" style="background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);color:#22D3EE;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:.35rem;">🔒 Sur abonnement</div>
-          <div class="outil-desc">Les heures supplémentaires mal gérées sont une source fréquente de conflits et de redressements sociaux. Nous prenons en charge la collecte, la validation et le calcul des heures supplémentaires de vos équipes, en appliquant rigoureusement les taux légaux béninois — 35% pour les heures de semaine, 50% les dimanches et jours fériés de jour, 100% la nuit. Chaque mois, un état récapitulatif prêt à intégrer dans la paie vous est remis.</div>
-        </div>
-        <div class="outil-btns">
-          <a href="heures-sup.html" class="btn-outil" style="background:#22D3EE;color:#07070D;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:.04em;white-space:nowrap;">Accéder à l'outil →</a>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
 <!-- CONTACT -->
-<div class="gold-line"></div>
-<section class="section" id="contact" style="text-align:center;padding:5rem 4rem;">
-  <div class="section-tag" style="justify-content:center;"><div class="section-tag-line"></div><div class="section-tag-text">Nous contacter</div><div class="section-tag-line"></div></div>
-  <h2 class="section-title" style="text-align:center;">Prêt à <em>déléguer</em><br>votre RH ?</h2>
-  <p style="font-size:13px;color:var(--gris);max-width:500px;margin:0 auto 2.5rem;line-height:1.9;">Contactez-nous pour un devis personnalisé selon votre effectif et vos besoins.</p>
-  <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
-    <a href="tel:+22901993447390" style="display:inline-flex;align-items:center;gap:10px;padding:14px 26px;background:var(--or);color:var(--noir);border-radius:4px;font-size:12px;font-weight:600;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:all .25s;" onmouseover="this.style.background='#E2C47A'" onmouseout="this.style.background='var(--or)'">
-      📞 +229 01 99 34 47 39
-    </a>
-    <a href="mailto:contact@eliterhconsulting.com" style="display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border:1px solid rgba(201,168,76,0.4);color:var(--or);border-radius:4px;font-size:12px;font-weight:600;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:all .25s;" onmouseover="this.style.background='rgba(201,168,76,0.07)'" onmouseout="this.style.background='transparent'">✉️ contact@eliterhconsulting.com</a>
+<section class="sec contact" id="contact">
+  <div class="si">
+    <div class="cg">
+      <div>
+        <div class="sey">Nous contacter</div>
+        <h2 class="stit">Démarrons<br>ensemble <em>dès maintenant.</em></h2>
+        <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Remplissez ce formulaire — notre équipe vous contacte sous 48h pour comprendre vos besoins et vous proposer la formule la plus adaptée.</p>
+        <div class="ci"><div class="ci-ico">📞</div><div><div class="ci-lbl">Téléphone</div><div class="ci-val">+229 01 99 34 47 39</div></div></div>
+        <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
+        <div class="ci"><div class="ci-ico">📍</div><div><div class="ci-lbl">Localisation</div><div class="ci-val">Cotonou, République du Bénin</div></div></div>
+      </div>
+      <div class="cf">
+        <div class="cf-tit">✉️ Demande de devis / Informations</div>
+        <div class="fg">
+          <div class="ff"><label class="ffl">Nom & Prénom *</label><input class="ffi" type="text" id="c-nom" placeholder="Ex: DOSSOU Jean"/></div>
+          <div class="ff"><label class="ffl">Entreprise</label><input class="ffi" type="text" id="c-ent" placeholder="Ex: ACME Sarl"/></div>
+          <div class="ff"><label class="ffl">Téléphone *</label><input class="ffi" type="tel" id="c-tel" placeholder="+229 01 XX XX XX XX"/></div>
+          <div class="ff"><label class="ffl">Email</label><input class="ffi" type="email" id="c-email" placeholder="jean@acme.bj"/></div>
+          <div class="ff"><label class="ffl">Nombre d'employés</label>
+            <select class="ffi" id="c-effectif">
+              <option>— Effectif —</option>
+              <option>1 à 5 employés</option><option>6 à 20 employés</option>
+              <option>21 à 50 employés</option><option>51 à 100 employés</option>
+              <option>Plus de 100 employés</option>
+            </select>
+          </div>
+          <div class="ff"><label class="ffl">Formule souhaitée</label>
+            <select class="ffi" id="c-formule">
+              <option>— Formule —</option>
+              <option>Formule À la carte</option>
+              <option>Formule Abonnement complet</option>
+              <option>Je souhaite être conseillé</option>
+            </select>
+          </div>
+          <div class="ff ff-full"><label class="ffl">Votre besoin</label>
+            <textarea class="ffi" id="c-msg" rows="3" placeholder="Décrivez vos besoins RH actuels et les difficultés que vous rencontrez..."></textarea>
+          </div>
+        </div>
+        <button class="cf-btn" onclick="envoyer()">Envoyer la demande →</button>
+      </div>
+    </div>
   </div>
 </section>
 
 <footer>
-  <div>
-    <div class="footer-brand">Elite <span>RH</span> Consulting</div>
-    <div style="font-size:11px;color:var(--gris);margin-top:4px;letter-spacing:.08em;">Excellence en Ressources Humaines · Bénin</div>
+  <div class="fl">KAINOS <span>RH</span> · Votre RH en ligne</div>
+  <div class="flinks">
+    <a href="index.html">← Accueil KAINOS RH</a>
+    <a href="elite-rh-consulting.html">Elite RH Consulting</a>
+    <a href="jobfit.html">Jobfit</a>
+    <a href="stratos.html">STRATOS</a>
+    <a href="rhfit.html">RHFit</a>
   </div>
-  <div class="footer-info">
-    +229 01 99 34 47 39<br>
-    <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e2818d8c96838196a2878e8b9687908a818d8c91978e968b8c85cc818d8f">[email&#160;
+  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com · Cotonou, Bénin</div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+function envoyer(){
+  var ids=['c-nom','c-ent','c-tel','c-email','c-msg','c-service','c-offre','c-formule','c-nb','c-besoin','c-axe','c-services','c-type-dem'];
+  var nom='',tel='',data={};
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.value.trim()){data[id]=el.value.trim();if(id==='c-nom')nom=el.value.trim();if(id==='c-tel')tel=el.value.trim();}});
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  fetch('https://formspree.io/f/xdaywqpp',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+  .then(function(r){
+    if(r.ok){toast('✅ Message envoyé ! Nous vous répondons sous 48h.');ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
+    else{toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');}
+  }).catch(function(){toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');});
+}toast('✅ Demande envoyée ! Nous vous recontactons sous 48h.');['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){document.getElementById(id).value='';});}
+var tt;function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
+</script>
+</body>
+</html>
