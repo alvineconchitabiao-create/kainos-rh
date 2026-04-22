@@ -82,7 +82,7 @@ footer{background:#040D1A;border-top:1px solid rgba(167,139,250,.1);padding:2rem
 <body>
 <nav>
   <div class="nlogo">STRATOS <span>RH</span></div>
-  <a href="kainos-rh.html" class="nback">← KAINOS RH</a>
+  <a href="index.html" class="nback">← KAINOS RH</a>
 </nav>
 
 <section class="hero">
@@ -146,22 +146,29 @@ footer{background:#040D1A;border-top:1px solid rgba(167,139,250,.1);padding:2rem
 <footer>
   <div class="fl">STRATOS <span>RH</span> — by KAINOS RH</div>
   <div class="flinks">
-    <a href="kainos-rh.html">← KAINOS RH</a>
-    <a href="index.html">Elite RH Consulting</a>
+    <a href="index.html">← KAINOS RH</a>
+    <a href="elite-rh.html">Elite RH Consulting</a>
     <a href="rhfit.html">RHFit</a>
     <a href="jobfit.html">Jobfit</a>
     <a href="kainos-rh.html#contact">Contact</a>
   </div>
-  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com</div>
+  <div class="fcopy">© 2026 KAINOS RH · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f695999882979582b69d979f989985849ed895999b">[email&#160;protected]</a></div>
 </footer>
 <div class="toast" id="toast"></div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">function envoyer(){
+  var ids=['c-nom','c-ent','c-tel','c-email','c-msg','c-service','c-offre','c-formule','c-nb','c-besoin','c-axe','c-services'];
+  var nom='',tel='',data={};
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.value.trim()){data[id]=el.value.trim();if(id==='c-nom')nom=el.value.trim();if(id==='c-tel')tel=el.value.trim();}});
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  fetch('https://formspree.io/f/xdaywqpp',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+  .then(function(r){
+    if(r.ok){toast('✅ Message envoyé ! Nous vous répondons sous 48h.');ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
+    else{toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');}
+  }).catch(function(){toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');});
+}
+</script><script>
 var target=new Date('2026-07-01T00:00:00');
 function tick(){var n=new Date(),d=target-n;if(d<=0)return;var j=Math.floor(d/864e5),h=Math.floor((d%864e5)/36e5),m=Math.floor((d%36e5)/6e4),s=Math.floor((d%6e4)/1e3);['j','h','m','s'].forEach(function(k,i){var el=document.getElementById('cd-'+k);if(el)el.textContent=String([j,h,m,s][i]).padStart(2,'0');});}
 tick();setInterval(tick,1000);
 var cnt=47;
-function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}cnt++;document.getElementById('wlcount').textContent=cnt;document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Vous aurez un accès prioritaire.');}
-var tt;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
-</script>
-</body>
-</html>
+function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}cnt++;document.getElementById('wlcount').textContent=cnt;document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Vous aurez un accès pri
