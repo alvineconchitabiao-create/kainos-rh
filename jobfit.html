@@ -66,7 +66,7 @@ footer{background:#040D1A;border-top:1px solid rgba(232,90,79,.1);padding:2rem 5
 </style>
 </head>
 <body>
-<nav><div class="nlogo">Job<span>fit</span></div><a href="kainos-rh.html" class="nback">← KAINOS RH</a></nav>
+<nav><div class="nlogo">Job<span>fit</span></div><a href="index.html" class="nback">← KAINOS RH</a></nav>
 <section class="hero">
   <div>
     <div class="htag">Service 05 · En développement</div>
@@ -138,13 +138,20 @@ footer{background:#040D1A;border-top:1px solid rgba(232,90,79,.1);padding:2rem 5
 
 <footer>
   <div class="fl">Job<span>fit</span> — by KAINOS RH</div>
-  <div class="flinks"><a href="kainos-rh.html">← KAINOS RH</a><a href="index.html">Elite RH</a><a href="stratos.html">STRATOS</a><a href="rhfit.html">RHFit</a><a href="kainos-rh.html#contact">Contact</a></div>
-  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com</div>
+  <div class="flinks"><a href="index.html">← KAINOS RH</a><a href="elite-rh.html">Elite RH</a><a href="stratos.html">STRATOS</a><a href="rhfit.html">RHFit</a><a href="kainos-rh.html#contact">Contact</a></div>
+  <div class="fcopy">© 2026 KAINOS RH · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583b37362c393b2c1833393136372b2a30763b3735">[email&#160;protected]</a></div>
 </footer>
 <div class="toast" id="toast"></div>
-<script>
-function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Accès prioritaire à Jobfit dès l\'ouverture.');}
-var tt;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
-</script>
-</body>
-</html>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">function envoyer(){
+  var ids=['c-nom','c-ent','c-tel','c-email','c-msg','c-service','c-offre','c-formule','c-nb','c-besoin','c-axe','c-services'];
+  var nom='',tel='',data={};
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.value.trim()){data[id]=el.value.trim();if(id==='c-nom')nom=el.value.trim();if(id==='c-tel')tel=el.value.trim();}});
+  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
+  fetch('https://formspree.io/f/xdaywqpp',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
+  .then(function(r){
+    if(r.ok){toast('✅ Message envoyé ! Nous vous répondons sous 48h.');ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
+    else{toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');}
+  }).catch(function(){toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');});
+}
+</script><script>
+function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Accès prioritaire à Jobfit dès l\'o
