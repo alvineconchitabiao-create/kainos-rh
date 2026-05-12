@@ -557,10 +557,13 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
     </div>
     <div class="modal-cta">
       <div class="modal-cta-text">
-        <div class="modal-cta-title">Parlez-nous de votre projet</div>
+        <div class="modal-cta-title">Intéressé par ce service ?</div>
         <div class="modal-cta-sub">Notre équipe vous répond sous 48h · Consultation gratuite</div>
       </div>
-      <button class="modal-cta-btn" onclick="allerContact()">Nous contacter →</button>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button class="modal-cta-btn" onclick="allerPageService()">En savoir plus →</button>
+        <button class="modal-cta-btn" onclick="allerContact()" style="background:transparent;border:1px solid rgba(26,18,6,.2);color:var(--tx);box-shadow:none;">Parlez-nous de votre projet</button>
+      </div>
     </div>
   </div>
 </div>
@@ -568,8 +571,9 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
 <div class="toast" id="toast"></div>
 
 <script>
+var MODAL_PAGE_COURANTE = '#';
 var SERVICES = {
-  elite:{icon:'🏛️',color:'#C9A84C',title:'Elite RH Consulting',tagline:'Conseil · Audit · Formation RH',
+  elite:{icon:'🏛️',page:'kainos-rh.html',color:'#C9A84C',title:'Elite RH Consulting',tagline:'Conseil · Audit · Formation RH',
     desc:"Elite RH Consulting est le cœur stratégique de KAINOS RH. Nous accompagnons les dirigeants, DRH et managers dans la transformation profonde de leur fonction RH. Que vous soyez une PME en structuration ou une grande entreprise en recherche d'optimisation, nous apportons une expertise terrain ancrée dans les réalités béninoises et africaines — conformité OHADA, Code du Travail béninois, culture d'entreprise locale — pour des recommandations actionnables et durables.",
     feats:[
       {c:'#C9A84C',t:'Conseil RH stratégique & opérationnel — Politique RH, organigrammes, fiches de postes, classifications et procédures.'},
@@ -578,7 +582,7 @@ var SERVICES = {
       {c:'#C9A84C',t:'Accompagnement à la transformation RH — Digitalisation, mise en place de processus, conduite du changement.'},
       {c:'#C9A84C',t:'DRH à temps partagé — Un expert RH senior dédié à votre entreprise, sans le coût d\'un recrutement à plein temps.'},
     ]},
-  jobfit:{icon:'🎯',color:'#F05A5A',title:'Jobfit',tagline:'Recrutement & Mise en relation de talents',
+  jobfit:{icon:'🎯',page:'jobfit.html',color:'#F05A5A',title:'Jobfit',tagline:'Recrutement & Mise en relation de talents',
     desc:"Jobfit est la plateforme de KAINOS RH dédiée à la connexion entre entreprises béninoises et africaines et les talents dont elles ont besoin. Qu'il s'agisse d'un recrutement permanent, d'une mission de courte durée ou d'une mise à disposition d'expert, Jobfit s'appuie sur un réseau de consultants vérifiés et un processus de sélection rigoureux pour vous garantir le bon profil, au bon moment, au bon coût.",
     feats:[
       {c:'#F05A5A',t:'Recrutement cadres & postes clés — Identification, évaluation et présentation des meilleurs profils pour vos fonctions stratégiques.'},
@@ -587,7 +591,7 @@ var SERVICES = {
       {c:'#F05A5A',t:'Évaluation & assessment de candidats — Tests de compétences, entretiens structurés, vérification des références.'},
       {c:'#F05A5A',t:'Intégration & onboarding — Accompagnement des nouvelles recrues pour maximiser leur performance dès le premier jour.'},
     ]},
-  rhenline:{icon:'💻',color:'#4A9EFF',title:'Votre RH en ligne',tagline:'Externalisation RH complète & à distance',
+  rhenline:{icon:'💻',page:'services-rh-enligne.html',color:'#4A9EFF',title:'Votre RH en ligne',tagline:'Externalisation RH complète & à distance',
     desc:"Votre RH en ligne est le service d'externalisation totale de KAINOS RH. Confiez-nous l'intégralité de votre gestion des ressources humaines : nos experts prennent en charge tous vos processus RH à distance, avec la même rigueur qu'un département interne, mais sans les contraintes d'un recrutement. De la paie mensuelle aux déclarations CNSS, en passant par la gestion des congés et des contrats — nous gérons tout, vous vous concentrez sur votre cœur de métier.",
     feats:[
       {c:'#4A9EFF',t:'Traitement de la paie mensuelle — Calcul, bulletins de paie, conformité CNSS et ITS, registres légaux.'},
@@ -596,7 +600,7 @@ var SERVICES = {
       {c:'#4A9EFF',t:'Administration du personnel — Contrats, avenants, dossiers individuels, registre du personnel.'},
       {c:'#4A9EFF',t:'Veille juridique & mise en conformité — Alertes et adaptations automatiques aux évolutions du droit du travail.'},
     ]},
-  pae:{icon:'❤️',color:'#F06292',title:"PAE — Programme d'Aide aux Employés",tagline:'Bien-être · Santé · Développement · Famille',
+  pae:{icon:'❤️',page:'pae.html',color:'#F06292',title:"PAE — Programme d'Aide aux Employés",tagline:'Bien-être · Santé · Développement · Famille',
     desc:"Le Programme d'Aide aux Employés (PAE) de KAINOS RH est un dispositif global conçu pour améliorer le bien-être, la performance et la fidélisation de vos collaborateurs. Autour de 4 axes fondamentaux — santé mentale, développement professionnel, vitalité physique et vie familiale — le PAE offre 9 services concrets, accessibles à tous vos employés et entièrement gérés par KAINOS RH en partenariat avec des professionnels certifiés.",
     feats:[
       {c:'#F06292',t:'Soutien psychologique — Psychologue du travail, gestion du stress, médiation de conflits, accompagnement burn-out.'},
@@ -605,7 +609,7 @@ var SERVICES = {
       {c:'#A78BFA',t:'Vie familiale & services — Garde d\'enfants, planification de voyages, soins dentaires, assurance complémentaire.'},
       {c:'#A78BFA',t:'Programme personnalisé — Chaque employé accède à son programme adapté à ses besoins spécifiques.'},
     ]},
-  rhfit:{icon:'⚙️',color:'#22D48A',title:'RHFit — Suite Outils RH Digitaux',tagline:'22 outils RH · Conformes au Code du Travail béninois',
+  rhfit:{icon:'⚙️',page:'rhfit.html',color:'#22D48A',title:'RHFit — Suite Outils RH Digitaux',tagline:'22 outils RH · Conformes au Code du Travail béninois',
     desc:"RHFit est la suite complète d'outils RH digitaux de KAINOS RH. 22 applications prêtes à l'emploi — paie, congés, évaluations, recrutement, reporting — conçues spécifiquement pour les entreprises béninoises et conformes au Code du Travail local. Chaque outil fonctionne dans le navigateur, sans installation, sans serveur. Et si vos besoins sont spécifiques, notre équipe développe des outils sur mesure, des sites carrière et des portails RH personnalisés.",
     feats:[
       {c:'#22D48A',t:'22 outils RH opérationnels — Paie, registre, congés, heures supplémentaires, évaluations, sanctions, contrats, reporting et plus.'},
@@ -614,7 +618,7 @@ var SERVICES = {
       {c:'#22D48A',t:'Développement d\'outils sur mesure — Nous créons des outils spécifiques à votre structure, vos processus et votre secteur.'},
       {c:'#22D48A',t:'Sites carrière & portails RH — Attirez les talents avec une présence digitale professionnelle.'},
     ]},
-  stratos:{icon:'🚀',color:'#A78BFA',title:'STRATOS',tagline:'SaaS RH · Cloud · Intelligence artificielle',
+  stratos:{icon:'🚀',page:'stratos.html',color:'#A78BFA',title:'STRATOS',tagline:'SaaS RH · Cloud · Intelligence artificielle',
     desc:"STRATOS est la prochaine révolution RH de KAINOS RH : une plateforme SaaS nouvelle génération, entièrement cloud, conçue pour les entreprises africaines ambitieuses. Pilotez vos objectifs OKR en temps réel, évaluez les performances de vos équipes, gérez votre budget RH et prenez des décisions éclairées grâce à des analytics avancés. STRATOS sera le premier SaaS RH conçu et déployé depuis l'Afrique de l'Ouest, avec une conformité locale intégrée dès sa conception.",
     feats:[
       {c:'#A78BFA',t:'Gestion des OKR & objectifs — Définissez, suivez et alignez les objectifs de chaque collaborateur avec la stratégie d\'entreprise.'},
@@ -635,10 +639,16 @@ function ouvrirModal(id){
   document.getElementById('modal-desc').textContent=s.desc;
   var f=document.getElementById('modal-feats'); f.innerHTML='';
   s.feats.forEach(function(x){ f.innerHTML+='<div class="modal-feat"><div class="modal-feat-dot" style="background:'+x.c+'"></div><div>'+x.t+'</div></div>'; });
+  MODAL_PAGE_COURANTE = s.page || '#';
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
 function fermerModal(e){ if(e.target===document.getElementById('modal-overlay')){ document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; } }
+function allerPageService(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  if(MODAL_PAGE_COURANTE && MODAL_PAGE_COURANTE!=='#') window.location.href=MODAL_PAGE_COURANTE;
+}
 function allerContact(){
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow='';
@@ -649,39 +659,10 @@ window.addEventListener('scroll',function(){ document.getElementById('nav').clas
 var obs=new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:0.08});
 document.querySelectorAll('.fu').forEach(function(el){ obs.observe(el); });
 function envoyer(){
-  var n=document.getElementById('c-nom').value.trim();
-  var t=document.getElementById('c-tel').value.trim();
+  var n=document.getElementById('c-nom').value.trim(), t=document.getElementById('c-tel').value.trim();
   if(!n||!t){ toast('⚠️ Nom et téléphone sont obligatoires.'); return; }
-  var data={
-    nom: n,
-    entreprise: document.getElementById('c-ent').value.trim(),
-    telephone: t,
-    email: document.getElementById('c-email').value.trim(),
-    service: document.getElementById('c-service').value,
-    message: document.getElementById('c-msg').value.trim()
-  };
-  var btn = document.querySelector('.cf-btn');
-  btn.textContent = 'Envoi en cours...';
-  btn.disabled = true;
-  fetch('https://formspree.io/f/xdaywqpp', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {'Content-Type':'application/json','Accept':'application/json'}
-  }).then(function(r){
-    if(r.ok){
-      toast('✅ Message envoyé ! Nous vous répondons sous 48h.');
-      ['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){ document.getElementById(id).value=''; });
-      document.getElementById('c-service').value='';
-    } else {
-      toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');
-    }
-    btn.textContent = 'Envoyer le message →';
-    btn.disabled = false;
-  }).catch(function(){
-    toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');
-    btn.textContent = 'Envoyer le message →';
-    btn.disabled = false;
-  });
+  toast('✅ Message envoyé ! Nous vous répondons sous 48h.');
+  ['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){ document.getElementById(id).value=''; });
 }
 var tt;
 function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){ el.classList.remove('show'); },4500); }
