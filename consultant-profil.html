@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Déposer mon profil consultant — Jobfit · KAINOS RH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--m:#071428;--m2:#0A1F3D;--m3:#0F2A50;--or:#C9A84C;--or2:#E2C47A;--bl:#F5F2EA;--gr:#8A9AB8;--gr3:#1E2E48;--rd:#E85A4F;--vt:#22D48A;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--m);color:var(--bl);min-height:100vh;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--rd);border-radius:2px;}
+a{text-decoration:none;color:inherit;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;height:60px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(7,20,40,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(232,90,79,.1);}
+.nlogo{font-family:var(--fd);font-size:15px;font-weight:800;}.nlogo span{color:var(--rd);}
+.nback{font-size:11px;color:var(--gr);border:1px solid var(--gr3);padding:6px 14px;border-radius:20px;transition:all .2s;cursor:pointer;}
+.nback:hover{color:var(--or);border-color:rgba(201,168,76,.3);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--m) 0%,var(--m2) 100%);padding:60px 5vw 50px;border-bottom:1px solid var(--gr3);text-align:center;}
+.htag{display:inline-flex;align-items:center;gap:7px;background:rgba(232,90,79,.08);border:1px solid rgba(232,90,79,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--rd);margin-bottom:1.25rem;}
+.hero h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+.hero h1 span{color:var(--rd);}
+.hero p{font-size:14px;color:var(--gr);max-width:560px;margin:0 auto;line-height:1.85;font-weight:300;}
+
+/* FORM CONTAINER */
+.form-wrap{max-width:820px;margin:0 auto;padding:3rem 5vw 5rem;}
+
+/* SECTION FORMULAIRE */
+.fs{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;padding:2rem;margin-bottom:1.5rem;}
+.fs-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--gr3);}
+.fs-num{width:32px;height:32px;border-radius:50%;background:rgba(232,90,79,.12);border:1px solid rgba(232,90,79,.25);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:800;color:var(--rd);flex-shrink:0;}
+.fs-title{font-family:var(--fd);font-size:14px;font-weight:800;}
+.fs-subtitle{font-size:11px;color:var(--gr);margin-top:.15rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;}
+.ff{display:flex;flex-direction:column;gap:.35rem;}
+.ff.full{grid-column:1/-1;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gr);}
+.ff input,.ff select,.ff textarea{background:var(--m3);border:1px solid var(--gr3);border-radius:8px;color:var(--bl);font-family:var(--fb);font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--rd);}
+.ff select option{background:var(--m2);}
+.ff textarea{resize:vertical;min-height:90px;}
+
+/* COMPÉTENCES TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;}
+.tag{display:inline-flex;align-items:center;gap:.35rem;background:rgba(232,90,79,.1);border:1px solid rgba(232,90,79,.2);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--rd);font-weight:600;}
+.tag-del{cursor:pointer;opacity:.6;font-size:12px;line-height:1;}
+.tag-del:hover{opacity:1;}
+.tag-input-row{display:flex;gap:.5rem;margin-top:.5rem;}
+.tag-input-row input{flex:1;}
+.tag-add-btn{background:var(--rd);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-family:var(--fd);font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tag-add-btn:hover{opacity:.85;}
+
+/* NIVEAU */
+.niveau-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem;}
+.niv-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--gr3);background:transparent;color:var(--gr);font-family:var(--fd);font-size:9px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.niv-btn.active{background:rgba(232,90,79,.12);border-color:rgba(232,90,79,.3);color:var(--rd);}
+
+/* DISPONIBILITÉ */
+.dispo-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem;}
+.dispo-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gr3);background:transparent;color:var(--gr);font-family:var(--fd);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;}
+.dispo-btn.active{background:rgba(34,212,138,.1);border-color:rgba(34,212,138,.25);color:var(--vt);}
+
+/* ACTIONS */
+.actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;}
+.btn-pdf{flex:1;padding:14px;background:linear-gradient(135deg,#8B1A14,var(--rd));color:#fff;border:none;border-radius:10px;font-family:var(--fd);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 24px rgba(232,90,79,.3);}
+.btn-pdf:hover{opacity:.88;transform:translateY(-1px);}
+.btn-email{flex:1;padding:14px;background:rgba(201,168,76,.1);color:var(--or);border:1px solid rgba(201,168,76,.25);border-radius:10px;font-family:var(--fd);font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-email:hover{background:rgba(201,168,76,.18);transform:translateY(-1px);}
+
+/* APERÇU NOTE */
+.preview-note{background:rgba(34,212,138,.06);border:1px solid rgba(34,212,138,.15);border-radius:10px;padding:.875rem 1.125rem;display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.5rem;}
+.preview-note-ico{font-size:1.1rem;flex-shrink:0;}
+.preview-note-txt{font-size:12px;color:var(--gr);line-height:1.6;}
+.preview-note-txt strong{color:var(--vt);}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m2);border:1px solid var(--rd);color:var(--bl);padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:640px){.fg{grid-template-columns:1fr;}.actions{flex-direction:column;}}
+
+/* ══ PRINT PDF ══ */
+@media print{
+  nav,.actions,.preview-note,.toast{display:none!important;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .fs{border:1px solid #ccc;page-break-inside:avoid;margin-bottom:1rem;padding:1rem;}
+  .fs-head{border-bottom:1px solid #ddd;}
+  .fs-num{background:#f5f5f5;border:1px solid #ccc;color:#333;}
+  .fs-title{color:#000;}
+  .ff input,.ff select,.ff textarea{background:#fff;border:1px solid #ccc;color:#000;}
+  .tag{background:#f0f0f0;border:1px solid #ccc;color:#333;}
+  .tag-del{display:none;}
+  .niv-btn.active,.dispo-btn.active{background:#f0f0f0;border:1px solid #999;color:#333;}
+  .tag-input-row,.tag-add-btn{display:none;}
+  .form-wrap{padding:0;}
+  h1{color:#000!important;}
+  .htag{color:#000;border:1px solid #999;background:#f5f5f5;}
+  .hero{background:#f9f9f9!important;border:none;}
+  .hero p,.fs-subtitle{color:#555;}
+  label,.ff label{color:#555!important;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nlogo">Job<span>fit</span> — Profil Consultant</div>
+  <a href="jobfit.html" class="nback">← Retour Jobfit</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">👔 Espace Consultant · KAINOS RH</div>
+  <h1>Déposez votre <span>profil consultant</span></h1>
+  <p>Remplissez ce formulaire pour intégrer notre vivier de consultants. Nous vous contacterons dès qu'une mission correspond à votre profil.</p>
+</div>
+
+<div class="form-wrap">
+
+  <div class="preview-note">
+    <div class="preview-note-ico">💡</div>
+    <div class="preview-note-txt"><strong>Comment ça marche ?</strong> Remplissez toutes les sections, puis cliquez sur <strong>Télécharger en PDF</strong> pour obtenir votre fiche consultant, ou sur <strong>Envoyer à KAINOS RH</strong> pour nous la transmettre directement par email.</div>
+  </div>
+
+  <!-- SECTION 1 : INFORMATIONS PERSONNELLES -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">1</div>
+      <div><div class="fs-title">Informations personnelles</div><div class="fs-subtitle">Vos coordonnées de base</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff"><label>Nom *</label><input type="text" id="p-nom" placeholder="Ex: DOSSOU"/></div>
+      <div class="ff"><label>Prénom *</label><input type="text" id="p-prenom" placeholder="Ex: Jean-Paul"/></div>
+      <div class="ff"><label>Email *</label><input type="email" id="p-email" placeholder="jean@email.com"/></div>
+      <div class="ff"><label>Téléphone *</label><input type="tel" id="p-tel" placeholder="+229 01 XX XX XX XX"/></div>
+      <div class="ff"><label>Ville / Pays de résidence</label><input type="text" id="p-ville" placeholder="Ex: Cotonou, Bénin"/></div>
+      <div class="ff"><label>LinkedIn (optionnel)</label><input type="url" id="p-linkedin" placeholder="linkedin.com/in/votre-profil"/></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 : DOMAINE & EXPERTISE -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">2</div>
+      <div><div class="fs-title">Domaine d'expertise</div><div class="fs-subtitle">Votre secteur principal et spécialités</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff"><label>Domaine principal *</label>
+        <select id="p-domaine">
+          <option value="">— Sélectionner —</option>
+          <option>Ressources Humaines (RH)</option>
+          <option>Finance & Comptabilité</option>
+          <option>Marketing & Communication</option>
+          <option>Informatique & Technologie (IT)</option>
+          <option>Juridique & Compliance</option>
+          <option>Ingénierie & Technique</option>
+          <option>Management & Stratégie</option>
+          <option>Commercial & Ventes</option>
+          <option>Santé & Médical</option>
+          <option>Formation & Coaching</option>
+          <option>Logistique & Supply Chain</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="ff"><label>Poste / Titre actuel</label><input type="text" id="p-titre" placeholder="Ex: Consultant RH Senior"/></div>
+      <div class="ff"><label>Années d'expérience *</label>
+        <select id="p-experience">
+          <option value="">— Sélectionner —</option>
+          <option>Moins de 2 ans</option>
+          <option>2 à 5 ans</option>
+          <option>5 à 10 ans</option>
+          <option>10 à 15 ans</option>
+          <option>Plus de 15 ans</option>
+        </select>
+      </div>
+      <div class="ff"><label>Niveau d'expertise</label>
+        <div class="niveau-row" id="niveau-row">
+          <button class="niv-btn" onclick="selectNiveau(this,'Junior')">Junior</button>
+          <button class="niv-btn" onclick="selectNiveau(this,'Confirmé')">Confirmé</button>
+          <button class="niv-btn active" onclick="selectNiveau(this,'Senior')">Senior</button>
+          <button class="niv-btn" onclick="selectNiveau(this,'Expert')">Expert</button>
+          <button class="niv-btn" onclick="selectNiveau(this,'Directeur')">Directeur</button>
+        </div>
+        <input type="hidden" id="p-niveau" value="Senior"/>
+      </div>
+      <div class="ff full"><label>Compétences clés (appuyez sur Ajouter ou Entrée)</label>
+        <div class="tags-wrap" id="tags-container"></div>
+        <div class="tag-input-row">
+          <input type="text" id="tag-input" placeholder="Ex: Paie, Droit du travail, Excel..." onkeydown="if(event.key==='Enter'){event.preventDefault();ajouterTag();}"/>
+          <button class="tag-add-btn" onclick="ajouterTag()">+ Ajouter</button>
+        </div>
+      </div>
+      <div class="ff full"><label>Secteurs d'activité couverts</label><input type="text" id="p-secteurs" placeholder="Ex: Banque, Télécoms, ONG, Industrie, Commerce..."/></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 : FORMATION -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">3</div>
+      <div><div class="fs-title">Formation & Diplômes</div><div class="fs-subtitle">Votre parcours académique</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff"><label>Diplôme le plus élevé *</label>
+        <select id="p-diplome">
+          <option value="">— Sélectionner —</option>
+          <option>Bac / Niveau Bac</option>
+          <option>BTS / DUT / Licence Professionnelle</option>
+          <option>Licence (Bac+3)</option>
+          <option>Master / MBA (Bac+5)</option>
+          <option>Doctorat (Bac+8)</option>
+          <option>Certification professionnelle</option>
+        </select>
+      </div>
+      <div class="ff"><label>École / Université</label><input type="text" id="p-ecole" placeholder="Ex: Université d'Abomey-Calavi"/></div>
+      <div class="ff"><label>Spécialité / Filière</label><input type="text" id="p-specialite" placeholder="Ex: Droit Social, Gestion RH..."/></div>
+      <div class="ff"><label>Année d'obtention</label><input type="number" id="p-annee" placeholder="Ex: 2018" min="1970" max="2030"/></div>
+      <div class="ff full"><label>Certifications & formations complémentaires</label><input type="text" id="p-certifs" placeholder="Ex: CHRP, PMP, Certification GNRH, Formation Excel avancé..."/></div>
+      <div class="ff full"><label>Langues parlées</label><input type="text" id="p-langues" placeholder="Ex: Français (courant), Anglais (professionnel), Fon..."/></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 : DISPONIBILITÉ & MISSIONS -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">4</div>
+      <div><div class="fs-title">Disponibilité & Conditions de mission</div><div class="fs-subtitle">Vos préférences pour les missions</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff"><label>Disponibilité</label>
+        <div class="dispo-row" id="dispo-row">
+          <button class="dispo-btn active" onclick="selectDispo(this,'Immédiate')">🟢 Immédiate</button>
+          <button class="dispo-btn" onclick="selectDispo(this,'Sous 1 mois')">📅 Sous 1 mois</button>
+          <button class="dispo-btn" onclick="selectDispo(this,'Sous 3 mois')">📅 Sous 3 mois</button>
+          <button class="dispo-btn" onclick="selectDispo(this,'En poste')">💼 En poste</button>
+        </div>
+        <input type="hidden" id="p-dispo" value="Immédiate"/>
+      </div>
+      <div class="ff"><label>Type de mission souhaité</label>
+        <select id="p-type-mission">
+          <option value="">— Sélectionner —</option>
+          <option>Temps plein (full-time)</option>
+          <option>Temps partiel (part-time)</option>
+          <option>Projet court (1 à 30 jours)</option>
+          <option>Projet moyen (1 à 6 mois)</option>
+          <option>Long terme (6 à 12 mois)</option>
+          <option>Flexible selon mission</option>
+        </select>
+      </div>
+      <div class="ff"><label>Mode de travail préféré</label>
+        <select id="p-mode">
+          <option value="">— Sélectionner —</option>
+          <option>Présentiel uniquement</option>
+          <option>Télétravail uniquement</option>
+          <option>Hybride (présentiel + télétravail)</option>
+          <option>Déplacement possible (national)</option>
+          <option>Déplacement possible (international)</option>
+          <option>Flexible</option>
+        </select>
+      </div>
+      <div class="ff"><label>Prétention journalière (optionnel)</label><input type="text" id="p-tarif" placeholder="Ex: 50 000 FCFA / jour ou À négocier"/></div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 : EXPÉRIENCES -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">5</div>
+      <div><div class="fs-title">Expériences professionnelles</div><div class="fs-subtitle">Vos 3 dernières missions ou postes significatifs</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff full" style="border-bottom:1px solid var(--gr3);padding-bottom:1rem;margin-bottom:.5rem;">
+        <div style="font-size:10px;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">Expérience 1</div>
+        <div class="fg">
+          <div class="ff"><label>Intitulé du poste</label><input type="text" id="e1-poste" placeholder="Ex: DRH / Consultant RH"/></div>
+          <div class="ff"><label>Entreprise</label><input type="text" id="e1-entreprise" placeholder="Ex: Orange Bénin"/></div>
+          <div class="ff"><label>Période</label><input type="text" id="e1-periode" placeholder="Ex: Jan 2022 — Déc 2024"/></div>
+          <div class="ff"><label>Secteur</label><input type="text" id="e1-secteur" placeholder="Ex: Télécommunications"/></div>
+          <div class="ff full"><label>Description des missions</label><textarea id="e1-desc" placeholder="Décrivez vos principales responsabilités et réalisations..."></textarea></div>
+        </div>
+      </div>
+      <div class="ff full" style="border-bottom:1px solid var(--gr3);padding-bottom:1rem;margin-bottom:.5rem;">
+        <div style="font-size:10px;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">Expérience 2</div>
+        <div class="fg">
+          <div class="ff"><label>Intitulé du poste</label><input type="text" id="e2-poste" placeholder="Ex: Responsable Formation"/></div>
+          <div class="ff"><label>Entreprise</label><input type="text" id="e2-entreprise" placeholder="Ex: Cabinet XYZ"/></div>
+          <div class="ff"><label>Période</label><input type="text" id="e2-periode" placeholder="Ex: Jan 2019 — Déc 2021"/></div>
+          <div class="ff"><label>Secteur</label><input type="text" id="e2-secteur" placeholder="Ex: Conseil"/></div>
+          <div class="ff full"><label>Description des missions</label><textarea id="e2-desc" placeholder="Décrivez vos principales responsabilités et réalisations..."></textarea></div>
+        </div>
+      </div>
+      <div class="ff full">
+        <div style="font-size:10px;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">Expérience 3</div>
+        <div class="fg">
+          <div class="ff"><label>Intitulé du poste</label><input type="text" id="e3-poste" placeholder="Ex: Chargé RH"/></div>
+          <div class="ff"><label>Entreprise</label><input type="text" id="e3-entreprise" placeholder="Ex: Société ABC"/></div>
+          <div class="ff"><label>Période</label><input type="text" id="e3-periode" placeholder="Ex: Jan 2017 — Déc 2018"/></div>
+          <div class="ff"><label>Secteur</label><input type="text" id="e3-secteur" placeholder="Ex: Industrie"/></div>
+          <div class="ff full"><label>Description des missions</label><textarea id="e3-desc" placeholder="Décrivez vos principales responsabilités et réalisations..."></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 : MOTIVATIONS -->
+  <div class="fs">
+    <div class="fs-head">
+      <div class="fs-num">6</div>
+      <div><div class="fs-title">Motivations & Informations complémentaires</div><div class="fs-subtitle">Ce qui vous différencie</div></div>
+    </div>
+    <div class="fg">
+      <div class="ff full"><label>Pourquoi souhaitez-vous rejoindre le réseau Jobfit ?</label><textarea id="p-motivation" rows="3" placeholder="Expliquez vos motivations, vos objectifs de mission, ce que vous apportez..."></textarea></div>
+      <div class="ff full"><label>Références professionnelles (optionnel)</label><textarea id="p-references" rows="2" placeholder="Nom, prénom, poste, contact de 1 à 2 personnes pouvant témoigner de votre travail..."></textarea></div>
+      <div class="ff"><label>Comment avez-vous connu Jobfit ?</label>
+        <select id="p-source">
+          <option value="">— Sélectionner —</option>
+          <option>Site web KAINOS RH</option>
+          <option>Bouche à oreille / Recommandation</option>
+          <option>Réseaux sociaux</option>
+          <option>LinkedIn</option>
+          <option>Événement professionnel</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="ff"><label>Date de remplissage</label><input type="date" id="p-date"/></div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn-pdf" onclick="telechargerPDF()">
+      📄 Télécharger en PDF
+    </button>
+    <button class="btn-email" onclick="envoyerEmail()">
+      ✉️ Envoyer à KAINOS RH
+    </button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Initialiser la date du jour
+document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+
+// ── TAGS COMPÉTENCES ──
+var tags = [];
+function ajouterTag(){
+  var inp = document.getElementById('tag-input');
+  var val = inp.value.trim();
+  if(!val) return;
+  if(tags.indexOf(val) !== -1){ inp.value=''; return; }
+  tags.push(val);
+  renderTags();
+  inp.value = '';
+  inp.focus();
+}
+function supprimerTag(idx){
+  tags.splice(idx,1);
+  renderTags();
+}
+function renderTags(){
+  var c = document.getElementById('tags-container');
+  c.innerHTML = '';
+  tags.forEach(function(t,i){
+    var span = document.createElement('span');
+    span.className = 'tag';
+    span.innerHTML = t + '<span class="tag-del" onclick="supprimerTag('+i+')">✕</span>';
+    c.appendChild(span);
+  });
+}
+
+// ── NIVEAU ──
+function selectNiveau(btn, val){
+  document.querySelectorAll('.niv-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('p-niveau').value = val;
+}
+
+// ── DISPONIBILITÉ ──
+function selectDispo(btn, val){
+  document.querySelectorAll('.dispo-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('p-dispo').value = val;
+}
+
+// ── LECTURE VALEURS ──
+function g(id){ return (document.getElementById(id)||{}).value || ''; }
+
+function valider(){
+  var manquants = [];
+  if(!g('p-nom')) manquants.push('Nom');
+  if(!g('p-prenom')) manquants.push('Prénom');
+  if(!g('p-email')) manquants.push('Email');
+  if(!g('p-tel')) manquants.push('Téléphone');
+  if(!g('p-domaine')) manquants.push('Domaine principal');
+  if(!g('p-experience')) manquants.push('Années d\'expérience');
+  if(manquants.length){
+    toast('⚠️ Champs obligatoires manquants : ' + manquants.join(', '));
+    return false;
+  }
+  return true;
+}
+
+// ── TÉLÉCHARGER PDF ──
+function telechargerPDF(){
+  if(!valider()) return;
+  toast('📄 Génération du PDF en cours...');
+  setTimeout(function(){ window.print(); }, 400);
+}
+
+// ── ENVOYER EMAIL ──
+function envoyerEmail(){
+  if(!valider()) return;
+  var nom = g('p-nom') + ' ' + g('p-prenom');
+  var sujet = encodeURIComponent('Profil Consultant Jobfit — ' + nom + ' — ' + g('p-domaine'));
+  var corps = encodeURIComponent(
+    '=== PROFIL CONSULTANT JOBFIT — KAINOS RH ===\n\n' +
+    '--- INFORMATIONS PERSONNELLES ---\n' +
+    'Nom & Prénom : ' + nom + '\n' +
+    'Email : ' + g('p-email') + '\n' +
+    'Téléphone : ' + g('p-tel') + '\n' +
+    'Ville / Pays : ' + g('p-ville') + '\n' +
+    'LinkedIn : ' + g('p-linkedin') + '\n\n' +
+    '--- DOMAINE & EXPERTISE ---\n' +
+    'Domaine principal : ' + g('p-domaine') + '\n' +
+    'Titre actuel : ' + g('p-titre') + '\n' +
+    'Années d\'expérience : ' + g('p-experience') + '\n' +
+    'Niveau : ' + g('p-niveau') + '\n' +
+    'Compétences clés : ' + tags.join(', ') + '\n' +
+    'Secteurs couverts : ' + g('p-secteurs') + '\n\n' +
+    '--- FORMATION ---\n' +
+    'Diplôme : ' + g('p-diplome') + '\n' +
+    'École / Université : ' + g('p-ecole') + '\n' +
+    'Spécialité : ' + g('p-specialite') + '\n' +
+    'Année : ' + g('p-annee') + '\n' +
+    'Certifications : ' + g('p-certifs') + '\n' +
+    'Langues : ' + g('p-langues') + '\n\n' +
+    '--- DISPONIBILITÉ & CONDITIONS ---\n' +
+    'Disponibilité : ' + g('p-dispo') + '\n' +
+    'Type de mission : ' + g('p-type-mission') + '\n' +
+    'Mode de travail : ' + g('p-mode') + '\n' +
+    'Tarif journalier : ' + g('p-tarif') + '\n\n' +
+    '--- EXPÉRIENCES ---\n' +
+    'Expérience 1 : ' + g('e1-poste') + ' chez ' + g('e1-entreprise') + ' (' + g('e1-periode') + ')\n' +
+    g('e1-desc') + '\n\n' +
+    'Expérience 2 : ' + g('e2-poste') + ' chez ' + g('e2-entreprise') + ' (' + g('e2-periode') + ')\n' +
+    g('e2-desc') + '\n\n' +
+    'Expérience 3 : ' + g('e3-poste') + ' chez ' + g('e3-entreprise') + ' (' + g('e3-periode') + ')\n' +
+    g('e3-desc') + '\n\n' +
+    '--- MOTIVATIONS ---\n' +
+    g('p-motivation') + '\n\n' +
+    'Références : ' + g('p-references') + '\n' +
+    'Source : ' + g('p-source') + '\n' +
+    'Date : ' + g('p-date') + '\n\n' +
+    '=== FIN DU PROFIL ==='
+  );
+  window.location.href = 'mailto:kainosrhstaff@gmail.com?subject=' + sujet + '&body=' + corps;
+  toast('✅ Votre client email va s\'ouvrir avec le profil pré-rempli. Envoyez-le pour finaliser votre inscription !');
+}
+
+// ── TOAST ──
+var tt;
+function toast(msg){
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(function(){ el.classList.remove('show'); }, 5000);
+}
+</script>
+</body>
+</html>

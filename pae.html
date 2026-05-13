@@ -92,8 +92,11 @@ section.sec{padding:80px 5vw;}
 .axe-desc{font-size:13px;color:var(--gris);line-height:1.8;margin-bottom:1.25rem;}
 /* Services dans chaque axe */
 .axe-services{display:flex;flex-direction:column;gap:.625rem;}
-.axe-svc{display:flex;align-items:flex-start;gap:.875rem;background:rgba(255,255,255,.03);border-radius:10px;padding:.75rem 1rem;}
+.axe-svc{display:flex;align-items:flex-start;gap:.875rem;background:rgba(255,255,255,.03);border-radius:10px;padding:.75rem 1rem;cursor:pointer;transition:all .25s;border:1px solid transparent;text-decoration:none;color:inherit;display:flex;}
 .axe-svc-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.axe-svc:hover{background:rgba(255,255,255,.06);transform:translateX(4px);}
+.axe-svc-arrow{margin-left:auto;font-size:12px;opacity:0;transition:opacity .2s;padding-top:2px;color:var(--gris);}
+.axe-svc:hover .axe-svc-arrow{opacity:1;}
 .axe-svc-name{font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:2px;}
 .axe-svc-desc{font-size:11px;color:var(--gris);line-height:1.5;}
 
@@ -232,18 +235,21 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="axe-title">Santé & Bien-être Mental</div>
         <p class="axe-desc">Préserver l'équilibre psychologique de chaque employé grâce à un accompagnement professionnel, confidentiel et accessible.</p>
         <div class="axe-services">
-          <div class="axe-svc">
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(240,98,146,.1);border:1px solid rgba(240,98,146,.2);">🫂</div>
             <div><div class="axe-svc-name">Psychologue du travail</div><div class="axe-svc-desc">Consultations individuelles confidentielles pour accompagner les difficultés personnelles ou professionnelles.</div></div>
-          </div>
-          <div class="axe-svc">
+            <div class="axe-svc-arrow">→</div>
+          </a>
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(240,98,146,.1);border:1px solid rgba(240,98,146,.2);">🧘</div>
             <div><div class="axe-svc-name">Gestion du stress</div><div class="axe-svc-desc">Ateliers et techniques de gestion du stress, de l'anxiété et de la surcharge mentale au travail.</div></div>
-          </div>
-          <div class="axe-svc">
+            <div class="axe-svc-arrow">→</div>
+          </a>
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(240,98,146,.1);border:1px solid rgba(240,98,146,.2);">🤝</div>
             <div><div class="axe-svc-name">Gestion des conflits</div><div class="axe-svc-desc">Médiation et résolution des conflits interpersonnels pour restaurer un climat de travail serein.</div></div>
-          </div>
+            <div class="axe-svc-arrow">→</div>
+          </a>
         </div>
       </div>
 
@@ -254,10 +260,11 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="axe-title">Développement Professionnel</div>
         <p class="axe-desc">Renforcer les compétences managériales dès le début de carrière pour construire les leaders de demain.</p>
         <div class="axe-services">
-          <div class="axe-svc">
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);">🎓</div>
             <div><div class="axe-svc-name">Formation jeunes managers</div><div class="axe-svc-desc">Programme de développement du leadership, communication, gestion d'équipe et prise de décision pour les managers en début de carrière.</div></div>
-          </div>
+            <div class="axe-svc-arrow">→</div>
+          </a>
         </div>
       </div>
 
@@ -268,14 +275,16 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="axe-title">Corps & Vitalité</div>
         <p class="axe-desc">Prendre soin de la santé physique au quotidien pour des collaborateurs plus énergiques, plus concentrés et plus résilients.</p>
         <div class="axe-services">
-          <div class="axe-svc">
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(34,212,138,.1);border:1px solid rgba(34,212,138,.2);">🏃</div>
             <div><div class="axe-svc-name">Coach sportif</div><div class="axe-svc-desc">Séances d'entraînement adaptées au profil de chaque employé — en présentiel ou en ligne, individuelles ou collectives.</div></div>
-          </div>
-          <div class="axe-svc">
+            <div class="axe-svc-arrow">→</div>
+          </a>
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(34,212,138,.1);border:1px solid rgba(34,212,138,.2);">🥗</div>
             <div><div class="axe-svc-name">Nutritionniste</div><div class="axe-svc-desc">Conseils nutritionnels personnalisés, plans alimentaires et ateliers sur l'alimentation saine au travail.</div></div>
-          </div>
+            <div class="axe-svc-arrow">→</div>
+          </a>
         </div>
       </div>
 
@@ -286,18 +295,21 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="axe-title">Vie Personnelle & Familiale</div>
         <p class="axe-desc">Soutenir l'employé au-delà du bureau — parce qu'un collaborateur épanoui dans sa vie personnelle est plus engagé professionnellement.</p>
         <div class="axe-services">
-          <div class="axe-svc">
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);">👶</div>
             <div><div class="axe-svc-name">Garde d'enfants</div><div class="axe-svc-desc">Accompagnement dans la recherche et la prise en charge de solutions de garde adaptées aux besoins des parents.</div></div>
-          </div>
-          <div class="axe-svc">
+            <div class="axe-svc-arrow">→</div>
+          </a>
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);">✈️</div>
             <div><div class="axe-svc-name">Voyages organisés</div><div class="axe-svc-desc">Organisation de voyages de détente et de team building pour recharger les batteries et renforcer la cohésion d'équipe.</div></div>
-          </div>
-          <div class="axe-svc">
+            <div class="axe-svc-arrow">→</div>
+          </a>
+          <a href="#contact" class="axe-svc">
             <div class="axe-svc-ico" style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);">🦷</div>
             <div><div class="axe-svc-name">Soins dentaires</div><div class="axe-svc-desc">Prise en charge ou remboursement partiel des soins dentaires pour les employés et leurs ayants droit.</div></div>
-          </div>
+            <div class="axe-svc-arrow">→</div>
+          </a>
         </div>
       </div>
 
@@ -439,8 +451,8 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
         <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
         <div class="ci"><div class="ci-ico">🌐</div><div><div class="ci-lbl">Autres services KAINOS RH</div>
           <div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:8px;">
-            <a href="elite-rh.html" style="font-size:11px;color:var(--or);font-weight:700;">Elite RH</a>
-            <a href="votre-rh-en-ligne.html" style="font-size:11px;color:var(--bleu);font-weight:700;">RH en ligne</a>
+            <a href="kainos-rh.html" style="font-size:11px;color:var(--or);font-weight:700;">Elite RH</a>
+            <a href="services-rh-enligne.html" style="font-size:11px;color:var(--bleu);font-weight:700;">RH en ligne</a>
             <a href="rhfit.html" style="font-size:11px;color:var(--vt);font-weight:700;">RHFit</a>
             <a href="stratos.html" style="font-size:11px;color:var(--violet);font-weight:700;">STRATOS</a>
           </div>
@@ -484,9 +496,9 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
   <div class="fl">KAINOS <span>RH</span> — Programme d'Aide aux Employés</div>
   <div class="flinks">
     <a href="index.html">← Accueil KAINOS RH</a>
-    <a href="elite-rh.html">Elite RH Consulting</a>
+    <a href="kainos-rh.html">Elite RH Consulting</a>
     <a href="jobfit.html">Jobfit</a>
-    <a href="votre-rh-en-ligne.html">Votre RH en ligne</a>
+    <a href="services-rh-enligne.html">Votre RH en ligne</a>
     <a href="rhfit.html">RHFit</a>
     <a href="stratos.html">STRATOS</a>
   </div>
@@ -497,17 +509,7 @@ footer{background:#040D1A;border-top:1px solid rgba(240,98,146,.08);padding:2rem
 <script>
 var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.08});
 document.querySelectorAll('.fade-up').forEach(function(el){obs.observe(el);});
-function envoyer(){
-  var ids=['c-nom','c-ent','c-tel','c-email','c-msg','c-service','c-offre','c-formule','c-nb','c-besoin','c-axe','c-services','c-type-dem'];
-  var nom='',tel='',data={};
-  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.value.trim()){data[id]=el.value.trim();if(id==='c-nom')nom=el.value.trim();if(id==='c-tel')tel=el.value.trim();}});
-  if(!nom||!tel){toast('Nom et téléphone obligatoires');return;}
-  fetch('https://formspree.io/f/xdaywqpp',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Accept':'application/json'}})
-  .then(function(r){
-    if(r.ok){toast('✅ Message envoyé ! Nous vous répondons sous 48h.');ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
-    else{toast('❌ Erreur. Écrivez directement à contact@kainosrh.com');}
-  }).catch(function(){toast('❌ Erreur réseau. Écrivez à contact@kainosrh.com');});
-}toast('✅ Demande envoyée ! Nous vous contactons sous 48h avec une proposition.');['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(i){document.getElementById(i).value='';});}
+function envoyer(){var n=document.getElementById('c-nom').value.trim(),t=document.getElementById('c-tel').value.trim();if(!n||!t){toast('Nom et téléphone obligatoires');return;}toast('✅ Demande envoyée ! Nous vous contactons sous 48h avec une proposition.');['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(i){document.getElementById(i).value='';});}
 var tt;function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
 </script>
 </body>
