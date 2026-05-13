@@ -93,8 +93,8 @@ h1 em{font-style:italic;color:var(--or);}
 .section-title{font-family:var(--fc);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:700;line-height:1.1;letter-spacing:-.01em;margin-bottom:1rem;color:var(--tx);}
 .section-title em{font-style:italic;color:var(--or);}
 .section-desc{font-size:14px;color:#6B5B3E;line-height:1.9;font-weight:300;max-width:580px;margin-bottom:3.5rem;}
-.sg1{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;}
-.sg2{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+
+
 .sc{background:#FFFFFF;border:1px solid #E5DACC;border-radius:20px;overflow:hidden;transition:all .4s cubic-bezier(.25,.46,.45,.94);position:relative;display:flex;flex-direction:column;cursor:pointer;box-shadow:0 2px 16px rgba(0,0,0,.05);}
 .sc:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(0,0,0,.12);border-color:rgba(184,146,42,.3);}
 .sc-bar{height:3px;}
@@ -239,7 +239,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
       <a href="#contact" class="btn-gh">Parlez-nous de votre projet</a>
     </div>
     <div class="hmetrics">
-      <div class="hm"><div class="hm-val">6</div><div class="hm-label">Services spécialisés</div></div>
+      <div class="hm"><div class="hm-val">5</div><div class="hm-label">Services spécialisés</div></div>
       <div class="hm"><div class="hm-val">200+</div><div class="hm-label">Entreprises accompagnées</div></div>
       <div class="hm"><div class="hm-val">22</div><div class="hm-label">Outils RH digitaux</div></div>
       <div class="hm"><div class="hm-val">95%</div><div class="hm-label">Satisfaction client</div></div>
@@ -260,7 +260,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
 <!-- MÉTRIQUES -->
 <div class="mband">
   <div class="mbi">
-    <div class="mb"><div class="mb-val">6</div><div class="mb-label">Services spécialisés</div></div>
+    <div class="mb"><div class="mb-val">5</div><div class="mb-label">Services spécialisés</div></div>
     <div class="mb"><div class="mb-val">200<sup>+</sup></div><div class="mb-label">Entreprises accompagnées</div></div>
     <div class="mb"><div class="mb-val">22</div><div class="mb-label">Outils RH digitaux</div></div>
     <div class="mb"><div class="mb-val">15<sup>+</sup></div><div class="mb-label">Secteurs couverts</div></div>
@@ -302,11 +302,12 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
 <section id="services">
   <div class="si">
     <div class="fu">
-      <div class="section-eyebrow">Nos 6 services</div>
-      <h2 class="section-title">Une expertise complète,<br><em>un seul cabinet.</em></h2>
+      <div class="section-eyebrow">Nos 5 services</div>
+      <h2 class="section-title">Cinq expertises,<br><em>un seul cabinet.</em></h2>
       <p class="section-desc">KAINOS RH regroupe des services complémentaires pour couvrir l'intégralité de vos besoins RH. Cliquez sur un service pour découvrir la description complète.</p>
     </div>
-    <div class="sg1">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;">
+
       <div class="sc fu" onclick="ouvrirModal('elite')">
         <div class="sc-bar" style="background:var(--or);"></div>
         <div class="sc-body">
@@ -326,6 +327,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
+
       <div class="sc fu" style="transition-delay:.08s;" onclick="ouvrirModal('jobfit')">
         <div class="sc-bar" style="background:var(--rd);"></div>
         <div class="sc-body">
@@ -345,6 +347,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
+
       <div class="sc fu" style="transition-delay:.16s;" onclick="ouvrirModal('rhenline')">
         <div class="sc-bar" style="background:var(--bleu);"></div>
         <div class="sc-body">
@@ -364,8 +367,11 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
+
     </div>
-    <div class="sg2">
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:840px;margin:0 auto;">
+
       <div class="sc fu" style="transition-delay:.24s;" onclick="ouvrirModal('pae')">
         <div class="sc-bar" style="background:linear-gradient(90deg,#F06292,#A78BFA);"></div>
         <div class="sc-body">
@@ -385,29 +391,11 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-      <div class="sc fu" style="transition-delay:.32s;" onclick="ouvrirModal('rhfit')">
-        <div class="sc-bar" style="background:var(--vt);"></div>
-        <div class="sc-body">
-          <div class="sc-num">Service 05</div>
-          <div class="sc-icon">⚙️</div>
-          <div class="sc-name">RHFit</div>
-          <div class="sc-tagline" style="color:var(--vt);">Outils RH digitaux & Sur mesure</div>
-          <div class="sc-desc">Suite de 22 outils RH digitaux prêts à l'emploi + conception d'outils, sites internet et sites carrière sur mesure pour automatiser vos processus RH.</div>
-          <div class="sc-feats">
-            <div class="sc-feat">22 outils RH digitaux opérationnels</div>
-            <div class="sc-feat">Conception d'outils RH sur mesure</div>
-            <div class="sc-feat">Sites internet & sites carrière</div>
-          </div>
-        </div>
-        <div class="sc-footer">
-          <span class="sc-link" style="color:var(--vt);">En savoir plus →</span>
-          <span class="sc-badge st-on">● Actif</span>
-        </div>
-      </div>
-      <div class="sc fu" style="transition-delay:.40s;" onclick="ouvrirModal('stratos')">
+
+      <div class="sc fu" style="transition-delay:.32s;" onclick="ouvrirModal('stratos')">
         <div class="sc-bar" style="background:var(--vl);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 06</div>
+          <div class="sc-num">Service 05</div>
           <div class="sc-icon">🚀</div>
           <div class="sc-name">STRATOS</div>
           <div class="sc-tagline" style="color:var(--vl);">SaaS RH · Cloud · Intelligent</div>
@@ -419,10 +407,11 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           </div>
         </div>
         <div class="sc-footer">
-          <span class="sc-link" style="color:var(--vl);">Rejoindre la liste d'attente →</span>
-          <span class="sc-badge st-off">◉ 2026</span>
+          <span class="sc-link" style="color:var(--vl);">En savoir plus →</span>
+          <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -508,7 +497,6 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           <a href="services-rh-enligne.html">💻 Votre RH en ligne</a>
           <a href="pae.html">❤️ PAE</a>
           <a href="stratos.html">🚀 STRATOS</a>
-          <a href="rhfit.html">⚙️ RHFit</a>
         </div>
       </div>
       <div>
