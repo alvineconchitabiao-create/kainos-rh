@@ -502,10 +502,10 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
       <div>
         <div class="fcol-tit">Outils RH</div>
         <div class="fcol-links">
-          <a href="payroll.html">Paie multi-compagnies</a>
-          <a href="registre-personnel.html">Registre du personnel</a>
-          <a href="conges.html">Congés & absences</a>
-          <a href="reporting-rh.html">Reporting RH</a>
+          <a href="#" onclick="ouvrirLockModal();return false;">🔒 Paie multi-compagnies</a>
+          <a href="#" onclick="ouvrirLockModal();return false;">🔒 Registre du personnel</a>
+          <a href="#" onclick="ouvrirLockModal();return false;">🔒 Congés & absences</a>
+          <a href="#" onclick="ouvrirLockModal();return false;">🔒 Reporting RH</a>
           <a href="rhfit.html">Voir les 22 outils →</a>
         </div>
       </div>
@@ -654,6 +654,36 @@ function envoyer(){
 }
 var tt;
 function toast(msg){ var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){ el.classList.remove('show'); },4500); }
+</script>
+
+<!-- MODAL LOCK FOOTER -->
+<div id="fl-ov" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(5,8,18,.93);align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(14px);" onclick="if(event.target===this)document.getElementById('fl-ov').style.display='none'">
+  <div style="background:#0D0D18;border:1px solid #1E1E32;border-radius:22px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8);">
+    <div style="height:3px;background:linear-gradient(90deg,#B8922A,#D4A832);"></div>
+    <div style="padding:2rem;text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:1.5rem;">
+        <svg width="30" height="30" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="11" fill="#B8922A"/><path d="M32 8L53 19L53 38Q53 54 32 61Q11 54 11 38L11 19Z" fill="#07070D" opacity=".9"/><text x="32" y="41" text-anchor="middle" font-family="Syne,sans-serif" font-size="16" font-weight="800" fill="#B8922A">RH</text></svg>
+        <span style="font-family:var(--fd);font-size:15px;font-weight:800;color:#FDFBF6;letter-spacing:.05em;">KAINOS <span style="color:#B8922A;">RH</span></span>
+      </div>
+      <div style="font-size:2.5rem;margin-bottom:.875rem;">&#128272;</div>
+      <div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:#FDFBF6;margin-bottom:.5rem;line-height:1.3;">R&eacute;serv&eacute; aux clients<br>KAINOS RH</div>
+      <div style="font-size:12px;color:#8B7850;line-height:1.85;margin-bottom:1.5rem;">Cet outil est accessible uniquement<br>aux entreprises clientes de KAINOS RH.<br>Contactez-nous pour obtenir votre acc&egrave;s.</div>
+      <a href="#contact" onclick="document.getElementById('fl-ov').style.display='none';" style="display:block;width:100%;padding:13px;background:#B8922A;color:#FDFBF6;border:none;border-radius:9px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;cursor:pointer;text-decoration:none;margin-bottom:.625rem;box-shadow:0 4px 20px rgba(184,146,42,.3);">&#128172; Parlez-nous de votre projet</a>
+      <button onclick="document.getElementById('fl-ov').style.display='none';" style="display:block;width:100%;padding:10px;background:transparent;color:#8B7850;border:1px solid #1E1E32;border-radius:9px;font-family:var(--fd);font-size:11px;cursor:pointer;">Fermer</button>
+      <div style="display:flex;gap:.5rem;margin-top:.875rem;">
+        <a href="tel:+22901993447390" style="flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;background:#07070D;border:1px solid #1E1E32;border-radius:7px;padding:.6rem;font-size:11px;color:#8B7850;text-decoration:none;">&#128222; +229 01 99 34 47 39</a>
+        <a href="mailto:contact@kainosrh.com" style="flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;background:#07070D;border:1px solid #1E1E32;border-radius:7px;padding:.6rem;font-size:11px;color:#8B7850;text-decoration:none;">&#9993; contact@kainosrh.com</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function ouvrirLockModal(){
+  document.getElementById('fl-ov').style.display='flex';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') document.getElementById('fl-ov').style.display='none';
+});
 </script>
 </body>
 </html>
