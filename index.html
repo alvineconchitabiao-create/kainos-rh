@@ -323,7 +323,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
           </div>
         </div>
         <div class="sc-footer">
-          <span class="sc-link" style="color:var(--or);">En savoir plus →</span>
+          <a href="#contact" class="sc-link" style="color:var(--or);" onclick="document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';">💬 Parlez-nous de votre projet</a>
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
@@ -491,7 +491,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
       <div>
         <div class="fcol-tit">Nos services</div>
         <div class="fcol-links">
-          <a href="kainos-rh.html">🏛️ Elite RH Consulting</a>
+          <span style="color:var(--gr2);">🏛️ Elite RH Consulting</span>
           <a href="jobfit.html">🎯 Jobfit</a>
           <a href="services-rh-enligne.html">💻 Votre RH en ligne</a>
           <a href="pae.html">❤️ PAE</a>
@@ -539,7 +539,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
         <div class="modal-cta-sub">Notre équipe vous répond sous 48h · Consultation gratuite</div>
       </div>
       <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-        <button class="modal-cta-btn" onclick="allerPageService()">En savoir plus →</button>
+        <button class="modal-cta-btn" id="modal-en-savoir-btn" onclick="allerPageService()">En savoir plus →</button>
         <button class="modal-cta-btn" onclick="allerContact()" style="background:transparent;border:1px solid rgba(26,18,6,.2);color:var(--tx);box-shadow:none;">Parlez-nous de votre projet</button>
       </div>
     </div>
@@ -551,7 +551,7 @@ footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.2);padding:4rem 
 <script>
 var MODAL_PAGE_COURANTE = '#';
 var SERVICES = {
-  elite:{icon:'🏛️',page:'kainos-rh.html',color:'#C9A84C',title:'Elite RH Consulting',tagline:'Conseil · Audit · Formation RH',
+  elite:{icon:'🏛️',page:'index.html',color:'#C9A84C',title:'Elite RH Consulting',tagline:'Conseil · Audit · Formation RH',
     desc:"Elite RH Consulting est le cœur stratégique de KAINOS RH. Nous accompagnons les dirigeants, DRH et managers dans la transformation profonde de leur fonction RH. Que vous soyez une PME en structuration ou une grande entreprise en recherche d'optimisation, nous apportons une expertise terrain ancrée dans les réalités béninoises et africaines — conformité OHADA, Code du Travail béninois, culture d'entreprise locale — pour des recommandations actionnables et durables.",
     feats:[
       {c:'#C9A84C',t:'Conseil RH stratégique & opérationnel — Politique RH, organigrammes, fiches de postes, classifications et procédures.'},
@@ -609,6 +609,8 @@ function ouvrirModal(id){
   var f=document.getElementById('modal-feats'); f.innerHTML='';
   s.feats.forEach(function(x){ f.innerHTML+='<div class="modal-feat"><div class="modal-feat-dot" style="background:'+x.c+'"></div><div>'+x.t+'</div></div>'; });
   MODAL_PAGE_COURANTE = s.page || '#';
+  var btnSavoir = document.getElementById('modal-en-savoir-btn');
+  if(btnSavoir){ btnSavoir.style.display = (id==='elite') ? 'none' : ''; }
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
