@@ -630,8 +630,29 @@ window.addEventListener('scroll',function(){ document.getElementById('nav').clas
 var obs=new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:0.08});
 document.querySelectorAll('.fu').forEach(function(el){ obs.observe(el); });
 function envoyer(){
-  var n=document.getElementById('c-nom').value.trim(), t=document.getElementById('c-tel').value.trim();
-  if(!n||!t){ toast('⚠️ Nom et téléphone sont obligatoires.'); return; }
+  var n=document.getElementById('c-nom').value.trim();
+  var t=document.getElementById('c-tel').value.trim();
+  if(!n||!t){toast('Nom  et telephone obligatoire(s).');return;}
+  var data={    nom: document.getElementById('c-nom').value.trim(),    entreprise: document.getElementById('c-ent').value.trim(),    telephone: document.getElementById('c-tel').value.trim(),    email: document.getElementById('c-email').value.trim(),    service: document.getElementById('c-service').value.trim(),    message: document.getElementById('c-msg').value.trim(),
+    _subject: 'Nouveau message KAINOS RH — '+document.title
+  };
+  toast('Envoi en cours...');
+  fetch('https://formspree.io/f/xdaywqpp',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(data)
+  })
+  .then(function(r){return r.json();})
+  .then(function(res){
+    if(res.ok||res.next){
+      toast('Message envoye ! Reponse sous 48h.');
+      ['c-nom','c-ent','c-tel','c-email','c-service','c-msg'].forEach(function(id){document.getElementById(id).value='';});
+    } else {
+      toast('Erreur envoi. Contactez-nous : contact@kainosrh.com');
+    }
+  })
+  .catch(function(){toast('Erreur reseau. Contactez-nous : contact@kainosrh.com');});
+}
   toast('✅ Message envoyé ! Nous vous répondons sous 48h.');
   ['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){ document.getElementById(id).value=''; });
 }

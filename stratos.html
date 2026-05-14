@@ -2,166 +2,396 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>STRATOS — SaaS RH · Objectifs, Performances & Équipes · KAINOS RH</title>
+<title>StratOS — Gestion de la Productivité & Objectifs Stratégiques · KAINOS RH</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--m:#FDFBF6;--m2:#F7F2E8;--m3:#EFE8D8;--or:#C9A84C;--or2:#E2C47A;--bl:#F5F2EA;--gr:#8A9AB8;--gr3:#1E2E48;--vt:#22D48A;--vl:#B8922A;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:#FDFBF6;color:var(--tx);overflow-x:hidden;}
+:root{
+  --m:#FAFBFF;--m2:#F0F2FF;--m3:#E8ECFF;
+  --vl:#6B4FD8;--vl2:#8B6FF0;--vl3:#A78BFA;
+  --tx:#0F0A2A;--gr:#5A5480;--gr2:#8A85A8;--gr3:#D8D4F0;
+  --vt:#10B981;--or:#F59E0B;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--m);color:var(--tx);overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--vl);border-radius:2px;}
 a{text-decoration:none;color:inherit;}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(253,251,246,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,146,42,.1);}
-.nlogo{font-family:var(--fd);font-size:16px;font-weight:800;}
+img{display:block;max-width:100%;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(250,251,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--gr3);box-shadow:0 1px 20px rgba(107,79,216,.08);}
+.nlogo{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--tx);}
 .nlogo span{color:var(--vl);}
-.nback{font-size:11px;color:#6B5B3E;border:1px solid #D8CCBA;padding:6px 14px;border-radius:20px;transition:all .2s;display:flex;align-items:center;gap:5px;}
-.nback:hover{color:var(--or);border-color:rgba(201,168,76,.3);}
-.hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 5vw 80px;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse at top,rgba(167,139,250,.12) 0%,transparent 65%);pointer-events:none;}
-.htag{display:inline-flex;align-items:center;gap:7px;background:rgba(184,146,42,.08);border:1px solid rgba(184,146,42,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--vl);margin-bottom:1.75rem;}
+.nback{font-size:11px;color:var(--gr);border:1px solid var(--gr3);padding:6px 16px;border-radius:20px;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.nback:hover{color:var(--vl);border-color:rgba(107,79,216,.3);}
+.nav-cta{background:var(--vl);color:#fff;padding:9px 22px;border-radius:7px;font-family:var(--fd);font-size:11px;font-weight:800;letter-spacing:.06em;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-cta:hover{background:var(--vl2);transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 5vw 80px;gap:4rem;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(150deg,#FAFBFF 0%,#EEF0FF 50%,#FAFBFF 100%);z-index:0;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(107,79,216,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(107,79,216,.04) 1px,transparent 1px);background-size:56px 56px;z-index:0;}
+.hero-glow{position:absolute;top:-150px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(107,79,216,.1) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.hero-left{position:relative;z-index:1;}
+.hero-right{position:relative;z-index:1;}
+
+.htag{display:inline-flex;align-items:center;gap:7px;background:rgba(107,79,216,.08);border:1px solid rgba(107,79,216,.2);border-radius:20px;padding:5px 16px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--vl);margin-bottom:1.5rem;}
 .hdot{width:6px;height:6px;border-radius:50%;background:var(--vt);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.hmark{width:80px;height:80px;background:linear-gradient(135deg,#6B4FD8,var(--vl));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 1.25rem;box-shadow:0 0 60px rgba(167,139,250,.3);animation:float 4s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.hname{font-family:var(--fd);font-size:clamp(3rem,7vw,5.5rem);font-weight:800;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 0%,var(--vl) 60%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hsub{font-size:14px;color:var(--vl);font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-top:.35rem;margin-bottom:.5rem;}
-h1{font-family:var(--fd);font-size:clamp(1.2rem,2.2vw,1.7rem);font-weight:600;color:rgba(245,242,234,.7);line-height:1.5;margin-bottom:1rem;}
-.hdesc{font-size:14px;color:#6B5B3E;line-height:1.85;max-width:560px;margin:0 auto 2.5rem;font-weight:300;}
-.cd{display:flex;gap:1.25rem;justify-content:center;margin-bottom:2.5rem;flex-wrap:wrap;}
-.cdi{text-align:center;}
-.cdv{font-family:var(--fd);font-size:2.2rem;font-weight:800;background:#F7F2E8;border:1px solid #D8CCBA;border-radius:10px;width:66px;height:66px;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem;}
-.cdl{font-size:9px;color:#6B5B3E;text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
-.wzone{max-width:500px;margin:0 auto;}
-.wtitle{font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:.875rem;}
-.wform{display:flex;gap:.5rem;margin-bottom:.6rem;}
-.winput{flex:1;background:rgba(0,0,0,.04);border:1px solid #D8CCBA;border-radius:8px;color:var(--tx);font-family:var(--fb);font-size:12px;padding:11px 14px;outline:none;transition:border-color .2s;}
-.winput:focus{border-color:var(--vl);}
-.wbtn{background:linear-gradient(135deg,#6B4FD8,var(--vl));color:#1A1206;border:none;border-radius:8px;padding:11px 20px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.06em;white-space:nowrap;transition:opacity .2s;}
-.wbtn:hover{opacity:.88;}
-.wnote{font-size:10px;color:#6B5B3E;text-align:center;}
-.wcount{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-top:.875rem;font-size:12px;color:#6B5B3E;}
-.wavs{display:flex;}.wav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#6B4FD8,var(--vl));border:2px solid var(--m);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#1A1206;margin-left:-5px;}.wav:first-child{margin-left:0;}
-section.feat{padding:80px 5vw;background:#F7F2E8;border-top:1px solid #D8CCBA;}
-.feat-inner{max-width:1100px;margin:0 auto;}
-.sey{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--vl);margin-bottom:.75rem;text-align:center;}
-.stitle{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;text-align:center;margin-bottom:3rem;letter-spacing:-.015em;}
+
+.hero-left h1{font-family:var(--fd);font-size:clamp(2.2rem,4vw,3.4rem);font-weight:800;line-height:1.08;letter-spacing:-.025em;color:var(--tx);margin-bottom:1.25rem;}
+.hero-left h1 em{font-style:normal;color:var(--vl);}
+.hero-desc{font-size:15px;color:var(--gr);line-height:1.95;font-weight:300;margin-bottom:2rem;max-width:520px;}
+.hbtns{display:flex;gap:.875rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.btn-vl{background:var(--vl);color:#fff;padding:14px 30px;border-radius:8px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;transition:all .25s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(107,79,216,.3);}
+.btn-vl:hover{background:var(--vl2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(107,79,216,.4);}
+.btn-gh{background:transparent;color:var(--tx);padding:14px 30px;border-radius:8px;font-family:var(--fd);font-size:12px;font-weight:600;border:1px solid var(--gr3);letter-spacing:.06em;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
+.btn-gh:hover{border-color:rgba(107,79,216,.35);color:var(--vl);}
+
+/* Métriques hero */
+.hmetrics{display:flex;gap:2rem;flex-wrap:wrap;}
+.hm{border-left:2px solid rgba(107,79,216,.25);padding-left:.875rem;}
+.hm-val{font-family:var(--fd);font-size:1.6rem;font-weight:800;color:var(--vl);line-height:1;}
+.hm-label{font-size:10px;color:var(--gr2);margin-top:.2rem;}
+
+/* Carte visuelle hero droite */
+.hero-card{background:#fff;border:1px solid var(--gr3);border-radius:18px;padding:1.75rem;box-shadow:0 20px 60px rgba(107,79,216,.12);}
+.hero-card-title{font-family:var(--fd);font-size:13px;font-weight:800;color:var(--tx);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;}
+.obj-list{display:flex;flex-direction:column;gap:.75rem;}
+.obj-item{background:var(--m2);border:1px solid var(--gr3);border-radius:10px;padding:.875rem 1rem;}
+.obj-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
+.obj-item-name{font-size:12px;font-weight:700;color:var(--tx);}
+.obj-item-pct{font-size:11px;font-weight:800;color:var(--vl);}
+.obj-bar-bg{height:5px;background:var(--gr3);border-radius:3px;overflow:hidden;}
+.obj-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--vl),var(--vl3));}
+.obj-team{font-size:10px;color:var(--gr2);margin-top:.35rem;}
+.hero-card-footer{margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--gr3);display:flex;align-items:center;justify-content:space-between;}
+.hcf-label{font-size:10px;color:var(--gr2);}
+.hcf-val{font-family:var(--fd);font-size:13px;font-weight:800;color:var(--vt);}
+
+/* ── BANDE DESCRIPTIVE ── */
+.band{background:var(--vl);padding:2rem 5vw;position:relative;z-index:1;}
+.band-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.band-text{font-size:15px;font-weight:500;color:#fff;line-height:1.7;max-width:700px;}
+.band-text strong{font-weight:800;}
+.band-btn{background:#fff;color:var(--vl);padding:11px 24px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.06em;white-space:nowrap;transition:all .2s;}
+.band-btn:hover{opacity:.9;}
+
+/* ── SECTIONS ── */
+.sec{padding:90px 5vw;}
+.sec-inner{max-width:1100px;margin:0 auto;}
+.sey{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--vl);margin-bottom:.75rem;}
+.stitle{font-family:var(--fd);font-size:clamp(1.7rem,3vw,2.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.875rem;color:var(--tx);}
 .stitle em{font-style:normal;color:var(--vl);}
+.sdesc{font-size:14px;color:var(--gr);line-height:1.9;font-weight:300;max-width:600px;margin-bottom:3rem;}
+
+/* GRILLE FONCTIONNALITÉS */
 .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
-.fc{background:rgba(0,0,0,.03);border:1px solid #D8CCBA;border-radius:14px;padding:1.5rem;transition:all .3s;position:relative;overflow:hidden;}
-.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6B4FD8,var(--vl));opacity:0;transition:opacity .3s;}
-.fc:hover{background:rgba(167,139,250,.05);border-color:rgba(167,139,250,.25);transform:translateY(-4px);}
+.fc{background:#fff;border:1px solid var(--gr3);border-radius:16px;padding:1.75rem;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(107,79,216,.04);}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--vl),var(--vl3));opacity:0;transition:opacity .3s;}
+.fc:hover{box-shadow:0 12px 40px rgba(107,79,216,.12);transform:translateY(-4px);}
 .fc:hover::before{opacity:1;}
-.fci{width:42px;height:42px;border-radius:10px;background:rgba(184,146,42,.1);border:1px solid rgba(184,146,42,.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.875rem;}
-.fcn{font-family:var(--fd);font-size:13px;font-weight:700;margin-bottom:.4rem;}
-.fcd{font-size:11px;color:#6B5B3E;line-height:1.7;}
-.fct{display:inline-block;margin-top:.75rem;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(184,146,42,.1);color:var(--vl);}
-section.tl{padding:80px 5vw;}
-.tl-inner{max-width:760px;margin:0 auto;}
-.tllist{padding-left:2rem;position:relative;}
-.tllist::before{content:'';position:absolute;left:.5rem;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--vl),rgba(167,139,250,.05));}
-.tli{position:relative;margin-bottom:2rem;padding-left:1.5rem;}
-.tldot{position:absolute;left:-1.6rem;top:.2rem;width:12px;height:12px;border-radius:50%;border:2px solid;}
-.done .tldot{background:var(--vt);border-color:var(--vt);}
-.current .tldot{background:var(--vl);border-color:var(--vl);animation:pldot 2s infinite;}
-@keyframes pldot{0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,.4);}50%{box-shadow:0 0 0 8px rgba(167,139,250,0);}}
-.next .tldot{background:transparent;border-color:#D8CCBA;}
-.tll{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem;}
-.done .tll{color:var(--vt);}.current .tll{color:var(--vl);}.next .tll{color:#6B5B3E;}
-.tln{font-family:var(--fd);font-size:13px;font-weight:700;margin-bottom:.2rem;}
-.tld{font-size:11px;color:#6B5B3E;line-height:1.6;}
-footer{background:#1A1206;border-top:1px solid rgba(184,146,42,.1);padding:2rem 5vw;text-align:center;}
-.fl{font-family:var(--fd);font-size:15px;font-weight:800;margin-bottom:.4rem;}.fl span{color:var(--vl);}
+.fci{font-size:2rem;margin-bottom:.875rem;}
+.fcn{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--tx);margin-bottom:.4rem;}
+.fcd{font-size:12px;color:var(--gr);line-height:1.75;}
+.fct{display:inline-block;margin-top:.875rem;font-size:9px;font-weight:700;background:rgba(107,79,216,.08);border:1px solid rgba(107,79,216,.15);color:var(--vl);border-radius:20px;padding:3px 10px;letter-spacing:.06em;text-transform:uppercase;}
+
+/* SECTION COMMENT ÇA MARCHE */
+.how-sec{background:var(--m2);border-top:1px solid var(--gr3);border-bottom:1px solid var(--gr3);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;position:relative;}
+.how-grid::before{content:'';position:absolute;top:24px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,rgba(107,79,216,.3),transparent);}
+.hc{text-align:center;position:relative;z-index:1;}
+.hc-num{width:48px;height:48px;border-radius:50%;background:#fff;border:1px solid var(--gr3);box-shadow:0 2px 12px rgba(107,79,216,.1);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;font-weight:800;color:var(--vl);margin:0 auto .75rem;}
+.hc-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--tx);margin-bottom:.3rem;}
+.hc-desc{font-size:11px;color:var(--gr);line-height:1.65;}
+
+/* CTA SECTION */
+.cta-sec{background:linear-gradient(135deg,#6B4FD8,#8B6FF0);padding:80px 5vw;text-align:center;}
+.cta-inner{max-width:600px;margin:0 auto;}
+.cta-sec h2{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;color:#fff;margin-bottom:1rem;letter-spacing:-.02em;}
+.cta-sec p{font-size:14px;color:rgba(255,255,255,.8);line-height:1.85;margin-bottom:2rem;}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-white{background:#fff;color:var(--vl);padding:14px 32px;border-radius:8px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.btn-white:hover{opacity:.92;transform:translateY(-1px);}
+.btn-wgh{background:transparent;color:#fff;padding:14px 32px;border-radius:8px;font-family:var(--fd);font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.3);letter-spacing:.06em;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-wgh:hover{border-color:#fff;}
+
+/* CONTACT */
+#contact{padding:90px 5vw;}
+.coi{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
+.cf{background:#fff;border:1px solid var(--gr3);border-radius:18px;padding:2.5rem;box-shadow:0 8px 40px rgba(107,79,216,.08);}
+.cf-tit{font-family:var(--fd);font-size:14px;font-weight:800;color:var(--vl);margin-bottom:1.5rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+.ff{display:flex;flex-direction:column;gap:.35rem;}
+.ff.full{grid-column:1/-1;}
+.ff label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gr2);}
+.ffi{background:var(--m2);border:1px solid var(--gr3);border-radius:8px;color:var(--tx);font-family:var(--fb);font-size:12px;padding:10px 12px;outline:none;transition:border-color .2s;width:100%;}
+.ffi:focus{border-color:var(--vl);}
+.cf-btn{width:100%;padding:13px;background:var(--vl);color:#fff;border:none;border-radius:8px;font-family:var(--fd);font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.08em;transition:all .2s;margin-top:.5rem;box-shadow:0 4px 20px rgba(107,79,216,.25);}
+.cf-btn:hover{background:var(--vl2);transform:translateY(-1px);}
+.ci{display:flex;align-items:flex-start;gap:.875rem;margin-bottom:1.25rem;}
+.ci-ico{width:40px;height:40px;border-radius:10px;background:rgba(107,79,216,.08);border:1px solid rgba(107,79,216,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ci-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr2);margin-bottom:3px;}
+.ci-val{font-size:13px;color:var(--tx);font-weight:500;}
+
+/* FOOTER */
+footer{background:var(--tx);border-top:1px solid rgba(107,79,216,.2);padding:2.5rem 5vw;text-align:center;}
+.fl{font-family:var(--fd);font-size:15px;font-weight:800;color:#fff;margin-bottom:.5rem;}
+.fl span{color:var(--vl3);}
 .flinks{display:flex;gap:2rem;justify-content:center;margin-bottom:.75rem;flex-wrap:wrap;}
-.flinks a{font-size:12px;color:#6B5B3E;transition:color .2s;}.flinks a:hover{color:var(--or);}
-.fcopy{font-size:11px;color:#2A3A58;}
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#F7F2E8;border:1px solid var(--vl);color:var(--tx);padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.5);transition:color .2s;}
+.flinks a:hover{color:#fff;}
+.fcopy{font-size:11px;color:rgba(255,255,255,.25);}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--tx);border:1px solid var(--vl);color:#fff;padding:10px 16px;border-radius:8px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
-@media(max-width:768px){.fgrid{grid-template-columns:1fr 1fr;}.wform{flex-direction:column;}.cd{gap:.875rem;}.cdv{width:56px;height:56px;font-size:1.8rem;}}
-@media(max-width:480px){.fgrid{grid-template-columns:1fr;}}
+
+@media(max-width:1024px){.hero{grid-template-columns:1fr;}.hero-right{display:none;}.fgrid{grid-template-columns:1fr 1fr;}.how-grid{grid-template-columns:1fr 1fr;}.coi{grid-template-columns:1fr;}.fg{grid-template-columns:1fr;}}
+@media(max-width:640px){.fgrid,.how-grid{grid-template-columns:1fr;}.hbtns,.cta-btns{flex-direction:column;}}
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
-  <div class="nlogo">STRATOS <span>RH</span></div>
-  <a href="index.html" class="nback">← KAINOS RH</a>
+  <div class="nlogo">Strat<span>OS</span> <span style="font-size:11px;font-weight:400;color:var(--gr2);margin-left:4px;">by KAINOS RH</span></div>
+  <div style="display:flex;align-items:center;gap:.875rem;">
+    <a href="index.html" class="nback">← Retour à l'accueil</a>
+    <a href="https://luxury-manatee-d29c68.netlify.app" target="_blank" class="nav-cta">🚀 Accéder à StratOS</a>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div>
-    <div class="htag"><span class="hdot"></span>Service 03 · En développement</div>
-    <div class="hmark">🚀</div>
-    <div class="hname">STRATOS</div>
-    <div class="hsub">SaaS RH · Objectifs · Performances · Équipes · Budget</div>
-    <h1>Pilotez vos RH comme jamais.<br>Un seul dashboard, toute la puissance.</h1>
-    <p class="hdesc">STRATOS centralise le suivi des objectifs, l'évaluation des performances, la gestion des équipes et le pilotage du budget RH dans une plateforme cloud pensée pour les entreprises africaines.</p>
-    <div class="cd" id="countdown">
-      <div class="cdi"><div class="cdv" id="cd-j">--</div><div class="cdl">Jours</div></div>
-      <div class="cdi"><div class="cdv" id="cd-h">--</div><div class="cdl">Heures</div></div>
-      <div class="cdi"><div class="cdv" id="cd-m">--</div><div class="cdl">Min</div></div>
-      <div class="cdi"><div class="cdv" id="cd-s">--</div><div class="cdl">Sec</div></div>
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-left">
+    <div class="htag"><span class="hdot"></span>● Disponible maintenant · KAINOS RH</div>
+    <h1>Pilotez la <em>productivité</em><br>et vos objectifs<br><em>stratégiques.</em></h1>
+    <p class="hero-desc">StratOS permet aux entreprises de répartir leurs objectifs stratégiques par fonction, de suivre la contribution effective de chaque équipe, et d'évaluer périodiquement l'apport réel de chaque collaborateur à l'atteinte des objectifs.</p>
+    <div class="hbtns">
+      <a href="https://luxury-manatee-d29c68.netlify.app" target="_blank" class="btn-vl">🚀 Accéder à StratOS →</a>
+      <a href="#contact" class="btn-gh">Demander une démo</a>
     </div>
-    <div class="wzone">
-      <div class="wtitle">🎯 Rejoignez la liste d'attente — accès anticipé & tarif préférentiel</div>
-      <div class="wform">
-        <input type="email" class="winput" id="wl-email" placeholder="votre@email.com"/>
-        <button class="wbtn" onclick="inscrire()">Rejoindre →</button>
+    <div class="hmetrics">
+      <div class="hm"><div class="hm-val">100%</div><div class="hm-label">En ligne & opérationnel</div></div>
+      <div class="hm"><div class="hm-val">360°</div><div class="hm-label">Suivi des performances</div></div>
+      <div class="hm"><div class="hm-val">∞</div><div class="hm-label">Collaborateurs & équipes</div></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="hero-card-title">📊 Tableau de bord objectifs — Q2 2026</div>
+      <div class="obj-list">
+        <div class="obj-item">
+          <div class="obj-item-head"><span class="obj-item-name">Direction Commerciale</span><span class="obj-item-pct">78%</span></div>
+          <div class="obj-bar-bg"><div class="obj-bar" style="width:78%"></div></div>
+          <div class="obj-team">12 collaborateurs · 4 objectifs</div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-item-head"><span class="obj-item-name">Direction RH</span><span class="obj-item-pct">91%</span></div>
+          <div class="obj-bar-bg"><div class="obj-bar" style="width:91%"></div></div>
+          <div class="obj-team">8 collaborateurs · 3 objectifs</div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-item-head"><span class="obj-item-name">Direction Technique</span><span class="obj-item-pct">64%</span></div>
+          <div class="obj-bar-bg"><div class="obj-bar" style="width:64%"></div></div>
+          <div class="obj-team">15 collaborateurs · 5 objectifs</div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-item-head"><span class="obj-item-name">Direction Financière</span><span class="obj-item-pct">85%</span></div>
+          <div class="obj-bar-bg"><div class="obj-bar" style="width:85%"></div></div>
+          <div class="obj-team">6 collaborateurs · 3 objectifs</div>
+        </div>
       </div>
-      <div class="wnote">🔒 Aucun spam · Désabonnement en 1 clic · Accès prioritaire garanti</div>
-      <div class="wcount">
-        <div class="wavs"><div class="wav">AB</div><div class="wav">CD</div><div class="wav">EF</div><div class="wav">+</div></div>
-        <span><strong id="wlcount" style="color:var(--tx);">47</strong> personnes déjà inscrites</span>
+      <div class="hero-card-footer">
+        <span class="hcf-label">Performance globale entreprise</span>
+        <span class="hcf-val">✅ 79.5% — En bonne voie</span>
       </div>
     </div>
   </div>
 </section>
 
-<section class="feat">
-  <div class="feat-inner">
-    <div class="sey">Fonctionnalités prévues</div>
-    <h2 class="stitle">Tout ce qu'il faut pour piloter<br>vos <em>RH intelligemment.</em></h2>
+<!-- BANDE -->
+<div class="band">
+  <div class="band-inner">
+    <div class="band-text"><strong>StratOS</strong> — Chaque collaborateur devient un acteur mesurable de votre stratégie. Répartissez vos objectifs, suivez les contributions, évaluez les performances. </div>
+    <a href="#contact" class="band-btn">Demander une démo →</a>
+  </div>
+</div>
+
+<!-- FONCTIONNALITÉS -->
+<section class="sec">
+  <div class="sec-inner">
+    <div class="sey">Fonctionnalités</div>
+    <h2 class="stitle">Tout ce dont vous avez besoin<br>pour <em>piloter votre stratégie.</em></h2>
+    <p class="sdesc">StratOS centralise la gestion de vos objectifs, des performances et des équipes en un seul outil accessible depuis n'importe quel navigateur.</p>
     <div class="fgrid">
-      <div class="fc"><div class="fci">🎯</div><div class="fcn">Suivi des Objectifs (OKR)</div><div class="fcd">Définissez, suivez et alignez les objectifs individuels, d'équipe et d'entreprise. Tableaux de bord OKR visuels, alertes de dérive en temps réel.</div><div class="fct">OKR · KPI</div></div>
-      <div class="fc"><div class="fci">⭐</div><div class="fcn">Gestion des Performances</div><div class="fcd">Entretiens structurés, évaluations 360°, plans de développement personnalisés et calibration des performances entre managers.</div><div class="fct">360° · Entretiens</div></div>
-      <div class="fc"><div class="fci">👥</div><div class="fcn">Gestion des Équipes</div><div class="fcd">Organigrammes dynamiques, gestion des responsabilités, suivi de la charge de travail et collaboration inter-équipes en temps réel.</div><div class="fct">Organigramme · Charge</div></div>
-      <div class="fc"><div class="fci">💰</div><div class="fcn">Budget RH</div><div class="fcd">Planification et suivi du budget masse salariale, frais de recrutement, formation et primes. Alertes automatiques en cas de dépassement.</div><div class="fct">Budget · Forecast</div></div>
-      <div class="fc"><div class="fci">📊</div><div class="fcn">Analytics & Reporting</div><div class="fcd">Indicateurs RH en temps réel : turnover, engagement, productivité, coût par employé. Rapports exportables pour la Direction.</div><div class="fct">BI · Temps réel</div></div>
-      <div class="fc"><div class="fci">📱</div><div class="fcn">Multi-appareils & Cloud</div><div class="fcd">Accessible depuis n'importe quel appareil. Données synchronisées en temps réel, sauvegardées en sécurité dans le cloud africain.</div><div class="fct">Cloud · Mobile</div></div>
+      <div class="fc">
+        <div class="fci">🎯</div>
+        <div class="fcn">Répartition des objectifs</div>
+        <div class="fcd">Déclinez vos objectifs stratégiques par direction, département et collaborateur. Chaque niveau sait exactement ce qu'on attend de lui.</div>
+        <div class="fct">OKR · Cascade</div>
+      </div>
+      <div class="fc">
+        <div class="fci">📊</div>
+        <div class="fcn">Suivi des contributions</div>
+        <div class="fcd">Suivez en temps réel la contribution effective de chaque équipe à l'atteinte des objectifs globaux de l'entreprise.</div>
+        <div class="fct">Temps réel · Dashboard</div>
+      </div>
+      <div class="fc">
+        <div class="fci">⭐</div>
+        <div class="fcn">Évaluation périodique</div>
+        <div class="fcd">Évaluez périodiquement l'apport réel de chaque collaborateur. Entretiens structurés, notation et plans de développement.</div>
+        <div class="fct">360° · Périodique</div>
+      </div>
+      <div class="fc">
+        <div class="fci">👥</div>
+        <div class="fcn">Gestion des équipes</div>
+        <div class="fcd">Gérez vos équipes, leurs rôles, leurs responsabilités et leur alignement avec la stratégie de l'entreprise.</div>
+        <div class="fct">Équipes · Organigramme</div>
+      </div>
+      <div class="fc">
+        <div class="fci">💰</div>
+        <div class="fcn">Budget RH & analytiques</div>
+        <div class="fcd">Simulez la masse salariale, suivez les coûts RH et prenez des décisions éclairées grâce à des indicateurs clairs.</div>
+        <div class="fct">Budget · Analytics</div>
+      </div>
+      <div class="fc">
+        <div class="fci">📱</div>
+        <div class="fcn">Accessible partout</div>
+        <div class="fcd">StratOS fonctionne dans votre navigateur — sur PC, tablette ou mobile. Aucune installation requise.</div>
+        <div class="fct">Web · Mobile · Offline</div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="tl">
-  <div class="tl-inner">
-    <div class="sey">Feuille de route</div>
-    <h2 class="stitle" style="text-align:left;margin-bottom:2.5rem;">Comment on y arrive.</h2>
-    <div class="tllist">
-      <div class="tli done"><div class="tldot"></div><div class="tll">✓ Étape 1 — Terminé</div><div class="tln">Conception & design de la plateforme</div><div class="tld">Architecture technique, UX design, choix technologiques, maquettes validées.</div></div>
-      <div class="tli current"><div class="tldot"></div><div class="tll">◉ Étape 2 — En cours</div><div class="tln">Développement du noyau</div><div class="tld">Modules OKR, performances et gestion des équipes en cours de développement.</div></div>
-      <div class="tli next"><div class="tldot"></div><div class="tll">○ Étape 3 — T2 2026</div><div class="tln">Beta privée pour les inscrits</div><div class="tld">Accès anticipé pour les membres de la liste d'attente avec accompagnement.</div></div>
-      <div class="tli next"><div class="tldot"></div><div class="tll">○ Étape 4 — T3 2026</div><div class="tln">Lancement public</div><div class="tld">Ouverture à tous. Modules complets : OKR, performances, équipes, budget, analytics.</div></div>
-      <div class="tli next"><div class="tldot"></div><div class="tll">○ Étape 5 — 2027</div><div class="tln">Expansion régionale</div><div class="tld">Déploiement en Côte d'Ivoire, Togo, Sénégal et Cameroun avec conformité locale.</div></div>
+<!-- COMMENT ÇA MARCHE -->
+<section class="sec how-sec">
+  <div class="sec-inner">
+    <div class="sey">Processus</div>
+    <h2 class="stitle">Comment ça <em>marche ?</em></h2>
+    <div class="how-grid">
+      <div class="hc"><div class="hc-num">1</div><div class="hc-title">Définissez vos objectifs</div><div class="hc-desc">Saisissez vos objectifs stratégiques annuels et répartissez-les par direction et par fonction.</div></div>
+      <div class="hc"><div class="hc-num">2</div><div class="hc-title">Assignez aux équipes</div><div class="hc-desc">Chaque manager reçoit ses objectifs et les décline pour ses collaborateurs avec des indicateurs clairs.</div></div>
+      <div class="hc"><div class="hc-num">3</div><div class="hc-title">Suivez en temps réel</div><div class="hc-desc">Le tableau de bord affiche la progression de chaque équipe et de chaque collaborateur en temps réel.</div></div>
+      <div class="hc"><div class="hc-num">4</div><div class="hc-title">Évaluez & décidez</div><div class="hc-desc">Évaluations périodiques, rapports automatiques et recommandations pour les décisions RH.</div></div>
     </div>
   </div>
 </section>
 
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-inner">
+    <h2>Prêt à piloter votre stratégie ?</h2>
+    <p>StratOS est disponible maintenant. Accédez à l'application en un clic ou contactez notre équipe pour une démonstration personnalisée.</p>
+    <div class="cta-btns">
+      <a href="https://luxury-manatee-d29c68.netlify.app" target="_blank" class="btn-white">🚀 Accéder à StratOS →</a>
+      <a href="#contact" class="btn-wgh">Demander une démo</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="coi">
+    <div>
+      <div class="sey">Contact</div>
+      <h2 class="stitle">Parlons de votre <em>projet.</em></h2>
+      <p style="font-size:14px;color:var(--gr);line-height:1.9;margin-bottom:2rem;font-weight:300;">Besoin d'une démonstration, d'un accompagnement ou d'informations complémentaires sur StratOS ? Notre équipe vous répond sous 48h.</p>
+      <div class="ci"><div class="ci-ico">📞</div><div><div class="ci-lbl">Téléphone</div><div class="ci-val">+229 01 99 34 47 39</div></div></div>
+      <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
+      <div class="ci"><div class="ci-ico">📍</div><div><div class="ci-lbl">Adresse</div><div class="ci-val">Cotonou, République du Bénin</div></div></div>
+      <div style="margin-top:1.5rem;">
+        <a href="https://luxury-manatee-d29c68.netlify.app" target="_blank" class="btn-vl" style="display:inline-flex;">🚀 Accéder directement à StratOS →</a>
+      </div>
+    </div>
+    <div class="cf">
+      <div class="cf-tit">✉️ Demander une démonstration</div>
+      <div class="fg">
+        <div class="ff"><label>Nom & Prénom *</label><input class="ffi" type="text" id="c-nom" placeholder="Ex: DOSSOU Jean"/></div>
+        <div class="ff"><label>Entreprise</label><input class="ffi" type="text" id="c-ent" placeholder="Ex: ACME Sarl"/></div>
+        <div class="ff"><label>Téléphone *</label><input class="ffi" type="tel" id="c-tel" placeholder="+229 01 XX XX XX XX"/></div>
+        <div class="ff"><label>Email</label><input class="ffi" type="email" id="c-email" placeholder="jean@acme.bj"/></div>
+        <div class="ff full"><label>Nombre de collaborateurs</label>
+          <select class="ffi" id="c-size">
+            <option value="">— Sélectionner —</option>
+            <option>Moins de 20</option>
+            <option>20 à 50</option>
+            <option>50 à 150</option>
+            <option>150 à 500</option>
+            <option>Plus de 500</option>
+          </select>
+        </div>
+        <div class="ff full"><label>Votre besoin</label><textarea class="ffi" id="c-msg" rows="3" placeholder="Décrivez votre contexte et ce que vous attendez de StratOS..."></textarea></div>
+      </div>
+      <button class="cf-btn" onclick="envoyer()">Envoyer la demande →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <div class="fl">STRATOS <span>RH</span> — by KAINOS RH</div>
+  <div class="fl">Strat<span>OS</span> — by KAINOS RH</div>
   <div class="flinks">
-    <a href="index.html">← KAINOS RH</a>
-    <a href="index.html">Elite RH Consulting</a>
-    <a href="rhfit.html">RHFit</a>
+    <a href="index.html">← Accueil KAINOS RH</a>
     <a href="jobfit.html">Jobfit</a>
-    <a href="index.html#contact">Contact</a>
+    <a href="pae.html">PAE</a>
+    <a href="services-rh-enligne.html">Votre RH en ligne</a>
+    <a href="#contact">Contact</a>
   </div>
-  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com</div>
+  <div class="fcopy">© 2026 KAINOS RH · contact@kainosrh.com · Cotonou, Bénin</div>
 </footer>
+
 <div class="toast" id="toast"></div>
+
 <script>
-var target=new Date('2026-07-01T00:00:00');
-function tick(){var n=new Date(),d=target-n;if(d<=0)return;var j=Math.floor(d/864e5),h=Math.floor((d%864e5)/36e5),m=Math.floor((d%36e5)/6e4),s=Math.floor((d%6e4)/1e3);['j','h','m','s'].forEach(function(k,i){var el=document.getElementById('cd-'+k);if(el)el.textContent=String([j,h,m,s][i]).padStart(2,'0');});}
-tick();setInterval(tick,1000);
-var cnt=47;
-function inscrire(){var e=document.getElementById('wl-email').value.trim();if(!e||!e.includes('@')){toast('Email invalide');return;}cnt++;document.getElementById('wlcount').textContent=cnt;document.getElementById('wl-email').value='';toast('🎉 Inscription confirmée ! Vous aurez un accès prioritaire.');}
-var tt;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4000);}
+function envoyer(){
+  var n=document.getElementById('c-nom').value.trim();
+  var t=document.getElementById('c-tel').value.trim();
+  if(!n||!t){toast('⚠️ Nom et téléphone sont obligatoires.');return;}
+
+  var data = {
+    nom: n,
+    entreprise: document.getElementById('c-ent').value.trim(),
+    telephone: t,
+    email: document.getElementById('c-email').value.trim(),
+    collaborateurs: document.getElementById('c-size').value,
+    message: document.getElementById('c-msg').value.trim(),
+    service: 'StratOS — Demande de démonstration'
+  };
+
+  toast('⏳ Envoi en cours...');
+
+  fetch('https://formspree.io/f/xdaywqpp', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if(res.ok || res.next){
+      toast('✅ Demande envoyée ! Notre équipe vous contacte sous 48h.');
+      ['c-nom','c-ent','c-tel','c-email','c-msg'].forEach(function(id){
+        document.getElementById(id).value='';
+      });
+      document.getElementById('c-size').value='';
+    } else {
+      toast('⚠️ Erreur envoi. Contactez-nous : contact@kainosrh.com');
+    }
+  })
+  .catch(function(){
+    toast('⚠️ Erreur reseau. Contactez-nous : contact@kainosrh.com');
+  });
+}
+var tt;
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4500);}
 </script>
 </body>
 </html>
