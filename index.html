@@ -10,7 +10,7 @@
   --m:#071428;--m2:#0A1F3D;--m3:#0F2A50;--m4:#163363;
   --or:#C9A84C;--or2:#E2C47A;--ord:rgba(201,168,76,.1);--ors:rgba(201,168,76,.2);
   --bl:#F5F2EA;--gr:#8A9AB8;--gr2:#4A5A78;--gr3:#1E2E48;
-  --vt:#22D48A;--rd:#F05A5A;--bleu:#4A9EFF;--vl:#A78BFA;--cy:#22D3EE;--og:#FB923C;--jn:#FBC724;
+  --vt:#22D48A;--rd:#F05A5A;--bleu:#4A9EFF;--vl:#A78BFA;
   --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -18,8 +18,6 @@ html{scroll-behavior:smooth;}
 body{font-family:var(--fb);background:var(--m);color:var(--bl);overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--or);border-radius:2px;}
 a{text-decoration:none;color:inherit;}
-
-/* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:rgba(7,20,40,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,.08);transition:box-shadow .3s;}
 nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.4);}
 .nav-brand{display:flex;align-items:center;gap:10px;}
@@ -31,8 +29,6 @@ nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.4);}
 .nav-links a:hover{color:var(--or);}
 .nav-cta{background:var(--or)!important;color:var(--m)!important;padding:8px 20px;border-radius:6px;font-family:var(--fd);font-size:11px;font-weight:800!important;letter-spacing:.08em;transition:all .2s!important;}
 .nav-cta:hover{background:var(--or2)!important;transform:translateY(-1px)!important;}
-
-/* ── HERO ── */
 .hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:120px 5vw 80px;overflow:hidden;}
 .hbg{position:absolute;inset:0;background:linear-gradient(160deg,var(--m) 0%,var(--m2) 60%,var(--m) 100%);}
 .hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.03) 1px,transparent 1px);background-size:60px 60px;}
@@ -48,16 +44,13 @@ h1 em{font-style:normal;color:var(--or);}
 .hdesc{font-size:15px;color:var(--gr);line-height:1.9;font-weight:300;margin-bottom:2.5rem;max-width:580px;}
 .hbtns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3.5rem;}
 .btn-or{background:var(--or);color:var(--m);padding:13px 30px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.08em;transition:all .25s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(201,168,76,.28);}
-.btn-or:hover{background:var(--or2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.38);}
+.btn-or:hover{background:var(--or2);transform:translateY(-2px);}
 .btn-gh{background:transparent;color:var(--bl);padding:13px 30px;border-radius:7px;font-family:var(--fd);font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);letter-spacing:.06em;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
 .btn-gh:hover{border-color:var(--or);color:var(--or);}
-/* Métriques hero */
 .hmetrics{display:flex;gap:2.5rem;flex-wrap:wrap;}
 .hm{border-left:2px solid var(--ors);padding-left:.875rem;}
 .hm-val{font-family:var(--fd);font-size:1.7rem;font-weight:800;color:var(--or);line-height:1;}
 .hm-label{font-size:10px;color:var(--gr);margin-top:.2rem;}
-
-/* ── BAND MÉTRIQUES ── */
 .mband{background:var(--m3);border-top:1px solid var(--ors);border-bottom:1px solid var(--ors);padding:2.5rem 5vw;}
 .mbi{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);}
 .mb{text-align:center;padding:1rem;border-right:1px solid rgba(255,255,255,.05);}
@@ -65,20 +58,13 @@ h1 em{font-style:normal;color:var(--or);}
 .mb-val{font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--or);}
 .mb-val sup{font-size:1rem;}
 .mb-label{font-size:10px;color:var(--gr);margin-top:.25rem;line-height:1.4;}
-
-/* ── SERVICES ── */
 #services{padding:100px 5vw;}
 .si{max-width:1200px;margin:0 auto;}
 .sey{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--or);margin-bottom:.75rem;}
 .stit{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem;}
 .stit em{font-style:normal;color:var(--or);}
 .sdesc{font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;max-width:600px;margin-bottom:3.5rem;}
-
-/* Grille 6 services : 3 + 2 */
-.sg1{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem;}
-.sg2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;max-width:820px;margin:0 auto;}
-
-.sc{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;overflow:hidden;transition:all .35s;position:relative;display:flex;flex-direction:column;}
+.sc{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;overflow:hidden;transition:all .35s;position:relative;display:flex;flex-direction:column;cursor:pointer;}
 .sc:hover{transform:translateY(-7px);box-shadow:0 24px 64px rgba(0,0,0,.45);}
 .sc-bar{height:3px;}
 .sc-body{padding:1.75rem 1.75rem 1.25rem;flex:1;}
@@ -95,9 +81,6 @@ h1 em{font-style:normal;color:var(--or);}
 .sc-link:hover{gap:10px;}
 .sc-badge{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;}
 .st-on{background:rgba(34,212,138,.1);color:var(--vt);}
-.st-off{background:rgba(201,168,76,.1);color:var(--or);}
-
-/* ── VISION ── */
 #vision{padding:100px 5vw;background:var(--m2);border-top:1px solid var(--gr3);border-bottom:1px solid var(--gr3);}
 .vi{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
 .vr{display:flex;flex-direction:column;gap:1rem;}
@@ -106,8 +89,6 @@ h1 em{font-style:normal;color:var(--or);}
 .vc-ico{font-size:1.5rem;margin-bottom:.6rem;}
 .vc-tit{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--or);margin-bottom:.35rem;}
 .vc-desc{font-size:12px;color:var(--gr);line-height:1.7;}
-
-/* ── CONTACT ── */
 #contact{padding:100px 5vw;}
 .coi{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
 .cf{background:var(--m2);border:1px solid var(--gr3);border-radius:18px;padding:2rem;}
@@ -124,8 +105,6 @@ h1 em{font-style:normal;color:var(--or);}
 .ci-ico{width:38px;height:38px;border-radius:9px;background:var(--ord);border:1px solid var(--ors);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .ci-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gr);margin-bottom:2px;}
 .ci-val{font-size:13px;color:var(--bl);font-weight:500;}
-
-/* ── FOOTER ── */
 footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5rem 5vw 2rem;}
 .fi{max-width:1200px;margin:0 auto;}
 .fg-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -137,14 +116,36 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
 .fcol-links a{font-size:12px;color:var(--gr2);transition:color .2s;}
 .fcol-links a:hover{color:var(--or);}
 .fbot{padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--gr2);flex-wrap:wrap;gap:.75rem;}
-
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--m3);border:1px solid var(--or);color:var(--bl);padding:11px 18px;border-radius:9px;font-size:12px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 .fu{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
 .fu.visible{opacity:1;transform:translateY(0);}
-
+/* MODAL */
+.mo-ov{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(10px);}
+.mo-ov.open{display:flex;}
+.mo-box{background:var(--m2);border:1px solid var(--gr3);border-radius:22px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);}
+.mo-bar{height:3px;}
+.mo-head{padding:1.75rem 1.75rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.mo-icon{font-size:2.2rem;margin-bottom:.5rem;}
+.mo-title{font-family:var(--fd);font-size:1.3rem;font-weight:800;color:var(--bl);margin-bottom:.3rem;}
+.mo-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.mo-close{background:var(--m3);border:1px solid var(--gr3);color:var(--gr);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.mo-close:hover{color:var(--bl);}
+.mo-body{padding:0 1.75rem 1.75rem;}
+.mo-desc{font-size:13px;color:var(--gr);line-height:1.85;margin-bottom:1.5rem;}
+.mo-feats{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem;}
+.mo-feat{display:flex;align-items:flex-start;gap:.625rem;font-size:12px;color:var(--gr);}
+.mo-feat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.mo-cta{background:var(--m3);border-radius:14px;padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.mo-cta-txt{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--bl);}
+.mo-cta-sub{font-size:10px;color:var(--gr);margin-top:.2rem;}
+.mo-btns{display:flex;gap:.625rem;flex-wrap:wrap;}
+.mo-btn-main{background:var(--or);color:var(--m);border:none;padding:9px 18px;border-radius:7px;font-family:var(--fd);font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:all .2s;}
+.mo-btn-main:hover{background:var(--or2);}
+.mo-btn-sec{background:transparent;color:var(--gr);border:1px solid var(--gr3);padding:9px 18px;border-radius:7px;font-family:var(--fd);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.06em;transition:all .2s;}
+.mo-btn-sec:hover{color:var(--bl);border-color:var(--ors);}
 @media(max-width:1024px){.vi{grid-template-columns:1fr;}.coi{grid-template-columns:1fr;}.fg-top{grid-template-columns:1fr 1fr;}}
-@media(max-width:768px){.sg1{grid-template-columns:1fr;}.sg2{grid-template-columns:1fr;}.mbi{grid-template-columns:1fr 1fr;}.nav-links{display:none;}}
+@media(max-width:768px){.mbi{grid-template-columns:1fr 1fr;}.nav-links{display:none;}}
 @media(max-width:480px){.mbi{grid-template-columns:1fr 1fr;}.fg{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -159,11 +160,10 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
     <a href="#services">Nos services</a>
     <a href="#vision">Notre vision</a>
     <a href="#contact">Contact</a>
-    <a href="#contact" class="nav-cta">Nous contacter</a>
+    <a href="#contact" class="nav-cta">Parlez-nous de votre projet</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hbg"></div><div class="hgrid"></div>
   <div class="hglow1"></div><div class="hglow2"></div>
@@ -171,7 +171,7 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
   <div class="hi">
     <div class="htag"><span class="hdot"></span>Cabinet de Gestion RH · Cotonou, Bénin</div>
     <h1>L'excellence RH<br>au service de votre<br><em>croissance.</em></h1>
-    <p class="hdesc">KAINOS RH est le cabinet de référence en gestion des ressources humaines en Afrique de l'Ouest. Cinq services complémentaires — conseil, externalisation, technologie, recrutement et outils digitaux — pour transformer vos RH en levier de performance.</p>
+    <p class="hdesc">KAINOS RH est le cabinet de référence en gestion des ressources humaines en Afrique de l'Ouest. Cinq services complémentaires pour transformer vos RH en levier de performance.</p>
     <div class="hbtns">
       <a href="#services" class="btn-or">Découvrir nos services →</a>
       <a href="#contact" class="btn-gh">Nous contacter</a>
@@ -179,13 +179,11 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
     <div class="hmetrics">
       <div class="hm"><div class="hm-val">5</div><div class="hm-label">Services spécialisés</div></div>
       <div class="hm"><div class="hm-val">200+</div><div class="hm-label">Entreprises accompagnées</div></div>
-      <div class="hm"><div class="hm-val">22</div><div class="hm-label">Outils RH digitaux</div></div>
       <div class="hm"><div class="hm-val">95%</div><div class="hm-label">Satisfaction client</div></div>
     </div>
   </div>
 </section>
 
-<!-- BAND MÉTRIQUES -->
 <div class="mband">
   <div class="mbi">
     <div class="mb"><div class="mb-val">5</div><div class="mb-label">Services spécialisés</div></div>
@@ -196,26 +194,21 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
   </div>
 </div>
 
-<!-- SERVICES -->
 <section id="services">
   <div class="si">
     <div class="fu">
-      <div class="sey">Nos 6 services</div>
+      <div class="sey">Nos 5 services</div>
       <h2 class="stit">Cinq expertises,<br>un seul <em>cabinet.</em></h2>
-      <p class="sdesc">KAINOS RH regroupe des services complémentaires conçus pour couvrir l'intégralité des besoins RH des entreprises béninoises et africaines.</p>
+      <p class="sdesc">KAINOS RH regroupe des services complémentaires pour couvrir l'intégralité de vos besoins RH.</p>
     </div>
-
-    <!-- Ligne 1 : 3 services -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;">
-
       <div class="sc fu" onclick="ouvrirModal('elite')">
         <div class="sc-bar" style="background:var(--or);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 01</div>
-          <div class="sc-icon">🏛️</div>
+          <div class="sc-num">Service 01</div><div class="sc-icon">🏛️</div>
           <div class="sc-name">Elite RH Consulting</div>
           <div class="sc-tagline" style="color:var(--or);">Conseil · Audit · Formation</div>
-          <div class="sc-desc">Accompagnement stratégique des dirigeants et DRH. Audits approfondis, conseil et formations sur mesure pour transformer votre fonction RH.</div>
+          <div class="sc-desc">Accompagnement stratégique des dirigeants et DRH dans la transformation de leur fonction RH.</div>
           <div class="sc-feats">
             <div class="sc-feat">Conseil RH stratégique & opérationnel</div>
             <div class="sc-feat">Audit social & diagnostic RH complet</div>
@@ -223,23 +216,21 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
           </div>
         </div>
         <div class="sc-footer">
-          <a href="#contact" class="sc-link" style="color:var(--or);" onclick="document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';">💬 Parlez-nous de votre projet</a>
+          <a href="#contact" class="sc-link" style="color:var(--or);">💬 Parlez-nous de votre projet</a>
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-
       <div class="sc fu" style="transition-delay:.08s;" onclick="ouvrirModal('jobfit')">
         <div class="sc-bar" style="background:var(--rd);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 02</div>
-          <div class="sc-icon">🎯</div>
+          <div class="sc-num">Service 02</div><div class="sc-icon">🎯</div>
           <div class="sc-name">Jobfit</div>
           <div class="sc-tagline" style="color:var(--rd);">Recrutement & Mise en relation</div>
-          <div class="sc-desc">Connexion entre entreprises et talents expérimentés pour des missions courtes ou longues. Recrutement ciblé et mise à disposition.</div>
+          <div class="sc-desc">Connexion entre entreprises et talents pour des missions courtes ou longues, dans tous les domaines.</div>
           <div class="sc-feats">
             <div class="sc-feat">Recrutement & sélection de profils clés</div>
             <div class="sc-feat">Mise en relation consultants/missions</div>
-            <div class="sc-feat">Mise à disposition d'employés & experts</div>
+            <div class="sc-feat">Mise à disposition d'experts</div>
           </div>
         </div>
         <div class="sc-footer">
@@ -247,15 +238,13 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-
       <div class="sc fu" style="transition-delay:.16s;" onclick="ouvrirModal('rhenline')">
         <div class="sc-bar" style="background:var(--bleu);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 03</div>
-          <div class="sc-icon">💻</div>
+          <div class="sc-num">Service 03</div><div class="sc-icon">💻</div>
           <div class="sc-name">Votre RH en ligne</div>
           <div class="sc-tagline" style="color:var(--bleu);">Externalisation RH complète</div>
-          <div class="sc-desc">Externalisez votre gestion RH. Paie, administration, congés, évaluations — tout géré à distance avec rigueur et conformité légale.</div>
+          <div class="sc-desc">Externalisez votre gestion RH. Paie, administration, congés — tout géré à distance avec rigueur.</div>
           <div class="sc-feats">
             <div class="sc-feat">Externalisation RH & DRH à temps partagé</div>
             <div class="sc-feat">Paie, déclarations sociales & fiscales</div>
@@ -267,19 +256,15 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:840px;margin:0 auto;">
-
       <div class="sc fu" style="transition-delay:.24s;" onclick="ouvrirModal('pae')">
         <div class="sc-bar" style="background:linear-gradient(90deg,#F06292,#A78BFA);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 04</div>
-          <div class="sc-icon">❤️</div>
+          <div class="sc-num">Service 04</div><div class="sc-icon">❤️</div>
           <div class="sc-name">PAE</div>
-          <div class="sc-tagline" style="color:#F06292;">Programme d'Aide aux Employés</div>
-          <div class="sc-desc">Programme global de bien-être couvrant 9 services autour de 4 axes : santé mentale, développement pro, vitalité physique et vie familiale.</div>
+          <div class="sc-tagline" style="color:#F06292;">Programme Aide aux Employés</div>
+          <div class="sc-desc">Programme global de bien-être couvrant 9 services autour de 4 axes de santé et développement.</div>
           <div class="sc-feats">
             <div class="sc-feat">Psychologue, gestion du stress & conflits</div>
             <div class="sc-feat">Formation managers & leadership</div>
@@ -291,15 +276,13 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-
       <div class="sc fu" style="transition-delay:.32s;" onclick="ouvrirModal('stratos')">
         <div class="sc-bar" style="background:var(--vl);"></div>
         <div class="sc-body">
-          <div class="sc-num">Service 05</div>
-          <div class="sc-icon">🚀</div>
+          <div class="sc-num">Service 05</div><div class="sc-icon">🚀</div>
           <div class="sc-name">STRATOS</div>
           <div class="sc-tagline" style="color:var(--vl);">SaaS RH · Objectifs · Performances</div>
-          <div class="sc-desc">Plateforme SaaS pour piloter vos objectifs OKR, évaluer les performances et suivre la contribution de chaque équipe et collaborateur.</div>
+          <div class="sc-desc">Plateforme SaaS pour piloter vos objectifs OKR, évaluer les performances de chaque collaborateur.</div>
           <div class="sc-feats">
             <div class="sc-feat">Suivi des objectifs (OKR) en temps réel</div>
             <div class="sc-feat">Gestion des performances & équipes</div>
@@ -311,39 +294,37 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
           <span class="sc-badge st-on">● Actif</span>
         </div>
       </div>
-
     </div>
+  </div>
 </section>
 
-<!-- VISION -->
 <section id="vision">
   <div class="vi">
     <div class="fu">
       <div class="sey">Notre vision</div>
       <h2 class="stit">Pourquoi<br><em>KAINOS RH</em> ?</h2>
-      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:1.5rem;">KAINOS — du grec ancien, "nouveau, innovant" — incarne notre conviction : les RH africaines méritent des solutions pensées pour leurs réalités, à la hauteur de leurs ambitions.</p>
-      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Nous connaissons le Code du Travail béninois, la CNSS, les réalités des PME, des multinationales et des institutions publiques de la région.</p>
+      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:1.5rem;">KAINOS — du grec ancien, "nouveau, innovant" — incarne notre conviction : les RH africaines méritent des solutions pensées pour leurs réalités.</p>
+      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Nous connaissons le Code du Travail béninois, la CNSS, les réalités des PME et des multinationales de la région.</p>
       <a href="#contact" class="btn-or">Démarrer avec KAINOS RH →</a>
     </div>
     <div class="vr">
-      <div class="vc fu"><div class="vc-ico">🌍</div><div class="vc-tit">Expertise africaine</div><div class="vc-desc">Maîtrise parfaite du droit social béninois et OHADA. Nos solutions intègrent les spécificités légales, culturelles et économiques locales.</div></div>
-      <div class="vc fu" style="transition-delay:.06s;"><div class="vc-ico">🔗</div><div class="vc-tit">Écosystème intégré</div><div class="vc-desc">6 services complémentaires qui travaillent ensemble. Du conseil à la technologie, sans rupture ni friction pour votre entreprise.</div></div>
-      <div class="vc fu" style="transition-delay:.12s;"><div class="vc-ico">⚡</div><div class="vc-tit">Réactivité & proximité</div><div class="vc-desc">Réponse sous 48h, accompagnement terrain, interlocuteur dédié. Nous sommes là quand vous en avez besoin.</div></div>
-      <div class="vc fu" style="transition-delay:.18s;"><div class="vc-ico">📈</div><div class="vc-tit">Impact mesurable</div><div class="vc-desc">Des objectifs clairs, des KPI suivis, des résultats documentés. Chaque mission se traduit en valeur concrète pour votre organisation.</div></div>
+      <div class="vc fu"><div class="vc-ico">🌍</div><div class="vc-tit">Expertise africaine</div><div class="vc-desc">Maîtrise parfaite du droit social béninois et OHADA. Nos solutions intègrent les spécificités légales et culturelles locales.</div></div>
+      <div class="vc fu" style="transition-delay:.06s;"><div class="vc-ico">🔗</div><div class="vc-tit">Écosystème intégré</div><div class="vc-desc">5 services complémentaires qui travaillent ensemble, sans rupture ni friction pour votre entreprise.</div></div>
+      <div class="vc fu" style="transition-delay:.12s;"><div class="vc-ico">⚡</div><div class="vc-tit">Réactivité & proximité</div><div class="vc-desc">Réponse sous 48h, accompagnement terrain, interlocuteur dédié.</div></div>
+      <div class="vc fu" style="transition-delay:.18s;"><div class="vc-ico">📈</div><div class="vc-tit">Impact mesurable</div><div class="vc-desc">Des objectifs clairs, des KPI suivis, des résultats documentés pour votre organisation.</div></div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
   <div class="coi">
     <div class="fu">
       <div class="sey">Contact</div>
       <h2 class="stit">Parlons de votre<br>projet <em>RH.</em></h2>
-      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Que vous souhaitiez un conseil, externaliser vos RH, accéder aux outils ou simplement en savoir plus — notre équipe est disponible.</p>
+      <p style="font-size:14px;color:var(--gr);line-height:1.85;font-weight:300;margin-bottom:2rem;">Que vous souhaitiez un conseil, externaliser vos RH ou simplement en savoir plus — notre équipe est disponible.</p>
       <div class="ci"><div class="ci-ico">📍</div><div><div class="ci-lbl">Adresse</div><div class="ci-val">Cotonou, République du Bénin</div></div></div>
       <div class="ci"><div class="ci-ico">📞</div><div><div class="ci-lbl">Téléphone</div><div class="ci-val">+229 01 99 34 47 39</div></div></div>
-      <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8fece0e1fbeeecfbcfe4eee6e1e0fcfde7a1ece0e2">[email&#160;protected]</a></div></div></div>
+      <div class="ci"><div class="ci-ico">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">contact@kainosrh.com</div></div></div>
     </div>
     <div class="cf fu" style="transition-delay:.12s;">
       <div class="cf-tit">✉️ Envoyez-nous un message</div>
@@ -358,51 +339,40 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
             <option>Elite RH Consulting (Conseil, Audit, Formation)</option>
             <option>Jobfit (Recrutement & Mise en relation)</option>
             <option>Votre RH en ligne (Externalisation RH)</option>
-            <option>STRATOS (Liste d'attente SaaS RH)</option>
+            <option>PAE (Programme Aide aux Employés)</option>
+            <option>STRATOS (SaaS RH)</option>
             <option>Renseignement général</option>
           </select>
         </div>
-        <div class="ff ff-full"><label class="ffl">Message</label><textarea class="ffi" id="c-msg" rows="3" placeholder="Décrivez votre besoin ou votre projet..."></textarea></div>
+        <div class="ff ff-full"><label class="ffl">Message</label><textarea class="ffi" id="c-msg" rows="3" placeholder="Décrivez votre besoin..."></textarea></div>
       </div>
       <button class="cf-btn" onclick="envoyer()">Envoyer le message →</button>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="fi">
     <div class="fg-top">
       <div>
         <div class="flogo">KAINOS <span>RH</span></div>
-        <div class="ftag">Cabinet de gestion RH de référence en Afrique de l'Ouest.<br>Conseil · Externalisation · Technologie · Recrutement · Outils digitaux.</div>
-        <div style="font-size:11px;color:var(--gr2);">📍 Cotonou, Bénin · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec8f8382988d8f98ac878d8582839f9e84c28f8381">[email&#160;protected]</a></div>
+        <div class="ftag">Cabinet de gestion RH de référence en Afrique de l'Ouest.<br>Conseil · Externalisation · Technologie · Recrutement.</div>
+        <div style="font-size:11px;color:var(--gr2);">📍 Cotonou, Bénin · contact@kainosrh.com</div>
       </div>
       <div>
         <div class="fcol-tit">Nos services</div>
         <div class="fcol-links">
-          <a href="elite-rh-consulting.html">🏛️ Elite RH Consulting</a>
           <a href="jobfit.html">🎯 Jobfit</a>
-          <a href="votre-rh-en-ligne.html">💻 Votre RH en ligne</a>
+          <a href="services-rh-enligne.html">💻 Votre RH en ligne</a>
           <a href="pae.html">❤️ PAE</a>
           <a href="stratos.html">🚀 STRATOS</a>
-                  </div>
-      </div>
-      <div>
-        <div class="fcol-tit">Outils RH</div>
-        <div class="fcol-links">
-          <a href="payroll.html">Paie multi-compagnies</a>
-          <a href="registre-personnel.html">Registre du personnel</a>
-          <a href="conges.html">Congés & absences</a>
-          <a href="reporting-rh.html">Reporting RH</a>
-          <a href="rhfit.html">Voir les 22 outils →</a>
         </div>
       </div>
       <div>
         <div class="fcol-tit">Contact</div>
         <div class="fcol-links">
           <a href="tel:+22901993447390">+229 01 99 34 47 39</a>
-          <a href="/cdn-cgi/l/email-protection#65060a0b11040611250e040c0b0a16170d4b060a08"><span class="__cf_email__" data-cfemail="dab9b5b4aebbb9ae9ab1bbb3b4b5a9a8b2f4b9b5b7">[email&#160;protected]</span></a>
+          <a href="mailto:contact@kainosrh.com">contact@kainosrh.com</a>
           <a href="#contact">Formulaire de contact</a>
         </div>
       </div>
@@ -414,11 +384,97 @@ footer{background:#040D1A;border-top:1px solid rgba(201,168,76,.08);padding:3.5r
   </div>
 </footer>
 
+<!-- MODALS -->
+<div class="mo-ov" id="modal-overlay" onclick="if(event.target===this)fermerModal()">
+  <div class="mo-box">
+    <div class="mo-bar" id="mo-bar"></div>
+    <div class="mo-head">
+      <div>
+        <div class="mo-icon" id="mo-icon"></div>
+        <div class="mo-title" id="mo-title"></div>
+        <div class="mo-tag" id="mo-tag"></div>
+      </div>
+      <button class="mo-close" onclick="fermerModal()">✕</button>
+    </div>
+    <div class="mo-body">
+      <p class="mo-desc" id="mo-desc"></p>
+      <div class="mo-feats" id="mo-feats"></div>
+      <div class="mo-cta">
+        <div><div class="mo-cta-txt">Intéressé par ce service ?</div><div class="mo-cta-sub">Notre équipe vous répond sous 48h</div></div>
+        <div class="mo-btns">
+          <button class="mo-btn-main" id="mo-btn-savoir" onclick="allerPage()">En savoir plus →</button>
+          <button class="mo-btn-sec" onclick="allerContact()">Parlez-nous de votre projet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>30);});
-var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
-document.querySelectorAll('.fu').forEach(function(el){obs.observe(el);});
+
+<script>
+var PAGE_COURANTE = '#';
+var SERVICES = {
+  elite:{icon:'🏛️',page:null,color:'#C9A84C',title:'Elite RH Consulting',tag:'CONSEIL · AUDIT · FORMATION',
+    desc:'Accompagnement stratégique des dirigeants et DRH dans la transformation de leur fonction RH. Expertise terrain, conformité OHADA et Code du Travail béninois.',
+    feats:['Conseil RH stratégique et opérationnel','Audit social et diagnostic RH complet','Formation et développement des équipes','Accompagnement à la transformation RH','DRH à temps partagé']},
+  jobfit:{icon:'🎯',page:'jobfit.html',color:'#F05A5A',title:'Jobfit',tag:'RECRUTEMENT · MISE EN RELATION',
+    desc:'Jobfit connecte les entreprises aux talents dont elles ont besoin. Recrutement permanent, missions courtes ou mise à disposition dans tous les domaines.',
+    feats:['Recrutement cadres et postes clés','Mise en relation consultants/missions','Mise à disposition de personnel','Évaluation et assessment de candidats','Intégration et onboarding']},
+  rhenline:{icon:'💻',page:'services-rh-enligne.html',color:'#4A9EFF',title:'Votre RH en ligne',tag:'EXTERNALISATION RH',
+    desc:'Externalisez votre gestion RH à nos experts. Paie, déclarations CNSS, congés, contrats — tout géré à distance avec la rigueur d\'un département interne.',
+    feats:['Traitement de la paie mensuelle','Déclarations sociales et fiscales','Gestion des congés et absences','Administration du personnel','Veille juridique et conformité']},
+  pae:{icon:'❤️',page:'pae.html',color:'#F06292',title:'PAE',tag:'PROGRAMME AIDE AUX EMPLOYÉS',
+    desc:'Le PAE de KAINOS RH couvre 9 services autour de 4 axes : santé mentale, développement professionnel, vitalité physique et vie familiale.',
+    feats:['Psychologue du travail et gestion du stress','Formation jeunes managers et leadership','Coach sportif et nutritionniste','Garde d\'enfants et voyages organisés','Soins dentaires et bien-être']},
+  stratos:{icon:'🚀',page:'stratos.html',color:'#A78BFA',title:'STRATOS',tag:'SAAS RH · DISPONIBLE',
+    desc:'STRATOS permet de répartir les objectifs stratégiques par fonction, suivre la contribution de chaque équipe et évaluer l\'apport de chaque collaborateur.',
+    feats:['Gestion des OKR et objectifs','Évaluation des performances et feedbacks 360','Budget RH et planification','Analytics et tableau de bord','Accès immédiat sur luxury-manatee-d29c68.netlify.app']}
+};
+
+function ouvrirModal(id){
+  var s = SERVICES[id];
+  if(!s) return;
+  PAGE_COURANTE = s.page;
+  document.getElementById('mo-bar').style.background = s.color;
+  document.getElementById('mo-icon').textContent = s.icon;
+  document.getElementById('mo-title').textContent = s.title;
+  document.getElementById('mo-tag').textContent = s.tag;
+  document.getElementById('mo-tag').style.color = s.color;
+  document.getElementById('mo-desc').textContent = s.desc;
+  var fl = document.getElementById('mo-feats');
+  fl.innerHTML = '';
+  s.feats.forEach(function(f){
+    var d = document.createElement('div');
+    d.className = 'mo-feat';
+    d.innerHTML = '<div class="mo-feat-dot" style="background:'+s.color+'"></div><span>'+f+'</span>';
+    fl.appendChild(d);
+  });
+  var btnSavoir = document.getElementById('mo-btn-savoir');
+  if(s.page){
+    btnSavoir.style.display = '';
+    btnSavoir.style.background = s.color;
+  } else {
+    btnSavoir.style.display = 'none';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function fermerModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function allerPage(){
+  if(PAGE_COURANTE){ fermerModal(); window.location.href = PAGE_COURANTE; }
+}
+
+function allerContact(){
+  fermerModal();
+  document.getElementById('contact').scrollIntoView({behavior:'smooth'});
+}
+
 function envoyer(){
   var n=document.getElementById('c-nom').value.trim();
   var t=document.getElementById('c-tel').value.trim();
@@ -433,9 +489,13 @@ function envoyer(){
   })
   .catch(function(){toast('Erreur réseau.');});
 }
+
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>30);});
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fu').forEach(function(el){obs.observe(el);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')fermerModal();});
 var tt;
 function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},4500);}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}});
 </script>
 </body>
 </html>
