@@ -17,9 +17,9 @@
   --text-main: #0F172A;
   --text-muted: #475569;
   --text-light: #94A3B8;
-  --accent: #D4AF37;
-  --accent-hover: #B5952F;
-  --accent-light: rgba(212, 175, 55, 0.1);
+  --accent: #00027D; /* Bleu marine premium, issu du bouton de référence */
+  --accent-hover: #1B2FA8;
+  --accent-light: rgba(0, 2, 125, 0.07);
   --border: #E2E8F0;
   --border-light: #F1F5F9;
   --fd: 'Outfit', sans-serif;
@@ -27,12 +27,12 @@
   --shadow-nav: 0 4px 20px rgba(0,0,0,0.03);
   --shadow-card: 0 10px 30px rgba(0,0,0,0.04);
   --shadow-hover: 0 20px 40px rgba(0,0,0,0.08);
-  --shadow-glow: 0 8px 25px rgba(212, 175, 55, 0.25);
+  --shadow-glow: 0 6px 16px rgba(0, 2, 125, 0.2);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
   /* Service card colors */
-  --or: #C9A84C;
+  --or: #00027D;
   --rd: #F05A5A;
   --bleu: #4A9EFF;
   --vl: #A78BFA;
@@ -84,7 +84,7 @@ nav.scrolled{box-shadow:var(--shadow-nav);background:rgba(255,255,255,.98);}
 .hglow1{position:absolute;top:-10%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,var(--accent-light) 0%,transparent 60%);pointer-events:none;filter:blur(40px);}
 .hline{display:none;}
 .hi{position:relative;z-index:1;max-width:1100px;margin:0 auto;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;}
-.htag{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);border:1px solid rgba(212,175,55,0.2);border-radius:30px;padding:6px 20px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--accent-hover);margin-bottom:2rem;}
+.htag{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);border:1px solid rgba(0,2,125,0.18);border-radius:30px;padding:6px 20px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--accent-hover);margin-bottom:2rem;}
 .hdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
 h1{font-family:var(--fd);font-size:clamp(2.5rem,5vw,3.8rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:1.5rem;color:var(--text-main);max-width:850px;}
@@ -93,7 +93,7 @@ h1 em::after{content:'';position:absolute;bottom:5px;left:0;right:0;height:8px;b
 .hdesc{font-size:16px;color:var(--text-muted);line-height:1.8;font-weight:400;margin-bottom:3rem;max-width:650px;}
 .hbtns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:4rem;}
 .btn-or{background:var(--accent);color:#FFFFFF;padding:14px 32px;border-radius:var(--radius-sm);font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:0.02em;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--shadow-glow);}
-.btn-or:hover{background:var(--accent-hover);transform:translateY(-2px);box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);}
+.btn-or:hover{background:var(--accent-hover);transform:translateY(-2px);box-shadow: 0 10px 24px rgba(0, 2, 125, 0.3);}
 .btn-gh{background:var(--bg-card);color:var(--text-main);padding:14px 32px;border-radius:var(--radius-sm);font-family:var(--fd);font-size:14px;font-weight:600;border:1px solid var(--border);letter-spacing:0.02em;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--shadow-sm);}
 .btn-gh:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-card);}
 .hmetrics{display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;}
@@ -118,7 +118,7 @@ h1 em::after{content:'';position:absolute;bottom:5px;left:0;right:0;height:8px;b
 .stit em{font-style:normal;color:var(--accent);}
 .sdesc{font-size:16px;color:var(--text-muted);line-height:1.8;max-width:650px;margin-bottom:4rem;}
 .sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);position:relative;display:flex;flex-direction:column;cursor:pointer;box-shadow:var(--shadow-nav);}
-.sc:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover);border-color:rgba(212, 175, 55, 0.3);}
+.sc:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover);border-color:rgba(0, 2, 125, 0.3);}
 .sc-bar{height:4px;background:var(--border-light);transition:background .3s;}
 .sc:hover .sc-bar{background:var(--accent);}
 .sc-body{padding:2.5rem 2rem 2rem;flex:1;}
@@ -613,7 +613,7 @@ footer{background:var(--bg-sec);border-top:1px solid var(--border-light);padding
 <script>
 var PAGE_COURANTE = '#';
 var SERVICES = {
-  elite:{icon:'🏛️',page:null,color:'#C9A84C',title:'Elite RH Consulting',tag:'CONSEIL · AUDIT · FORMATION',
+  elite:{icon:'🏛️',page:null,color:'#00027D',title:'Elite RH Consulting',tag:'CONSEIL · AUDIT · FORMATION',
     desc:'Accompagnement stratégique des dirigeants et DRH dans la transformation de leur fonction RH. Expertise terrain, conformité OHADA et Code du Travail béninois.',
     feats:['Conseil RH stratégique et opérationnel','Audit social et diagnostic RH complet','Formation et développement des équipes','Accompagnement à la transformation RH','DRH à temps partagé']},
   jobfit:{icon:'🎯',page:'jobfit.html',color:'#F05A5A',title:'Jobfit',tag:'RECRUTEMENT · MISE EN RELATION',
